@@ -1,0 +1,4 @@
+rootProject.name = 'udoo'
+include 'rest'
+include 'testmodule'
+
