@@ -1,2 +1,6 @@
-/.idea/*
-*.iml
+udoo_client/node_modules/
+udoo/rest/build/tmp/jettyRunWar/webapp/META-INF/MANIFEST.MF
+*.bin
+udoo/rest/build/libs/rest-1.0-SNAPSHOT.war
+udoo/.gradle/2.5/taskArtifacts/cache.properties.lock
+udoo/.gradle/2.5/taskArtifacts/cache.properties
