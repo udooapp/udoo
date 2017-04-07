@@ -1,0 +1,64 @@
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+  margin-left: 42%;
+}
+.left_box{
+  padding-top: 5%;
+  position: relative;
+  padding-left: 10%;
+  width: 49%;
+}
+.right_box{
+  position: absolute;
+  margin-top: -10%;
+  margin-left: 50%;
+  padding-left: 15%;
+}
+.right_box a{
+  background-color: #336699;
+  border-radius: 2px;
+  padding: 16%;
+  color: #FFFFFF
+}
+.registration-text{
+  color: #5a5a5a;
+  font-size: 150%;
+}
+
+.input_error{
+  color:#ff0000;
+}
+
+input{
+  border-radius: 2px;
+  height: 20px;
+}
+
+.input-group{
+  margin-top: 2%;
+  margin-left: 10%;
+}
+.vertical_line {
+  height: 35%;
+  position: absolute;
+  margin-bottom: 10%;
+  margin-top: -20%;
+  margin-left: 50%;
+  border-left: 2px solid #dadada;
+}
+
+.input_box{
+  background-color: #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 2px;
+  padding-bottom: 5%;
+  padding-top: 5%;
+  display: inline-block;
+  position: relative;
+  margin-top: 2%;
+  margin-left: 25%;
+  width: 50%;
+  height: 300px;
+}

@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.Resource;
+import java.net.URI;
+import java.util.List;
 
 /**
  */
@@ -22,6 +25,27 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private IUserRepository userRepository;
 
+    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> checkPermissionLogin() {
+        System.out.println("Option Check");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> loginUser(@RequestBody User data) {
+        System.out.println("Login:" + data.toString());
+        List<User> users = userRepository.findByName(data.getName());
+        if (users.size() > 0) {
+            if (users.get(0).getPassword().equals(data.getPassword())) {
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
+
+            } else {
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("Saved", HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/user", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> checkPermission() {

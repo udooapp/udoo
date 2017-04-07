@@ -3,7 +3,7 @@ import {User} from '../user/user'
 import {RegistrationService} from './registration.service'
 
 @Component({
-  selector: 'app-root',
+  selector: 'registration-root',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css'],
   providers: [RegistrationService]
