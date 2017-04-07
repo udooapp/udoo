@@ -3,13 +3,13 @@ import {Http, Response, Headers, RequestOptions}          from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import {User} from './user/user';
+import {User} from '../user/user';
 
 @Injectable()
 export class RegistrationService {
   private userUrl: string = 'http://localhost:8090/rest/user';  // URL to web API
   private body = '{\"name\" : \"John Smith\",\"password\" : \"password1\",\"email\": \"john.smith@email.com\",\"phone\": \"0123456789\",\"picture\": \"\"}';
-  private response: string;
+  public response: string;
 
   constructor(private http: Http) {
   }
@@ -35,6 +35,7 @@ export class RegistrationService {
 
   private extractData(res: Response) {
     let body = res.json();
+    console.log(body)
     return body.data || {};
   }
 

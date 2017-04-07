@@ -2,40 +2,42 @@
   <h1>Registration</h1>
   <form #userForm="ngForm">
     <div class="input-group">
-      <br> <span>Name</span><br>
+      <span>Name</span><br>
       <input type="text" id="name" class="form-control" required
-             [(ngModel)]="user.name" name="name"/>
+             [(ngModel)]="user.name" name="name" placeholder="John Smith"/>
     </div>
     <div class="input-group">
-      <br><span>Email address</span><br>
+      <span>Email address</span><br>
       <input type="email" id="email" class="form-control"
-             required [(ngModel)]="user.email" name="email"/>
+             required [(ngModel)]="user.email" name="email" placeholder="email@udoo.com"/>
     </div>
     <div class="input-group">
-      <br><span>Password</span><br>
+      <span>Password</span><br>
       <input type="password" id="password" class="form-control"
-             required [(ngModel)]="user.password" name="password"/>
+             required [(ngModel)]="user.password" name="password" placeholder="Password"/>
     </div>
     <div class="input-group">
-      <br><span>Password verification</span><br>
-      <input type="password" id="password-ver" class="form-control" (keyup)="onKey($event)"/>
+      <span>Password verification</span><br>
+      <input type="password" id="password-ver" class="form-control" (keyup)="onKey($event)" placeholder="Password"/>
       <span class="input_error">{{passwordCheck}}</span>
     </div>
     <div class="input-group">
-      <br><span>Phone number</span><br>
+      <span>Phone number</span><br>
       <input type="text" id="phone" class="form-control"
-             required [(ngModel)]="user.phone" name="phone"/>
+             required [(ngModel)]="user.phone" name="phone" placeholder="+48123456789"/>
     </div>
     <div class="input-group">
-      <br><span>Picture</span><br>
+      <span>Picture</span><br>
       <input type="file" name="pic" accept="image/*" id="picture" class="form-control"
              required [(ngModel)]="user.picture" name="picture"/>
     </div>
     <div class="input-group">
-      <br>
       <input type="submit" value="Save" class="btn btn-primary" (click)="newUser()" [disabled]="!valid"/>
       <input type="reset" value="Cancel" class="btn">
     </div>
   </form>
-  <span>{{message}}</span>
+  <div class="input-group">
+    <span>{{message}}</span>
+    <span>{{registrationService.response}}</span>
+  </div>
 </div>
