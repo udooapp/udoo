@@ -1,0 +1,23 @@
+<div class="login-container">
+  <form #userForm="ngForm">
+    <div>
+      <input type="text" id="email" class="input-login" required
+             [(ngModel)]="user.email" name="email" placeholder="Email"/>
+    </div>
+    <div>
+      <input type="password" id="password" class="input-login"
+             required [(ngModel)]="user.password" name="password" placeholder="Password"/>
+    </div>
+
+    <div>
+      <input type="submit" value="OK" class="input-button" (click)="login()"/>
+    </div>
+  </form>
+  <div>
+    <span>{{error}}</span>
+  </div>
+</div>
+<div class="link-container">
+  <a>Forgott your password?</a>
+  <a routerLink="/registration" routerLinkActive="active">Create a new account</a>
+</div>

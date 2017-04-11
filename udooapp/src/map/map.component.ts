@@ -34,7 +34,7 @@ export class MapComponent implements OnInit {
     script.async = true;
     script.defer = true;
 
-    const callbackName: string = 'initMap';
+    const callbackName = 'initMap';
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
 
     this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
@@ -51,4 +51,5 @@ export class MapComponent implements OnInit {
 
     return this.scriptLoadingPromise;
   }
+
 }

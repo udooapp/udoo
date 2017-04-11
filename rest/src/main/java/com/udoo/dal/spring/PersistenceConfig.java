@@ -31,7 +31,8 @@ public class PersistenceConfig {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost/udoo?user=root&password=welcome");
+        dataSource.setUrl("jdbc:mysql://localhost/udoo?user=undoouser&password=udoo");
+
 
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
