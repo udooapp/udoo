@@ -19,7 +19,7 @@ export class LoginComponent {
   }
 
   login() {
-    if (this.user.name.length === 0) {
+    if (this.user.email.length === 0) {
       this.error = 'Username is empty!';
     } else if (this.user.password.length === 0) {
       this.error = 'Password is empty!';

@@ -14,6 +14,8 @@
 
     <context:component-scan base-package="com.udoo.dal.spring" />
 
+    <context:component-scan base-package="com.udoo.restservice.security" />
+
     <mvc:resources mapping="/resources/**" location="/resources/" />
 
     <mvc:annotation-driven />

@@ -1,8 +1,10 @@
 package com.udoo.dal.spring;
 
+import com.udoo.restservice.security.SecurityConfig;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -16,6 +18,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("com.udoo.dal.repositories")
+@Import({SecurityConfig.class})
 public class PersistenceConfig {
 
     private static final String PROPERTY_HIBERNATE_DIALECT = "hibernate.dialect";
@@ -23,6 +26,17 @@ public class PersistenceConfig {
     private static final String PROPERTY_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
 
     public static final String TRUE_TAG = "true";
+
+
+    @Bean(name = "dataSource")
+    public DriverManagerDataSource dataSource() {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        driverManagerDataSource.setUrl("jdbc:mysql://localhost/udoo");
+        driverManagerDataSource.setUsername("undoouser");
+        driverManagerDataSource.setPassword("udoo");
+        return driverManagerDataSource;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

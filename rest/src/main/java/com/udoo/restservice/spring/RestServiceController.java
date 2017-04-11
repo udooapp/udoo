@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 public class RestServiceController implements IRestServiceController {
 
-
     @Resource
     private IUserRepository userRepository;
 
@@ -46,9 +45,15 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
+    @RequestMapping(value="/logout", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> logoutUser(User user){
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loginUser(@RequestBody final User user) {
-        System.out.println("Login:" + user.toString());
+    public ResponseEntity<?> loginUser(@RequestBody User user) {
+        System.out.println(user.toString());
         List<User> users = userRepository.findByName(user.getName());
         if (users.size() > 0) {
             if (users.get(0).getPassword().equals(user.getPassword())) {

@@ -51,7 +51,7 @@
     <div>
       <input type="reset" value="Cancel" class="input-button" routerLink="/map" routerLinkActive="active"/>
       <input type="submit" value="Save" class="input-button" (click)="newUser()"
-             [disabled]="userForm.form.valid || !valid"/>
+             [disabled]="!userForm.form.valid || !valid"/>
     </div>
   </form>
   <div>

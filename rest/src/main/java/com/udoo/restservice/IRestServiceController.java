@@ -12,5 +12,7 @@ public interface IRestServiceController {
 
     ResponseEntity<?> loginUser(User data);
 
+    ResponseEntity<?> logoutUser(User user);
+
     String getUserName(final Integer id);
 }
