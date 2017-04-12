@@ -8,4 +8,5 @@ import 'rxjs/add/operator/switchMap';
 })
 
 export class AppComponent {
+  visibleMenu= false;
 }

@@ -1,8 +1,25 @@
-<div class="header">Udoo</div>
+<div class="header">
+  <div class="menu-button" (click)="visibleMenu = !visibleMenu">☰</div>
+  <div class="menu-title">Udoo</div>
+</div>
 
 <div class="content">
-  <div class="menu-container">
+  <div class="menu-container" *ngIf="visibleMenu">
+    <div class="menu-profile">
+      <div class="menu-profile-picture">
+        <img class="menu-profile-image" src="../images/profile_picture.png">
+      </div>
+      <div class="menu-profile-name">Firstname Lastname</div>
+      <div class="menu-profile-stars"></div>
+    </div>
     <a routerLink="/login" routerLinkActive="active" class="menu-link">Login</a>
+    <a routerLink="/request" routerLinkActive="active"  class="menu-link">My service request</a>
+    <a class="menu-link">My service offer</a>
+    <a class="menu-link">Contacts</a>
+    <div class="placeholder"></div>
+    <a class="menu-link">Settings</a>
+    <a routerLink="/profile" routerLinkActive="active" class="menu-link">Profile</a>
+    <a class="menu-link">Log out</a>
   </div>
 
   <div class="map-container">

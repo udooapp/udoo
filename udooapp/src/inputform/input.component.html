@@ -1,0 +1,69 @@
+<div class="input-container">
+  <h1>{{registration ? 'Registration form' : 'Profile'}}</h1>
+  <form #userForm="ngForm">
+    <div *ngIf="registration" class="input-group">
+      <span class="input-text">Type</span><br>
+      <div class="input-radio">
+        <input type="radio" name="radiogroup" [checked]="user.type" [value]="user.type" (change)="user.type = true">
+        <span class="input-text">Person</span>
+        <input type="radio" name="radiogroup" [value]="!user.type" [checked]="!user.type" (change)="user.type = false">
+        <span class="input-text">Organization</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <span class="input-text" *ngIf="!user.type">Organization</span>
+      <span class="input-text" *ngIf="user.type">Username</span>
+      <span class="input-error" *ngIf="user.name.length == 0">Most be complete!</span><br>
+      <input type="text" (keyup)="focusName()" (focus)="focusName()" id="name" class="input-login"
+             required [(ngModel)]="user.name" name="name" placeholder="Input value"/>
+
+    </div>
+    <div class="input-group">
+      <span class="input-text">Email</span><span class="input-error"
+                                                 *ngIf="user.email.length == 0">Most be complete!</span><br>
+      <input type="email" id="email" class="input-login"
+             required [(ngModel)]="user.email" name="email" placeholder="Input value"/>
+    </div>
+    <div>
+      <span class="input-text">Phone number</span><span class="input-error" *ngIf="user.phone.length == 0">Most be complete!</span><br>
+      <input type="text" id="phone" class="input-login" required [(ngModel)]="user.phone" name="phone"
+             placeholder="Input value"/>
+    </div>
+    <div *ngIf="user.type">
+      <span class="input-text">Birth date</span> <span class="input-error" *ngIf="user.birthdate.length == 0">Most be complete!</span><br>
+      <input type="date" id="date" class="input-login input-date" required [(ngModel)]="user.birthdate" name="birthdate"
+             placeholder="Input value"/>
+    </div>
+    <div class="input-group" *ngIf="registration">
+      <span class="input-text">Password</span><span class="input-error" *ngIf="user.password.length == 0">Most be complete!</span><br>
+      <input type="password" id="password" class="input-login"
+             required [(ngModel)]="user.password" name="password" placeholder="Input value"/>
+    </div>
+    <div class="input-group" *ngIf="registration">
+      <span class="input-text">Password verification</span> <span class="input-error" *ngIf="visible[1]">Most be complete!</span><br>
+      <input type="password" id="password-ver" class="input-login" (keyup)="onKey($event)" required
+             placeholder="Input value"/>
+      <span>{{passwordCheck}}</span>
+    </div>
+    <div class="input-group">
+      <span class="input-text">Profile picture</span><br>
+      <input class="input-picture" type="file" accept="image/*" id="picture"
+             [(ngModel)]="user.picture" name="picture"/>
+    </div>
+    <div class="input-group">
+      <input type="reset" value="Cancel" class="input-button" routerLink="/map" routerLinkActive="active"
+             *ngIf="registration"/>
+      <input type="submit" value="Save" class="input-button" (click)="newUser() && updateProfile()"
+             [disabled]="!userForm.form.valid || !valid"/>
+    </div>
+
+    <div class="input-group" *ngIf="!registration">
+      <input type="reset" value="Change password" class="input-button" routerLink="/password"
+             routerLinkActive="active"/>
+    </div>
+
+  </form>
+  <div>
+    <span>{{message}}</span>
+  </div>
+</div>
