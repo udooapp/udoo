@@ -24,6 +24,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.2.RELEASE'
     compile group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.2.RELEASE'
     compile group: 'org.springframework.security', name: 'spring-security-config', version: '3.2.0.RELEASE'
+    compile group: 'org.json', name: 'json', version: '20090211'
 
     compile 'org.hibernate:hibernate-entitymanager:5.1.0.Final'
 

@@ -1,6 +1,6 @@
 import {TestBed, async} from '@angular/core/testing';
 
-import {NewRequestComponent} from './newoffer.component';
+import {NewRequestComponent} from './newrequest.component';
 
 describe('LoginComponent', () => {
   beforeEach(async(() => {

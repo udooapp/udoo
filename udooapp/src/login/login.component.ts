@@ -2,20 +2,20 @@ import {Component} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 
-import {User} from '../user/user';
-import {LoginService} from './login.service';
+import {User} from '../entity/user';
+import {UserService} from "../entity/user.service";
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [LoginService]
+  providers: [UserService]
 })
 export class LoginComponent {
-  message = this.loginService.response;
+  message: String;
   user = new User(null, '', '', '', '', '', false, '');
-  error = '';
+  error : string;
 
-  constructor(public loginService: LoginService) {
+  constructor(private userService: UserService) {
   }
 
   login() {
@@ -24,8 +24,9 @@ export class LoginComponent {
     } else if (this.user.password.length === 0) {
       this.error = 'Password is empty!';
     } else {
-      this.loginService.loginUser(this.user);
-      this.error = '';
+      this.userService.loginUser(this.user).subscribe(
+        message => this.message = message,
+        error => this.error = <any>error);
     }
   }
 }

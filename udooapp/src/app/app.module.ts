@@ -11,8 +11,9 @@ import {AppRoutingModule} from './app.routing.module';
 import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
 import {NewOfferComponent} from "../newoffer/newoffer.component";
-import {NewRequestComponent} from "../newrequest/newoffer.component";
+import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
+import {OfferComponent} from "../offers/offers.component";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {RequestComponent} from "../requests/request.component";
     PasswordComponent,
     NewOfferComponent,
     NewRequestComponent,
-    RequestComponent
+    RequestComponent,
+    OfferComponent
   ],
   imports: [
     BrowserModule,

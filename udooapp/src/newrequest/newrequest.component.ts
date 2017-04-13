@@ -1,36 +1,34 @@
 import {Component} from '@angular/core';
-import {Offer} from "../entity/offer";
-import {OfferService} from "../entity/offer.service";
+
+import {Request} from '../entity/request'
+import {RequestService} from "../entity/request.service";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css'],
-  providers: [OfferService]
+  providers: [RequestService]
 })
-export class NewOfferComponent {
+export class NewRequestComponent {
   registration = true;
   category = ['Select', 'Cleaning', 'Washing', 'Other'];
   message : String;
-  error = '';
-  offer = true;
+  offer = false;
   passwordCheck = '';
   valid = false;
-  data = new Offer(null, '', '', '', 1, '', '', '');
+  error = '';
+  data = new Request(null, '', '', '', 1, '', '', '');
   public visible = [false, false];
 
-  constructor(private offerService: OfferService) {
-  }
+  constructor(private requestService: RequestService){}
 
   onKey(event: any) { // without type info
   }
 
   save() {
     this.valid = true;
-    this.offerService.saveOffer(this.data).subscribe(
+    this.requestService.saveRequest(this.data).subscribe(
       message => this.message = message,
       error => this.error = <any>error);
-    this.message = 'Offer saved';
-    this.valid = true;
     this.message = 'Offer saved';
   }
 }

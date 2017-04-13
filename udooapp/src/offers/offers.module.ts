@@ -3,11 +3,11 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
-import {NewRequestComponent} from './newoffer.component';
+import {OfferComponent} from './offers.component';
 
 @NgModule({
   declarations: [
-    NewRequestComponent
+    OfferComponent
   ],
   imports: [
     BrowserModule,
@@ -15,7 +15,7 @@ import {NewRequestComponent} from './newoffer.component';
     HttpModule
   ],
   providers: [],
-  bootstrap: [NewRequestComponent]
+  bootstrap: [OfferComponent]
 })
-export class NewRequestModule {
+export class OfferModule {
 }

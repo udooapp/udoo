@@ -7,8 +7,9 @@ import {MapComponent} from '../map/map.component';
 import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
 import {NewOfferComponent} from "../newoffer/newoffer.component";
-import {NewRequestComponent} from "../newrequest/newoffer.component";
+import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
+import {OfferComponent} from "../offers/offers.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: 'addoffer', component: NewOfferComponent},
   {path: 'addrequest', component: NewRequestComponent},
   {path: 'request', component: RequestComponent},
+  {path: 'offer', component: OfferComponent},
   {path: 'map', component: MapComponent},
 ];
 @NgModule({

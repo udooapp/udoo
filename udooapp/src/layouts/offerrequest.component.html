@@ -1,0 +1,50 @@
+<div class="input-container">
+  <h1>{{offer ? 'New offer' : 'New request'}}</h1>
+  <form #userForm="ngForm">
+    <div class="input-group">
+      <span class="input-text">Title</span><br>
+      <input type="text" placeholder="Title" [(ngModel)]="data.title" name="title" class="input-login">
+    </div>
+    <div class="input-group">
+      <span class="input-text">Category</span><br>
+      <select class="input-select" id="category" required  >
+        <option *ngFor="let cat of category" [value]="cat" (click)="data.category = cat">{{cat}}</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <span class="input-text">Description</span><br>
+      <textarea rows="6" cols="50" placeholder="Description" required name="description" [(ngModel)]="data.description"
+                class="input-login"></textarea>
+    </div>
+
+    <div class="input-group">
+      <span class="input-text">Photos</span><br>
+      <input type="file" accept="image/*" name="photo" value="Picture" [(ngModel)]="data.photo" class="input-picture">
+    </div>
+    <div class="input-group">
+      <span class="input-text">Location</span><br>
+      <input type="text" placeholder="Location" name="location" required [(ngModel)]="data.location"
+             class="input-login">
+    </div>
+    <div class="input-group">
+      <span class="input-text">{{offer ? 'Availability' : 'Job date'}}</span><br>
+      <input *ngIf="offer" type="text" name="expirydate" required [(ngModel)]="data.availability"
+             placeholder="Availability" class="input-login"><br>
+      <input *ngIf="!offer" type="date" name="expirydate" required  [(ngModel)]="data.jobdate" class="input-login"><br>
+      <input *ngIf="!offer" type="time" name="expirydate" class="input-login"><br>
+      <input *ngIf="!offer" type="number" placeholder="Period" name="availability" class="input-login">
+    </div>
+    <div class="input-group">
+      <span class="input-text">Expiry date</span><br>
+      <input type="date" name="expirydate" required [(ngModel)]="data.expirydate" class="input-login">
+    </div>
+    <div class="input-group">
+      <input type="button" value="Save" class="input-button" (click)="save()"/>
+    </div>
+
+  </form>
+  <div>
+    <span>{{message}}</span>
+    <span class="error-message">{{error}}</span>
+  </div>
+</div>

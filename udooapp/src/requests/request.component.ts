@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 
 @Component({
-  templateUrl: './request.component.html',
-  styleUrls: ['./request.component.css'],
+  templateUrl: '../layouts/lists.component.html',
+  styleUrls: ['../layouts/lists.component.css'],
 })
 export class RequestComponent {
   registration = true;

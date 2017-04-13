@@ -1,19 +1,25 @@
 import {Component} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
-import {User} from "../user/user";
+import {User} from "../entity/user";
+import {UserService} from "../entity/user.service";
+
 @Component({
-  templateUrl: '../inputform/input.component.html',
-  styleUrls: ['../inputform/input.component.css','./profile.component.css'],
+  templateUrl: '../layouts/input.component.html',
+  styleUrls: ['../layouts/input.component.css', './profile.component.css'],
+  providers: [UserService]
 })
 
 export class ProfileComponent {
   registration = false;
-  message = '';
+  message: String;
+  error: string;
   user = new User(null, '', '', '', '', '', true, '');
   passwordCheck = '';
   valid = false;
   public visible = [false, false];
+
+  constructor(private userService: UserService) {}
 
   onKey(event: any) { // without type info
     if (this.user.password.length > 5) {
@@ -35,6 +41,8 @@ export class ProfileComponent {
   }
 
   updateProfile() {
-    this.message = 'Profile updated!';
+    this.userService.updateUser(this.user).subscribe(
+      message => this.message = message,
+      error => this.error = <any>error);
   }
 }

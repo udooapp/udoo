@@ -1,19 +1,26 @@
 import {Component} from '@angular/core';
 
-import 'rxjs/add/operator/switchMap';
 
-import {User} from '../user/user';
+import {User} from '../entity/user';
+import {UserService} from "../entity/user.service";
 
 @Component({
   templateUrl: './password.component.html',
-  styleUrls: ['./password.component.css']
+  styleUrls: ['./password.component.css'],
+  providers: [UserService]
 })
 export class PasswordComponent {
-  message = '';
+  message: String;
   user = new User(null, '', '', '', '', '', false, '');
   error = '';
+  password = '';
 
+  constructor(private userService: UserService) {
+  }
 
-
-  save() {this.message = 'Password saved!'}
+  save() {
+    this.userService.changePassword(this.user.password, this.password, this.user.id).subscribe(
+      message => this.message = message,
+      error => this.error = <any>error);
+  }
 }

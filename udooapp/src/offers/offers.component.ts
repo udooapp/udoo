@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
 
 @Component({
-  templateUrl: '../inputform/offerrequest.component.html',
-  styleUrls: ['../inputform/offerrequest.component.css'],
+  templateUrl: '../layouts/lists.component.html',
+  styleUrls: ['../layouts/lists.component.css'],
 })
-export class NewRequestComponent {
+export class OfferComponent {
   registration = true;
   category = ['Select', 'Cleaning', 'Washing', 'Other'];
   message = '';
-  offer = false;
+  offer = true;
   passwordCheck = '';
   valid = false;
   public visible = [false, false];

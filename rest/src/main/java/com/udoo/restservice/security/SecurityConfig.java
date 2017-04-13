@@ -11,8 +11,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import javax.sql.DataSource;
 
-@Configuration
-@EnableWebMvcSecurity
+//@Configuration
+//@EnableWebMvcSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

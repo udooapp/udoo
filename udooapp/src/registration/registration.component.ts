@@ -1,20 +1,22 @@
 import {Component} from '@angular/core';
-import {User} from '../user/user';
-import {RegistrationService} from './registration.service';
+import {User} from '../entity/user';
+import {UserService} from "../entity/user.service";
 
 @Component({
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.css'],
-  providers: [RegistrationService]
+  templateUrl: '../layouts/input.component.html',
+  styleUrls: ['../layouts/input.component.css'],
+  providers: [UserService]
 })
 export class RegistrationComponent {
-  message = '';
+  message: String;
+  error: string;
+  registration = true;
   user = new User(null, '', '', '', '', '', false, '');
   passwordCheck = '';
   valid = false;
   public visible = [false, false];
 
-  constructor(public registrationService: RegistrationService) {
+  constructor(private userService: UserService) {
   }
 
   onKey(event: any) { // without type info
@@ -37,8 +39,11 @@ export class RegistrationComponent {
   }
 
   newUser() {
-    this.registrationService.postUser(this.user);
+    this.userService.registrateUser(this.user)
+      .subscribe(
+        message => this.message = message,
+        error => this.error = <any>error);
+
     this.valid = true;
-    this.message = 'Registration complete!';
   }
 }
