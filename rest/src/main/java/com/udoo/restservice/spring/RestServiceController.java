@@ -25,6 +25,7 @@ import java.util.List;
 /**
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class RestServiceController implements IRestServiceController {
 
     @Resource
@@ -50,11 +51,6 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> checkPermission() {
-        System.out.println("Option Check");
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @Override
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,12 +89,6 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> checkPermissionLogin() {
-        System.out.println("Option Check");
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getUserName(@PathVariable("id") final Integer id) {
@@ -111,33 +101,15 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/requests/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<Object> getAllUserRequest(@PathVariable("id") int uid) {
-        List<Request> requests = requestRepository.findByUid(uid);
-        List<JSONObject> response = new ArrayList<JSONObject>();
-        for (Request req : requests) {
-            try {
-                JSONObject entity = new JSONObject();
-                entity.put("uid", req.getUid());
-                entity.put("title", req.getTitle());
-                entity.put("rid", req.getRid());
-                entity.put("description", req.getDescription());
-                entity.put("location", req.getLocation());
-                entity.put("jobdate", req.getJobdate());
-                entity.put("expirydate", req.getExpirydate());
-                response.add(entity);
-            } catch (JSONException e) {
-                System.out.println(e.toString());
-            }
+    ResponseEntity<List<Request>> getAllUserRequest(@PathVariable("id") int uid) {
 
-        }
-        return new ResponseEntity<Object>(response, HttpStatus.OK);
+        return new ResponseEntity<>( requestRepository.findByUid(uid), HttpStatus.OK);
     }
 
-
     @Override
-    @RequestMapping(value = "/offers/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<Offer>> getAllUserOffer(@PathVariable("id") int id) {
         return new ResponseEntity<>(offerRepository.findByUid(id), HttpStatus.OK);
     }

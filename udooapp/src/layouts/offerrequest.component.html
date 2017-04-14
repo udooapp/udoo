@@ -7,7 +7,7 @@
     </div>
     <div class="input-group">
       <span class="input-text">Category</span><br>
-      <select class="input-select" id="category" required  >
+      <select class="input-select" id="category" required>
         <option *ngFor="let cat of category" [value]="cat" (click)="data.category = cat">{{cat}}</option>
       </select>
     </div>
@@ -23,14 +23,16 @@
     </div>
     <div class="input-group">
       <span class="input-text">Location</span><br>
-      <input type="text" placeholder="Location" name="location" required [(ngModel)]="data.location"
+      <input type="text" placeholder="Location" disabled name="location" required [(ngModel)]="data.location"
              class="input-login">
     </div>
+    <input type="button" value="Choose service location" class="input-button"  (click)="onSelect()"/>
+
     <div class="input-group">
       <span class="input-text">{{offer ? 'Availability' : 'Job date'}}</span><br>
       <input *ngIf="offer" type="text" name="expirydate" required [(ngModel)]="data.availability"
              placeholder="Availability" class="input-login"><br>
-      <input *ngIf="!offer" type="date" name="expirydate" required  [(ngModel)]="data.jobdate" class="input-login"><br>
+      <input *ngIf="!offer" type="date" name="expirydate" required [(ngModel)]="data.jobdate" class="input-login"><br>
       <input *ngIf="!offer" type="time" name="expirydate" class="input-login"><br>
       <input *ngIf="!offer" type="number" placeholder="Period" name="availability" class="input-login">
     </div>

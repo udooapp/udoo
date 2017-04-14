@@ -12,7 +12,7 @@ import {UserService} from "../entity/user.service";
 })
 export class LoginComponent {
   message: String;
-  user = new User(null, '', '', '', '', '', false, '');
+  user = new User(null, '', '', '', '', '', 0, '');
   error : string;
 
   constructor(private userService: UserService) {

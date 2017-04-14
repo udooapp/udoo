@@ -32,6 +32,7 @@ h1 {
   border-radius: 2px;
   display: -webkit-flex;
   display: flex;
+  margin: 1%;
   -webkit-flex-direction: row;
   flex-direction: row;
 }

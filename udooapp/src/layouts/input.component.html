@@ -4,9 +4,9 @@
     <div *ngIf="registration" class="input-group">
       <span class="input-text">Type</span><br>
       <div class="input-radio">
-        <input type="radio" name="radiogroup" [checked]="user.type" [value]="user.type" (change)="user.type = true">
+        <input type="radio" name="radiogroup" [value]="user.type === 1" (change)="user.type = 1">
         <span class="input-text">Person</span>
-        <input type="radio" name="radiogroup" [value]="!user.type" [checked]="!user.type" (change)="user.type = false">
+        <input type="radio" name="radiogroup" [value]="0 === user.type" (change)="user.type = 0">
         <span class="input-text">Organization</span>
       </div>
     </div>

@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {NewRequestComponent} from './newrequest.component';
+import {LocationComponent} from "../location/location.component";
 
 @NgModule({
   declarations: [

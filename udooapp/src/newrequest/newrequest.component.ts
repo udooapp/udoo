@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 
 import {Request} from '../entity/request'
 import {RequestService} from "../entity/request.service";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -13,13 +14,13 @@ export class NewRequestComponent {
   category = ['Select', 'Cleaning', 'Washing', 'Other'];
   message : String;
   offer = false;
-  passwordCheck = '';
+  load = false;
   valid = false;
   error = '';
   data = new Request(null, '', '', '', 1, '', '', '');
   public visible = [false, false];
 
-  constructor(private requestService: RequestService){}
+  constructor(private requestService: RequestService, private router: Router){}
 
   onKey(event: any) { // without type info
   }
@@ -30,5 +31,8 @@ export class NewRequestComponent {
       message => this.message = message,
       error => this.error = <any>error);
     this.message = 'Offer saved';
+  }
+  onSelect() {
+    this.router.navigate(['/location', false]);
   }
 }

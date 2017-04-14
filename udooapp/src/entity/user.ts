@@ -5,7 +5,7 @@ export class User {
               public phone: string,
               public picture: string,
               public password: string,
-              public type: boolean,
+              public type: number,
               public birthdate: string) {
   }
 
@@ -15,6 +15,8 @@ export class User {
       '"email" : "' + this.email + '",' +
       '"password" : "' + this.password + '",' +
       '"phone" : "' + this.phone + '",' +
+      '"type" : "' + this.type + '",' +
+      '"birthdate" : "' + this.birthdate + '",' +
       '"picture" : "' + this.picture + '"}';
   }
 }

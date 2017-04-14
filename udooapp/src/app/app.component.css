@@ -53,7 +53,6 @@
 .menu-profile-name {
   text-align: center;
   font-size: 20px;
-  padding: 5%;
 }
 
 .menu-profile-stars {
@@ -66,7 +65,7 @@
 
 .menu-profile-image {
   width: 80%;
-  margin-left: 5%;
+  margin-left: 7%;
 }
 
 .placeholder {

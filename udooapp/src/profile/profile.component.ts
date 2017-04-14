@@ -14,7 +14,7 @@ export class ProfileComponent {
   registration = false;
   message: String;
   error: string;
-  user = new User(null, '', '', '', '', '', true, '');
+  user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
   valid = false;
   public visible = [false, false];

@@ -1,6 +1,7 @@
 package com.udoo.dal.entities;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  */
@@ -25,6 +26,8 @@ public class User {
     private Integer type;
 
     private Integer stars;
+
+    private Date birthdate;
 
     public Integer getUid() {
         return uid;
@@ -90,10 +93,18 @@ public class User {
         this.stars = stars;
     }
 
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + uid +
+                "uid=" + uid +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -101,6 +112,7 @@ public class User {
                 ", picture='" + picture + '\'' +
                 ", type=" + type +
                 ", stars=" + stars +
+                ", birthdate=" + birthdate +
                 '}';
     }
 }

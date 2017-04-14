@@ -3,6 +3,7 @@ import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw'
 
 import {User} from './user';
 
@@ -13,9 +14,9 @@ export class UserService {
 
   constructor(private http: Http) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', '*');
+    this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
-    this.headers.append('Access-Control-Allow-Methods', 'POST');
+    this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
 
   loginUser(user: User): Observable<String> {

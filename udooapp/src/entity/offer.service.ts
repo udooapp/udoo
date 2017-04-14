@@ -13,9 +13,9 @@ export class OfferService {
 
   constructor(private http: Http) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', '*');
+    this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
-    this.headers.append('Access-Control-Allow-Methods', 'POST');
+    this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
   saveOffer(offer: Offer): Observable<String> {
@@ -26,13 +26,14 @@ export class OfferService {
   }
 
   getUserOffer(uid: number): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offers/' + uid, new RequestOptions({headers: this.headers}))
+    return this.http.get(this.userUrl + '/offer/' + uid, new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
   private extractData(res: Response) {
     const body = res.json();
+    console.log(res.toString() + '\n' + body.toString + '\n' + body.data.toArray +  '\n' + body.data.toString());
     return body.data || {};
   }
 

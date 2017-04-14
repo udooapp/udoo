@@ -1,23 +1,27 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {RequestService} from "../entity/request.service";
+import {Request} from "../entity/request";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
   styleUrls: ['../layouts/lists.component.css'],
+  providers: [RequestService]
 })
-export class RequestComponent {
-  registration = true;
-  category = ['Select', 'Cleaning', 'Washing', 'Other'];
-  message = '';
+export class RequestComponent implements OnInit{
+  data : Request[];
   offer = false;
-  passwordCheck = '';
-  valid = false;
-  public visible = [false, false];
+  error : String;
 
-  onKey(event: any) { // without type info
+  constructor(private requestService : RequestService ){}
+
+  ngOnInit(){
+    this.getReqests();
   }
 
-  newOffer() {
-    this.valid = true;
-    this.message = 'Offer saved';
+  getReqests(){
+    this.requestService.getUserRequest(1).subscribe(
+      data => this.data = data,
+      error =>  this.error = <any>error);
   }
+
 }

@@ -76,7 +76,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{" +
+        return "{" +
                 "rid=" + rid +
                 ", uid=" + uid +
                 ", title='" + title + '\'' +

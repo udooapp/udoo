@@ -10,6 +10,7 @@ import {NewOfferComponent} from "../newoffer/newoffer.component";
 import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
 import {OfferComponent} from "../offers/offers.component";
+import {LocationComponent} from "../location/location.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -20,9 +21,12 @@ const routes: Routes = [
   {path: 'password', component: PasswordComponent},
   {path: 'addoffer', component: NewOfferComponent},
   {path: 'addrequest', component: NewRequestComponent},
+  {path: 'addoffer/:pos', component: NewOfferComponent},
+  {path: 'addrequest/:pos', component: NewRequestComponent},
   {path: 'request', component: RequestComponent},
   {path: 'offer', component: OfferComponent},
   {path: 'map', component: MapComponent},
+  {path: 'location/:type', component: LocationComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

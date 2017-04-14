@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {Offer} from "../entity/offer";
 import {OfferService} from "../entity/offer.service";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -13,12 +14,12 @@ export class NewOfferComponent {
   message : String;
   error = '';
   offer = true;
-  passwordCheck = '';
+  load = false;
   valid = false;
   data = new Offer(null, '', '', '', 1, '', '', '');
   public visible = [false, false];
 
-  constructor(private offerService: OfferService) {
+  constructor(private offerService: OfferService, private router: Router,) {
   }
 
   onKey(event: any) { // without type info
@@ -32,5 +33,9 @@ export class NewOfferComponent {
     this.message = 'Offer saved';
     this.valid = true;
     this.message = 'Offer saved';
+  }
+
+  onSelect() {
+    this.router.navigate(['/location', true]);
   }
 }
