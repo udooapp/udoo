@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2017 at 10:50 AM
+-- Generation Time: Apr 18, 2017 at 10:56 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -33,8 +33,16 @@ CREATE TABLE `offer` (
   `description` text,
   `location` varchar(100) NOT NULL,
   `availability` varchar(100) NOT NULL,
-  `expirydate` date DEFAULT NULL
+  `expirydate` date DEFAULT NULL,
+  `category` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `offer`
+--
+
+INSERT INTO `offer` (`oid`, `uid`, `title`, `description`, `location`, `availability`, `expirydate`, `category`) VALUES
+(1, 1, 'Washing Centre', 'Wash everything...', 'Somewhere', '8:00-20:00', '2017-04-26', '');
 
 -- --------------------------------------------------------
 
@@ -73,8 +81,17 @@ CREATE TABLE `request` (
   `description` text,
   `location` varchar(100) NOT NULL,
   `jobdate` varchar(100) NOT NULL,
-  `expirydate` date DEFAULT NULL
+  `expirydate` date DEFAULT NULL,
+  `category` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `request`
+--
+
+INSERT INTO `request` (`rid`, `uid`, `title`, `description`, `location`, `jobdate`, `expirydate`, `category`) VALUES
+(1, 1, 'DishWash', 'asdsada sdas dksand lksandljsandljasdlsad', '2 35 45 - 56 65 78', '2017/09/23', '2017-10-25', ''),
+(2, 1, 'DishWash', 'asdsada sdas dksand lksandljsandljasdlsad', '2 35 45 - 56 65 78', '2017/09/23', '2017-10-25', '');
 
 -- --------------------------------------------------------
 
@@ -90,15 +107,16 @@ CREATE TABLE `users` (
   `phone` varchar(15) NOT NULL,
   `picture` varchar(400) DEFAULT NULL,
   `type` int(11) NOT NULL,
-  `stars` int(11) DEFAULT NULL
+  `stars` int(11) DEFAULT NULL,
+  `birthdate` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`uid`, `name`, `password`, `email`, `phone`, `picture`, `type`, `stars`) VALUES
-(1, 'Washing Inc.', 'password', 'washing@email.com', '0123456789', NULL, 1, 3);
+INSERT INTO `users` (`uid`, `name`, `password`, `email`, `phone`, `picture`, `type`, `stars`, `birthdate`) VALUES
+(2, 'Washing Inc', 'password', 'emil@washing.com', '0123456789', NULL, 1, 4, '2017-04-03');
 
 --
 -- Indexes for dumped tables
@@ -146,7 +164,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `offer`
 --
 ALTER TABLE `offer`
-  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `picturesoffer`
 --
@@ -161,12 +179,12 @@ ALTER TABLE `picturesrequest`
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

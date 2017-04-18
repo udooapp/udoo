@@ -13,8 +13,7 @@ export class RegistrationComponent {
   registration = true;
   user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
-  valid = false;
-  public visible = [false, false];
+  public visible = [false, false, false, false, false, false];
 
   constructor(private userService: UserService) {
   }
@@ -23,27 +22,27 @@ export class RegistrationComponent {
     if (this.user.password.length > 5) {
       if (this.user.password !== (<HTMLInputElement>event.target).value) {
         this.passwordCheck = 'Invalid password';
-        this.valid = false;
       } else {
         this.passwordCheck = '';
-        this.valid = true;
       }
     } else {
-      this.valid = false;
     }
     this.visible[1] = (<HTMLInputElement>event.target).value.length === 0;
   }
 
-  focusName(): void {
-    this.visible[0] = this.user.name.length === 0;
-  }
-
-  newUser() {
-    this.userService.registrateUser(this.user)
-      .subscribe(
-        message => this.message = message,
-        error => this.error = <any>error);
-
-    this.valid = true;
+  insertUser() {
+    this.visible[0] = this.user.name.length == 0;
+    this.visible[1] = this.user.email.length == 0;
+    this.visible[2] = this.user.phone.length == 0;
+    this.visible[3] = this.user.type === 1 && this.user.birthdate.length == 0;
+    this.visible[4] = this.registration && this.user.password.length == 0;
+   // this.visible[5] = document.getElementById("password-verification").nodeValue.length == 0;
+    if(!this.visible[0] && !this.visible[1] && !this.visible[2] && !this.visible[3] && !this.visible[4] && !this.visible[5]) {
+      this.userService.registrateUser(this.user)
+        .subscribe(
+          message => this.message = message,
+          error => this.error = <any>error);
+      console.log("Registratin complete!");
+    }
   }
 }

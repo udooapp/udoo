@@ -20,40 +20,64 @@ export class UserService {
   }
 
   loginUser(user: User): Observable<String> {
-
     return this.http.post(this.userUrl + '/login', user.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(this.extractText)
+      .catch(this.handleText);
   }
 
   updateUser(user: User): Observable<String> {
+    return this.http.post(this.userUrl + '/update',
+      '{"uid" : "' + user.uid + '",' +
+      '"name" : "' + user.name + '",' +
+      '"email" : "' + user.email + '",' +
+      '"password" : "' + user.password + '",' +
+      '"phone" : "' + user.phone + '",' +
+      '"type" : "' + user.type + '",' +
+      '"birthdate" : "' + user.birthdate + '",' +
+      '"picture" : "' + user.picture + '"}'
+      , new RequestOptions({headers: this.headers}))
+      .map(this.extractText)
+      .catch(this.handleText);
+  }
 
-    return this.http.post(this.userUrl + '/update', user.toString(), new RequestOptions({headers: this.headers}))
+
+  getUser(id: number): Observable<User> {
+    return this.http.get(this.userUrl + '/user/' + id)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
   registrateUser(user: User): Observable<String> {
-
     return this.http.post(this.userUrl + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(this.extractText)
+      .catch(this.handleText);
   }
 
-  changePassword(cpass : string, npass : string, id : number): Observable<String> {
+  changePassword(cpass: string, npass: string, id: number): Observable<String> {
     return this.http.post(this.userUrl + '/password?cpass=' + cpass + '&npass=' + npass + "&id=" + id, new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(this.extractText)
+      .catch(this.handleText);
+  }
+
+  private extractText(res: Response) {
+    //const body = res.json();
+    return res.text();
+  }
+
+  private handleText(error: Response | any) {
+    // In a real world app, you might use a remote logging infrastructure
+    return Observable.throw(error.message ? error.message : error.toString());
   }
 
   private extractData(res: Response) {
-    const body = res.json();
-    return body.data || {};
+    //const body = res.json();
+    return JSON.parse(res.text()) || {};
   }
 
   private handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
+    console.log('error');
     if (error instanceof Response) {
       const body = error.json() || '';
       const err = body.error || JSON.stringify(body);
@@ -61,6 +85,7 @@ export class UserService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
+    console.log('Error: ' + errMsg);
     return Observable.throw(errMsg);
   }
 }

@@ -14,10 +14,10 @@ export class OfferComponent implements OnInit{
   constructor(private requestService : OfferService ){}
 
   ngOnInit(){
-    this.getReqests();
+    this.getRequests();
   }
 
-  getReqests(){
+  getRequests(){
     this.requestService.getUserOffer(1).subscribe(
       data => this.data = data,
       error =>  this.error = <any>error);

@@ -7,7 +7,7 @@ export class Offer {
               public uid: number,
               public location: string,
               public availability: string,
-              public expridate: string) {
+              public expridate: number) {
   }
 
   toString(): string {

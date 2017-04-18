@@ -16,11 +16,21 @@ public class Offer {
 
     private String description;
 
+    private String category;
+
     private String location;
 
     private String availability;
 
     private Date expirydate;
+
+    public Integer getOid() {
+        return oid;
+    }
+
+    public void setOid(Integer oid) {
+        this.oid = oid;
+    }
 
     public Integer getUid() {
         return uid;
@@ -68,6 +78,14 @@ public class Offer {
 
     public void setExpirydate(Date expirydate) {
         this.expirydate = expirydate;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

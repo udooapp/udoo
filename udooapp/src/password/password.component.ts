@@ -11,15 +11,16 @@ import {UserService} from "../entity/user.service";
 })
 export class PasswordComponent {
   message: String;
-  user = new User(null, '', '', '', '', '', 0, '');
+  userId = 2;
   error = '';
   password = '';
+  currentpassword='';
 
   constructor(private userService: UserService) {
   }
 
   save() {
-    this.userService.changePassword(this.user.password, this.password, this.user.id).subscribe(
+    this.userService.changePassword(this.currentpassword, this.password, this.userId).subscribe(
       message => this.message = message,
       error => this.error = <any>error);
   }

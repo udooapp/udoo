@@ -7,8 +7,8 @@
     </div>
     <div class="input-group">
       <span class="input-text">Category</span><br>
-      <select class="input-select" id="category" required>
-        <option *ngFor="let cat of category" [value]="cat" (click)="data.category = cat">{{cat}}</option>
+      <select class="input-select" id="category" (change)="onChangeSelect($event)" required>
+        <option *ngFor="let cat of category" [value]="cat" >{{cat}}</option>
       </select>
     </div>
     <div class="input-group">

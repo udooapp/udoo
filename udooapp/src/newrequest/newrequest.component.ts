@@ -31,7 +31,13 @@ export class NewRequestComponent {
       message => this.message = message,
       error => this.error = <any>error);
     this.message = 'Offer saved';
+    this.error='';
   }
+
+  onChangeSelect (event){
+    this.data.category = event.target.value;
+  }
+
   onSelect() {
     this.router.navigate(['/location', false]);
   }

@@ -18,7 +18,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("com.udoo.dal.repositories")
-//@Import({SecurityConfig.class})
+@Import({SecurityConfig.class})
 public class PersistenceConfig {
 
     private static final String PROPERTY_HIBERNATE_DIALECT = "hibernate.dialect";

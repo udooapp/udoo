@@ -11,8 +11,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import javax.sql.DataSource;
 
-//@Configuration
-//@EnableWebMvcSecurity
+@Configuration
+@EnableWebMvcSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -27,16 +27,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
-            .and()
-            .formLogin().loginPage("/login").failureUrl("/login?error")
-            .usernameParameter("username").passwordParameter("password")
-            .and()
-            .logout().logoutSuccessUrl("/logout")
-            .and()
-            .exceptionHandling().accessDeniedPage("/403")
-            .and()
-            .csrf();
+            .authorizeRequests().anyRequest().permitAll().and().csrf().disable();
+//            .and()
+//            .formLogin().loginPage("/login").failureUrl("/login?error")
+//            .usernameParameter("username").passwordParameter("password")
+//            .and()
+//            .logout().logoutSuccessUrl("/logout")
+//            .and()
+//            .exceptionHandling().accessDeniedPage("/403")
+//            .and()
+//            .csrf();
     }
 
     @Bean

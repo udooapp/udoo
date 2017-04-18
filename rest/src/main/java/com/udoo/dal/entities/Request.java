@@ -22,6 +22,8 @@ public class Request {
 
     private Date expirydate;
 
+    private String category;
+
     public Integer getUid() {
         return uid;
     }
@@ -74,6 +76,14 @@ public class Request {
         return rid;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -83,6 +93,7 @@ public class Request {
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
                 ", jobdate='" + jobdate + '\'' +
+                ", category='" + category + '\'' +
                 ", expirydate=" + expirydate +
                 '}';
     }

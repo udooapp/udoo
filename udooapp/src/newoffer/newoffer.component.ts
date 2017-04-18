@@ -16,7 +16,7 @@ export class NewOfferComponent {
   offer = true;
   load = false;
   valid = false;
-  data = new Offer(null, '', '', '', 1, '', '', '');
+  data = new Offer(null, '', '', '', 1, '', '', 0);
   public visible = [false, false];
 
   constructor(private offerService: OfferService, private router: Router,) {
@@ -30,11 +30,13 @@ export class NewOfferComponent {
     this.offerService.saveOffer(this.data).subscribe(
       message => this.message = message,
       error => this.error = <any>error);
-    this.message = 'Offer saved';
     this.valid = true;
+    this.error = '';
     this.message = 'Offer saved';
   }
-
+  onChangeSelect(event){
+    this.data.category = event.target.value;
+  }
   onSelect() {
     this.router.navigate(['/location', true]);
   }

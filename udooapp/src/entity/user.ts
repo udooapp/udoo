@@ -1,5 +1,5 @@
 export class User {
-  constructor(public id: number,
+  constructor(public uid: number,
               public name: string,
               public email: string,
               public phone: string,
@@ -8,9 +8,19 @@ export class User {
               public type: number,
               public birthdate: string) {
   }
+  refresh(user: User){
+    this.uid = user.uid;
+    this.name = user.name;
+    this.email = user.email;
+    this.phone = user.phone;
+    this.picture = user.picture;
+    this.password = user.password;
+    this.type = user.type;
+    this.birthdate = user.birthdate;
+  }
 
   toString() {
-    return '{"id" : "' + this.id + '",' +
+    return '{"uid" : "' + this.uid + '",' +
       '"name" : "' + this.name + '",' +
       '"email" : "' + this.email + '",' +
       '"password" : "' + this.password + '",' +

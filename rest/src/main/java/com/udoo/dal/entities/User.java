@@ -27,7 +27,7 @@ public class User {
 
     private Integer stars;
 
-    private Date birthdate;
+    private String birthdate;
 
     public Integer getUid() {
         return uid;
@@ -93,17 +93,17 @@ public class User {
         this.stars = stars;
     }
 
-    public Date getBirthdate() {
+    public String getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "{" +
                 "uid=" + uid +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
