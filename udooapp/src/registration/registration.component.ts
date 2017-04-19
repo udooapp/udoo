@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
-import {UserService} from "../entity/user.service";
+import {UserService} from "../services/user.service";
 
 @Component({
   templateUrl: '../layouts/input.component.html',
@@ -42,7 +42,6 @@ export class RegistrationComponent {
         .subscribe(
           message => this.message = message,
           error => this.error = <any>error);
-      console.log("Registratin complete!");
     }
   }
 }

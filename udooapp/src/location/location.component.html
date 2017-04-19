@@ -1,7 +1,8 @@
-<div class="location-dialog" *ngIf="visible">
+<div class="location-dialog">
   <h1>Choose your service location</h1>
   <span class="input-text">Click a point on the map to choose your service location</span>
-  <input type="button" value="Save" class="input-button"  (click)="goBack()">
+  <label class="error-message">{{error}}</label>
+  <input type="button" value="Save" class="input-button"  (click)="saveLocation()">
   <div id="location"></div>
 </div>
 

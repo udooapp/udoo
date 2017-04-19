@@ -8,6 +8,8 @@ import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRestServiceController;
+import com.udoo.restservice.storage.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +35,11 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IRequestRepository requestRepository;
+
+
+   // @Autowired
+   // private StorageService storageService;
+
 
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -164,6 +171,18 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
+    @Override
+    @RequestMapping(value = "/offers", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOffers(){
+        return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
+    }
+
+    @Override
+    @RequestMapping(value = "/requests", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllRequests(){
+        return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
+    }
+
     @Bean
     public InternalResourceViewResolver internalResourceViewResolver() {
 
@@ -174,4 +193,20 @@ public class RestServiceController implements IRestServiceController {
 
         return result;
     }
+
+//    @RequestMapping(value = "/files/{picture:.+", method = RequestMethod.GET)
+//    public ResponseEntity<org.springframework.core.io.Resource> getPicture(@PathVariable String filename){
+//        org.springframework.core.io.Resource file = storageService.loadAsResouce(filename);
+//        return new ResponseEntity<>(file, HttpStatus.OK);
+//    }
+
+//    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+//    public String savePicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
+//        storageService.store(file);
+//        redirectAttributes.addFlashAttribute("message",
+//                "You successfully uploaded " + file.getOriginalFilename() + "!");
+//
+//        return "redirect:/login";
+//    }
+
 }

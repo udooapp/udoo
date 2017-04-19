@@ -3,7 +3,9 @@
   padding-top: 5%;
   padding-bottom: 10%;
 }
-
+body{
+  overflow: hidden;
+}
 .input-login {
   padding: 1%;
   margin: 2%;

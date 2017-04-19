@@ -21,12 +21,9 @@ const routes: Routes = [
   {path: 'password', component: PasswordComponent},
   {path: 'addoffer', component: NewOfferComponent},
   {path: 'addrequest', component: NewRequestComponent},
-  {path: 'addoffer/:pos', component: NewOfferComponent},
-  {path: 'addrequest/:pos', component: NewRequestComponent},
   {path: 'request', component: RequestComponent},
   {path: 'offer', component: OfferComponent},
   {path: 'map', component: MapComponent},
-  {path: 'location/:type', component: LocationComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

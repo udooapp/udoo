@@ -4,10 +4,13 @@ import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/Rx';
 
-import { Request } from './request'
+import {Offer} from "../entity/offer";
+
 @Injectable()
-export class RequestService {
+export class OfferService {
   private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
@@ -18,27 +21,26 @@ export class RequestService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  saveRequest(request: Request): Observable<String> {
-
-    return this.http.post(this.userUrl + '/saverequest', request.toString(), new RequestOptions({headers: this.headers}))
+  saveOffer(offer: Offer): Observable<String> {
+    return this.http.post(this.userUrl + '/saveoffer', offer.toString(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  getUserRequest(uid : number): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/request/' + uid, new RequestOptions({headers: this.headers}))
+  getUserOffer(uid: number): Observable<Offer[]> {
+    return this.http.get(this.userUrl + '/offer/' + uid)
       .map(this.extractData)
       .catch(this.handleError);
   }
+
 
   private extractData(res: Response) {
-    const body = res.json();
-    console.log(res.toString() + '\n' + body.toString + '\n' + body.data.toArray +  '\n' + body.data.toString());
-    return body.data || {};
+    return res.json() || {};
   }
 
   private handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
+
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 
 declare var google: any;
 
@@ -10,31 +10,35 @@ declare var google: any;
 })
 export class LocationComponent implements OnInit {
   position = {lat: 0, lng: 0};
+  error: string;
   private scriptLoadingPromise: Promise<void>;
-  visible = true;
-  offer : boolean;
-  constructor(  private route: ActivatedRoute,
-                private router: Router) {
+  @Output() onSaved = new EventEmitter<Object>();
+
+  constructor(private route: ActivatedRoute) {
   }
 
   ngOnInit() {
 
     this.load().then(() => {
-
+      const loc = this;
       const map = new google.maps.Map(document.getElementById('location'), {
         center: {lat: 48.211029, lng: 16.373990},
         zoom: 14
       });
       map.addListener('click', function (e) {
         marker.setPosition(e.latLng);
+        loc.savePosition({lat: marker.getPosition().lat(), lng: marker.getPosition().lng()});
       });
       let marker = new google.maps.Marker({
         title: 'Service location',
-        map: map
+        map: map,
       });
       this.position = marker.getPosition();
     });
-    this.offer = this.route.snapshot.params['type'];
+  }
+
+  savePosition(pos) {
+    this.position = pos;
   }
 
   load(): Promise<void> {
@@ -64,8 +68,13 @@ export class LocationComponent implements OnInit {
 
     return this.scriptLoadingPromise;
   }
-  goBack(){
-    let route = this.offer ? '/addoffer' : '/addrequest';
-    this.router.navigate([route]);
+
+  saveLocation() {
+    if (this.position != null) {
+      this.onSaved.emit(this.position);
+    } else {
+      this.error = 'Select your service location!'
+    }
   }
+
 }

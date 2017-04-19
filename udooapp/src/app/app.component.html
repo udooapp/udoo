@@ -12,14 +12,15 @@
       <div class="menu-profile-name">Firstname Lastname</div>
       <div class="menu-profile-stars"></div>
     </div>
-    <a routerLink="/login" routerLinkActive="active" class="menu-link">Login</a>
-    <a routerLink="/request" routerLinkActive="active"  class="menu-link">My service request</a>
-    <a routerLink="/offer" routerLinkActive="active" class="menu-link">My service offer</a>
-    <a class="menu-link">Contacts</a>
-    <div class="placeholder"></div>
-    <a class="menu-link">Settings</a>
-    <a routerLink="/profile" routerLinkActive="active" class="menu-link">Profile</a>
-    <a class="menu-link">Log out</a>
+    <a routerLink="/login" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">Login</a>
+    <a routerLink="/request" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service request</a>
+    <a routerLink="/offer" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service offer</a>
+    <a class="menu-link" (click)="visibleMenu = !visibleMenu">Contacts</a>
+    <div class="menu-placeholder"></div>
+    <a class="menu-link" (click)="visibleMenu = !visibleMenu">Settings</a>
+    <a routerLink="/profile" routerLinkActive="active" class="menu-link"
+       (click)="visibleMenu = !visibleMenu">Profile</a>
+    <a class="menu-link" (click)="visibleMenu = !visibleMenu">Log out</a>
   </div>
 
   <div class="map-container">

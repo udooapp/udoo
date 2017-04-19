@@ -3,7 +3,7 @@ import {Component} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 
 import {User} from '../entity/user';
-import {UserService} from "../entity/user.service";
+import {UserService} from "../services/user.service";
 
 @Component({
   templateUrl: './login.component.html',

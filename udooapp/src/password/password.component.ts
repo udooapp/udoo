@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 
 import {User} from '../entity/user';
-import {UserService} from "../entity/user.service";
+import {UserService} from "../services/user.service";
 
 @Component({
   templateUrl: './password.component.html',

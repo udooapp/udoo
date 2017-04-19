@@ -23,17 +23,21 @@
 }
 
 .content {
+  overflow: hidden;
   height: calc(100% - 60px);
 }
-
+.map-container{
+  overflow: auto;
+}
 .menu-container {
+  overflow: auto;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
   width: 300px;
   float: left;
-  height: 100%;
+  height: calc(100% - 60px);
   background-color: #FFFFFF;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
   position: absolute;
@@ -41,13 +45,13 @@
 }
 
 .menu-profile {
-  display: -webkit-flex;
-  display: flex;
+  display: block;
   -webkit-flex-direction: column;
   flex-direction: column;
   border-bottom: 3px solid #AFAFAF;
   padding-top: 2%;
   padding-bottom: 2%;
+  height: 300px;
 }
 
 .menu-profile-name {
@@ -68,8 +72,8 @@
   margin-left: 7%;
 }
 
-.placeholder {
-  height: 6%;
+.menu-placeholder {
+  height: 40px;
   border-top: 3px solid #AFAFAF;
   border-bottom: 3px solid #AFAFAF;
 }

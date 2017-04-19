@@ -5,7 +5,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw'
 
-import {User} from './user';
+import {User} from '../entity/user';
 
 @Injectable()
 export class UserService {
@@ -60,7 +60,6 @@ export class UserService {
   }
 
   private extractText(res: Response) {
-    //const body = res.json();
     return res.text();
   }
 
@@ -77,7 +76,6 @@ export class UserService {
   private handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
-    console.log('error');
     if (error instanceof Response) {
       const body = error.json() || '';
       const err = body.error || JSON.stringify(body);
@@ -85,7 +83,6 @@ export class UserService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.log('Error: ' + errMsg);
     return Observable.throw(errMsg);
   }
 }

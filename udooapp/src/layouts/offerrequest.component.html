@@ -1,3 +1,4 @@
+<location *ngIf="load" (onSaved)="saveLocation($event)"></location>
 <div class="input-container">
   <h1>{{offer ? 'New offer' : 'New request'}}</h1>
   <form #userForm="ngForm">
@@ -23,7 +24,7 @@
     </div>
     <div class="input-group">
       <span class="input-text">Location</span><br>
-      <input type="text" placeholder="Location" disabled name="location" required [(ngModel)]="data.location"
+      <input type="text" placeholder="Location" disabled name="location" [value]="data.location" required [(ngModel)]="data.location"
              class="input-login">
     </div>
     <input type="button" value="Choose service location" class="input-button"  (click)="onSelect()"/>

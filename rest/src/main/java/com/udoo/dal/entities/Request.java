@@ -24,6 +24,8 @@ public class Request {
 
     private String category;
 
+    private String picture;
+
     public Integer getUid() {
         return uid;
     }
@@ -84,17 +86,26 @@ public class Request {
         this.category = category;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
     @Override
     public String toString() {
-        return "{" +
+        return "Request{" +
                 "rid=" + rid +
                 ", uid=" + uid +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
                 ", jobdate='" + jobdate + '\'' +
-                ", category='" + category + '\'' +
                 ", expirydate=" + expirydate +
+                ", category='" + category + '\'' +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 }

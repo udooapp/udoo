@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Offer} from "../entity/offer";
-import {OfferService} from "../entity/offer.service";
+import {OfferService} from "../services/offer.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -38,6 +38,10 @@ export class NewOfferComponent {
     this.data.category = event.target.value;
   }
   onSelect() {
-    this.router.navigate(['/location', true]);
+    this.load = !this.load;
+  }
+  saveLocation(location : Object){
+    this.data.location = JSON.stringify(location);
+    this.onSelect();
   }
 }

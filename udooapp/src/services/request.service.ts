@@ -4,13 +4,10 @@ import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
-import 'rxjs/Rx';
 
-import {Offer} from "./offer";
-
+import { Request } from '../entity/request'
 @Injectable()
-export class OfferService {
+export class RequestService {
   private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
@@ -21,32 +18,25 @@ export class OfferService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  saveOffer(offer: Offer): Observable<String> {
-
-    return this.http.post(this.userUrl + '/saveoffer', offer.toString(), new RequestOptions({headers: this.headers}))
+  saveRequest(request: Request): Observable<String> {
+    return this.http.post(this.userUrl + '/saverequest', request.toString(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  getUserOffer(uid: number): Observable<Offer[]> {
-    console.log('User offer');
-    return this.http.get(this.userUrl + '/offer/' + uid)
+  getUserRequest(uid : number): Observable<Request[]> {
+    return this.http.get(this.userUrl + '/request/' + uid, new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
-
 
   private extractData(res: Response) {
     const body = res.json();
-    console.log(res.toString() + '\n' + body.toString + '\n' + body.data.toArray + '\n' + body.data.toString());
-
-    console.log('Good');
-    return body.data || {};
+    return body || {};
   }
 
   private handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
-
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
@@ -55,7 +45,6 @@ export class OfferService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.log('Error');
     return Observable.throw(errMsg);
   }
 }

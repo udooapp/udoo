@@ -3,7 +3,7 @@ import {Component, OnInit} from "@angular/core";
 import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
-import {UserService} from "../entity/user.service";
+import {UserService} from "../services/user.service";
 
 
 @Component({
@@ -40,7 +40,6 @@ export class ProfileComponent implements  OnInit {
       this.userService.updateUser(this.user).subscribe(
         message => this.message = message,
         error => this.error = <any>error);
-      console.log("Update complete!");
     }
   }
 
