@@ -1,41 +1,109 @@
-.input-container {
-  padding-left: 40%;
-  padding-top: 5%;
-  padding-bottom: 10%;
-}
 body{
+  font-family: Arial, Helvetica, sans-serif;
+}
+.input-container {
+  padding: 5%;
+}
+
+@media (min-width: 961px) {
+  .input-container {
+    padding-left: 40%;
+    padding-right: 40%;
+  }
+}
+
+@media (max-width: 960px) {
+  .input-container {
+    padding: 5%;
+  }
+}
+
+.input-container h1 {
+  color: #378281;
+  text-align: center;
+  font-weight: 100;
+  font-size: 20pt;
+}
+
+body {
   overflow: hidden;
 }
-.input-login {
-  padding: 1%;
-  margin: 2%;
-  width: 28%;
-  border-radius: 3px;
-  border: 1px solid grey;
+
+::-webkit-input-placeholder { /* Chrome */
+  color: #378281;
+}
+
+:-ms-input-placeholder { /* IE 10+ */
+  color: #378281;
+}
+
+::-moz-placeholder { /* Firefox 19+ */
+  color: #378281;
+  opacity: 1;
+}
+
+:-moz-placeholder { /* Firefox 4 - 18 */
+  color: #378281;
+  opacity: 1;
 }
 
 .input-text {
-  margin-left: 2%;
+  padding: 1%;
+  margin-top: 2%;
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  border: 0;
+  background-color: #f6f6f6;
+  border-bottom: 3px solid #378281;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.input-group{
+  margin-bottom: 2%;
+}
+.input-label {
+  font-size: 8pt;
   color: dimgrey;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .input-error {
   color: red;
   margin-left: 1%;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
+.button-light {
+  border: 1px solid #378281;
+  background-color: #d0dfdf;
+  color: #378281;
+}
+.button-dark{
+  border: 0;
+  color: white;
+  background-color: #378281;
+}
 .input-button {
   padding: 1%;
-  width: 30%;
-  margin: 2%;
-  border-radius: 3px;
-  border: 1px solid dimgrey;
+  width: 100%;
+  height: 35px;
+  margin-top: 4%;
+  border-radius: 5px;
+}
+
+.input-link {
+  text-align: center;
+  color: #378281;
+  text-decoration: none;
+  font-size: 10pt;
+  padding: 2%;
+}
+
+.input-link:hover {
+  opacity: 0.7;
 }
 
 .input-button:hover {
-  background-color: #bababa;
+  opacity: 0.8;
 }
 
 .input-picture {
@@ -51,23 +119,7 @@ body{
   padding: 2%;
 }
 
-.input-container h1 {
-  text-align: center;
-  display: flex;
-  color: dimgrey;
-  margin-left: 4%;
-  font-family: Arial, Helvetica, sans-serif;
-}
-.error-message{
+.error-message {
   color: red;
 }
 
-a {
-  text-decoration: none;
-  color: dimgrey;
-  padding: 1%;
-}
-
-a:hover {
-  color: darkslategrey;
-}

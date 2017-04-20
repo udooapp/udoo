@@ -1,24 +1,19 @@
 <div class="input-container">
+  <h1>Sign in</h1>
   <form #userForm="ngForm">
-    <div>
-      <input type="text" id="email" class="input-login" required
-             [(ngModel)]="user.email" name="email" placeholder="Email"/>
-    </div>
-    <div>
-      <input type="password" id="password" class="input-login"
-             required [(ngModel)]="user.password" name="password" placeholder="Password"/>
-    </div>
-
-    <div>
-      <input type="submit" value="OK" class="input-button" (click)="login()"/>
-    </div>
+    <input type="text" id="email" class="input-text" required
+           [(ngModel)]="user.email" name="email" placeholder="Email"/>
+    <input type="password" id="password" class="input-text"
+           required [(ngModel)]="user.password" name="password" placeholder="Password"/>
+    <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
   </form>
-  <div>
-    <span class="error-message" >{{error}}</span>
-    <span>{{message}}</span>
+  <p class="input-link">Forgot password?</p>
+  <div class="social-container">
+    <input type="submit" value="Login with Facebook" class="social-button button-facebook"/>
+    <input type="submit" value="Login with Google" class="social-button button-google"/>
   </div>
 </div>
-<div class="link-container">
-  <a>Forgott your password?</a>
-  <a routerLink="/registration" routerLinkActive="active">Create a new account</a>
+<div class="input-container registration-container">
+  <p class="input-title">New to udoo?</p>
+  <button class="input-button button-light" routerLink="/registration" routerLinkActive="active">Create a new account</button>
 </div>

@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   templateUrl: '../layouts/input.component.html',
@@ -14,9 +15,17 @@ export class RegistrationComponent {
   user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
   public visible = [false, false, false, false, false, false];
+  pictureForm: FormGroup;
 
   constructor(private userService: UserService) {
   }
+
+  onSubmit() {
+    const formModel = this.pictureForm.value;
+    const pictureSource: String = formModel.source;
+    console.log("SRC: " + pictureSource);
+  }
+
 
   onKey(event: any) { // without type info
     if (this.user.password.length > 5) {

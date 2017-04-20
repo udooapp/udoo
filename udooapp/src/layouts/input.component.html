@@ -2,62 +2,68 @@
   <h1>{{registration ? 'Registration form' : 'Profile'}}</h1>
   <form #userForm="ngForm">
     <div *ngIf="registration" class="input-group">
-      <span class="input-text">Type</span><br>
+      <span class="input-label">Type</span><br>
       <div class="input-radio">
         <input type="radio" name="radiogroup" [value]="user.type === 1" (change)="user.type = 1">
-        <span class="input-text">Person</span>
+        <span class="input-label">Person</span>
         <input type="radio" name="radiogroup" [value]="0 === user.type" (change)="user.type = 0">
-        <span class="input-text">Organization</span>
+        <span class="input-label">Organization</span>
       </div>
     </div>
     <div class="input-group">
-      <span class="input-text" *ngIf="!user.type">Organization</span>
-      <span class="input-text" *ngIf="user.type">Username</span>
+      <span class="input-label" *ngIf="!user.type">Organization</span>
+      <span class="input-label" *ngIf="user.type">Username</span>
       <span class="input-error" *ngIf="visible[0]">Most be complete!</span><br>
-      <input type="text" id="name" class="input-login"
-             required   [(ngModel)]="user.name" [value]="user.name" name="name" placeholder="Input value"/>
+      <input type="text" id="name" class="input-text"
+             required [(ngModel)]="user.name" [value]="user.name" name="name" placeholder="Input value"/>
 
     </div>
     <div class="input-group">
-      <span class="input-text">Email</span><span class="input-error"
-                                                 *ngIf="visible[1]">Most be complete!</span><br>
-      <input type="email" id="email" class="input-login"
-            required [(ngModel)]="user.email" [value]="user.email" name="email" placeholder="Input value"/>
+      <span class="input-label">Email</span><span class="input-error"
+                                                  *ngIf="visible[1]">Most be complete!</span><br>
+      <input type="email" id="email" class="input-text"
+             required [(ngModel)]="user.email" [value]="user.email" name="email" placeholder="Input value"/>
     </div>
     <div>
-      <span class="input-text">Phone number</span><span class="input-error" *ngIf="visible[2]">Most be complete!</span><br>
-      <input type="text" id="phone" class="input-login" [value]="user.phone" required [(ngModel)]="user.phone" name="phone"
+      <span class="input-label">Phone number</span><span class="input-error"
+                                                         *ngIf="visible[2]">Most be complete!</span><br>
+      <input type="text" id="phone" class="input-text" [value]="user.phone" required [(ngModel)]="user.phone"
+             name="phone"
              placeholder="Input value"/>
     </div>
     <div *ngIf="user.type">
-      <span class="input-text">Birth date</span> <span class="input-error" *ngIf="visible[3]">Most be complete!</span><br>
-      <input type="date" id="date" class="input-login input-date" required [value]="user.birthdate" [(ngModel)]="user.birthdate" name="birthdate"
+      <span class="input-label">Birth date</span> <span class="input-error"
+                                                        *ngIf="visible[3]">Most be complete!</span><br>
+      <input type="date" id="date" class="input-text input-date" required [value]="user.birthdate"
+             [(ngModel)]="user.birthdate" name="birthdate"
              placeholder="Input value"/>
     </div>
     <div class="input-group" *ngIf="registration">
-      <span class="input-text">Password</span><span class="input-error" *ngIf="visible[4]">Most be complete!</span><br>
-      <input type="password" id="password" class="input-login"
+      <span class="input-label">Password</span><span class="input-error" *ngIf="visible[4]">Most be complete!</span><br>
+      <input type="password" id="password" class="input-text"
              required [(ngModel)]="user.password" name="password" placeholder="Input value"/>
     </div>
     <div class="input-group" *ngIf="registration">
-      <span class="input-text">Password verification</span> <span class="input-error" *ngIf="visible[5]">Most be complete!</span><br>
-      <input type="password" id="password-ver" id="password-verification" class="input-login" (keyup)="onKey($event)"
+      <span class="input-label">Password verification</span> <span class="input-error" *ngIf="visible[5]">Most be complete!</span><br>
+      <input type="password" id="password-ver" id="password-verification" class="input-text" (keyup)="onKey($event)"
              placeholder="Input value"/>
       <span>{{passwordCheck}}</span>
     </div>
-    <div class="input-group">
-      <span class="input-text">Profile picture</span><br>
+    <div class="input-group input-upload">
+      <span class="input-label">Profile picture</span><br>
       <input class="input-picture" type="file" accept="image/*" id="picture"
-             [(ngModel)]="user.picture" name="picture"/>
+             [(ngModel)]="user.picture"  name="picture"/>
+      <input type="submit" value="Upload Picture" class="input-button button-dark input-upload-picture" (click)="onSubmit()"/>
+
     </div>
     <div class="input-group">
-      <input type="reset" value="Cancel" class="input-button" routerLink="/map" routerLinkActive="active"
+      <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"
              *ngIf="registration"/>
-      <input type="submit" value="Save" class="input-button" (click)="insertUser()"/>
+      <input type="submit" value="Save" class="input-button button-dark" (click)="insertUser()"/>
     </div>
 
     <div class="input-group" *ngIf="!registration">
-      <input type="reset" value="Change password" class="input-button" routerLink="/password"
+      <input type="reset" value="Change password" class="input-button button-dark" routerLink="/password"
              routerLinkActive="active"/>
     </div>
 

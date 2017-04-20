@@ -20,11 +20,13 @@ export class NewRequestComponent {
   data = new Request(null, '', '', '', 1, '', '', '', '');
   public visible = [false, false];
 
+
   constructor(private requestService: RequestService, private router: Router) {
   }
 
   onKey(event: any) { // without type info
   }
+
 
   save() {
     this.valid = true;

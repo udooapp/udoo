@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 export class NewOfferComponent {
   registration = true;
   category = ['Select', 'Cleaning', 'Washing', 'Other'];
-  message : String;
+  message: String;
   error = '';
   offer = true;
   load = false;
@@ -25,6 +25,7 @@ export class NewOfferComponent {
   onKey(event: any) { // without type info
   }
 
+
   save() {
     this.valid = true;
     this.offerService.saveOffer(this.data).subscribe(
@@ -34,14 +35,17 @@ export class NewOfferComponent {
     this.error = '';
     this.message = 'Offer saved';
   }
-  onChangeSelect(event){
+
+  onChangeSelect(event) {
     this.data.category = event.target.value;
   }
+
   onSelect() {
     this.load = !this.load;
   }
-  saveLocation(location : Object){
-    this.data.location = JSON.stringify(location);
+
+  saveLocation(location: Object) {
+    this.data.location = JSON.stringify(location).replace('"', '\\"');
     this.onSelect();
   }
 }

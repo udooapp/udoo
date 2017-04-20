@@ -1,11 +1,12 @@
-.menu-title {
-  text-align: center;
-  margin-left: 45%;
+.header-title {
+  margin: auto;
 }
 
-.menu-button {
+.header-button {
   text-align: left;
+  padding-bottom: 2%;
   padding-left: 2%;
+  font-size: 25pt;
 }
 
 .header {
@@ -14,7 +15,6 @@
   -webkit-flex-direction: row;
   flex-direction: row;
   height: 60px;
-  font-family: Arial;
   font-weight: bold;
   line-height: 60px;
   font-size: 40px;
@@ -28,6 +28,10 @@
 }
 .map-container{
   overflow: auto;
+}
+.header-logo{
+  height: 40px;
+  padding: 10px;
 }
 .menu-container {
   overflow: auto;
@@ -83,9 +87,10 @@
 }
 
 .menu-link {
+  text-decoration: none;
+  color: dimgrey;
   padding: 5%;
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .menu-link:hover {

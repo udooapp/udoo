@@ -4,7 +4,7 @@
   padding-bottom: 10%;
 }
 .input-button{
-  width: 20%;
+  width: 48%;
 }
 .input-radio{
   display: -webkit-flex;
@@ -14,14 +14,22 @@
   margin-bottom: 4%;
   padding-top: 2%;
 }
+.input-upload{
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+.input-upload-picture{
+
+}
 .input-radio input{
   margin-left: 2%;
 }
 
 .ng-valid[required], .ng-valid.required  {
-  border: 2px solid #42A948; /* green */
+  border-bottom: 3px solid #378281; /* green */
 }
 .ng-invalid:not(form)  {
-  border: 2px solid #a94442; /* red */
+  border-bottom: 3px solid #a94442; /* red */
 }
 

@@ -7,10 +7,20 @@
 }
 
 .input-button {
-  width: 10%;
   margin-left: 10%;
+  margin-bottom: 1%;
+}
+@media (min-width: 961px) {
+  .input-button {
+    width: 20%;
+  }
 }
 
+@media (max-width: 960px) {
+  .input-button {
+    width: 80%;
+  }
+}
 h1 {
   text-align: center;
   color: dimgrey;

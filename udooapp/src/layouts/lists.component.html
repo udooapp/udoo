@@ -1,8 +1,8 @@
 <div class="data-container">
   <h1>{{offer ? 'My service offer' : 'My service request'}}</h1>
-  <input *ngIf="offer" type="button" value="Add new offer" class="input-button" routerLink="/addoffer"
+  <input *ngIf="offer" type="button" value="Add new offer" class="input-button button-light" routerLink="/addoffer"
          routerLinkActive="active">
-  <input *ngIf="!offer" type="button" value="Add new request" class="input-button" routerLink="/addrequest"
+  <input *ngIf="!offer" type="button" value="Add new request" class="input-button button-light" routerLink="/addrequest"
          routerLinkActive="active">
   <div class="service-container">
     <div class="service" *ngFor="let item of data">

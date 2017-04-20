@@ -1,6 +1,8 @@
 <div class="header">
-  <div class="menu-button" (click)="visibleMenu = !visibleMenu">☰</div>
-  <div class="menu-title">Udoo</div>
+  <div class="header-button" (click)="visibleMenu = !visibleMenu">☰</div>
+  <div class="header-title"><a routerLink="/" routerLinkActive="active">
+    <img class="header-logo" src="/src/images/logo.png"></a>
+  </div>
 </div>
 
 <div class="content">
@@ -13,13 +15,15 @@
       <div class="menu-profile-stars"></div>
     </div>
     <a routerLink="/login" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">Login</a>
-    <a routerLink="/request" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service request</a>
-    <a routerLink="/offer" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service offer</a>
+    <a routerLink="/request" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service
+      request</a>
+    <a routerLink="/offer" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">My service
+      offer</a>
     <a class="menu-link" (click)="visibleMenu = !visibleMenu">Contacts</a>
     <div class="menu-placeholder"></div>
+    <a routerLink="/profile" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu">Profile</a>
     <a class="menu-link" (click)="visibleMenu = !visibleMenu">Settings</a>
-    <a routerLink="/profile" routerLinkActive="active" class="menu-link"
-       (click)="visibleMenu = !visibleMenu">Profile</a>
+
     <a class="menu-link" (click)="visibleMenu = !visibleMenu">Log out</a>
   </div>
 
