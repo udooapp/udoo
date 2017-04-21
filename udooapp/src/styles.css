@@ -14,10 +14,16 @@ body{
 
 @media (max-width: 960px) {
   .input-container {
-    padding: 5%;
+    padding-left: 20%;
+    padding-right: 20%;
   }
 }
 
+@media (max-width: 641px) {
+  .input-container {
+    padding: 5%;
+  }
+}
 .input-container h1 {
   color: #378281;
   text-align: center;

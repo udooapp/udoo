@@ -46,6 +46,9 @@ export class MapComponent implements OnInit {
           marker.addListener('mouseover', function() {
             infowindow.open(map, marker);
           });
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
           marker.addListener('mouseout', function() {
             infowindow.close(map, marker);
           });
@@ -73,6 +76,9 @@ export class MapComponent implements OnInit {
           });
           let map = this.map;
           marker.addListener('mouseover', function() {
+            infowindow.open(map, marker);
+          });
+          marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
           marker.addListener('mouseout', function() {

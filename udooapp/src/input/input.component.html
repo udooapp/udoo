@@ -1,0 +1,9 @@
+<div class="input-container">
+  <input [type]="type" [placeholder]="placeholder" [value]="value" class="input-text" (keyup)="onKey($event)" (focusout)="focusChange()">
+  <div *ngIf="ok || error" class="input-validation">
+    <img *ngIf="ok" src="/src/images/check_icon.png" class="input-validation input-validation-ok"/>
+    <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup" >{{errorMessage}}</span>
+    <div *ngIf="error" class="input-validation input-validation-error">Required field <img class="input-validation-image" (click)="showInfo()" src="/src/images/info-icon.png"/></div>
+  </div>
+</div>
+

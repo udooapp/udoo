@@ -1,10 +1,8 @@
 <div class="input-container">
   <h1>Sign in</h1>
   <form #userForm="ngForm">
-    <input type="text" id="email" class="input-text" required
-           [(ngModel)]="user.email" name="email" placeholder="Email"/>
-    <input type="password" id="password" class="input-text"
-           required [(ngModel)]="user.password" name="password" placeholder="Password"/>
+    <text-input [type]="'email'"  [placeholder]="'Email'" (text)="user.email = $event"></text-input>
+    <text-input [type]="'password'"  [placeholder]="'Password'" (text)="user.password = $event" ></text-input>
     <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
   </form>
   <p class="input-link">Forgot password?</p>

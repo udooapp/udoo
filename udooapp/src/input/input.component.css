@@ -1,0 +1,128 @@
+@media (min-width: 961px) {
+  .input-container {
+    width: 20%;
+  }
+}
+
+@media (max-width: 960px) {
+  .input-container {
+    width: 60%;
+  }
+}
+
+@media (max-width: 641px) {
+  .input-container {
+    width: 90%;
+  }
+}
+
+.input-container {
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 10px;
+}
+.input-validation-image{
+  height: 12px;
+}
+.input-validation {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 5px;
+  color: white;
+  margin-top: 4%;
+  height: 12px;
+  margin-right: 2%;
+  font-size: 8pt;
+  text-align: center;
+  padding: 5px;
+  z-index: 10;
+}
+
+.input-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1%;
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  border: 0;
+  background-color: #f6f6f6;
+  border-bottom: 3px solid #378281;
+  color: #2B6665;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.input-validation-error {
+  background-color: #DD4B39;
+  width: 90px;
+}
+
+.input-validation-ok {
+  background-color: #378281;
+}
+
+::-webkit-input-placeholder { /* Chrome */
+  color: #378281;
+}
+
+:-ms-input-placeholder { /* IE 10+ */
+  color: #378281;
+}
+
+::-moz-placeholder { /* Firefox 19+ */
+  color: #378281;
+  opacity: 1;
+}
+
+:-moz-placeholder { /* Firefox 4 - 18 */
+  color: #378281;
+  opacity: 1;
+}
+
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+.popuptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: #DD4B39;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -90px;
+  z-index: 10;
+}
+.show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  z-index: 10;
+}
+.popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 10;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #DD4B39 transparent transparent transparent;
+}
+
+
+

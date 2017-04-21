@@ -13,40 +13,27 @@
     <div class="input-group">
       <span class="input-label" *ngIf="!user.type">Organization</span>
       <span class="input-label" *ngIf="user.type">Username</span>
-      <span class="input-error" *ngIf="visible[0]">Most be complete!</span><br>
-      <input type="text" id="name" class="input-text"
-             required [(ngModel)]="user.name" [value]="user.name" name="name" placeholder="Input value"/>
-
+      <text-input [type]="'text'" [value]="user.name" [placeholder]="'Name'" (text)="user.name= $event"></text-input>
     </div>
     <div class="input-group">
-      <span class="input-label">Email</span><span class="input-error"
-                                                  *ngIf="visible[1]">Most be complete!</span><br>
-      <input type="email" id="email" class="input-text"
-             required [(ngModel)]="user.email" [value]="user.email" name="email" placeholder="Input value"/>
+      <span class="input-label">Email</span><br>
+      <text-input [type]="'email'" [placeholder]="'Email'" [value]="user.email" (text)="user.email = $event"></text-input>
     </div>
     <div>
-      <span class="input-label">Phone number</span><span class="input-error"
-                                                         *ngIf="visible[2]">Most be complete!</span><br>
-      <input type="text" id="phone" class="input-text" [value]="user.phone" required [(ngModel)]="user.phone"
-             name="phone"
-             placeholder="Input value"/>
+      <span class="input-label">Phone number</span><br>
+      <text-input [type]="'text'" [placeholder]="'Phone'" [value]="user.phone" (text)="user.phone= $event"></text-input>
     </div>
     <div *ngIf="user.type">
-      <span class="input-label">Birth date</span> <span class="input-error"
-                                                        *ngIf="visible[3]">Most be complete!</span><br>
-      <input type="date" id="date" class="input-text input-date" required [value]="user.birthdate"
-             [(ngModel)]="user.birthdate" name="birthdate"
-             placeholder="Input value"/>
+      <span class="input-label">Birth date</span><br>
+      <text-input [type]="'date'" [placeholder]="'Date'" [value]="user.birthdate" (text)="user.birthdate = $event"></text-input>
     </div>
     <div class="input-group" *ngIf="registration">
-      <span class="input-label">Password</span><span class="input-error" *ngIf="visible[4]">Most be complete!</span><br>
-      <input type="password" id="password" class="input-text"
-             required [(ngModel)]="user.password" name="password" placeholder="Input value"/>
+      <span class="input-label">Password</span><br>
+      <text-input [type]="'password'" [placeholder]="'Password'" [value]="''" (text)="user.password = $event"></text-input>
     </div>
     <div class="input-group" *ngIf="registration">
-      <span class="input-label">Password verification</span> <span class="input-error" *ngIf="visible[5]">Most be complete!</span><br>
-      <input type="password" id="password-ver" id="password-verification" class="input-text" (keyup)="onKey($event)"
-             placeholder="Input value"/>
+      <span class="input-label">Password verification</span><br>
+      <text-input [type]="'Password'" [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
       <span>{{passwordCheck}}</span>
     </div>
     <div class="input-group input-upload">

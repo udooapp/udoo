@@ -15,6 +15,7 @@ import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
 import {OfferComponent} from "../offers/offers.component";
 import {LocationComponent} from "../location/location.component";
+import {InputComponent} from "../input/input.component";
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {LocationComponent} from "../location/location.component";
     NewRequestComponent,
     RequestComponent,
     OfferComponent,
-    LocationComponent
+    LocationComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

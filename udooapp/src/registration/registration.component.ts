@@ -29,7 +29,7 @@ export class RegistrationComponent {
 
   onKey(event: any) { // without type info
     if (this.user.password.length > 5) {
-      if (this.user.password !== (<HTMLInputElement>event.target).value) {
+      if (this.user.password !== event) {
         this.passwordCheck = 'Invalid password';
       } else {
         this.passwordCheck = '';

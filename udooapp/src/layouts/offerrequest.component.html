@@ -4,7 +4,7 @@
   <form #userForm="ngForm">
     <div class="input-group">
       <span class="input-label">Title</span><br>
-      <input type="text" placeholder="Title" [(ngModel)]="data.title" name="title" class="input-text">
+      <text-input [type]="'text'" [placeholder]="'Title'" (text)="data.title=$event"></text-input>
     </div>
     <div class="input-group">
       <span class="input-label">Category</span><br>
@@ -24,22 +24,20 @@
     </div>
     <div class="input-group">
       <span class="input-label">Location</span><br>
-      <input type="text" placeholder="Location" disabled name="location" [value]="data.location" required [(ngModel)]="data.location"
-             class="input-text">
+      <text-input [type]="'text'" [placeholder]="'Location'" [value]="data.location" (text)="data.location=$event"></text-input>
     </div>
     <input type="button" value="Choose service location" class="input-button button-light" (click)="onSelect()"/>
 
     <div class="input-group">
-      <span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span><br>
-      <input *ngIf="offer" type="text" name="expirydate" required [(ngModel)]="data.availability"
-             placeholder="Availability" class="input-text"><br>
-      <input *ngIf="!offer" type="date" name="expirydate" required [(ngModel)]="data.jobdate" class="input-text"><br>
-      <input *ngIf="!offer" type="time" name="expirydate" class="input-text"><br>
-      <input *ngIf="!offer" type="number" placeholder="Period" name="availability" class="input-text">
+      <br><span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
+      <text-input *ngIf="offer" [type]="'text'" [placeholder]="'Availability'" (text)="data.availability=$event"></text-input><br>
+      <text-input *ngIf="!offer" [type]="'data'" [placeholder]="'Date'" (text)="data.jobdate=$event"></text-input><br>
+      <text-input *ngIf="!offer" [type]="'time'"></text-input><br>
+      <text-input *ngIf="!offer" [type]="'number'" [placeholder]="'Period'" ></text-input><br>
     </div>
     <div class="input-group">
       <span class="input-label">Expiry date</span><br>
-      <input type="date" name="expirydate" required [(ngModel)]="data.expirydate" class="input-text">
+      <text-input [type]="'date'" (text)="data.expirydate=$event"></text-input>
     </div>
     <div class="input-group">
       <input type="button" value="Save" class="input-button button-dark" (click)="save()"/>
