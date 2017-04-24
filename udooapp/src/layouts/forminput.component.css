@@ -1,0 +1,98 @@
+.registration-container {
+  padding-left: 50%;
+  padding-top: 10%;
+  padding-bottom: 10%;
+}
+
+.input-button {
+  width: 48%;
+}
+
+.picture-button-container {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  padding-bottom: 10%;
+  width: 60%;
+}
+
+.input-radio {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  margin-bottom: 4%;
+  padding-top: 2%;
+}
+
+.input-upload {
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.input-upload-picture {
+
+}
+
+.input-radio input {
+  margin-left: 2%;
+}
+
+.ng-valid[required], .ng-valid.required {
+  border-bottom: 3px solid #378281; /* green */
+}
+
+.ng-invalid:not(form) {
+  border-bottom: 3px solid #a94442; /* red */
+}
+
+.input-file {
+  width: 90%;
+  font-size: 10pt;
+  position: relative;
+  cursor: pointer;
+  height: 25px;
+  padding: 2px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.input-profile-picture-background {
+  background-color: #F6F6F6;
+  width: 40%;
+  border: 0;
+  margin-right: 10px;
+  height: 100px;
+  border-radius: 10px;
+}
+.input-profile-picture {
+  background: url("../images/profile_picture.png");
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.input-file-uploader {
+  width: 50%;
+}
+
+.input-file-uploader input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  height: 25px;
+  opacity: 0.0;
+  filter: alpha(opacity=0);
+  -o-transform: translate(250px, -50px) scale(1);
+  -moz-transform: translate(-300px, 0) scale(4);
+  cursor: pointer;
+}
+.linear-sort{
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}

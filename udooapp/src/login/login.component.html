@@ -1,8 +1,8 @@
 <div class="input-container">
   <h1>Sign in</h1>
   <form #userForm="ngForm">
-    <text-input [type]="'email'"  [placeholder]="'Email'" (text)="user.email = $event"></text-input>
-    <text-input [type]="'password'"  [placeholder]="'Password'" (text)="user.password = $event" ></text-input>
+    <text-input [type]="'email'" [refresh]="validation.errorId" [placeholder]="'Email'" [validation]="validation" (text)="user.email = $event"></text-input>
+    <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Password'" (text)="user.password = $event" ></text-input>
     <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
   </form>
   <p class="input-link">Forgot password?</p>

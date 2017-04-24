@@ -19,7 +19,7 @@
 .input-container {
   position: relative;
   font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .input-validation-image{
   height: 12px;
@@ -38,7 +38,9 @@
   padding: 5px;
   z-index: 10;
 }
-
+.input-text-border-error{
+  border-bottom: 3px solid #DD4B39;
+}
 .input-text {
   position: absolute;
   top: 0;
@@ -99,10 +101,10 @@
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 8px 0;
+  padding: 8px;
   position: absolute;
   bottom: 125%;
-  left: 50%;
+  right: 0;
   margin-left: -90px;
   z-index: 10;
 }
@@ -116,7 +118,7 @@
   content: "";
   position: absolute;
   top: 100%;
-  left: 50%;
+  right: 5%;
   z-index: 10;
   margin-left: -5px;
   border-width: 5px;

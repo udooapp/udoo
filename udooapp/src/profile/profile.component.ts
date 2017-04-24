@@ -4,12 +4,14 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
+import {ValidationComponent} from "../input/validation.component";
+import {DomSanitizer} from "@angular/platform-browser";
 
 
 @Component({
-  templateUrl: '../layouts/input.component.html',
-  styleUrls: ['../layouts/input.component.css', './profile.component.css'],
-  providers: [UserService]
+  templateUrl: '../layouts/forminput.component.html',
+  styleUrls: ['../layouts/forminput.component.css', './profile.component.css'],
+  providers: [UserService, ValidationComponent]
 })
 
 export class ProfileComponent implements OnInit {
@@ -18,10 +20,10 @@ export class ProfileComponent implements OnInit {
   error: string;
   user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
-  public visible = [false, false, false, false, false, false];
+  passwordVerification: string;
 
-
-  constructor(private userService: UserService,) {
+  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
+    this.passwordVerification = '';
   }
 
   ngOnInit() {
@@ -29,24 +31,38 @@ export class ProfileComponent implements OnInit {
       user => this.user = user,
       error => this.error = <any>error);
   }
+  getUrl() : SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.user.picture);
+  }
+
+  onChange(event :any){
+    this.user.picture = event.target.value;
+  }
+
+  onKey(event: any) { // without type info
+    this.passwordVerification = event;
+    if (this.user.password.length > 5) {
+      if (this.user.password !== event) {
+        this.passwordCheck = 'Invalid password';
+      } else {
+        this.passwordCheck = '';
+      }
+    }
+  }
 
   onSubmit() {
     console.log("SRC: " + this.user.picture);
   }
 
   insertUser() {
-    this.visible[0] = this.user.name.length == 0;
-    this.visible[1] = this.user.email.length == 0;
-    this.visible[2] = this.user.phone.length == 0;
-    this.visible[3] = this.user.type === 1 && this.user.birthdate.length == 0;
-    this.visible[4] = this.registration && this.user.password.length == 0;
-    this.visible[5] = this.registration && document.getElementById("password-verification").nodeValue.length == 0;
-    if (!this.visible[0] && !this.visible[1] && !this.visible[2] && !this.visible[3] && !this.visible[4] && !this.visible[5]) {
-      this.userService.updateUser(this.user).subscribe(
-        message => this.message = message,
-        error => this.error = <any>error);
+    if (this.validation.checkValidation()) {
+      if (this.passwordVerification === this.user.password) {
+        this.userService.updateUser(this.user).subscribe(
+          message => this.message = message,
+          error => this.error = <any>error);
+      } else {
+        this.passwordCheck = 'Invalid password';
+      }
     }
   }
-
-
 }

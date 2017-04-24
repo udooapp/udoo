@@ -1,0 +1,85 @@
+<div class="input-container">
+  <h1>{{registration ? 'Registration form' : 'Profile'}}</h1>
+  <form #userForm="ngForm">
+    <div *ngIf="registration" class="input-group">
+      <span class="input-label">Type</span><br>
+      <div class="input-radio">
+        <input type="radio" name="radiogroup" [value]="user.type === 1" (change)="user.type = 1">
+        <span class="input-label">Person</span>
+        <input type="radio" name="radiogroup" [value]="0 === user.type" (change)="user.type = 0">
+        <span class="input-label">Organization</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <span class="input-label" *ngIf="!user.type">Organization</span>
+      <span class="input-label" *ngIf="user.type">Username</span>
+      <text-input [type]="'text'" [refresh]="validation.errorId" [validation]="validation" [value]="user.name"
+                  [placeholder]="'Name'" (text)="user.name= $event"></text-input>
+    </div>
+    <div class="input-group">
+      <span class="input-label">Email</span><br>
+      <text-input [type]="'email'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Email'"
+                  [value]="user.email" (text)="user.email = $event"></text-input>
+    </div>
+    <div>
+      <span class="input-label">Phone number</span><br>
+      <text-input [type]="'phone'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Phone'"
+                  [value]="user.phone" (text)="user.phone= $event"></text-input>
+    </div>
+    <div *ngIf="user.type">
+      <span class="input-label">Birth date</span><br>
+      <text-input [type]="'date'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Date'"
+                  [value]="user.birthdate" (text)="user.birthdate = $event"></text-input>
+    </div>
+    <div class="input-group" *ngIf="registration">
+      <span class="input-label">Password</span><br>
+      <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
+                  [placeholder]="'Password'" [value]="''" (text)="user.password = $event"></text-input>
+    </div>
+    <div class="input-group" *ngIf="registration">
+      <span class="input-label">Password verification</span><br>
+      <text-input [type]="'Password'" [refresh]="validation.errorId" [validation]="validation"
+                  [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
+      <span>{{passwordCheck}}</span>
+    </div>
+    <div class="input-group input-upload">
+      <span class="input-label">Profile picture</span><br>
+      <div class="linear-sort">
+        <div class="input-profile-picture-background">
+        <img class="input-profile-picture" [src]="getUrl()">
+        </div>
+        <div class="picture-button-container">
+          <div class="input-file-uploader ">
+            <button class="input-file input-button button-light">
+              <span>Browse</span>
+              <input type="file" (change)="onChange($event)" accept="image/*"/>
+            </button>
+          </div>
+          <div class="input-file-uploader ">
+            <button class="input-file input-button button-dark">
+              <span>Take</span>
+              <input type="file" (change)="onChange($event)" accept="image/*"/>
+            </button>
+          </div>
+        </div>
+      </div>
+      <input type="submit" value="Upload Picture" class="input-button button-dark input-upload-picture"
+             (click)="onSubmit()"/>
+
+    </div>
+    <div class="input-group">
+      <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"
+             *ngIf="registration"/>
+      <input type="submit" value="Save" class="input-button button-dark" (click)="insertUser()"/>
+    </div>
+
+    <div class="input-group" *ngIf="!registration">
+      <input type="reset" value="Change password" class="input-button button-dark" routerLink="/password"
+             routerLinkActive="active"/>
+    </div>
+
+  </form>
+  <div>
+    <span>{{message}}</span>
+  </div>
+</div>

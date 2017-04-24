@@ -3,11 +3,12 @@ import {Component} from '@angular/core';
 
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
+import {ValidationComponent} from "../input/validation.component";
 
 @Component({
   templateUrl: './password.component.html',
   styleUrls: ['./password.component.css'],
-  providers: [UserService]
+  providers: [UserService, ValidationComponent]
 })
 export class PasswordComponent {
   message: String;
@@ -16,12 +17,14 @@ export class PasswordComponent {
   password = '';
   currentpassword='';
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private validation : ValidationComponent) {
   }
 
   save() {
-    this.userService.changePassword(this.currentpassword, this.password, this.userId).subscribe(
-      message => this.message = message,
-      error => this.error = <any>error);
+    if(this.validation.checkValidation()) {
+      this.userService.changePassword(this.currentpassword, this.password, this.userId).subscribe(
+        message => this.message = message,
+        error => this.error = <any>error);
+    }
   }
 }

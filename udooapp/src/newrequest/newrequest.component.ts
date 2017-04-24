@@ -3,41 +3,38 @@ import {Component} from '@angular/core';
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
 import {Router} from "@angular/router";
+import {ValidationComponent} from "../input/validation.component";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css'],
-  providers: [RequestService]
+  providers: [RequestService, ValidationComponent]
 })
 export class NewRequestComponent {
   registration = true;
-  category = ['Select', 'Cleaning', 'Washing', 'Other'];
+  category = ['Cleaning', 'Washing', 'Other'];
   message: String;
   offer = false;
   load = false;
-  valid = false;
   error = '';
   data = new Request(null, '', '', '', 1, '', '', '', '');
-  public visible = [false, false];
 
 
-  constructor(private requestService: RequestService, private router: Router) {
+  constructor(private requestService: RequestService, private  validation : ValidationComponent) {
+    this.data.category = this.category[0];
   }
-
-  onKey(event: any) { // without type info
-  }
-
 
   save() {
-    this.valid = true;
-    this.requestService.saveRequest(this.data).subscribe(
-      message => this.message = message,
-      error => {
-        this.error = '';
-        console.error(<any>error)
-      });
-    this.message = 'Offer saved';
-    this.error = '';
+    if(this.validation.checkValidation()) {
+      this.requestService.saveRequest(this.data).subscribe(
+        message => this.message = message,
+        error => {
+          this.error = '';
+          console.error(<any>error)
+        });
+      this.message = 'Offer saved';
+      this.error = '';
+    }
   }
 
   onChangeSelect(event) {
