@@ -196,14 +196,6 @@ public class RestServiceController implements IRestServiceController {
         return result;
     }
 
-    @Bean
-    public CommonsMultipartResolver commonsMultipartResolver(){
-        final CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(268435456);
-        return resolver;
-    }
-
-
     @Autowired
     private ServletContext context;
 
