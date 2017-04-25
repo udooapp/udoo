@@ -21,6 +21,8 @@ export class ProfileComponent implements OnInit {
   user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
   passwordVerification: string;
+  loaderVisible = false;
+  first = true;
 
   constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
     this.passwordVerification = '';
@@ -31,12 +33,31 @@ export class ProfileComponent implements OnInit {
       user => this.user = user,
       error => this.error = <any>error);
   }
-  getUrl() : SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.user.picture);
+
+  getUrl() {
+    if (this.user.picture.length == 0 || this.user.picture === 'null') {
+      return '';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }
 
-  onChange(event :any){
-    this.user.picture = event.target.value;
+  onChange(event) {
+    if(!this.first) {
+      this.loaderVisible = true;
+      let fileList: FileList = event.target.files;
+      if (fileList.length > 0) {
+        this.userService.uploadPicture(fileList[0]).subscribe(
+          message => {
+            console.log('Message: ' + message);
+            this.user.picture = message.toString();
+            this.loaderVisible = false;
+          },
+          error => console.log('Error: ' + error)
+        );
+      }
+    } else {
+      this.first = false;
+    }
   }
 
   onKey(event: any) { // without type info
@@ -50,19 +71,16 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    console.log("SRC: " + this.user.picture);
-  }
-
   insertUser() {
     if (this.validation.checkValidation()) {
-      if (this.passwordVerification === this.user.password) {
-        this.userService.updateUser(this.user).subscribe(
-          message => this.message = message,
-          error => this.error = <any>error);
-      } else {
-        this.passwordCheck = 'Invalid password';
-      }
+      this.userService.updateUser(this.user).subscribe(
+        message => this.message = message,
+        error => {
+          this.error = <any>error;
+          console.log(this.error);
+        });
+    } else {
+      this.passwordCheck = 'Invalid password';
     }
   }
 }

@@ -6,23 +6,36 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw'
 
 import {User} from '../entity/user';
+import {TokenService} from "../guard/TokenService";
 
 @Injectable()
 export class UserService {
   private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
     this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
-
-  loginUser(user: User): Observable<String> {
+  logout() : void{
+    this.tokenService.clearToken();
+    this.http.post(this.userUrl + '/logout', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+  }
+  loginUser(user: User): Observable<boolean> {
     return this.http.post(this.userUrl + '/login', user.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractText)
-      .catch(this.handleText);
+      .map((response: Response)=>{
+        let token = response.json() && response.json().token;
+        if (token) {
+          this.tokenService.saveToken(token, user.email);
+          // return true to indicate successful login
+          return true;
+        } else {
+          // return false to indicate failed login
+          return false;
+        }
+    });
   }
 
   updateUser(user: User): Observable<String> {
@@ -59,17 +72,23 @@ export class UserService {
       .catch(this.handleText);
   }
 
+  uploadPicture(file: File): Observable<String> {
+    let formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.http.post(this.userUrl + '/upload', formData)
+      .map(this.extractText)
+      .catch(this.handleText)
+  }
+
   private extractText(res: Response) {
     return res.text();
   }
 
   private handleText(error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
     return Observable.throw(error.message ? error.message : error.toString());
   }
-
+  
   private extractData(res: Response) {
-    //const body = res.json();
     return JSON.parse(res.text()) || {};
   }
 

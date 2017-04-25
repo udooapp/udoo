@@ -12,19 +12,20 @@ export class InputComponent {
   error = false;
   ok = false;
   show = false;
+  notChange = false;
   errorMessage = '';
   id: number;
-  @Input() value: string;
+  valueText = '';
+  inputText = '';
   @Input() type: string;
   @Input() placeholder: string;
   @Input() validation: ValidationComponent;
   @Output() text = new EventEmitter<String>();
-  private inputText = '';
+
 
   constructor() {
     this.type = 'text';
     this.placeholder = 'value';
-    this.value = '';
     this.id = -1;
   }
 
@@ -32,11 +33,17 @@ export class InputComponent {
     this.valid();
   }
 
+  @Input() set value(value: string) {
+    if (!this.notChange) {
+      this.valueText = value;
+      this.inputText = value;
+    } else {
+      this.notChange = false;
+    }
+  }
+
   valid() {
     if (this.validation != null) {
-      if (this.id == -1) {
-        this.id = this.validation.add();
-      }
       this.errorMessage = this.validation.checkInputValidation(this.id, this.inputText, this.type);
       if (this.errorMessage.length == 0) {
         this.ok = true;
@@ -45,19 +52,23 @@ export class InputComponent {
         this.error = true;
         this.ok = false;
       }
-
     }
   }
 
-  @Input() set refresh(refresh: number){
+  @Input() set refresh(refresh: number) {
     if (this.id == -1) {
       this.id = this.validation.add();
+      if (this.inputText.length > 0) {
+        this.valid();
+      }
     }
-    if(refresh > -1 && refresh == this.id) {
+    if (refresh > -1 && refresh == this.id) {
       this.valid();
     }
   }
+
   onKey(event: any) {
+    this.notChange = true;
     this.inputText = event.target.value;
     this.text.emit(event.target.value);
     if (this.error) {

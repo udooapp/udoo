@@ -17,25 +17,38 @@ export class RegistrationComponent {
   user = new User(null, '', '', '', '', '', 0, '');
   passwordCheck = '';
   passwordVerification: string;
-  pictureForm: FormGroup;
+  loaderVisible = false;
+  first = true;
 
   constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
     this.passwordVerification = '';
   }
-  getUrl() : SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.user.picture);
-  }
-  onChange(event :any){
-    this.user.picture = event.target.value;
-  }
 
-  onSubmit() {
-    const formModel = this.pictureForm.value;
-    const pictureSource: String = formModel.source;
-    console.log("SRC: " + pictureSource);
+  getUrl(): SafeResourceUrl {
+    if (this.user.picture.length == 0 || this.user.picture === 'null') {
+      return '';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }
 
-
+  onChange(event: any) {
+    if(!this.first) {
+      this.loaderVisible = true;
+      let fileList: FileList = event.target.files;
+      if (fileList.length > 0) {
+        this.userService.uploadPicture(fileList[0]).subscribe(
+          message => {
+            this.user.picture = message.toString();
+            this.loaderVisible = false;
+          },
+          error => console.log('Error: ' + error)
+        );
+      }
+    } else {
+      this.first = false;
+    }
+  }
+  
   onKey(event: any) { // without type info
     this.passwordVerification = event;
     if (this.user.password.length > 5) {

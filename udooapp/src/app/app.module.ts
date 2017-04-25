@@ -16,6 +16,8 @@ import {RequestComponent} from "../requests/request.component";
 import {OfferComponent} from "../offers/offers.component";
 import {LocationComponent} from "../location/location.component";
 import {InputComponent} from "../input/input.component";
+import {AuthGuard} from "../guard/AuthGuard";
+import {TokenService} from "../guard/TokenService";
 
 @NgModule({
   declarations: [
@@ -38,7 +40,7 @@ import {InputComponent} from "../input/input.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [AuthGuard, TokenService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

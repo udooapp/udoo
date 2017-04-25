@@ -42,11 +42,12 @@
                   [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
       <span>{{passwordCheck}}</span>
     </div>
-    <div class="input-group input-upload">
+    <div class="input-group">
       <span class="input-label">Profile picture</span><br>
       <div class="linear-sort">
-        <div class="input-profile-picture-background">
-        <img class="input-profile-picture" [src]="getUrl()">
+        <div [ngClass]="{'input-profile-picture-image' : (user.picture.length == 0 || user.picture === 'null')}" class="input-profile-picture-background">
+          <div class="loader" *ngIf="loaderVisible"></div>
+          <img class="input-profile-picture" [src]="getUrl()">
         </div>
         <div class="picture-button-container">
           <div class="input-file-uploader ">
@@ -63,9 +64,6 @@
           </div>
         </div>
       </div>
-      <input type="submit" value="Upload Picture" class="input-button button-dark input-upload-picture"
-             (click)="onSubmit()"/>
-
     </div>
     <div class="input-group">
       <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"

@@ -30,11 +30,13 @@ export class ValidationComponent {
       case 'number':
         this.inputs[id] = /^[0-9]*$/im.test(text);
         return this.inputs[id] ? '' : 'It is not a number';
+      case 'text':
+        this.inputs[id] = text.length > 0;
+        return this.inputs[id] ? '' : 'Most be complete';
     }
     return '';
   }
   public checkValidation(): boolean {
-
     for(let i = 1; i <= this.inputs.length; i++){
       if(!this.inputs[i] && this.inputs[i] != null){
         this.errorId = i;

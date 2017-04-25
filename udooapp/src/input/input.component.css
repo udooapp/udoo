@@ -38,8 +38,11 @@
   padding: 5px;
   z-index: 10;
 }
-.input-text-border-error{
+.input-border-error{
   border-bottom: 3px solid #DD4B39;
+}
+.input-border-ok{
+  border-bottom: 3px solid #378281;
 }
 .input-text {
   position: absolute;
@@ -51,10 +54,18 @@
   border-radius: 5px;
   border: 0;
   background-color: #f6f6f6;
-  border-bottom: 3px solid #378281;
   color: #2B6665;
   display: inline-block;
   box-sizing: border-box;
+}
+.input-border{
+  position: absolute;
+  left: 0;
+  top: 36px;
+  margin-top: 1%;
+  width: 100%;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .input-validation-error {
@@ -125,6 +136,7 @@
   border-style: solid;
   border-color: #DD4B39 transparent transparent transparent;
 }
+
 
 
 

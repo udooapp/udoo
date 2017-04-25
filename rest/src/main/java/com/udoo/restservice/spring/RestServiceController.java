@@ -15,16 +15,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,11 +85,10 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginUser(@RequestBody User user) {
-        System.out.println(user.toString());
         List<User> users = userRepository.findByEmail(user.getEmail());
         if (users.size() > 0) {
             if (users.get(0).getPassword().equals(user.getPassword())) {
-                return new ResponseEntity<>("Succes", HttpStatus.OK);
+                return new ResponseEntity<>("{\"token\": \"012dsa2sa2d2sa\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Bad password", HttpStatus.UNAUTHORIZED);
             }
@@ -96,7 +99,6 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getUserName(@PathVariable("id") final Integer id) {
-        System.out.println(id + "id");
         if (id != null) {
             User user = userRepository.findByUid(id);
             if (user != null) {
@@ -112,7 +114,6 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable("id") final Integer id) {
-        System.out.println(id + "id");
         if (id != null) {
             return userRepository.findByUid(id);
         } else {
@@ -199,21 +200,64 @@ public class RestServiceController implements IRestServiceController {
     @Autowired
     private ServletContext context;
 
+    @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
+    public @ResponseBody void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+        System.out.println(name);
+        File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
+        InputStream in = new FileInputStream(file);
+        response.setContentType("image/*");
+        response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+        response.setHeader("Content-Length", String.valueOf(file.length()));
+        FileCopyUtils.copy(in, response.getOutputStream());
+    }
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         HttpHeaders headers = new HttpHeaders();
+        System.out.println("Upload image");
         if (!inputFile.isEmpty()) {
             try {
                 String originalFilename = inputFile.getOriginalFilename();
                 File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + originalFilename);
                 inputFile.transferTo(destinationFile);
                 headers.add("File Uploaded Successfully - ", originalFilename);
-                return new ResponseEntity<>(inputFile.getSize(), headers, HttpStatus.OK);
+                return new ResponseEntity<>(originalFilename, headers, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value="/uploadMulti", method = RequestMethod.POST)
+    public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
+
+        List<String> imageNames = new ArrayList<>();
+        for (MultipartFile file : files) {
+
+            if (file.isEmpty()) {
+                continue; //next pls
+            }
+
+            try {
+
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + file.getOriginalFilename()));
+                Files.write(path, bytes);
+
+                imageNames.add(file.getOriginalFilename());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        if (imageNames.isEmpty()) {
+            return new ResponseEntity<>("Please select a file to upload", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(imageNames, HttpStatus.OK);
+        }
+
     }
 }
