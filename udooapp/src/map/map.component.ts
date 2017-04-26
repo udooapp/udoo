@@ -16,7 +16,7 @@ export class MapComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   private map;
   private error: string;
-  private showSearch = false;
+  private showSearch = true;
   private searchString = '';
   private type = 0;
   private category = 0;

@@ -33,7 +33,7 @@ export class RequestComponent implements OnInit {
 
   getCategory(category: number): string {
     let cat = this.categories.find(cat => cat.cid == category);
-    return cat.name ? cat.name : 'Category is not exist!';
+    return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
   }
 
 }

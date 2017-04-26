@@ -182,17 +182,9 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
         if (category > 0) {
-            if (searchText.isEmpty()) {
-                return new ResponseEntity<Object>(offerRepository.findAllByCategory(category), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<Object>(offerRepository.findAllMatches(category, searchText), HttpStatus.OK);
-            }
+            return new ResponseEntity<Object>(offerRepository.findAllMatches(category, searchText), HttpStatus.OK);
         }
-        if (searchText.isEmpty()) {
-            return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<Object>(offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
-        }
+        return new ResponseEntity<Object>(offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
@@ -209,17 +201,9 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
                                             @PathVariable("searchText") String searchText) {
         if (category > 0) {
-            if (searchText.isEmpty()) {
-                return new ResponseEntity<Object>(requestRepository.findAllByCategory(category), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<Object>(requestRepository.findAllMatches(category, searchText), HttpStatus.OK);
-            }
+            return new ResponseEntity<Object>(requestRepository.findAllMatches(category, searchText), HttpStatus.OK);
         }
-        if (searchText.isEmpty()) {
-            return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<Object>(requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
-        }
+        return new ResponseEntity<Object>(requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
@@ -232,7 +216,6 @@ public class RestServiceController implements IRestServiceController {
 
     @Bean
     public InternalResourceViewResolver internalResourceViewResolver() {
-
         final InternalResourceViewResolver result = new InternalResourceViewResolver();
         result.setViewClass(JstlView.class);
         result.setPrefix("/WEB-INF/jsp/");
@@ -277,26 +260,19 @@ public class RestServiceController implements IRestServiceController {
 
     @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
-
         List<String> imageNames = new ArrayList<>();
         for (MultipartFile file : files) {
-
             if (file.isEmpty()) {
                 continue; //next pls
             }
-
             try {
-
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + file.getOriginalFilename()));
                 Files.write(path, bytes);
-
                 imageNames.add(file.getOriginalFilename());
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         if (imageNames.isEmpty()) {
             return new ResponseEntity<>("Please select a file to upload", HttpStatus.OK);

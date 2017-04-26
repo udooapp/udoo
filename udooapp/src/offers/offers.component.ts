@@ -32,8 +32,8 @@ export class OfferComponent implements OnInit {
   }
 
   getCategory(category: number): string {
-      let cat = this.categories.find(cat => cat.cid == category);
-      return cat.name ? cat.name : 'Category is not exist!';
+    let cat = this.categories.find(cat => cat.cid == category);
+    return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
   }
 }
 

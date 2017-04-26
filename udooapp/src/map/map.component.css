@@ -96,13 +96,14 @@
 
 #magnifying-glass
 {
-  font-size: 2em; /* This controls the size. */
+  font-size: 2em;
   display: inline-block;
   width: 0.4em;
   height: 0.4em;
   border: 0.1em solid #505050;
   position: relative;
   border-radius: 0.35em;
+  cursor: pointer;
 }
 
 #magnifying-glass::before
