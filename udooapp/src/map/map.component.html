@@ -1,6 +1,6 @@
 <div id="map">
 </div>
-<div [ngClass]="{'hide-map-filter' : showSearch}" class="map-filter">
+<div [ngClass]="{'hide-map-filter' : showSearch}" class="map-filter" (focusout)="refresh()">
   <div [ngClass]="{'hide-map-inputs' : showSearch}" class="map-inputs-container">
     <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
     <div class="map-selector-container">
