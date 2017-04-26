@@ -3,7 +3,7 @@ export class Offer {
   constructor(public oid: number,
               public title: string,
               public description: string,
-              public category: string,
+              public category: number,
               public uid: number,
               public location: string,
               public availability: string,

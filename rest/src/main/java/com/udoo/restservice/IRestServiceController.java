@@ -32,7 +32,7 @@ public interface IRestServiceController {
 
     User getUser(final Integer id);
 
-    ResponseEntity<?> getAllOffers();
+    ResponseEntity<?> getAllOffers(int category, String searchText);
 
-    ResponseEntity<?> getAllRequests();
+    ResponseEntity<?> getAllRequests(int category, String searchText);
 }

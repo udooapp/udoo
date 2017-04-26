@@ -9,7 +9,7 @@
     <div class="input-group">
       <span class="input-label">Category</span><br>
       <select class="input-select" id="category" (change)="onChangeSelect($event)" required>
-        <option *ngFor="let cat of category" [value]="cat" >{{cat}}</option>
+        <option *ngFor="let cat of category" [value]="cat.cid" >{{cat.name}}</option>
       </select>
     </div>
     <div class="input-group">

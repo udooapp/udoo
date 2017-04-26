@@ -3,7 +3,7 @@ export class Request {
   constructor(public rid: number,
               public title: string,
               public description: string,
-              public category: string,
+              public category: number,
               public uid: number,
               public location: string,
               public jobdate: string,

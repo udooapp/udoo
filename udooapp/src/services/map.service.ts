@@ -22,17 +22,24 @@ export class MapService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  getOfferLocations(): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offers')
+  getOfferLocations(category : number, searchText : string): Observable<Offer[]> {
+    return this.http.get(this.userUrl + '/offers/' + category + '/' + (searchText ? searchText : ''))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  getRequestLocations(): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/requests')
+  getRequestLocations(category : number, searchText : string): Observable<Request[]> {
+    return this.http.get(this.userUrl + '/requests/' + category + '/' + (searchText ? searchText : ''))
       .map(this.extractData)
       .catch(this.handleError);
   }
+
+  getCategories() : Observable<Object[]>{
+    return this.http.get(this.userUrl + '/categories')
+      .map(this.extractData)
+      .catch(this.handleError)
+  }
+
 
   private extractData(res: Response) {
     return res.json() || {};

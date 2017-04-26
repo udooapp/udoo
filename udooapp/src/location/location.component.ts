@@ -14,7 +14,7 @@ export class LocationComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
   }
 
   ngOnInit() {
@@ -32,6 +32,7 @@ export class LocationComponent implements OnInit {
       let marker = new google.maps.Marker({
         title: 'Service location',
         map: map,
+        icon: '/src/images/icon.png'
       });
       this.position = marker.getPosition();
     });

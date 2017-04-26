@@ -1,9 +1,11 @@
 package com.udoo.restservice.spring;
 
 
+import com.udoo.dal.entities.Category;
 import com.udoo.dal.entities.Offer;
 import com.udoo.dal.entities.Request;
 import com.udoo.dal.entities.User;
+import com.udoo.dal.repositories.ICategoryRepository;
 import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
@@ -45,6 +47,8 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IRequestRepository requestRepository;
+    @Resource
+    private ICategoryRepository categoryRepository;
 
 
     @Override
@@ -175,14 +179,54 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/offers", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffers() {
+    @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
+        if (category > 0) {
+            if (searchText.isEmpty()) {
+                return new ResponseEntity<Object>(offerRepository.findAllByCategory(category), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<Object>(offerRepository.findAllMatches(category, searchText), HttpStatus.OK);
+            }
+        }
+        if (searchText.isEmpty()) {
+            return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>(offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
+        if (category > 0) {
+            return new ResponseEntity<Object>(offerRepository.findAllByCategory(category), HttpStatus.OK);
+        }
         return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
+
     }
 
     @Override
-    @RequestMapping(value = "/requests", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequests() {
+    @RequestMapping(value = "/requests/{category}/{searchText}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
+                                            @PathVariable("searchText") String searchText) {
+        if (category > 0) {
+            if (searchText.isEmpty()) {
+                return new ResponseEntity<Object>(requestRepository.findAllByCategory(category), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<Object>(requestRepository.findAllMatches(category, searchText), HttpStatus.OK);
+            }
+        }
+        if (searchText.isEmpty()) {
+            return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>(requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
+        if (category > 0) {
+            return new ResponseEntity<Object>(requestRepository.findAllByCategory(category), HttpStatus.OK);
+        }
         return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
     }
 
@@ -201,7 +245,8 @@ public class RestServiceController implements IRestServiceController {
     private ServletContext context;
 
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
-    public @ResponseBody void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+    public @ResponseBody
+    void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
         System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
@@ -230,7 +275,7 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
-    @RequestMapping(value="/uploadMulti", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
 
         List<String> imageNames = new ArrayList<>();
@@ -258,6 +303,10 @@ public class RestServiceController implements IRestServiceController {
         } else {
             return new ResponseEntity<>(imageNames, HttpStatus.OK);
         }
+    }
 
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getCategories() {
+        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
     }
 }

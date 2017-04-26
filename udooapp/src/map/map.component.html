@@ -1,2 +1,20 @@
-<div id="map"></div>
+<div id="map">
+</div>
+<div [ngClass]="{'hide-map-filter' : showSearch}" class="map-filter">
+  <div [ngClass]="{'hide-map-inputs' : showSearch}" class="map-inputs-container">
+    <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
+    <div class="map-selector-container">
+      <div class="input-group" >
+        <select class="map-select" (change)="onChangeTypeSelect($event)">
+          <option  *ngFor="let type of types; let i = index" class="map-option" value="{{i}}">{{type}}</option>
+        </select>
+        <select class="map-select" (change)="onChangeCategorySelect($event)" >
+          <option  *ngFor="let cat of categories" class="map-option" value="{{cat.cid}}">{{cat.name}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="triangle-left" *ngIf="!showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
+  <div id="magnifying-glass" *ngIf="showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
+</div>
 

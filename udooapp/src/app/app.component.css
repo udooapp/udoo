@@ -92,6 +92,7 @@
   color: dimgrey;
   padding: 5%;
   text-align: center;
+  cursor: pointer;
 }
 
 .menu-link:hover {

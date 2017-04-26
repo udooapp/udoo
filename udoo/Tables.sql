@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 18, 2017 at 10:56 AM
+-- Generation Time: Apr 26, 2017 at 10:02 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -23,6 +23,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `categories`
+--
+
+CREATE TABLE `categories` (
+  `CID` int(11) NOT NULL,
+  `name` varchar(60) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`CID`, `name`) VALUES
+(1, 'Service 1'),
+(2, 'Service 2'),
+(3, 'Service 3'),
+(4, 'Service 4'),
+(5, 'Service 5'),
+(6, 'Service 6'),
+(7, 'Service 7'),
+(8, 'Service 8'),
+(9, 'Service 9'),
+(10, 'Service 10');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `offer`
 --
 
@@ -34,7 +61,7 @@ CREATE TABLE `offer` (
   `location` varchar(100) NOT NULL,
   `availability` varchar(100) NOT NULL,
   `expirydate` date DEFAULT NULL,
-  `category` text NOT NULL
+  `category` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -42,7 +69,8 @@ CREATE TABLE `offer` (
 --
 
 INSERT INTO `offer` (`oid`, `uid`, `title`, `description`, `location`, `availability`, `expirydate`, `category`) VALUES
-(1, 1, 'Washing Centre', 'Wash everything...', 'Somewhere', '8:00-20:00', '2017-04-26', '');
+(1, 1, 'Washing Centre', 'Wash everything...', '{"lat":48.2203445, "lng": 16.0998799}', '8:00-20:00', '2017-04-26', 1),
+(2, 1, 'Valami', 'dsasdsada', '{"lat":48.2203445, "lng": 16.0998699}', 'asdsda', NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -82,16 +110,20 @@ CREATE TABLE `request` (
   `location` varchar(100) NOT NULL,
   `jobdate` varchar(100) NOT NULL,
   `expirydate` date DEFAULT NULL,
-  `category` text NOT NULL
+  `picture` text NOT NULL,
+  `category` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `request`
 --
 
-INSERT INTO `request` (`rid`, `uid`, `title`, `description`, `location`, `jobdate`, `expirydate`, `category`) VALUES
-(1, 1, 'DishWash', 'asdsada sdas dksand lksandljsandljasdlsad', '2 35 45 - 56 65 78', '2017/09/23', '2017-10-25', ''),
-(2, 1, 'DishWash', 'asdsada sdas dksand lksandljsandljasdlsad', '2 35 45 - 56 65 78', '2017/09/23', '2017-10-25', '');
+INSERT INTO `request` (`rid`, `uid`, `title`, `description`, `location`, `jobdate`, `expirydate`, `picture`, `category`) VALUES
+(1, 1, 'DishWash', 'asdadasd sad a', '{"lat":48.2103445, "lng": 16.3798799}', '2017/09/23', '2017-10-25', '', 4),
+(2, 1, 'DishWash', '', '{"lat":48.2103442, "lng": 16.3798780}', '2017/09/23', '2017-10-25', '', 3),
+(3, 1, 'sadsd', 'asdsadasd das dsad ;sa', '{"lat":48.2103435, "lng": 16.3798779}', '', NULL, '', 3),
+(4, 1, 'sadsad', 'sadasdsad', '{"lat":48.22340352534794,"lng":16.39409065246582}', '2017-01-01', NULL, '', 2),
+(5, 1, 'asdsad', 'asdsadsadsada', '{"lat":48.209449020405714,"lng":16.38636589050293}', '2018-02-02', NULL, '', 1);
 
 -- --------------------------------------------------------
 
@@ -116,11 +148,19 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uid`, `name`, `password`, `email`, `phone`, `picture`, `type`, `stars`, `birthdate`) VALUES
-(2, 'Washing Inc', 'password', 'emil@washing.com', '0123456789', NULL, 1, 4, '2017-04-03');
+(2, 'Washing Inc.', 'password', 'washingMachine@washing.coma', '0123456789', 'Orarend2.png', 1, NULL, '2017-04-03'),
+(3, 'John doo', 'password4', 'email@email.com', '987654321', '', 1, NULL, '2017-01-01');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`CID`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `offer`
@@ -161,10 +201,15 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `CID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
 -- AUTO_INCREMENT for table `offer`
 --
 ALTER TABLE `offer`
-  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `picturesoffer`
 --
@@ -179,12 +224,12 @@ ALTER TABLE `picturesrequest`
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
