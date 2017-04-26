@@ -131,7 +131,10 @@ body {
 }
 
 .error-message {
-  color: red;
+color: red;
+}
+textarea:focus, input:focus, select:focus{
+outline: none;
 }
 
 
