@@ -1,14 +1,15 @@
 <div class="input-container">
 
   <input [type]="type" [placeholder]="placeholder" [value]="valueText"
-         class="input-text" (keyup)="onKey($event)" (focusout)="focusChange()">
+         class="input-text" (keyup)="onKey($event)" (focusout)="focusChange()"  (click)="onClickInputBox()" [disabled]="disabled">
   <div *ngIf="!error" class="input-border input-border-ok"></div>
   <div *ngIf="error" class="input-border input-border-error"></div>
   <div *ngIf="ok || error" class="input-validation">
     <img *ngIf="ok" src="/src/images/check_icon.png" class="input-validation input-validation-ok"/>
     <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup">{{errorMessage}}</span>
-    <div *ngIf="error" class="input-validation input-validation-error">Required field <img
-      class="input-validation-image" (click)="showInfo()" src="/src/images/info-icon.png"/></div>
+    <div *ngIf="error" [ngClass]="{'long-error-message' : errorMessage.length < 19}" class="input-validation input-validation-error">
+      <span *ngIf="errorMessage.length < 19">{{errorMessage}}</span>
+      <img *ngIf="errorMessage.length >= 19" class="input-validation-image" (click)="showInfo()" src="/src/images/info-icon.png"/></div>
   </div>
 </div>
 

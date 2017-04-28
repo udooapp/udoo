@@ -18,9 +18,11 @@ export class InputComponent {
   valueText = '';
   inputText = '';
   @Input() type: string;
+  @Input() disabled =  false;
   @Input() placeholder: string;
   @Input() validation: ValidationComponent;
   @Output() text = new EventEmitter<String>();
+  @Output() onClickInput= new EventEmitter<boolean>();
 
 
   constructor() {
@@ -74,6 +76,9 @@ export class InputComponent {
     if (this.error) {
       this.valid();
     }
+  }
+  onClickInputBox(){
+    this.onClickInput.emit(true);
   }
 
   showInfo() {

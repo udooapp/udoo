@@ -3,13 +3,22 @@
   <form #userForm="ngForm">
     <div *ngIf="registration" class="input-group">
       <span class="input-label">Type</span><br>
-      <div class="input-radio">
-        <input type="radio" name="radiogroup" [value]="user.type === 1" (change)="user.type = 1">
-        <span class="input-label">Person</span>
-        <input type="radio" name="radiogroup" [value]="0 === user.type" (change)="user.type = 0">
-        <span class="input-label">Organization</span>
-      </div>
+      <ul>
+        <li>
+          <label class="input-radio-label" for="personal">Personal</label>
+          <input class="input-radio" type="radio" id="personal" name="selector" [value]="user.type === 1"
+                 (change)="user.type = 1">
+          <div class="input-radio-button"></div>
+        </li>
+        <li>
+          <input class="input-radio" type="radio" id="organization" name="selector" [value]="0 === user.type"
+                 (change)="user.type = 0">
+          <label class="input-radio-label" for="organization">Organization</label>
+          <div class="input-radio-button"></div>
+        </li>
+      </ul>
     </div>
+    <br>
     <div class="input-group">
       <span class="input-label" *ngIf="!user.type">Organization</span>
       <span class="input-label" *ngIf="user.type">Username</span>
@@ -45,23 +54,29 @@
     <div class="input-group">
       <span class="input-label">Profile picture</span><br>
       <div class="linear-sort">
-        <div [ngClass]="{'input-profile-picture-image' : (user.picture.length == 0 || user.picture === 'null')}" class="input-profile-picture-background">
-          <div class="loader" *ngIf="loaderVisible"></div>
-          <img class="input-profile-picture" [src]="getUrl()">
+        <div [ngClass]="{'input-profile-picture-image' : (user.picture.length == 0 || user.picture === 'null')}"
+             class="input-profile-picture-background">
+          <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
+          <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+          <img class="input-profile-picture" [src]="getPictureUrl()">
         </div>
         <div class="picture-button-container">
-          <div class="input-file-uploader ">
-            <button class="input-file input-button button-light">
-              <span>Browse</span>
-              <input type="file" (change)="onChange($event)" accept="image/*"/>
-            </button>
+          <div class="picture-selector-button-container">
+            <div class="input-file-uploader ">
+              <button class="input-file input-button button-dark">
+                <span>Browse</span>
+                <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+              </button>
+            </div>
+            <div class="input-file-uploader ">
+              <button class="input-file input-button button-dark">
+                <span>Take</span>
+                <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+              </button>
+            </div>
           </div>
-          <div class="input-file-uploader ">
-            <button class="input-file input-button button-dark">
-              <span>Take</span>
-              <input type="file" (change)="onChange($event)" accept="image/*"/>
-            </button>
-          </div>
+          <input type="button" class="input-file input-button button-light cancel-button" value="Cancel" (click)="onClickCancel()"/>
+
         </div>
       </div>
     </div>

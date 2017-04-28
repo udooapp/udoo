@@ -6,11 +6,11 @@
          routerLinkActive="active">
   <div class="service-container">
     <div class="service" *ngFor="let item of data">
-      <div class="service-picture">{{item.picture}}</div>
+      <div class="service-picture"><img src="/src/images/Untitled.png">{{item.picture}}</div>
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
         <div class="service-description">{{item.description}}</div>
-        <div class="service-category">{{item.category}}</div>
+        <div class="service-category"><b>Category:</b>{{item.category}}</div>
         <div class="service-date">{{item.expridate}}</div>
       </div>
     </div>

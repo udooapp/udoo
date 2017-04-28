@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
   passwordVerification: string;
   loaderVisible = false;
   first = true;
+  pictureLoadError = false;
 
   constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
     this.passwordVerification = '';
@@ -34,15 +35,15 @@ export class ProfileComponent implements OnInit {
       error => this.error = <any>error);
   }
 
-  getUrl() {
+  getPictureUrl() {
     if (this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }
 
-  onChange(event) {
-    if(!this.first) {
+  onClickBrowse(event) {
+    if (!this.first) {
       this.loaderVisible = true;
       let fileList: FileList = event.target.files;
       if (fileList.length > 0) {
@@ -51,12 +52,22 @@ export class ProfileComponent implements OnInit {
             console.log('Message: ' + message);
             this.user.picture = message.toString();
             this.loaderVisible = false;
+            this.pictureLoadError = false;
           },
-          error => console.log('Error: ' + error)
+          error => {
+            console.log('Error: ' + error);
+            this.pictureLoadError = true;
+          }
         );
       }
     } else {
       this.first = false;
+    }
+  }
+
+  onClickCancel() {
+    if (this.user.picture.length > 0) {
+      this.user.picture = "";
     }
   }
 

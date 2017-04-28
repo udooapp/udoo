@@ -8,33 +8,65 @@
 
 .input-button {
   margin-left: 10%;
-  margin-bottom: 1%;
+  margin-bottom: 2%;
 }
+
 @media (min-width: 961px) {
   .input-button {
     width: 20%;
+  }
+
+  .data-container {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+  }
+
+  .service-container {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
   }
 }
 
 @media (max-width: 960px) {
   .input-button {
+    width: 78%;
+    height: 40px;
+  }
+
+  .service-container {
     width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
   }
 }
+
+.input-button {
+  margin-left: 11%;
+}
+
+@media (max-width: 641px) {
+  .input-button {
+    height: 50px;
+    width: 87%;
+    margin-left: 6%;
+  }
+
+  .service-container {
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
 h1 {
   text-align: center;
   color: dimgrey;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .data-container {
-  padding: 5%;
-}
-
-.service-container {
-  width: 80%;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding: 0;
 }
 
 .service {
@@ -42,17 +74,24 @@ h1 {
   border-radius: 2px;
   display: -webkit-flex;
   display: flex;
-  margin: 1%;
+  margin: 2%;
   -webkit-flex-direction: row;
   flex-direction: row;
 }
 
 .service-picture {
-  height: 90%;
-  width: 20%;
+  height: 100px;
+  width: 150px;
   margin: 5%;
-  padding: 5%;
-  background-color: dimgrey;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  overflow: hidden;
+}
+
+.service-picture img {
+  height: 120px;
+  width: 170px;
+  margin: -12px 0 0 -12px;
 }
 
 .service-content {

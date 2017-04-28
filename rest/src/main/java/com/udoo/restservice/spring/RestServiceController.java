@@ -211,6 +211,7 @@ public class RestServiceController implements IRestServiceController {
         FileCopyUtils.copy(in, response.getOutputStream());
     }
 
+    @Override
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         HttpHeaders headers = new HttpHeaders();
@@ -230,6 +231,7 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
+    @Override
     @RequestMapping(value="/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
 

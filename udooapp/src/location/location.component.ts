@@ -1,7 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 
-declare var google: any;
+declare let google: any;
 
 @Component({
   selector: 'location',
@@ -14,7 +13,7 @@ export class LocationComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
   }
 
   ngOnInit() {
@@ -77,4 +76,7 @@ export class LocationComponent implements OnInit {
     }
   }
 
+  onClickBack() {
+    this.onSaved.emit('');
+  }
 }

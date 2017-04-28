@@ -4,12 +4,13 @@
   <form #userForm="ngForm">
     <div class="input-group">
       <span class="input-label">Title</span><br>
-      <text-input [type]="'text'" [placeholder]="'Title'" [validation]="validation" [refresh]="validation.errorId" (text)="data.title=$event"></text-input>
+      <text-input [type]="'text'" [placeholder]="'Title'" [validation]="validation" [refresh]="validation.errorId"
+                  (text)="data.title=$event"></text-input>
     </div>
     <div class="input-group">
       <span class="input-label">Category</span><br>
       <select class="input-select" id="category" (change)="onChangeSelect($event)" required>
-        <option *ngFor="let cat of category" [value]="cat" >{{cat}}</option>
+        <option *ngFor="let cat of category" [value]="cat">{{cat}}</option>
       </select>
     </div>
     <div class="input-group">
@@ -24,20 +25,30 @@
     </div>
     <div class="input-group">
       <span class="input-label">Location</span><br>
-      <text-input [type]="'text'" [placeholder]="'Location'" [validation]="validation" [refresh]="validation.errorId" [value]="data.location" (text)="data.location=$event"></text-input>
+      <text-input [type]="'text'" [placeholder]="'Choose service location'" [validation]="validation" [refresh]="validation.errorId"
+                  [value]="data.location" (text)="data.location=$event" (onClickInput)="onClickSelectLocation()" ></text-input>
     </div>
-    <input type="button" value="Choose service location" class="input-button button-light" (click)="onSelect()"/>
 
     <div class="input-group">
       <br><span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
-      <text-input *ngIf="offer" [validation]="validation" [refresh]="validation.errorId" [type]="'text'" [placeholder]="'Availability'" (text)="data.availability=$event"></text-input><br>
-      <text-input *ngIf="!offer" [validation]="validation" [refresh]="validation.errorId" [type]="'data'" [placeholder]="'Date'" (text)="data.jobdate=$event"></text-input><br>
-      <text-input *ngIf="!offer" [validation]="validation" [refresh]="validation.errorId" [type]="'time'"></text-input><br>
-      <text-input *ngIf="!offer" [validation]="validation" [refresh]="validation.errorId" [type]="'number'" [placeholder]="'Period'" ></text-input><br>
+      <text-input *ngIf="offer" [validation]="validation" [refresh]="validation.errorId" [type]="'text'"
+                  [placeholder]="'Availability'" (text)="data.availability=$event"></text-input>
+      <div  *ngIf="!offer">
+      <br>
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'data'"
+                  [placeholder]="'Date'" (text)="data.jobdate=$event"></text-input>
+      <br>
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'time'"></text-input>
+      <br>
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'number'"
+                  [placeholder]="'Period'"></text-input>
+      <br>
+      </div>
     </div>
     <div class="input-group">
       <span class="input-label">Expiry date</span><br>
-      <text-input [type]="'date'" [validation]="validation" [refresh]="validation.errorId" (text)="data.expirydate=$event"></text-input>
+      <text-input [type]="'date'" [validation]="validation" [refresh]="validation.errorId"
+                  (text)="data.expirydate=$event"></text-input>
     </div>
     <div class="input-group">
       <input type="button" value="Save" class="input-button button-dark" (click)="save()"/>

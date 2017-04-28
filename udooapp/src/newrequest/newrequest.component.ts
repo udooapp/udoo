@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
-import {Router} from "@angular/router";
 import {ValidationComponent} from "../input/validation.component";
 
 @Component({
@@ -20,12 +19,12 @@ export class NewRequestComponent {
   data = new Request(null, '', '', '', 1, '', '', '', '');
 
 
-  constructor(private requestService: RequestService, private  validation : ValidationComponent) {
+  constructor(private requestService: RequestService, private  validation: ValidationComponent) {
     this.data.category = this.category[0];
   }
 
   save() {
-    if(this.validation.checkValidation()) {
+    if (this.validation.checkValidation()) {
       this.requestService.saveRequest(this.data).subscribe(
         message => this.message = message,
         error => {
@@ -41,12 +40,12 @@ export class NewRequestComponent {
     this.data.category = event.target.value;
   }
 
-  onSelect() {
+  onClickSelectLocation() {
     this.load = !this.load;
   }
 
   saveLocation(location: Object) {
     this.data.location = JSON.stringify(location).replace('"', '\\"');
-    this.onSelect();
+    this.onClickSelectLocation();
   }
 }

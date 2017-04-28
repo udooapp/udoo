@@ -1,12 +1,16 @@
 @media (min-width: 961px) {
   .input-container {
     width: 20%;
+    padding-top: 6%;
+    padding-bottom: 6%;
   }
 }
 
 @media (max-width: 960px) {
   .input-container {
     width: 60%;
+    padding-top: 4%;
+    padding-bottom: 4%;
   }
 }
 
@@ -36,7 +40,7 @@
   font-size: 8pt;
   text-align: center;
   padding: 5px;
-  z-index: 10;
+  z-index: 5;
 }
 .input-border-error{
   border-bottom: 3px solid #DD4B39;
@@ -70,9 +74,10 @@
 
 .input-validation-error {
   background-color: #DD4B39;
+}
+.long-error-message{
   width: 90px;
 }
-
 .input-validation-ok {
   background-color: #378281;
 }
@@ -117,20 +122,20 @@
   bottom: 125%;
   right: 0;
   margin-left: -90px;
-  z-index: 10;
+  z-index: 5;
 }
 .show {
   visibility: visible;
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
-  z-index: 10;
+  z-index: 5;
 }
 .popuptext::after {
   content: "";
   position: absolute;
   top: 100%;
   right: 5%;
-  z-index: 10;
+  z-index: 5;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
