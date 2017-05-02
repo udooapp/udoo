@@ -8,7 +8,7 @@ declare let google: any;
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css'],
+  styleUrls: ['./map.component.css', '../layouts/lists.component.css'],
   providers: [MapService]
 })
 export class MapComponent implements OnInit {
@@ -20,8 +20,11 @@ export class MapComponent implements OnInit {
   private searchString = '';
   private type = 0;
   private category = 0;
-  private categories: any[] = [{cid : 0, name : ''}];
+  private categories: any[] = [{cid: 0, name: ''}];
   private markers = [];
+  private requests: Request[] = [];
+  private offers: Offer[] = [];
+  private mapView = true;
   private types: string[] = ['Select', 'Offer', 'Request'];
 
   constructor(private mapService: MapService) {
@@ -37,20 +40,21 @@ export class MapComponent implements OnInit {
   loadRequests() {
     this.mapService.getRequestLocations(this.category, this.searchString).subscribe(
       requests => {
-        for (let i = 0; i <requests.length; ++i) {
+        this.requests = requests;
+        for (let i = 0; i < requests.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(requests[i].location),
+            position: JSON.parse(requests[i].location).coordiante,
             map: this.map,
-            title:requests[i].title,
+            title: requests[i].title,
             icon: '/src/images/icon.png'
 
           });
           let infowindow = new google.maps.InfoWindow({
             content: '<div>' +
-            '<h1>' +requests[i].title + '</h1>' +
+            '<h1>' + requests[i].title + '</h1>' +
             '<div>' +
-            '<p>' +requests[i].description + '</p>' +
-            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid ===requests[i].category).name + '</p>' +
+            '<p>' + requests[i].description + '</p>' +
+            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid === requests[i].category).name + '</p>' +
             '</div>' +
             '</div>'
           });
@@ -74,9 +78,10 @@ export class MapComponent implements OnInit {
 
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
       offers => {
+        this.offers = offers;
         for (let i = 0; i < offers.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(offers[i].location),
+            position: JSON.parse(offers[i].location).coordinate,
             map: this.map,
             title: offers[i].title,
             icon: '/src/images/icon.png'
@@ -115,8 +120,10 @@ export class MapComponent implements OnInit {
 
     } else if (this.type == 1) {
       this.loadOffers();
+      this.requests = [];
     } else if (this.type == 2) {
       this.loadRequests();
+      this.offers = [];
     }
   }
 
@@ -195,5 +202,14 @@ export class MapComponent implements OnInit {
       this.category = event.target.value;
       this.refresh()
     }
+  }
+
+  showList() {
+    this.mapView = !this.mapView;
+  }
+
+  getCategory(category: number): string {
+    let cat = this.categories.find(cat => cat.cid == category);
+    return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
   }
 }

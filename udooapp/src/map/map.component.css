@@ -3,14 +3,17 @@
 #map {
   height: 100%;
 }
+
 @media (min-width: 961px) {
   .map-filter {
     width: 40%;
   }
-  .map-triangle-container{
+
+  .map-triangle-container {
     width: 5%;
   }
-  .map-inputs-container{
+
+  .map-inputs-container {
     width: 95%;
   }
 }
@@ -19,32 +22,40 @@
   .map-filter {
     width: 60%;
   }
-  .map-triangle-container{
+
+  .map-triangle-container {
     width: 7.5%;
   }
-  .map-inputs-container{
+
+  .map-inputs-container {
     width: 87.5%;
   }
 }
+
 @media (max-width: 641px) {
   .map-filter {
     width: 95%;
   }
-  .map-triangle-container{
+
+  .map-triangle-container {
     width: 10%;
   }
-  .map-inputs-container{
+
+  .map-inputs-container {
     width: 90%;
   }
 }
-.hide-map-filter{
+
+.hide-map-filter {
   margin: 0;
   width: 50px;
 }
-.hide-map-inputs{
+
+.hide-map-inputs {
   display: none;
 }
-.map-filter{
+
+.map-filter {
   position: absolute;
   margin: 1%;
   padding: 1%;
@@ -58,7 +69,8 @@
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-.map-search{
+
+.map-search {
   margin: 1%;
   width: 98%;
   border: 0;
@@ -69,18 +81,20 @@
   font-size: 14pt;
 }
 
-.map-select{
+.map-select {
   float: left;
   margin: 1%;
   height: 30px;
   width: 48%;
   border-radius: 3px;
 }
-.map-option{
+
+.map-option {
   height: 30px;
   width: 50%;
 }
-.map-selector-container{
+
+.map-selector-container {
 
 }
 
@@ -88,14 +102,13 @@
   width: 0;
   height: 0;
   border-top: 10px solid transparent;
-  border-right: 20px solid  #505050;
+  border-right: 20px solid #505050;
   border-bottom: 10px solid transparent;
   right: 0;
   cursor: pointer;
 }
 
-#magnifying-glass
-{
+#magnifying-glass {
   font-size: 2em;
   display: inline-block;
   width: 0.4em;
@@ -106,8 +119,7 @@
   cursor: pointer;
 }
 
-#magnifying-glass::before
-{
+#magnifying-glass::before {
   content: "";
   display: inline-block;
   position: absolute;
@@ -126,6 +138,11 @@
 .input-group {
   height: 40px;
 }
-.map-triangle-container{
+
+.map-triangle-container {
   margin: auto;
+}
+
+.input-button {
+  margin: 1%;
 }
