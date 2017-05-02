@@ -35,8 +35,12 @@
   height: 40px;
   padding: 10px;
 }
+.menu-container::-webkit-scrollbar{
+  display: none;
+}
+
 .menu-container {
-  overflow: auto;
+  overflow-y: auto;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;

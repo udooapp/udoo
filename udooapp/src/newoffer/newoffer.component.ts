@@ -14,15 +14,16 @@ export class NewOfferComponent {
   message: String;
   error = '';
   offer = true;
+  location = '';
   load = false;
   data = new Offer(null, '', '', '', 1, '', '', 0);
 
-  constructor(private offerService: OfferService, private validation : ValidationComponent) {
+  constructor(private offerService: OfferService, private validation: ValidationComponent) {
     this.data.category = this.category[0];
   }
 
   save() {
-    if(this.validation.checkValidation()) {
+    if (this.validation.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => this.message = message,
         error => this.error = <any>error);
@@ -39,7 +40,8 @@ export class NewOfferComponent {
     this.load = !this.load;
   }
 
-  saveLocation(location: Object) {
+  saveLocation(location) {
+    this.location = location.address;
     this.data.location = JSON.stringify(location).replace('"', '\\"');
     this.onClickSelectLocation();
   }

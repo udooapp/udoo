@@ -8,7 +8,7 @@ declare let google: any;
   styleUrls: ['./location.component.css']
 })
 export class LocationComponent implements OnInit {
-  position = {lat: 0, lng: 0};
+  position = {lat: 0, lng: 0, address: ''};
   error: string;
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
@@ -26,7 +26,19 @@ export class LocationComponent implements OnInit {
       });
       map.addListener('click', function (e) {
         marker.setPosition(e.latLng);
-        loc.savePosition({lat: marker.getPosition().lat(), lng: marker.getPosition().lng()});
+        let geocoder = new google.maps.Geocoder;
+        geocoder.geocode({'location': marker.getPosition()}, function(results, status) {
+          if (status === 'OK') {
+            if (results[1]) {
+              loc.savePosition({coordinate: {lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, address: results[0].formatted_address});
+            } else {
+              window.alert('No results found');
+            }
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+
       });
       let marker = new google.maps.Marker({
         title: 'Service location',
@@ -37,6 +49,7 @@ export class LocationComponent implements OnInit {
   }
 
   savePosition(pos) {
+
     this.position = pos;
   }
 

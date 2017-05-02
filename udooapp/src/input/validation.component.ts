@@ -13,7 +13,8 @@ export class ValidationComponent {
   }
 
   public add() : number{
-    return this.inputs.push(false);
+    this.inputs.push(false);
+    return this.inputs.length - 1;
   }
 
   public checkInputValidation(id : number,text : string, type : string) : string{
@@ -33,6 +34,9 @@ export class ValidationComponent {
       case 'text':
         this.inputs[id] = text.length > 0;
         return this.inputs[id] ? '' : 'Most be complete';
+      case 'date':
+        this.inputs[id] = text.length > 0;
+        return this.inputs[id] ? '' : 'Most be select';
     }
     return '';
   }

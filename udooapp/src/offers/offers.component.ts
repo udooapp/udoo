@@ -20,5 +20,8 @@ export class OfferComponent implements OnInit {
       data => this.data = data,
       error => this.error = <any>error);
   }
+  getAddress(location : string){
+    return JSON.parse(location).address;
+  }
 }
 

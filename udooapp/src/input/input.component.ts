@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ValidationComponent} from "./validation.component";
 import formatErrorMsg = jasmine.formatErrorMsg;
+import {type} from "os";
 
 
 @Component({
@@ -14,21 +15,20 @@ export class InputComponent {
   show = false;
   notChange = false;
   errorMessage = '';
-  id: number;
+  id = -1;
   valueText = '';
   inputText = '';
   @Input() type: string;
-  @Input() disabled =  false;
+  @Input() disabled = false;
   @Input() placeholder: string;
   @Input() validation: ValidationComponent;
   @Output() text = new EventEmitter<String>();
-  @Output() onClickInput= new EventEmitter<boolean>();
+  @Output() onClickInput = new EventEmitter<boolean>();
 
 
   constructor() {
     this.type = 'text';
     this.placeholder = 'value';
-    this.id = -1;
   }
 
   focusChange() {
@@ -39,6 +39,9 @@ export class InputComponent {
     if (!this.notChange) {
       this.valueText = value;
       this.inputText = value;
+      if (value.length > 0 && this.id > -1) {
+        this.valid();
+      }
     } else {
       this.notChange = false;
     }
@@ -60,7 +63,7 @@ export class InputComponent {
   @Input() set refresh(refresh: number) {
     if (this.id == -1) {
       this.id = this.validation.add();
-      if (this.inputText.length > 0) {
+      if(this.valueText.length > 0){
         this.valid();
       }
     }
@@ -77,7 +80,8 @@ export class InputComponent {
       this.valid();
     }
   }
-  onClickInputBox(){
+
+  onClickInputBox() {
     this.onClickInput.emit(true);
   }
 

@@ -28,7 +28,7 @@ export class MapComponent implements OnInit {
         this.requests = data;
         for (let i = 0; i < this.requests.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(this.requests[i].location),
+            position: JSON.parse(this.requests[i].location).coordinate,
             map: this.map,
             title: this.requests[i].title
 
@@ -39,19 +39,20 @@ export class MapComponent implements OnInit {
             '<div>' +
             '<p>' + this.requests[i].description + '</p>' +
             '<p><b>Category: </b>' + this.requests[i].category + '</p>' +
+            '<p><b>Address: </b>' + JSON.parse(this.requests[i].location).address + '</p>' +
             '</div>' +
             '</div>'
           });
           let map = this.map;
-          marker.addListener('mouseover', function() {
-            infowindow.open(map, marker);
-          });
+           marker.addListener('mouseover', function() {
+             infowindow.open(map, marker);
+           });
           marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
-          marker.addListener('mouseout', function() {
-            infowindow.close(map, marker);
-          });
+          // marker.addListener('mouseout', function() {
+          //   infowindow.close(map, marker);
+          // });
         }
       },
       error => this.error = <any>error);
@@ -60,7 +61,7 @@ export class MapComponent implements OnInit {
         this.offers = data;
         for (let i = 0; i < this.offers.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(this.offers[i].location),
+            position: JSON.parse(this.offers[i].location).coordinate,
             map: this.map,
             title: this.offers[i].title
           });
@@ -71,6 +72,7 @@ export class MapComponent implements OnInit {
                         '<div>' +
                           '<p>' + this.offers[i].description + '</p>' +
                           '<p><b>Category: </b>' + this.offers[i].category + '</p>' +
+                          '<p><b>Address: </b>' + JSON.parse(this.offers[i].location).address + '</p>' +
                         '</div>' +
                     '</div>'
           });
@@ -81,9 +83,9 @@ export class MapComponent implements OnInit {
           marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
-          marker.addListener('mouseout', function() {
-            infowindow.close(map, marker);
-          });
+         // marker.addListener('mouseout', function() {
+         //   infowindow.close(map, marker);
+         // });
         }
       },
       error => this.error = <any>error);

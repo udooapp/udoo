@@ -16,6 +16,7 @@ export class NewRequestComponent {
   offer = false;
   load = false;
   error = '';
+  location ='';
   data = new Request(null, '', '', '', 1, '', '', '', '');
 
 
@@ -44,8 +45,9 @@ export class NewRequestComponent {
     this.load = !this.load;
   }
 
-  saveLocation(location: Object) {
+  saveLocation(location) {
     this.data.location = JSON.stringify(location).replace('"', '\\"');
+    this.location = location.address;
     this.onClickSelectLocation();
   }
 }
