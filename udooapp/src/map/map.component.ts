@@ -18,7 +18,6 @@ export class MapComponent implements OnInit {
   private requests: Request[];
   private offers: Offer[];
   private error: string;
-
   constructor(private mapService: MapService) {
   }
 

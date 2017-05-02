@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
-import { Request } from '../entity/request'
+import {Request} from '../entity/request'
 @Injectable()
 export class RequestService {
   private userUrl = 'http://localhost:8090/rest';  // URL to web API
@@ -24,15 +24,14 @@ export class RequestService {
       .catch(this.handleError);
   }
 
-  getUserRequest(uid : number): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/request/' + uid, new RequestOptions({headers: this.headers}))
+  getUserRequest(token: any): Observable<Request[]> {
+    return this.http.post(this.userUrl + '/request', token.toString(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
   private extractData(res: Response) {
-    const body = res.json();
-    return body || {};
+    return res.json() || {};
   }
 
   private handleError(error: Response | any) {

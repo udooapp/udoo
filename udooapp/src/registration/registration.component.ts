@@ -14,7 +14,7 @@ export class RegistrationComponent {
   message: String;
   error: string;
   registration = true;
-  user = new User(null, '', '', '', '', '', 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '');
   passwordCheck = '';
   passwordVerification: string;
   loaderVisible = false;

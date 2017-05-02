@@ -9,6 +9,8 @@ import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRestServiceController;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
@@ -121,19 +123,54 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
+    @RequestMapping(value = "/userdata", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> getUserData(@RequestBody String token) {
+        try {
+            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
+            if(users.size() > 0) {
+                return new ResponseEntity<>(users.get(0), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (JSONException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-    @Override
-    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<List<Request>> getAllUserRequest(@PathVariable("id") int uid) {
-
-        return new ResponseEntity<>(requestRepository.findByUid(uid), HttpStatus.OK);
     }
 
+
     @Override
-    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<Offer>> getAllUserOffer(@PathVariable("id") int id) {
-        return new ResponseEntity<>(offerRepository.findByUid(id), HttpStatus.OK);
+    @RequestMapping(value = "/request", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<List<Request>> getAllUserRequest(@RequestBody String token) {
+        try {
+            System.out.println(token);
+            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
+            if(users.size() > 0) {
+                System.out.println(users.get(0).getUid());
+                return new ResponseEntity<>(requestRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (JSONException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @Override
+    @RequestMapping(value = "/offer", method = RequestMethod.POST)
+    public ResponseEntity<List<Offer>> getAllUserOffer(@RequestBody String token) {
+        try {
+            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
+            if(users.size() > 0) {
+                return new ResponseEntity<>(offerRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (JSONException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @Override

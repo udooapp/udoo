@@ -28,14 +28,17 @@
   overflow: hidden;
   height: calc(100% - 60px);
 }
-.map-container{
+
+.map-container {
   overflow: auto;
 }
-.header-logo{
+
+.header-logo {
   height: 40px;
   padding: 10px;
 }
-.menu-container::-webkit-scrollbar{
+
+.menu-container::-webkit-scrollbar {
   display: none;
 }
 
@@ -43,6 +46,7 @@
   overflow-y: auto;
   display: -webkit-flex;
   display: flex;
+  color: #378281;
   -webkit-flex-direction: column;
   flex-direction: column;
   width: 300px;
@@ -56,50 +60,98 @@
 }
 
 .menu-profile {
-  display: block;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  border-bottom: 3px solid #AFAFAF;
-  padding-top: 2%;
-  padding-bottom: 2%;
-  height: 300px;
+  padding: 20px;
 }
-
+.menu-container-background{
+  width: 100%;
+  position: absolute;
+  height: calc(100% - 60px);
+  float: left;
+  background-color: black;
+  opacity: 0.4;
+  z-index: 9;
+}
 .menu-profile-name {
   text-align: center;
   font-size: 20px;
+  width: 100%;
+  margin: auto;
+  font-weight: 100;
 }
-
+.login-button{
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-decoration: none;
+  width: 100%;
+  height: 35px;
+  margin-left: 30%;
+  margin-right: 30%;
+  margin-top: 4%;
+  border-radius: 5px;
+  text-align: center;
+}
+.login-button:hover{
+  opacity: 0.8;
+}
+.menu-profile-stars-container {
+  padding-left: 65px;
+  padding-right: 65px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
 .menu-profile-stars {
-  padding: 10%;
+  width :20px;
+  height: 20px;
+  margin: 2px;
 }
 
 .menu-profile-picture {
-  padding: 10%;
+  margin-left: 60px;
+  margin-right: 60px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  background-color: #FAFAFA;
+  padding: 5%;
 }
 
 .menu-profile-image {
-  width: 80%;
-  margin-left: 7%;
+  width: 100%;
+  height: 100%;
 }
 
 .menu-placeholder {
-  height: 40px;
-  border-top: 3px solid #AFAFAF;
-  border-bottom: 3px solid #AFAFAF;
+  height: 30px;
 }
 
 .map-container {
   height: 100%;
 }
-
+.menu-link-image{
+  width: 30px;
+  height: 30px;
+  margin-left: 5%;
+  margin-right: 5%;
+  vertical-align: middle;
+}
 .menu-link {
   text-decoration: none;
-  color: dimgrey;
+  color: #378281;
   padding: 5%;
-  text-align: center;
+  font-weight: bold;
+  text-align: left;
+  vertical-align: middle;
 }
 
 .menu-link:hover {
-  background-color: #DADADA;
+  background-color: #FAFAFA;
 }
+

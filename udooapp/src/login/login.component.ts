@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
   message: String;
-  user = new User(null, '', '', '', '', '', 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '');
   error: string;
 
   constructor( private router: Router, private userService: UserService, private validation: ValidationComponent) {

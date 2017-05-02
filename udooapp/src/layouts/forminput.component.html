@@ -54,7 +54,7 @@
     <div class="input-group">
       <span class="input-label">Profile picture</span><br>
       <div class="linear-sort">
-        <div [ngClass]="{'input-profile-picture-image' : (user.picture.length == 0 || user.picture === 'null')}"
+        <div [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
              class="input-profile-picture-background">
           <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
           <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
@@ -93,6 +93,6 @@
 
   </form>
   <div>
-    <span>{{message}}</span>
+    <span class="ok-message">{{message}}</span>
   </div>
 </div>

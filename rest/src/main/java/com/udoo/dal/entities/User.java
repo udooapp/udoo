@@ -25,7 +25,7 @@ public class User {
 
     private Integer type;
 
-    private Integer stars;
+    private float stars;
 
     private String birthdate;
 
@@ -85,11 +85,11 @@ public class User {
         this.type = type;
     }
 
-    public Integer getStars() {
+    public float getStars() {
         return stars;
     }
 
-    public void setStars(Integer stars) {
+    public void setStars(Float stars) {
         this.stars = stars;
     }
 

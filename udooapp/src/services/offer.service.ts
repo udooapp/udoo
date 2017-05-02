@@ -27,13 +27,12 @@ export class OfferService {
       .catch(this.handleError);
   }
 
-  getUserOffer(uid: number): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offer/' + uid)
+  getUserOffer(token: any): Observable<Offer[]> {
+    return this.http.post(this.userUrl + '/offer', token.toString(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
-
-
+  
   private extractData(res: Response) {
     return res.json() || {};
   }

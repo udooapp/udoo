@@ -46,6 +46,7 @@ export class UserService {
       '"password" : "' + user.password + '",' +
       '"phone" : "' + user.phone + '",' +
       '"type" : "' + user.type + '",' +
+      '"stars" : "' + user.stars + '",' +
       '"birthdate" : "' + user.birthdate + '",' +
       '"picture" : "' + user.picture + '"}'
       , new RequestOptions({headers: this.headers}))
@@ -56,6 +57,11 @@ export class UserService {
 
   getUser(id: number): Observable<User> {
     return this.http.get(this.userUrl + '/user/' + id)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+  getUserData(token: any): Observable<User> {
+    return this.http.post(this.userUrl + '/userdata', token.toString(), new RequestOptions({headers : this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
@@ -87,7 +93,7 @@ export class UserService {
   private handleText(error: Response | any) {
     return Observable.throw(error.message ? error.message : error.toString());
   }
-  
+
   private extractData(res: Response) {
     return JSON.parse(res.text()) || {};
   }

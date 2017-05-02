@@ -6,31 +6,32 @@ import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
 import {ValidationComponent} from "../input/validation.component";
 import {DomSanitizer} from "@angular/platform-browser";
+import {TokenService} from "../guard/TokenService";
 
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
   styleUrls: ['../layouts/forminput.component.css', './profile.component.css'],
-  providers: [UserService, ValidationComponent]
+  providers: [UserService, ValidationComponent, TokenService]
 })
 
 export class ProfileComponent implements OnInit {
   registration = false;
   message: String;
   error: string;
-  user = new User(null, '', '', '', '', '', 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '');
   passwordCheck = '';
   passwordVerification: string;
   loaderVisible = false;
   first = true;
   pictureLoadError = false;
 
-  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
+  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer, private tokenService: TokenService) {
     this.passwordVerification = '';
   }
 
   ngOnInit() {
-    this.userService.getUser(2).subscribe(
+    this.userService.getUserData(this.tokenService.getToken()).subscribe(
       user => this.user = user,
       error => this.error = <any>error);
   }
@@ -85,7 +86,10 @@ export class ProfileComponent implements OnInit {
   insertUser() {
     if (this.validation.checkValidation()) {
       this.userService.updateUser(this.user).subscribe(
-        message => this.message = message,
+        message => {
+          this.message = message;
+          this.tokenService.saveToken(JSON.parse(this.tokenService.getToken()).token, this.user.email);
+        },
         error => {
           this.error = <any>error;
           console.log(this.error);

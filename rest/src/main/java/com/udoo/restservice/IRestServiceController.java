@@ -24,9 +24,9 @@ public interface IRestServiceController {
 
     String getUserName(final Integer id);
 
-    ResponseEntity<?> getAllUserRequest(int uid);
+    ResponseEntity<?> getAllUserRequest(String token);
 
-    ResponseEntity<?> getAllUserOffer(int uid);
+    ResponseEntity<?> getAllUserOffer(String token);
 
     ResponseEntity<String> saveOffer(Offer offer);
 

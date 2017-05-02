@@ -53,6 +53,7 @@ export class InputComponent {
       if (this.errorMessage.length == 0) {
         this.ok = true;
         this.error = false;
+        this.show = false;
       } else {
         this.error = true;
         this.ok = false;

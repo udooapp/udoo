@@ -137,6 +137,11 @@ body {
   color: red;
 }
 
+.ok-message{
+  text-align: center;
+  color:#378281;
+  width: 100%;
+}
 textarea:focus, input:focus, select:focus {
   outline: none;
 }

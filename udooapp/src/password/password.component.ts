@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 
 
-import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
 import {ValidationComponent} from "../input/validation.component";
 
