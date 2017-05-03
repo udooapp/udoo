@@ -36,7 +36,7 @@ public interface IRestServiceController {
 
     ResponseEntity<String> updateUser(final User user);
 
-    User getUser(final Integer id);
+    User getUser(final String id);
 
     ResponseEntity<?> getAllOffers();
 

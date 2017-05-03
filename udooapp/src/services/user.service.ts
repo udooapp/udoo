@@ -56,8 +56,8 @@ export class UserService {
   }
 
 
-  getUser(id: number): Observable<User> {
-    return this.http.get(this.userUrl + '/user/' + id)
+  getUserCurrentUser(): Observable<User> {
+    return this.http.get(this.userUrl + '/user/' + JSON.parse(this.tokenService.getToken()).username)
       .map(this.extractData)
       .catch(this.handleError);
   }

@@ -126,10 +126,10 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
-    public User getUser(@PathVariable("id") final Integer id) {
-        if (id != null) {
-            return userRepository.findByUid(id);
+    @RequestMapping(value = "/user/{email:.+}", method = RequestMethod.GET)
+    public User getUser(@PathVariable("email") final String email) {
+        if (email != null) {
+            return userRepository.findByEmail(email).get(0);
         } else {
             return null;
         }

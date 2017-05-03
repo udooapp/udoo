@@ -49,9 +49,9 @@ export class MapComponent implements OnInit {
           marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
-           marker.addListener('mouseout', function() {
-             infowindow.close(map, marker);
-           });
+          marker.addListener('mouseout', function() {
+            infowindow.close(map, marker);
+          });
         }
       },
       error => this.error = <any>error);
@@ -82,9 +82,9 @@ export class MapComponent implements OnInit {
           marker.addListener('click', function() {
             infowindow.open(map, marker);
           });
-          marker.addListener('mouseout', function() {
-            infowindow.close(map, marker);
-          });
+         marker.addListener('mouseout', function() {
+           infowindow.close(map, marker);
+         });
         }
       },
       error => this.error = <any>error);
@@ -104,6 +104,7 @@ export class MapComponent implements OnInit {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
     }
+
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;

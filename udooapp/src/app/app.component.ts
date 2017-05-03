@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,8 +18,8 @@ export class AppComponent implements OnInit {
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
-
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService) {
+  image : SafeUrl;
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private sanitizer: DomSanitizer) {
     router.events.subscribe((val) => {
       // see also
       if (val.url === '/map') {
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit {
       this.userService.getUserData(token).subscribe(
         user => {
           this.user = user;
+          this.image = this.getPictureUrl(user.picture);
           let star = user.stars;
           for (let i = 0; i < 5; ++i) {
             if (star >= 1) {
@@ -51,11 +53,24 @@ export class AppComponent implements OnInit {
           }
         },
         error => console.log(error));
+    } else {
+      this.image = this.getPictureUrl('');
     }
+  }
+
+  getPictureUrl(src : string) {
+
+    if (!this.login) {
+      return '/src/images/profile_picture.png';
+    } else if(src == null || src.length == 0 || src === 'null'){
+      return '/src/images/profile_picture.png';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }
 
   logOut() {
     this.visibleMenu = !this.visibleMenu;
+    this.image = this.getPictureUrl('');
     this.userService.logout();
     this.login = false;
     this.user = new User(null, '', '', '', '', '', 0, 0, '');

@@ -127,13 +127,19 @@
   border-radius: 100%;
   background-color: #FAFAFA;
   padding: 5%;
+  overflow: hidden;
 }
 
 .menu-profile-image {
   width: 100%;
   height: 100%;
-}
 
+}
+.menu-picture-image{
+  width: 150px;
+  height: 150px;
+  margin: -15px 0 0 -15px;
+}
 .menu-placeholder {
   height: 30px;
 }

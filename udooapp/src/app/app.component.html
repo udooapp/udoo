@@ -10,7 +10,7 @@
   <div class="menu-container" *ngIf="visibleMenu">
     <div class="menu-profile">
       <div class="menu-profile-picture">
-        <img class="menu-profile-image" src="/src/images/profile_picture.png">
+        <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture.length > 3)}" [src]="image" >
       </div>
       <div class="menu-profile-name" *ngIf="login">{{user.name}}</div>
       <div *ngIf="login" class="menu-profile-stars-container">
