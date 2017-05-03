@@ -19,23 +19,24 @@ export class UserService {
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
-  logout() : void{
+
+  logout(): void {
     this.tokenService.clearToken();
     this.http.post(this.userUrl + '/logout', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
   }
-  loginUser(user: User): Observable<boolean> {
+
+  loginUser(user: User): Observable<string> {
     return this.http.post(this.userUrl + '/login', user.toString(), new RequestOptions({headers: this.headers}))
-      .map((response: Response)=>{
+      .map((response: Response) => {
         let token = response.json() && response.json().token;
         if (token) {
           this.tokenService.saveToken(token, user.email);
           // return true to indicate successful login
-          return true;
+          return '';
         } else {
-          // return false to indicate failed login
-          return false;
+          return response.text();
         }
-    });
+      }).catch((response: Response) => { return response.text()});
   }
 
   updateUser(user: User): Observable<String> {
@@ -60,8 +61,9 @@ export class UserService {
       .map(this.extractData)
       .catch(this.handleError);
   }
+
   getUserData(token: any): Observable<User> {
-    return this.http.post(this.userUrl + '/userdata', token.toString(), new RequestOptions({headers : this.headers}))
+    return this.http.post(this.userUrl + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
@@ -72,8 +74,8 @@ export class UserService {
       .catch(this.handleText);
   }
 
-  changePassword(cpass: string, npass: string, id: number): Observable<String> {
-    return this.http.post(this.userUrl + '/password?cpass=' + cpass + '&npass=' + npass + "&id=" + id, new RequestOptions({headers: this.headers}))
+  changePassword(cpass: string, npass: string): Observable<String> {
+    return this.http.post(this.userUrl + '/password?cpass=' + cpass + '&npass=' + npass + "&email=" + JSON.parse(this.tokenService.getToken()).username, new RequestOptions({headers: this.headers}))
       .map(this.extractText)
       .catch(this.handleText);
   }

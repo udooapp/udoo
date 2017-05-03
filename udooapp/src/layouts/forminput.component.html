@@ -47,37 +47,30 @@
     </div>
     <div class="input-group" *ngIf="registration">
       <span class="input-label">Password verification</span><br>
-      <text-input [type]="'Password'" [refresh]="validation.errorId" [validation]="validation"
+      <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
                   [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
-      <span>{{passwordCheck}}</span>
     </div>
     <div class="input-group">
       <span class="input-label">Profile picture</span><br>
-      <div class="linear-sort">
-        <div [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
-             class="input-profile-picture-background">
-          <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
-          <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
-          <img class="input-profile-picture" [src]="getPictureUrl()">
-        </div>
-        <div class="picture-button-container">
-          <div class="picture-selector-button-container">
-            <div class="input-file-uploader ">
-              <button class="input-file input-button button-dark">
-                <span>Browse</span>
-                <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-              </button>
-            </div>
-            <div class="input-file-uploader ">
-              <button class="input-file input-button button-dark">
-                <span>Take</span>
-                <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-              </button>
-            </div>
-          </div>
-          <input type="button" class="input-file input-button button-light cancel-button" value="Cancel" (click)="onClickCancel()"/>
 
-        </div>
+      <div class="input-profile-picture-background">
+        <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
+        <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+        <img
+          [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
+          [src]="getPictureUrl()">
+      </div>
+      <div class="picture-button-container">
+        <button class="input-file input-button button-dark">
+          <span>Browse</span>
+          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+        </button>
+        <button class="input-file input-button button-dark">
+          <span>Take</span>
+          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+        </button>
+        <input type="button" class="input-file input-button button-light" value="Clear"
+               (click)="onClickCancel()"/>
       </div>
     </div>
     <div class="input-group">
@@ -92,7 +85,6 @@
     </div>
 
   </form>
-  <div>
-    <span class="ok-message">{{message}}</span>
-  </div>
+  <div class="ok-message response-message">{{message}}</div>
+  <div class="error-message response-message">{{error}}</div>
 </div>

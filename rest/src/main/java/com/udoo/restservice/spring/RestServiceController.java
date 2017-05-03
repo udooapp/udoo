@@ -53,11 +53,14 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveUser(@RequestBody final User user) {
         if (user != null) {
+            if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
+                user.setBirthdate(null);
+            }
             if (userRepository.findByEmail(user.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
                 userRepository.save(user);
-                return new ResponseEntity<>("Profile updated", HttpStatus.OK);
+                return new ResponseEntity<>("Registration complete", HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -68,11 +71,20 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateUser(@RequestBody final User user) {
         if (user != null) {
-            if (userRepository.findByEmail(user.getEmail()).size() > 0) {
-                return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
+            if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
+                user.setBirthdate(null);
+            }
+            User cuser = userRepository.findByUid(user.getUid());
+            if (cuser == null) {
+                return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
-                userRepository.save(user);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
+                List<User> users = userRepository.findByEmail(user.getEmail());
+                if (users.size() > 0 && !users.get(0).getUid().equals(user.getUid())) {
+                    return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
+                } else {
+                    userRepository.save(user);
+                    return new ResponseEntity<>("Profile updated", HttpStatus.OK);
+                }
             }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -92,7 +104,7 @@ public class RestServiceController implements IRestServiceController {
             if (users.get(0).getPassword().equals(user.getPassword())) {
                 return new ResponseEntity<>("{\"token\": \"012dsa2sa2d2sa\"}", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Bad password", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }
         }
         return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
@@ -127,12 +139,12 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<User> getUserData(@RequestBody String token) {
         try {
             List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if(users.size() > 0) {
+            if (users.size() > 0) {
                 return new ResponseEntity<>(users.get(0), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        } catch (JSONException e){
+        } catch (JSONException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -146,28 +158,29 @@ public class RestServiceController implements IRestServiceController {
         try {
             System.out.println(token);
             List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if(users.size() > 0) {
+            if (users.size() > 0) {
                 System.out.println(users.get(0).getUid());
                 return new ResponseEntity<>(requestRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        } catch (JSONException e){
+        } catch (JSONException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
+
     @Override
     @RequestMapping(value = "/offer", method = RequestMethod.POST)
     public ResponseEntity<List<Offer>> getAllUserOffer(@RequestBody String token) {
         try {
             List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if(users.size() > 0) {
+            if (users.size() > 0) {
                 return new ResponseEntity<>(offerRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        } catch (JSONException e){
+        } catch (JSONException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -175,37 +188,50 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "id") int id) {
-        if (currentpassword != null && newpassword != null && id > 0) {
-            User user = userRepository.findByUid(id);
-            if (user.getPassword().equals(currentpassword)) {
-                user.setPassword(newpassword);
-                userRepository.save(user);
+    public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "email") String email) {
+        if (currentpassword != null && newpassword != null && email != null && !email.isEmpty()) {
+            List<User> user = userRepository.findByEmail(email);
+
+            if (user.get(0).getPassword().equals(currentpassword)) {
+                user.get(0).setPassword(newpassword);
+                userRepository.save(user.get(0));
                 return new ResponseEntity<>("Password changed", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }
         }
-        return new ResponseEntity<>("Password changed", HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>("Incorrect email", HttpStatus.NOT_MODIFIED);
     }
 
     @Override
-    @RequestMapping(value = "/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(@RequestBody Offer offer) {
-        if (offer != null) {
-            offerRepository.save(offer);
-            return new ResponseEntity<>("Saved", HttpStatus.OK);
+    @RequestMapping(value = "/saveoffer/{email:.+}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveOffer(@RequestBody Offer offer, @PathVariable("email") String email) {
+        if (offer != null && email != null) {
+            List<User> users = userRepository.findByEmail(email);
+            if (users.size() > 0) {
+                offer.setUid(users.get(0).getUid());
+                offerRepository.save(offer);
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+            }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
         }
     }
 
     @Override
-    @RequestMapping(value = "/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveRequest(@RequestBody Request request) {
-        if (request != null) {
-            requestRepository.save(request);
-            return new ResponseEntity<>("Saved", HttpStatus.OK);
+    @RequestMapping(value = "/saverequest/{email:.+}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveRequest(@RequestBody Request request, @PathVariable("email") String email) {
+        if (request != null && email != null) {
+            List<User> users = userRepository.findByEmail(email);
+            if (users.size() > 0) {
+                request.setUid(users.get(0).getUid());
+                requestRepository.save(request);
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+            }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
         }
@@ -238,7 +264,8 @@ public class RestServiceController implements IRestServiceController {
     private ServletContext context;
 
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
-    public @ResponseBody void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+    public @ResponseBody
+    void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
         System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
@@ -269,7 +296,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value="/uploadMulti", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
 
         List<String> imageNames = new ArrayList<>();

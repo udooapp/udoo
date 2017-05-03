@@ -55,6 +55,9 @@ export class InputComponent {
         this.error = false;
         this.show = false;
       } else {
+        if(this.errorMessage.length <  19){
+          this.show = false;
+        }
         this.error = true;
         this.ok = false;
       }

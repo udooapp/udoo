@@ -11,7 +11,7 @@ import {TokenService} from "../guard/TokenService";
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
-  styleUrls: ['../layouts/forminput.component.css', './profile.component.css'],
+  styleUrls: ['../layouts/forminput.component.css'],
   providers: [UserService, ValidationComponent, TokenService]
 })
 
@@ -20,10 +20,9 @@ export class ProfileComponent implements OnInit {
   message: String;
   error: string;
   user = new User(null, '', '', '', '', '', 0, 0, '');
-  passwordCheck = '';
   passwordVerification: string;
   loaderVisible = false;
-  first = true;
+  first = false;
   pictureLoadError = false;
 
   constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer, private tokenService: TokenService) {
@@ -32,12 +31,18 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getUserData(this.tokenService.getToken()).subscribe(
-      user => this.user = user,
-      error => this.error = <any>error);
+      user => {
+        if (user.picture.length > 4) {
+          this.first = false;
+        }
+        this.user = user;
+        this.error = '';
+      },
+      error => this.error = 'Please try again later');
   }
 
   getPictureUrl() {
-    if (this.user.picture.length == 0 || this.user.picture === 'null') {
+    if (this.user.picture == null || this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
@@ -76,9 +81,9 @@ export class ProfileComponent implements OnInit {
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
-        this.passwordCheck = 'Invalid password';
+        this.error = 'Invalid password';
       } else {
-        this.passwordCheck = '';
+        this.error = '';
       }
     }
   }
@@ -87,15 +92,16 @@ export class ProfileComponent implements OnInit {
     if (this.validation.checkValidation()) {
       this.userService.updateUser(this.user).subscribe(
         message => {
+          this.error = '';
           this.message = message;
           this.tokenService.saveToken(JSON.parse(this.tokenService.getToken()).token, this.user.email);
         },
         error => {
-          this.error = <any>error;
-          console.log(this.error);
+          this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';
+          console.log(this.error + ' ');
         });
     } else {
-      this.passwordCheck = 'Invalid password';
+      this.error = 'Invalid password';
     }
   }
 }

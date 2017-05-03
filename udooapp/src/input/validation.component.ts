@@ -21,24 +21,29 @@ export class ValidationComponent {
     switch(type){
       case 'email':
           this.inputs[id] = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(text);
-          return this.inputs[id] ? '' : 'Email adress most be contain \'@\' and \'.\'';
+          return this.inputs[id] ? '' : text.length > 0 ? 'Email address most be contain \'@\' and \'.\'' : 'Mandatory';
       case 'password':
           this.inputs[id] = text.length >= 8;
-          return this.inputs[id] ? '' : 'Password is to short';
+          return this.inputs[id] ? '' :  text.length > 0 ? 'Password is to short' : 'Mandatory';
       case 'phone':
         this.inputs[id] = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(text);
-        return this.inputs[id] ? '' : 'Invalid phone number format';
+        return this.inputs[id] ? '' : text.length > 0 ? 'Invalid phone number format' : 'Mandatory';
       case 'number':
         this.inputs[id] = /^[0-9]*$/im.test(text);
-        return this.inputs[id] ? '' : 'It is not a number';
+        return this.inputs[id] ? '' : text.length > 0 ? 'It is not a number' : 'Mandatory';
       case 'text':
         this.inputs[id] = text.length > 0;
-        return this.inputs[id] ? '' : 'Most be complete';
+        return this.inputs[id] ? '' : text.length > 0 ? 'Most be complete' : 'Mandatory';
+      case 'time':
+        this.inputs[id] = text.length > 0;
+        return this.inputs[id] ? '' : text.length > 0 ? 'Most be complete' : 'Mandatory';
       case 'date':
         this.inputs[id] = text.length > 0;
-        return this.inputs[id] ? '' : 'Most be select';
+        return this.inputs[id] ? '' : text.length > 0 ? 'Most be select' : 'Mandatory';
+      default:
+        this.inputs[id] = text.length > 0;
+        return this.inputs[id] ? '' : text.length > 0 ? 'Most be complete' : 'Mandatory';
     }
-    return '';
   }
   public checkValidation(): boolean {
     for(let i = 1; i <= this.inputs.length; i++){

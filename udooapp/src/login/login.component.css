@@ -1,3 +1,9 @@
+@media (min-width: 2000px) {
+  .registration-container {
+    padding-top: 4%;
+  }
+}
+
 @media (min-width: 961px) {
   .registration-container {
     padding-top: 4%;
@@ -23,6 +29,7 @@
 .social-button:hover {
   opacity: 0.8;
 }
+
 .social-button {
   padding: 1%;
   margin-left: 15%;
@@ -34,6 +41,7 @@
   border: 0;
   color: white;
 }
+
 .input-title {
   text-align: center;
   color: #378281;
@@ -41,13 +49,16 @@
   font-size: 16pt;
   padding: 1%;
 }
-.registration-container{
+
+.registration-container {
   background-color: #f6f6f6;
 }
 
-.button-facebook{
+.button-facebook {
   background-color: #607cb7;
 }
-.button-google{
+
+.button-google {
   background-color: #dd4b39;
 }
+

@@ -62,7 +62,8 @@
 .menu-profile {
   padding: 20px;
 }
-.menu-container-background{
+
+.menu-container-background {
   width: 100%;
   position: absolute;
   height: calc(100% - 60px);
@@ -71,6 +72,7 @@
   opacity: 0.4;
   z-index: 9;
 }
+
 .menu-profile-name {
   text-align: center;
   font-size: 20px;
@@ -78,7 +80,8 @@
   margin: auto;
   font-weight: 100;
 }
-.login-button{
+
+.login-button {
   padding-left: 10%;
   padding-right: 10%;
   padding-top: 5px;
@@ -92,9 +95,11 @@
   border-radius: 5px;
   text-align: center;
 }
-.login-button:hover{
+
+.login-button:hover {
   opacity: 0.8;
 }
+
 .menu-profile-stars-container {
   padding-left: 65px;
   padding-right: 65px;
@@ -105,8 +110,9 @@
   -webkit-flex-direction: row;
   flex-direction: row;
 }
+
 .menu-profile-stars {
-  width :20px;
+  width: 20px;
   height: 20px;
   margin: 2px;
 }
@@ -135,13 +141,15 @@
 .map-container {
   height: 100%;
 }
-.menu-link-image{
+
+.menu-link-image {
   width: 30px;
   height: 30px;
   margin-left: 5%;
   margin-right: 5%;
   vertical-align: middle;
 }
+
 .menu-link {
   text-decoration: none;
   color: #378281;
@@ -149,6 +157,7 @@
   font-weight: bold;
   text-align: left;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .menu-link:hover {

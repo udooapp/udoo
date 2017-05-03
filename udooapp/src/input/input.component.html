@@ -7,6 +7,7 @@
   <div *ngIf="ok || error" class="input-validation">
     <img *ngIf="ok" src="/src/images/check_icon.png" class="input-validation input-validation-ok"/>
     <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup">{{errorMessage}}</span>
+    <div *ngIf="show" class="popup-background" (click)="show = !show"></div>
     <div *ngIf="error" [ngClass]="{'long-error-message' : errorMessage.length < 19}" class="input-validation input-validation-error">
       <span *ngIf="errorMessage.length < 19">{{errorMessage}}</span>
       <img *ngIf="errorMessage.length >= 19" class="input-validation-image" (click)="showInfo()" src="/src/images/info-icon.png"/></div>

@@ -24,6 +24,8 @@ public class Offer {
 
     private Date expirydate;
 
+    private String image;
+
     public Integer getOid() {
         return oid;
     }
@@ -88,6 +90,14 @@ public class Offer {
         this.category = category;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Offer{" +
@@ -95,9 +105,11 @@ public class Offer {
                 ", uid=" + uid +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
                 ", location='" + location + '\'' +
                 ", availability='" + availability + '\'' +
                 ", expirydate=" + expirydate +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

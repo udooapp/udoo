@@ -8,7 +8,7 @@ export class Request {
               public location: string,
               public jobdate: string,
               public expridate: string,
-              public picture: string) {
+              public image: string) {
   }
 
   toString(): string {
@@ -18,7 +18,7 @@ export class Request {
       '"uid" : "' + this.uid + '",' +
       '"location" : "' + this.location + '",' +
       '"title" : "' + this.title + '",' +
-      '"picture" : "' + this.picture + '",' +
+      '"image" : "' + this.image + '",' +
       '"jobdate" : "' + this.jobdate + '",' +
       '"expridate" : "' + this.expridate + '"}';
 

@@ -3,11 +3,14 @@ import {Component} from '@angular/core';
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
 import {ValidationComponent} from "../input/validation.component";
+import {Router} from "@angular/router";
+import {UserService} from "../services/user.service";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
-  styleUrls: ['../layouts/offerrequest.component.css'],
-  providers: [RequestService, ValidationComponent]
+  styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
+  providers: [RequestService, ValidationComponent, UserService]
 })
 export class NewRequestComponent {
   registration = true;
@@ -16,24 +19,64 @@ export class NewRequestComponent {
   offer = false;
   load = false;
   error = '';
-  location ='';
+  location = '';
   data = new Request(null, '', '', '', 1, '', '', '', '');
+  loaderVisible = false;
+  first = false;
+  pictureLoadError = false;
 
-
-  constructor(private requestService: RequestService, private  validation: ValidationComponent) {
+  constructor(private requestService: RequestService, private  validation: ValidationComponent, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.data.category = this.category[0];
   }
 
   save() {
     if (this.validation.checkValidation()) {
+      console.log("Save");
       this.requestService.saveRequest(this.data).subscribe(
-        message => this.message = message,
+        message => {
+          this.router.navigate(['/request'])
+        },
         error => {
-          this.error = '';
+          this.error = 'ERROR';
+          this.message = '';
           console.error(<any>error)
         });
-      this.message = 'Offer saved';
-      this.error = '';
+    }
+  }
+
+  getPictureUrl() {
+    if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
+      return '';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.data.image);
+  }
+
+  onClickBrowse(event) {
+    if (!this.first) {
+      this.loaderVisible = true;
+      let fileList: FileList = event.target.files;
+      if (fileList.length > 0) {
+        this.userService.uploadPicture(fileList[0]).subscribe(
+          message => {
+            console.log('Message: ' + message);
+            this.data.image = message.toString();
+            this.loaderVisible = false;
+            this.pictureLoadError = false;
+          },
+          error => {
+            console.log('Error: ' + error);
+            this.pictureLoadError = true;
+          }
+        );
+      }
+    } else {
+      this.first = false;
+    }
+  }
+
+  onClickCancel() {
+    if (this.data.image.length > 0) {
+      this.data.image = "";
     }
   }
 
@@ -46,7 +89,7 @@ export class NewRequestComponent {
   }
 
   saveLocation(location) {
-    this.data.location = JSON.stringify(location).replace('"', '\\"');
+    this.data.location = JSON.stringify(location).replace(/"/g, '\\"');
     this.location = location.address;
     this.onClickSelectLocation();
   }

@@ -7,7 +7,8 @@ export class Offer {
               public uid: number,
               public location: string,
               public availability: string,
-              public expridate: number) {
+              public expridate: string,
+              public image: string) {
   }
 
   toString(): string {
@@ -18,6 +19,7 @@ export class Offer {
       '"uid" : "' + this.uid + '",' +
       '"location" : "' + this.location + '",' +
       '"availability" : "' + this.availability + '",' +
+      '"image" : "' + this.image + '",' +
       '"expridate" : "' + this.expridate + '"}';
   }
 }

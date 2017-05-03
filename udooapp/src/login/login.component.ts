@@ -17,21 +17,28 @@ export class LoginComponent {
   user = new User(null, '', '', '', '', '', 0, 0, '');
   error: string;
 
-  constructor( private router: Router, private userService: UserService, private validation: ValidationComponent) {
+  constructor(private router: Router, private userService: UserService, private validation: ValidationComponent) {
   }
 
   login() {
     if (this.validation.checkValidation()) {
-      this.userService.loginUser(this.user).subscribe(
-        result => {
-          if(result) {
-            this.message = 'Success';
+      this.error = '';
+      let err: string ='';
+      this.userService.loginUser(this.user)
+        .subscribe(
+          message => {
+            if(message.length == 0){
             this.router.navigate(['/map']);
-          } else {
-            this.error = "Email or password not match"
+            } else {
+              err += message;
+              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err;
+            }
+          },
+          error => {
+            err += error;
+            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err;
           }
-        },
-      );
+        );
     }
   }
 }

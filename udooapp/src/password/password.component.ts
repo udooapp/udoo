@@ -11,7 +11,6 @@ import {ValidationComponent} from "../input/validation.component";
 })
 export class PasswordComponent {
   message: String;
-  userId = 2;
   error = '';
   password = '';
   currentpassword='';
@@ -21,7 +20,7 @@ export class PasswordComponent {
 
   save() {
     if(this.validation.checkValidation()) {
-      this.userService.changePassword(this.currentpassword, this.password, this.userId).subscribe(
+      this.userService.changePassword(this.currentpassword, this.password).subscribe(
         message => this.message = message,
         error => this.error = <any>error);
     }

@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {FormGroup} from "@angular/forms";
 import {ValidationComponent} from "../input/validation.component";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
@@ -15,13 +15,12 @@ export class RegistrationComponent {
   error: string;
   registration = true;
   user = new User(null, '', '', '', '', '', 0, 0, '');
-  passwordCheck = '';
   passwordVerification: string;
   loaderVisible = false;
-  first = true;
+  first = false;
   pictureLoadError = false;
 
-  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
+  constructor(private router : Router, private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
     this.passwordVerification = '';
   }
 
@@ -32,13 +31,14 @@ export class RegistrationComponent {
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }
 
-  onClickBrowse(event: any) {
+  onClickBrowse(event) {
     if (!this.first) {
       this.loaderVisible = true;
       let fileList: FileList = event.target.files;
       if (fileList.length > 0) {
         this.userService.uploadPicture(fileList[0]).subscribe(
           message => {
+            console.log('Message: ' + message);
             this.user.picture = message.toString();
             this.loaderVisible = false;
             this.pictureLoadError = false;
@@ -48,6 +48,8 @@ export class RegistrationComponent {
             this.pictureLoadError = true;
           }
         );
+      }else {
+        this.loaderVisible = false;
       }
     } else {
       this.first = false;
@@ -58,9 +60,9 @@ export class RegistrationComponent {
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
-        this.passwordCheck = 'Invalid password';
+        this.error = 'Invalid password';
       } else {
-        this.passwordCheck = '';
+        this.error = '';
       }
     }
   }
@@ -76,11 +78,14 @@ export class RegistrationComponent {
       if (this.user.password === this.passwordVerification) {
         this.userService.registrateUser(this.user)
           .subscribe(
-            message => this.message = message,
+            message => {
+              console.log("Error" + message);
+              this.router.navigate(['/login']);
+              this.message = message},
             error => this.error = <any>error);
 
       } else {
-        this.passwordCheck = 'Invalid password';
+        this.error = 'Invalid password';
       }
     }
   }

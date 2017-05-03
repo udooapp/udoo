@@ -29,6 +29,7 @@
   }
 }
 
+
 @media (max-width: 960px) {
   .input-button {
     width: 78%;
@@ -83,15 +84,16 @@ h1 {
   height: 100px;
   width: 150px;
   margin: 5%;
-  -webkit-border-radius: 2px;
+  -webkit-border-radius: 10px;
   -moz-border-radius: 2px;
   overflow: hidden;
 }
 
-.service-picture img {
-  height: 120px;
-  width: 170px;
-  margin: -12px 0 0 -12px;
+.service-image {
+  height: 100px;
+  width: 100px;
+  background-position-y: 45%;
+  background-position-x: 45%;
 }
 
 .service-content {

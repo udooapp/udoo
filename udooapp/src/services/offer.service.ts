@@ -8,13 +8,14 @@ import 'rxjs/add/operator/do';
 import 'rxjs/Rx';
 
 import {Offer} from "../entity/offer";
+import {TokenService} from "../guard/TokenService";
 
 @Injectable()
 export class OfferService {
   private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
-  constructor(private http: Http) {
+  constructor(private http: Http,  private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
     this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
@@ -22,32 +23,30 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(this.userUrl + '/saveoffer', offer.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(this.userUrl + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, offer.toString(), new RequestOptions({headers: this.headers}))
+      .map(this.extractText)
+      .catch(this.handleError);
+  }
+
+  getUserOffer(): Observable<Offer[]> {
+    return this.http.post(this.userUrl + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  getUserOffer(token: any): Observable<Offer[]> {
-    return this.http.post(this.userUrl + '/offer', token.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
+  private extractText(res: Response) {
+    console.log(res.toString());
+    return res.text() || {};
   }
-  
   private extractData(res: Response) {
+    console.log(res.toString());
     return res.json() || {};
   }
 
-  private handleError(error: Response | any) {
+  private handleError(error: Response) {
     // In a real world app, you might use a remote logging infrastructure
+    console.log(error.toString(), error.toString());
 
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    return Observable.throw(errMsg);
+    return Observable.throw(error.toString());
   }
 }

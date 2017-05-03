@@ -10,6 +10,7 @@
                   [placeholder]="'Password'" (text)="user.password = $event"></text-input>
     </div>
     <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
+    <div class="error-message response-message">{{error}}</div>
   </form>
   <p class="input-link">Forgot password?</p>
   <div class="social-container">
@@ -22,3 +23,4 @@
   <button class="input-button button-light" routerLink="/registration" routerLinkActive="active">Create a new account
   </button>
 </div>
+
