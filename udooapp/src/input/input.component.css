@@ -126,12 +126,13 @@
     opacity: 1;
   }
 }
-
+.date-input{
+  padding-right: 60px;
+}
 .popuptext {
   visibility: hidden;
   background-color: #DD4B39;
   color: white;
-  font-weight: bold;
   font-size: 8pt;
   text-align: center;
   border-radius: 6px;
