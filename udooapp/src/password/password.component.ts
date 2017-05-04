@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 
 @Component({
   templateUrl: './password.component.html',

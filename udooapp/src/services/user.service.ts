@@ -7,6 +7,7 @@ import 'rxjs/add/observable/throw'
 
 import {User} from '../entity/user';
 import {TokenService} from "../guard/TokenService";
+import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class UserService {
@@ -51,65 +52,42 @@ export class UserService {
       '"birthdate" : "' + user.birthdate + '",' +
       '"picture" : "' + user.picture + '"}'
       , new RequestOptions({headers: this.headers}))
-      .map(this.extractText)
-      .catch(this.handleText);
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
   }
 
 
   getUserCurrentUser(): Observable<User> {
     return this.http.get(this.userUrl + '/user/' + JSON.parse(this.tokenService.getToken()).username)
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
   }
 
   getUserData(token: any): Observable<User> {
     return this.http.post(this.userUrl + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
   }
 
   registrateUser(user: User): Observable<String> {
     return this.http.post(this.userUrl + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractText)
-      .catch(this.handleText);
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
   }
 
   changePassword(cpass: string, npass: string): Observable<String> {
     return this.http.post(this.userUrl + '/password?cpass=' + cpass + '&npass=' + npass + "&email=" + JSON.parse(this.tokenService.getToken()).username, new RequestOptions({headers: this.headers}))
-      .map(this.extractText)
-      .catch(this.handleText);
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
   }
 
   uploadPicture(file: File): Observable<String> {
     let formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post(this.userUrl + '/upload', formData)
-      .map(this.extractText)
-      .catch(this.handleText)
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText)
   }
 
-  private extractText(res: Response) {
-    return res.text();
-  }
 
-  private handleText(error: Response | any) {
-    return Observable.throw(error.message ? error.message : error.toString());
-  }
-
-  private extractData(res: Response) {
-    return JSON.parse(res.text()) || {};
-  }
-
-  private handleError(error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    return Observable.throw(errMsg);
-  }
 }

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {Router} from "@angular/router";
 

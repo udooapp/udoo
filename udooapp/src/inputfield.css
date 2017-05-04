@@ -1,31 +1,3 @@
-@media (min-width: 961px) {
-  .input-container {
-    width: 20%;
-    padding-top: 6%;
-    padding-bottom: 6%;
-  }
-}
-
-@media (max-width: 960px) {
-  .input-container {
-    width: 60%;
-    padding-top: 4%;
-    padding-bottom: 4%;
-  }
-}
-
-@media (max-width: 641px) {
-  .input-container {
-    width: 90%;
-  }
-}
-
-.input-container {
-  position: relative;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 15px;
-}
-
 .input-validation-image {
   height: 12px;
 }
@@ -36,7 +8,6 @@
   top: 0;
   border-radius: 5px;
   color: white;
-  margin-top: 4%;
   height: 12px;
   margin-right: 2%;
   font-size: 8pt;
@@ -54,26 +25,9 @@
   border-bottom: 3px solid #378281;
 }
 
-.input-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 1%;
-  width: 100%;
-  height: 35px;
-  border-radius: 5px;
-  border: 0;
-  background-color: #f6f6f6;
-  color: #2B6665;
-  display: inline-block;
-  box-sizing: border-box;
-}
-
 .input-border {
   position: absolute;
   left: 0;
-  top: 36px;
-  margin-top: 1%;
   width: 100%;
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -126,9 +80,11 @@
     opacity: 1;
   }
 }
-.date-input{
+
+.date-input {
   padding-right: 60px;
 }
+
 .popuptext {
   visibility: hidden;
   background-color: #DD4B39;
@@ -136,10 +92,7 @@
   font-size: 8pt;
   text-align: center;
   border-radius: 6px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 5px 10px 5px 10px;
   position: absolute;
   bottom: 130%;
   right: 0;
@@ -162,8 +115,7 @@
   right: 3%;
   z-index: 5;
   margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
+  border: 5px solid;
   border-color: #DD4B39 transparent transparent transparent;
 }
 

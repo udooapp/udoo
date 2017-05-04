@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -9,6 +9,7 @@ import 'rxjs/Rx';
 
 import {Offer} from "../entity/offer";
 import {TokenService} from "../guard/TokenService";
+import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class OfferService {
@@ -24,29 +25,13 @@ export class OfferService {
 
   saveOffer(offer: Offer): Observable<String> {
     return this.http.post(this.userUrl + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, offer.toString(), new RequestOptions({headers: this.headers}))
-      .map(this.extractText)
-      .catch(this.handleError);
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleError);
   }
 
   getUserOffer(): Observable<Offer[]> {
     return this.http.post(this.userUrl + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
-      .map(this.extractData)
-      .catch(this.handleError);
-  }
-
-  private extractText(res: Response) {
-    console.log(res.toString());
-    return res.text() || {};
-  }
-  private extractData(res: Response) {
-    console.log(res.toString());
-    return res.json() || {};
-  }
-
-  private handleError(error: Response) {
-    // In a real world app, you might use a remote logging infrastructure
-    console.log(error.toString(), error.toString());
-
-    return Observable.throw(error.toString());
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
   }
 }

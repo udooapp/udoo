@@ -2,10 +2,12 @@ import {Component} from '@angular/core';
 
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {EmptyValidator} from "../validator/empty.validator";
+import {IValidator} from "../validator/validator.interface";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -24,6 +26,7 @@ export class NewRequestComponent {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
+  emptyValidator : IValidator = new EmptyValidator();
 
   constructor(private requestService: RequestService, private  validation: ValidationComponent, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.data.category = this.category[0];
@@ -81,7 +84,7 @@ export class NewRequestComponent {
   }
 
   onChangeSelect(event) {
-    this.data.category = event.target.value;
+    this.data.category = event;
   }
 
   onClickSelectLocation() {

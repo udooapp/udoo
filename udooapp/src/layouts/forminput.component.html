@@ -1,7 +1,7 @@
 <div class="input-container">
   <h1>{{registration ? 'Registration form' : 'Profile'}}</h1>
   <form #userForm="ngForm">
-    <div *ngIf="registration" class="input-group">
+    <div *ngIf="registration">
       <span class="input-label">Type</span><br>
       <ul>
         <li>
@@ -18,72 +18,58 @@
         </li>
       </ul>
     </div>
-    <br>
-    <div class="input-group">
-      <span class="input-label" *ngIf="!user.type">Organization</span>
-      <span class="input-label" *ngIf="user.type">Username</span>
-      <text-input [type]="'text'" [refresh]="validation.errorId" [validation]="validation" [value]="user.name"
-                  [placeholder]="'Name'" (text)="user.name= $event"></text-input>
-    </div>
-    <div class="input-group">
-      <span class="input-label">Email</span><br>
-      <text-input [type]="'email'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Email'"
-                  [value]="user.email" (text)="user.email = $event"></text-input>
-    </div>
-    <div>
-      <span class="input-label">Phone number</span><br>
-      <text-input [type]="'phone'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Phone'"
-                  [value]="user.phone" (text)="user.phone= $event"></text-input>
-    </div>
+    <span class="input-label" *ngIf="!user.type">Organization</span>
+    <span class="input-label" *ngIf="user.type">Username</span>
+    <text-input [type]="'text'" [refresh]="validation.errorId" [validation]="validation" [value]="user.name"
+                [placeholder]="'Name'" (text)="user.name= $event"></text-input>
+
+    <span class="input-label">Email</span><br>
+    <text-input [type]="'email'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Email'"
+                [value]="user.email" (text)="user.email = $event"></text-input>
+
+    <span class="input-label">Phone number</span><br>
+    <text-input [type]="'phone'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Phone'"
+                [value]="user.phone" (text)="user.phone= $event"></text-input>
     <div *ngIf="user.type">
       <span class="input-label">Birth date</span><br>
       <text-input [type]="'date'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Date'"
                   [value]="user.birthdate" (text)="user.birthdate = $event"></text-input>
     </div>
-    <div class="input-group" *ngIf="registration">
+    <div *ngIf="registration">
       <span class="input-label">Password</span><br>
       <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
                   [placeholder]="'Password'" [value]="''" (text)="user.password = $event"></text-input>
-    </div>
-    <div class="input-group" *ngIf="registration">
       <span class="input-label">Password verification</span><br>
       <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
                   [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
     </div>
-    <div class="input-group">
-      <span class="input-label">Profile picture</span><br>
-
-      <div class="input-profile-picture-background">
-        <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
-        <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
-        <img
-          [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
-          [src]="getPictureUrl()">
-      </div>
-      <div class="picture-button-container">
-        <button class="input-file input-button button-dark">
-          <span>Browse</span>
-          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-        </button>
-        <button class="input-file input-button button-dark">
-          <span>Take</span>
-          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-        </button>
-        <input type="button" class="input-file input-button button-light" value="Clear"
-               (click)="onClickCancel()"/>
-      </div>
+    <span class="input-label">Profile picture</span><br>
+    <div class="input-profile-picture-background">
+      <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
+      <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+      <img
+        [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
+        [src]="getPictureUrl()">
     </div>
-    <div class="input-group">
-      <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"
-             *ngIf="registration"/>
-      <input type="submit" value="Save" class="input-button button-dark" (click)="insertUser()"/>
+    <div class="picture-button-container">
+      <button class="input-file button-dark">
+        <span>Browse</span>
+        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+      </button>
+      <button class="input-file button-dark">
+        <span>Take</span>
+        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+      </button>
+      <input type="button" class="input-file button-light" value="Clear"
+             (click)="onClickCancel()"/>
     </div>
-
-    <div class="input-group" *ngIf="!registration">
+    <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"
+           *ngIf="registration"/>
+    <input type="submit" value="Save" class="input-button button-dark" (click)="insertUser()"/>
+    <div *ngIf="!registration">
       <input type="reset" value="Change password" class="input-button button-dark" routerLink="/password"
              routerLinkActive="active"/>
     </div>
-
   </form>
   <div class="ok-message response-message">{{message}}</div>
   <div class="error-message response-message">{{error}}</div>

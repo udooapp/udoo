@@ -26,7 +26,14 @@ h3 {
   margin-left: 10%;
   margin-right: 10%;
 }
-
+.location-text{
+  width: 50%;
+  background-color: #FAFAFA;
+  padding: 10px 10px 10px 10px;
+  border-radius: 5px;
+  margin: 2%;
+  color: #378281;
+}
 .input-label {
   text-align: center;
   color: #378281;
@@ -48,8 +55,7 @@ h3 {
 #location {
   border: #378281 solid 3px;
   border-radius: 5px;
-  margin: 2%;
-  margin-bottom: 20%;
+  margin: 2% 2% 20% 2%;
 }
 
 @media (min-width: 961px) {

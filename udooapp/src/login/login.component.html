@@ -1,14 +1,10 @@
 <div class="input-container">
   <h1>Sign in</h1>
-  <form #userForm="ngForm">
-    <div class="input-group">
-      <text-input [type]="'email'" [refresh]="validation.errorId" [placeholder]="'Email'" [validation]="validation"
-                  (text)="user.email = $event"></text-input>
-    </div>
-    <div class="input-group">
-      <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
-                  [placeholder]="'Password'" (text)="user.password = $event"></text-input>
-    </div>
+  <form>
+    <text-input [type]="'email'" [refresh]="validation.errorId" [placeholder]="'Email'" [validation]="validation"
+                (text)="user.email = $event"></text-input>
+    <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
+                [placeholder]="'Password'" (text)="user.password = $event"></text-input>
     <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
     <div class="error-message response-message">{{error}}</div>
   </form>
@@ -18,9 +14,12 @@
     <input type="submit" value="Login with Google" class="social-button button-google"/>
   </div>
 </div>
-<div class="input-container registration-container">
-  <p class="input-title">New to udoo?</p>
-  <button class="input-button button-light" routerLink="/registration" routerLinkActive="active">Create a new account
-  </button>
+<div class="registration-container">
+  <div class="input-container">
+    <p class="input-title">New to udoo?</p>
+    <button class="input-button button-light" routerLink="/registration" routerLinkActive="active">Create a new
+      account
+    </button>
+  </div>
 </div>
 

@@ -3,11 +3,11 @@ import {HttpModule} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 
 import {BrowserModule} from '@angular/platform-browser';
-import {InputComponent} from './input.component';
+import {TextAreaComponent} from "./textarea.component";
 
 @NgModule({
   declarations: [
-    InputComponent
+    TextAreaComponent
   ],
   imports: [
     BrowserModule,
@@ -15,7 +15,7 @@ import {InputComponent} from './input.component';
     HttpModule
   ],
   providers: [],
-  bootstrap: [InputComponent]
+  bootstrap: [TextAreaComponent]
 })
-export class InputModule {
+export class TextAreaModule {
 }

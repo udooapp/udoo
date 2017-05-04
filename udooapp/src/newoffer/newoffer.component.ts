@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
 import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {IValidator} from "../validator/validator.interface";
+import {EmptyValidator} from "../validator/empty.validator";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -23,6 +25,7 @@ export class NewOfferComponent {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
+  emptyValidator: IValidator = new EmptyValidator();
 
   constructor(private offerService: OfferService, private validation: ValidationComponent, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.data.category = this.category[0];
@@ -42,7 +45,7 @@ export class NewOfferComponent {
   }
 
   getPictureUrl() {
-    if ( this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
+    if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
       return '';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.data.image);
@@ -78,7 +81,7 @@ export class NewOfferComponent {
   }
 
   onChangeSelect(event) {
-    this.data.category = event.target.value;
+    this.data.category = event;
   }
 
   onClickSelectLocation() {

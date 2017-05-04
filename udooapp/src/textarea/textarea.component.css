@@ -1,0 +1,32 @@
+.input-area-container {
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.input-textarea {
+  position: relative;
+  top: 0;
+  left: 0;
+  resize: vertical;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 99%;
+  height: 98%;
+  border-radius: 5px;
+  border: 0;
+  background-color: #f6f6f6;
+  color: #2B6665;
+
+}
+.input-validation{
+  margin-top: 5px;
+}
+.input-border{
+  bottom: 4px;
+}
+
+
+

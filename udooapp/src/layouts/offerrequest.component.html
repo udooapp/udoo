@@ -2,78 +2,54 @@
 <div class="input-container">
   <h1>{{offer ? 'New offer' : 'New request'}}</h1>
   <form #userForm="ngForm">
-    <div class="input-group">
-      <span class="input-label">Title</span><br>
-      <text-input [type]="'text'" [placeholder]="'Title'" [validation]="validation" [refresh]="validation.errorId"
-                  (text)="data.title=$event"></text-input>
-    </div>
-    <div class="input-group">
-      <span class="input-label">Category</span><br>
-      <select class="input-select" id="category" (change)="onChangeSelect($event)" required>
-        <option *ngFor="let cat of category; let i = index" [value]="i">{{cat}}</option>
-      </select>
-    </div>
-    <div class="input-group">
-      <span class="input-label">Description</span><br>
-      <textarea rows="6" cols="50" placeholder="Description" required name="description" [(ngModel)]="data.description"
-                class="input-text"></textarea>
-    </div>
+    <span class="input-label">Title</span><br>
+    <text-input [type]="'text'" [placeholder]="'Title'" [validation]="validation" [refresh]="validation.errorId"
+                (text)="data.title=$event" (text)="data.title"></text-input>
+    <span class="input-label">Category</span><br>
+    <select-input [options]="category" (text)="onChangeSelect($event)"></select-input>
+    <span class="input-label">Description</span><br>
+    <text-area [row]="4" [validators]="[emptyValidator]" [column]="50" [placeholder]="'Description'" (text)="data.description=$event" [value]="data.description"></text-area>
+    <span class="input-label">Profile picture</span><br>
 
-    <div class="input-group">
-      <span class="input-label">Profile picture</span><br>
+    <div class="input-profile-picture-background">
+      <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
+      <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+      <img
+        [ngClass]="{'input-profile-picture-image' : (data.image == null|| data.image.length == 0 || data.image === 'null')}"
+        [src]="getPictureUrl()">
+    </div>
+    <div class="picture-button-container">
+      <button class="input-file input-button button-dark">
+        <span>Browse</span>
+        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+      </button>
+      <button class="input-file input-button button-dark">
+        <span>Take</span>
+        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+      </button>
+      <input type="button" class="input-file input-button button-light" value="Clear"
+             (click)="onClickCancel()"/>
+    </div>
+    <span class="input-label">Location</span><br>
+    <text-input [type]="'text'" [placeholder]="'Choose service location'" [validation]="validation"
+                [refresh]="validation.errorId"
+                [value]="location" (text)="data.location=$event; location=$event.address;"
+                (onClickInput)="onClickSelectLocation()"></text-input>
+    <span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
+    <text-input *ngIf="offer" [validation]="validation" [refresh]="validation.errorId" [type]="'text'"
+                [placeholder]="'Availability'" [value]="data.availability" (text)="data.availability=$event"></text-input>
+    <div *ngIf="!offer">
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'date'"
+                  [placeholder]="'Date'" [value]="data.jobdate" (text)="data.jobdate=$event"></text-input>
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'time'"></text-input>
+      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'number'"
+                  [placeholder]="'Period'"></text-input>
+    </div>
+    <span class="input-label">Expiry date</span><br>
+    <text-input [type]="'date'" [validation]="validation" [refresh]="validation.errorId" [value]="data.expirydate"
+                (text)="data.expirydate=$event"></text-input>
 
-      <div class="input-profile-picture-background">
-        <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
-        <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
-        <img
-          [ngClass]="{'input-profile-picture-image' : (data.image == null|| data.image.length == 0 || data.image === 'null')}"
-          [src]="getPictureUrl()">
-      </div>
-      <div class="picture-button-container">
-        <button class="input-file input-button button-dark">
-          <span>Browse</span>
-          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-        </button>
-        <button class="input-file input-button button-dark">
-          <span>Take</span>
-          <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-        </button>
-        <input type="button" class="input-file input-button button-light" value="Clear"
-               (click)="onClickCancel()"/>
-      </div>
-    </div>
-    <div class="input-group">
-      <span class="input-label">Location</span><br>
-      <text-input [type]="'text'" [placeholder]="'Choose service location'" [validation]="validation"
-                  [refresh]="validation.errorId"
-                  [value]="location" (text)="data.location=$event"
-                  (onClickInput)="onClickSelectLocation()"></text-input>
-    </div>
-
-    <div class="input-group">
-      <br><span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
-      <text-input *ngIf="offer" [validation]="validation" [refresh]="validation.errorId" [type]="'text'"
-                  [placeholder]="'Availability'" (text)="data.availability=$event"></text-input>
-      <div *ngIf="!offer">
-        <br>
-        <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'date'"
-                    [placeholder]="'Date'" (text)="data.jobdate=$event"></text-input>
-        <br>
-        <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'time'"></text-input>
-        <br>
-        <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'number'"
-                    [placeholder]="'Period'"></text-input>
-        <br>
-      </div>
-    </div>
-    <div class="input-group">
-      <span class="input-label">Expiry date</span><br>
-      <text-input [type]="'date'" [validation]="validation" [refresh]="validation.errorId"
-                  (text)="data.expirydate=$event"></text-input>
-    </div>
-    <div class="input-group">
-      <input type="button" value="Save" class="input-button button-dark" (click)="save()"/>
-    </div>
+    <input type="button" value="Save" class="input-button button-dark" (click)="save()"/>
   </form>
   <div class="ok-message response-message">{{message}}</div>
   <div class="error-message response-message">{{error}}</div>

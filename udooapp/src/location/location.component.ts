@@ -24,16 +24,23 @@ export class LocationComponent implements OnInit {
         center: {lat: 48.211029, lng: 16.373990},
         zoom: 14
       });
+      let infoWindow= new google.maps.InfoWindow();
       map.addListener('click', function (e) {
+
         marker.setPosition(e.latLng);
         let geocoder = new google.maps.Geocoder;
         geocoder.geocode({'location': marker.getPosition()}, function(results, status) {
           if (status === 'OK') {
+            infoWindow.close();
             if (results[1]) {
+
+              infoWindow.setContent('<div class="location-text"><b>Location: </b>' + results[0].formatted_address + '</div>');
+
               loc.savePosition({coordinate: {lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, address: results[0].formatted_address});
             } else {
-              window.alert('No results found');
+              infoWindow.setContent('<div class="error-message">No results found</div>');
             }
+            infoWindow.open(map, marker);
           } else {
             window.alert('Geocoder failed due to: ' + status);
           }
@@ -44,7 +51,9 @@ export class LocationComponent implements OnInit {
         title: 'Service location',
         map: map,
       });
-      this.position = marker.getPosition();
+      marker.addListener('click', function() {
+        infoWindow.open(map, marker);
+      });
     });
   }
 

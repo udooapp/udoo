@@ -15,9 +15,11 @@ import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
 import {OfferComponent} from "../offers/offers.component";
 import {LocationComponent} from "../location/location.component";
-import {InputComponent} from "../input/input.component";
+import {TextInputComponent} from "../textinput/textinput.component";
 import {AuthGuard} from "../guard/AuthGuard";
 import {TokenService} from "../guard/TokenService";
+import {TextAreaComponent} from "../textarea/textarea.component";
+import {SelectInputComponent} from "../selectinput/selectinput.component";
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import {TokenService} from "../guard/TokenService";
     RequestComponent,
     OfferComponent,
     LocationComponent,
-    InputComponent
+    TextInputComponent,
+    TextAreaComponent,
+    SelectInputComponent
   ],
   imports: [
     BrowserModule,

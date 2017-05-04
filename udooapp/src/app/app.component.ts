@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
-import {Router} from "@angular/router";
+import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
@@ -20,10 +20,14 @@ export class AppComponent implements OnInit {
   login = false;
   image : SafeUrl;
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private sanitizer: DomSanitizer) {
-    router.events.subscribe((val) => {
+    let before : string = '';
+    router.events.subscribe((event) => {
       // see also
-      if (val.url === '/map') {
+      if ((event.url === '/map' && (before == '/login' || before == '')) || (before === '/profile'&& event.url === '/profile')) {
         this.checkUser();
+      }
+      if(event instanceof NavigationEnd) {
+        before = event.url;
       }
     });
   }

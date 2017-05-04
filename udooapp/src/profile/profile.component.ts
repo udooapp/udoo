@@ -4,9 +4,10 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 import {DomSanitizer} from "@angular/platform-browser";
 import {TokenService} from "../guard/TokenService";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -25,7 +26,7 @@ export class ProfileComponent implements OnInit {
   first = false;
   pictureLoadError = false;
 
-  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer, private tokenService: TokenService) {
+  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer, private tokenService: TokenService, private router: Router) {
     this.passwordVerification = '';
   }
 

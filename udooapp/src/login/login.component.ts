@@ -4,7 +4,7 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../input/validation.component";
+import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
 
 @Component({
