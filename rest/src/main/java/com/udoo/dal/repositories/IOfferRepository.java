@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
@@ -19,9 +21,10 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
 
     List<Offer> findByUid(int uid);
 
-    @Query("SELECT o FROM Offer o WHERE o.category = :category AND (o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%'))")
+    @Query("SELECT o FROM Offer o WHERE  o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%'))")
     List<Offer> findAllMatches(@Param("category") int category, @Param("searchText") String searchText);
 
+    @Query("SELECT o FROM Offer o WHERE LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%')")
     List<Offer> findAllByTitleContainingOrDescriptionContaining(String searchText, String seachText2);
 
     Offer findByOid(int id);

@@ -181,37 +181,64 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
+        List<Offer> offers;
         if (category > 0) {
-            return new ResponseEntity<Object>(offerRepository.findAllMatches(category, searchText), HttpStatus.OK);
+            offers = offerRepository.findAllMatches(category, searchText);
+        } else {
+            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText);
         }
-        return new ResponseEntity<Object>(offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
+        for (Offer offer : offers) {
+            User usr = userRepository.findByUid(offer.getUid());
+            offer.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(offers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
+        List<Offer> offers;
         if (category > 0) {
-            return new ResponseEntity<Object>(offerRepository.findAllByCategory(category), HttpStatus.OK);
+            offers = offerRepository.findAllByCategory(category);
+        } else {
+            offers = offerRepository.findAll();
         }
-        return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
-
+        for (Offer offer : offers) {
+            User usr = userRepository.findByUid(offer.getUid());
+            offer.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(offers, HttpStatus.OK);
     }
 
     @Override
     @RequestMapping(value = "/requests/{category}/{searchText}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
                                             @PathVariable("searchText") String searchText) {
+        List<Request> requests;
         if (category > 0) {
-            return new ResponseEntity<Object>(requestRepository.findAllMatches(category, searchText), HttpStatus.OK);
+            requests =requestRepository.findAllMatches(category, searchText);
+        } else {
+            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText);
         }
-        return new ResponseEntity<Object>(requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText), HttpStatus.OK);
+        for (Request request : requests) {
+            User usr = userRepository.findByUid(request.getUid());
+            request.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
+        List<Request> requests;
         if (category > 0) {
-            return new ResponseEntity<Object>(requestRepository.findAllByCategory(category), HttpStatus.OK);
+            requests = requestRepository.findAllByCategory(category);
+        } else {
+            requests = requestRepository.findAll();
         }
-        return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
+        for (Request request : requests) {
+            User usr = userRepository.findByUid(request.getUid());
+            request.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }
 
     @Bean

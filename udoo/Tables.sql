@@ -110,7 +110,7 @@ CREATE TABLE `request` (
   `location` varchar(100) NOT NULL,
   `jobdate` varchar(100) NOT NULL,
   `expirydate` date DEFAULT NULL,
-  `picture` text NOT NULL,
+  `image` text NOT NULL,
   `category` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -118,7 +118,7 @@ CREATE TABLE `request` (
 -- Dumping data for table `request`
 --
 
-INSERT INTO `request` (`rid`, `uid`, `title`, `description`, `location`, `jobdate`, `expirydate`, `picture`, `category`) VALUES
+INSERT INTO `request` (`rid`, `uid`, `title`, `description`, `location`, `jobdate`, `expirydate`, `image`, `category`) VALUES
 (1, 1, 'DishWash', 'asdadasd sad a', '{"lat":48.2103445, "lng": 16.3798799}', '2017/09/23', '2017-10-25', '', 4),
 (2, 1, 'DishWash', '', '{"lat":48.2103442, "lng": 16.3798780}', '2017/09/23', '2017-10-25', '', 3),
 (3, 1, 'sadsd', 'asdsadasd das dsad ;sa', '{"lat":48.2103435, "lng": 16.3798779}', '', NULL, '', 3),
@@ -137,7 +137,7 @@ CREATE TABLE `users` (
   `password` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(15) NOT NULL,
-  `picture` varchar(400) DEFAULT NULL,
+  `image` varchar(400) DEFAULT NULL,
   `type` int(11) NOT NULL,
   `stars` int(11) DEFAULT NULL,
   `birthdate` date NOT NULL
@@ -147,7 +147,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`uid`, `name`, `password`, `email`, `phone`, `picture`, `type`, `stars`, `birthdate`) VALUES
+INSERT INTO `users` (`uid`, `name`, `password`, `email`, `phone`, `image`, `type`, `stars`, `birthdate`) VALUES
 (2, 'Washing Inc.', 'password', 'washingMachine@washing.coma', '0123456789', 'Orarend2.png', 1, NULL, '2017-04-03'),
 (3, 'John doo', 'password4', 'email@email.com', '987654321', '', 1, NULL, '2017-01-01');
 

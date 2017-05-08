@@ -2,13 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {MapService} from "../services/map.service";
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
+import {DomSanitizer} from "@angular/platform-browser";
 
 declare let google: any;
 
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css', '../layouts/lists.component.css'],
+  styleUrls: ['./map.component.css'],
   providers: [MapService]
 })
 export class MapComponent implements OnInit {
@@ -27,7 +28,7 @@ export class MapComponent implements OnInit {
   private mapView = true;
   private types: string[] = ['Select', 'Offer', 'Request'];
 
-  constructor(private mapService: MapService) {
+  constructor(private mapService: MapService, private sanitizer: DomSanitizer) {
   }
 
   deleteMarkers() {
@@ -43,7 +44,7 @@ export class MapComponent implements OnInit {
         this.requests = requests;
         for (let i = 0; i < requests.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(requests[i].location).coordiante,
+            position: JSON.parse(requests[i].location).coordinate,
             map: this.map,
             title: requests[i].title,
             icon: '/src/images/icon.png'
@@ -128,6 +129,13 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mapService.getCategories().subscribe(
+      data => {
+        this.categories = data;
+        this.categories.splice(0, 0, {cid: 0, name: 'Select category'});
+      },
+      error => this.error = <any>error
+    );
     this.load().then(() => {
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 48.211029, lng: 16.373990},
@@ -141,15 +149,11 @@ export class MapComponent implements OnInit {
       this.loadRequests();
       this.loadOffers();
     });
-    this.mapService.getCategories().subscribe(
-      data => {
-        this.categories = data;
-        this.categories.splice(0, 0, {cid: 0, name: 'Select category'})
-      },
-      error => this.error = <any>error
-    );
-  }
 
+  }
+  getLocation(object : string) : String{
+    return JSON.parse(object).address;
+  }
   load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
@@ -203,7 +207,12 @@ export class MapComponent implements OnInit {
       this.refresh()
     }
   }
-
+  getPictureUrl(url : string) {
+    if (url == null || url.length == 0 || url === 'null') {
+      return '/src/images/profile_picture.png';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
+  }
   showList() {
     this.mapView = !this.mapView;
   }

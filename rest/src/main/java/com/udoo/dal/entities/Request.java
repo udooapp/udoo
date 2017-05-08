@@ -24,7 +24,7 @@ public class Request {
 
     private int category;
 
-    private String picture;
+    private String image;
 
     public Integer getUid() {
         return uid;
@@ -86,12 +86,12 @@ public class Request {
         this.category = category;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getImage() {
+        return image;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Request {
                 ", jobdate='" + jobdate + '\'' +
                 ", expirydate=" + expirydate +
                 ", category='" + category + '\'' +
-                ", picture='" + picture + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
