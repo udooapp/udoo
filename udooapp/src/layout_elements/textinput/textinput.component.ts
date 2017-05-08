@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ValidationComponent} from "./validation.component";
+import {IValidator} from "../../validator/validator.interface";
 
 
 @Component({
@@ -13,15 +14,15 @@ export class TextInputComponent {
   show = false;
   notChange = false;
   errorMessage = '';
-  id = -1;
   valueText = '';
   inputText = '';
   @Input() type: string;
   @Input() disabled = false;
   @Input() placeholder: string;
-  @Input() validation: ValidationComponent;
+  @Input() validators: IValidator[];
   @Output() text = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
+  @Output() onStateChange = new EventEmitter<boolean>();
 
 
   constructor() {
@@ -35,13 +36,13 @@ export class TextInputComponent {
 
   @Input() set value(value: string) {
     if (!this.notChange) {
-      if(value == null){
+      if (value == null) {
         value = '';
       }
       this.valueText = value;
       this.inputText = value;
 
-      if (value.length > 0 && this.id > -1) {
+      if (value.length > 0) {
         this.valid();
       }
     } else {
@@ -50,32 +51,33 @@ export class TextInputComponent {
   }
 
   valid() {
-    if (this.validation != null) {
-      this.errorMessage = this.validation.checkInputValidation(this.id, this.inputText, this.type);
-      if (this.errorMessage.length == 0) {
-        this.ok = true;
-        this.error = false;
-        this.show = false;
-      } else {
-        if(this.errorMessage.length <  19){
-          this.show = false;
+    if (this.validators == null || this.validators.length == 0) {
+      this.error = false;
+      this.show = false;
+      this.ok = true;
+    } else {
+      this.error = false;
+      for (let i = 0; i < this.validators.length; ++i) {
+        if (!this.validators[i].validate(this.inputText)) {
+          this.error = true;
+          this.errorMessage = this.validators[i].getText();
+          break;
         }
-        this.error = true;
+      }
+      if (!this.error) {
+        this.show = false;
+        this.ok = true;
+      } else {
         this.ok = false;
       }
     }
+    this.onStateChange.emit(this.ok);
   }
 
   @Input() set refresh(refresh: number) {
-    if (this.id == -1) {
-      this.id = this.validation.add();
-      if(this.valueText.length > 0){
+      if (refresh > -1 || this.valueText.length > 0) {
         this.valid();
       }
-    }
-    if (refresh > -1 && refresh == this.id) {
-      this.valid();
-    }
   }
 
   onKey(event: any) {

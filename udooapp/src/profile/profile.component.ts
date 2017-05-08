@@ -4,10 +4,15 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../textinput/validation.component";
+import {ValidationComponent} from "../layout_elements/textinput/validation.component";
 import {DomSanitizer} from "@angular/platform-browser";
 import {TokenService} from "../guard/TokenService";
 import {Router} from "@angular/router";
+import {EmailValidator} from "../validator/email.validator";
+import {IValidator} from "../validator/validator.interface";
+import {EmptyValidator} from "../validator/empty.validator";
+import {DateValidator} from "../validator/date.validator";
+import {PhoneValidator} from "../validator/phone.validator";
 
 
 @Component({
@@ -25,8 +30,13 @@ export class ProfileComponent implements OnInit {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
+  emptyValidator: IValidator = new EmptyValidator();
+  emailValidator: IValidator = new EmailValidator();
+  dateValidator: IValidator = new DateValidator();
+  phoneValidator: IValidator = new PhoneValidator();
+  valid = [false, false, false];
 
-  constructor(private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer, private tokenService: TokenService, private router: Router) {
+  constructor(private userService: UserService, private sanitizer: DomSanitizer, private tokenService: TokenService, private router: Router) {
     this.passwordVerification = '';
   }
 
@@ -88,9 +98,17 @@ export class ProfileComponent implements OnInit {
       }
     }
   }
-
+  checkValidation() : boolean {
+    for(let i = 0; i < this.valid.length; ++i){
+      if(!this.valid[i]){
+        return false;
+      }
+    }
+    return true;
+  }
   insertUser() {
-    if (this.validation.checkValidation()) {
+    if (this.checkValidation()) {
+      console.log("Valid");
       this.userService.updateUser(this.user).subscribe(
         message => {
           this.error = '';
@@ -102,7 +120,7 @@ export class ProfileComponent implements OnInit {
           console.log(this.error + ' ');
         });
     } else {
-      this.error = 'Invalid password';
+      this.error = 'Invalid or empty value';
     }
   }
 }

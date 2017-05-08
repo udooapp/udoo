@@ -1,17 +1,19 @@
 import {Component} from '@angular/core';
 import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
-import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
+import {DateValidator} from "../validator/date.validator";
+import {TimeValidator} from "../validator/time.validator";
+import {NumberValidator} from "../validator/number.validator";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
-  providers: [OfferService, ValidationComponent, UserService]
+  providers: [OfferService, UserService]
 })
 export class NewOfferComponent {
   registration = true;
@@ -26,13 +28,15 @@ export class NewOfferComponent {
   first = false;
   pictureLoadError = false;
   emptyValidator: IValidator = new EmptyValidator();
+  dateValidator: IValidator = new DateValidator();
+  valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private offerService: OfferService, private validation: ValidationComponent, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.data.category = this.category[0];
   }
-
   save() {
-    if (this.validation.checkValidation()) {
+
+    if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
           this.router.navigate(['/request'])
@@ -41,7 +45,19 @@ export class NewOfferComponent {
           this.error = <any>error;
           this.message = ''
         });
+    } else {
+      this.error = 'Incorrect or empty value';
     }
+  }
+
+  checkValidation(): boolean {
+    for (let i = 0; i < this.valid.length; ++i) {
+      if (!this.valid[i]) {
+        console.log(i);
+        return false;
+      }
+    }
+    return true;
   }
 
   getPictureUrl() {

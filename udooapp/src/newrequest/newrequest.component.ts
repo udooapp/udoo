@@ -2,17 +2,19 @@ import {Component} from '@angular/core';
 
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
-import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {EmptyValidator} from "../validator/empty.validator";
 import {IValidator} from "../validator/validator.interface";
+import {TimeValidator} from "../validator/time.validator";
+import {NumberValidator} from "../validator/number.validator";
+import {DateValidator} from "../validator/date.validator";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
-  providers: [RequestService, ValidationComponent, UserService]
+  providers: [RequestService, UserService]
 })
 export class NewRequestComponent {
   registration = true;
@@ -26,14 +28,18 @@ export class NewRequestComponent {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
-  emptyValidator : IValidator = new EmptyValidator();
+  emptyValidator: IValidator = new EmptyValidator();
+  dateValidator: IValidator = new DateValidator();
+  timeValidator: IValidator = new TimeValidator();
+  numberValidator: IValidator = new NumberValidator();
+  valid: boolean[] = [false, false, false, false, false, false, false];
 
-  constructor(private requestService: RequestService, private  validation: ValidationComponent, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.data.category = this.category[0];
   }
 
   save() {
-    if (this.validation.checkValidation()) {
+    if (this.checkValidation()) {
       console.log("Save");
       this.requestService.saveRequest(this.data).subscribe(
         message => {
@@ -44,9 +50,18 @@ export class NewRequestComponent {
           this.message = '';
           console.error(<any>error)
         });
+    } else {
+      this.error = 'Incorrect or empty value';
     }
   }
-
+  checkValidation(): boolean {
+    for (let i = 0; i < this.valid.length; ++i) {
+      if (!this.valid[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
   getPictureUrl() {
     if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
       return '';

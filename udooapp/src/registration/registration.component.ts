@@ -1,14 +1,19 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../textinput/validation.component";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {Router} from "@angular/router";
+import {PhoneValidator} from "../validator/phone.validator";
+import {IValidator} from "../validator/validator.interface";
+import {DateValidator} from "../validator/date.validator";
+import {EmailValidator} from "../validator/email.validator";
+import {EmptyValidator} from "../validator/empty.validator";
+import {PasswordValidator} from "../validator/password.validator";
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
   styleUrls: ['../layouts/forminput.component.css'],
-  providers: [UserService, ValidationComponent]
+  providers: [UserService]
 })
 export class RegistrationComponent {
   message: String;
@@ -19,8 +24,14 @@ export class RegistrationComponent {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
+  emptyValidator: IValidator = new EmptyValidator();
+  emailValidator: IValidator = new EmailValidator();
+  dateValidator: IValidator = new DateValidator();
+  phoneValidator: IValidator = new PhoneValidator();
+  passwordValidator: IValidator = new PasswordValidator();
+  valid : boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router : Router, private userService: UserService, private validation: ValidationComponent, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
     this.passwordVerification = '';
   }
 
@@ -48,7 +59,7 @@ export class RegistrationComponent {
             this.pictureLoadError = true;
           }
         );
-      }else {
+      } else {
         this.loaderVisible = false;
       }
     } else {
@@ -72,21 +83,31 @@ export class RegistrationComponent {
       this.user.picture = '';
     }
   }
-
+  checkValidation() : boolean {
+    for(let i = 0; i < this.valid.length; ++i){
+      if(!this.valid[i]){
+        return false;
+      }
+    }
+    return true;
+  }
   insertUser() {
-    if (this.validation.checkValidation()) {
+    if (this.checkValidation()) {
       if (this.user.password === this.passwordVerification) {
         this.userService.registrateUser(this.user)
           .subscribe(
             message => {
               console.log("Error" + message);
               this.router.navigate(['/login']);
-              this.message = message},
+              this.message = message
+            },
             error => this.error = <any>error);
 
       } else {
         this.error = 'Invalid password';
       }
+    } else {
+      this.error = 'Invalid or empty value';
     }
   }
 }

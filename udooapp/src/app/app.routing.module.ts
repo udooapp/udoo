@@ -7,8 +7,8 @@ import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
 import {NewOfferComponent} from "../newoffer/newoffer.component";
 import {NewRequestComponent} from "../newrequest/newrequest.component";
-import {RequestComponent} from "../requests/request.component";
-import {OfferComponent} from "../offers/offers.component";
+import {RequestListComponent} from "../requestlist/requestlist.component";
+import {OfferListComponent} from "../offerlist/offerlist.component";
 import {AuthGuard} from "../guard/AuthGuard";
 
 const routes: Routes = [
@@ -20,8 +20,8 @@ const routes: Routes = [
   {path: 'password', component: PasswordComponent, canActivate: [AuthGuard]},
   {path: 'addoffer', component: NewOfferComponent, canActivate: [AuthGuard]},
   {path: 'addrequest', component: NewRequestComponent, canActivate: [AuthGuard]},
-  {path: 'request', component: RequestComponent, canActivate: [AuthGuard]},
-  {path: 'offer', component: OfferComponent, canActivate: [AuthGuard]},
+  {path: 'request', component: RequestListComponent, canActivate: [AuthGuard]},
+  {path: 'offer', component: OfferListComponent, canActivate: [AuthGuard]},
   {path: 'map', component: MapComponent},
   {path: 'map/internet', component: MapComponent},
   {path: '**', redirectTo:'/map'}

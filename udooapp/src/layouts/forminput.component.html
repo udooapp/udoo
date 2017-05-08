@@ -20,28 +20,28 @@
     </div>
     <span class="input-label" *ngIf="!user.type">Organization</span>
     <span class="input-label" *ngIf="user.type">Username</span>
-    <text-input [type]="'text'" [refresh]="validation.errorId" [validation]="validation" [value]="user.name"
-                [placeholder]="'Name'" (text)="user.name= $event"></text-input>
+    <text-input [type]="'text'" [validators]="[emptyValidator]" [value]="user.name"
+                [placeholder]="'Name'" (text)="user.name= $event" (onStateChange)="valid[0] = $event"></text-input>
 
     <span class="input-label">Email</span><br>
-    <text-input [type]="'email'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Email'"
-                [value]="user.email" (text)="user.email = $event"></text-input>
+    <text-input [type]="'email'" [validators]="[emptyValidator, emailValidator]" [placeholder]="'Email'"
+                [value]="user.email" (text)="user.email = $event" (onStateChange)="valid[1] = $event"></text-input>
 
     <span class="input-label">Phone number</span><br>
-    <text-input [type]="'phone'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Phone'"
-                [value]="user.phone" (text)="user.phone= $event"></text-input>
+    <text-input [type]="'phone'" [validators]="[emptyValidator, phoneValidator]" [placeholder]="'Phone'"
+                [value]="user.phone" (text)="user.phone= $event" (onStateChange)="valid[2] = $event"></text-input>
     <div *ngIf="user.type">
       <span class="input-label">Birth date</span><br>
-      <text-input [type]="'date'" [refresh]="validation.errorId" [validation]="validation" [placeholder]="'Date'"
-                  [value]="user.birthdate" (text)="user.birthdate = $event"></text-input>
+      <text-input [type]="'date'" [validators]="[emptyValidator, dateValidator]" [placeholder]="'Date'"
+                  [value]="user.birthdate" (text)="user.birthdate = $event" (onStateChange)="valid[3] = $event"></text-input>
     </div>
     <div *ngIf="registration">
       <span class="input-label">Password</span><br>
-      <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
-                  [placeholder]="'Password'" [value]="''" (text)="user.password = $event"></text-input>
+      <text-input [type]="'password'" [validators]="[emptyValidator, passwordValidator]"
+                  [placeholder]="'Password'" [value]="''" (text)="user.password = $event" (onStateChange)="valid[4] = $event"></text-input>
       <span class="input-label">Password verification</span><br>
-      <text-input [type]="'password'" [refresh]="validation.errorId" [validation]="validation"
-                  [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)"></text-input>
+      <text-input [type]="'password'" [validators]="[emptyValidator, passwordValidator]"
+                  [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)" (onStateChange)="valid[5] = $event"></text-input>
     </div>
     <span class="input-label">Profile picture</span><br>
     <div class="input-profile-picture-background">
@@ -52,14 +52,8 @@
         [src]="getPictureUrl()">
     </div>
     <div class="picture-button-container">
-      <button class="input-file button-dark">
-        <span>Browse</span>
-        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-      </button>
-      <button class="input-file button-dark">
-        <span>Take</span>
-        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-      </button>
+      <file-input [text]="'Browse'" (value)="onClickBrowse($event)"></file-input>
+      <file-input [text]="'Take'" (value)="onClickBrowse($event)"></file-input>
       <input type="button" class="input-file button-light" value="Clear"
              (click)="onClickCancel()"/>
     </div>

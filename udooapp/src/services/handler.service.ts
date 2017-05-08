@@ -2,7 +2,7 @@ import {Observable} from "rxjs/Observable";
 import {Response} from '@angular/http';
 
 export class HandlerService {
-  
+
   public static extractText(res: Response) {
     return res.text();
   }
@@ -21,10 +21,10 @@ export class HandlerService {
           errMsg = 'Server error';
           break;
         default:
-          errMsg= `${error.status} - ${error.statusText || ''} ${error.json().error || JSON.stringify(error.json())}`;
+          errMsg= error.toString();
       }
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      errMsg = error.toString();
     }
     return Observable.throw(errMsg);
   }

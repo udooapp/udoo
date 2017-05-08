@@ -11,8 +11,8 @@
   -webkit-flex-direction: column;
   flex-direction: column;
   margin-top: -150px;
-  width: 100%;
-  float: right;
+  width: auto;
+  margin-left: 160px;
 }
 
 .input-file {
@@ -24,7 +24,6 @@
   cursor: pointer;
   height: 30px;
   padding: 2px;
-  margin-left: 160px;
   text-align: center;
   overflow: hidden;
   float: right;

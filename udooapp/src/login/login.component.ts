@@ -4,24 +4,38 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../textinput/validation.component";
 import {Router} from "@angular/router";
+import {IValidator} from "../validator/validator.interface";
+import {EmailValidator} from "../validator/email.validator";
+import {PasswordValidator} from "../validator/password.validator";
+import {EmptyValidator} from "../validator/empty.validator";
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [UserService, ValidationComponent]
+  providers: [UserService]
 })
 export class LoginComponent {
   message: String;
   user = new User(null, '', '', '', '', '', 0, 0, '');
   error: string;
-
-  constructor(private router: Router, private userService: UserService, private validation: ValidationComponent) {
+  emptyValidator : IValidator = new EmptyValidator();
+  emailValidator : IValidator = new EmailValidator();
+  passwordValidator : IValidator = new PasswordValidator();
+  valid = [false, false];
+  constructor(private router: Router, private userService: UserService) {
   }
 
+  checkValidation(): boolean {
+    for (let i = 0; i < this.valid.length; ++i) {
+      if (!this.valid[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
   login() {
-    if (this.validation.checkValidation()) {
+    if (this.checkValidation()) {
       this.error = '';
       let err: string ='';
       this.userService.loginUser(this.user)
@@ -39,6 +53,8 @@ export class LoginComponent {
             this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err;
           }
         );
+    } else {
+      this.error = 'Incorrect or empty value';
     }
   }
 }

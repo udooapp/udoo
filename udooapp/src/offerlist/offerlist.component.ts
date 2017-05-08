@@ -1,28 +1,25 @@
 import {Component, OnInit} from '@angular/core';
-import {RequestService} from "../services/request.service";
-import {Request} from "../entity/request";
+import {Offer} from "../entity/offer";
+import {OfferService} from "../services/offer.service";
 import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
   styleUrls: ['../layouts/lists.component.css'],
-  providers: [RequestService]
+  providers: [OfferService]
 })
-export class RequestComponent implements OnInit {
-  data: Request[];
-  offer = false;
+export class OfferListComponent implements OnInit {
+  data: Offer[];
+  offer = true;
   error: string;
 
-  constructor(private requestService: RequestService, private sanitizer: DomSanitizer) {
+  constructor(private requestService: OfferService, private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
-    this.requestService.getUserRequest().subscribe(
+    this.requestService.getUserOffer().subscribe(
       data => this.data = data,
       error => this.error = <any>error);
-  }
-  getAddress(location : string){
-    return JSON.parse(location).address;
   }
   getPictureUrl(url : string) {
     if (url == null || url.length == 0 || url === 'null') {
@@ -30,4 +27,8 @@ export class RequestComponent implements OnInit {
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
   }
+  getAddress(location: string) {
+    return JSON.parse(location).address;
+  }
 }
+

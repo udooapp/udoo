@@ -17,6 +17,7 @@ export class SelectInputComponent {
   @Input() disabled = false;
   @Output() text = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
+  @Output() onStateChange = new EventEmitter<boolean>();
 
   constructor() {
   }
@@ -34,6 +35,7 @@ export class SelectInputComponent {
         this.ok = true;
         this.show = false;
       }
+    this.onStateChange.emit(this.ok);
   }
 
   onKey(event: any) {

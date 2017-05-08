@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import formatErrorMsg = jasmine.formatErrorMsg;
-import {IValidator} from "../validator/validator.interface";
+import {IValidator} from "../../validator/validator.interface";
 
 
 @Component({
@@ -18,12 +18,13 @@ export class TextAreaComponent {
   inputText = '';
   @Input() row: number;
   @Input() column: number;
-  @Input() validators: IValidator[];
   @Input() type: string;
   @Input() disabled = false;
   @Input() placeholder: string;
+  @Input() validators: IValidator[];
   @Output() text = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
+  @Output() onStateChange = new EventEmitter<boolean>();
 
   constructor() {
     this.type = 'text';
@@ -69,6 +70,7 @@ export class TextAreaComponent {
         this.ok = false;
       }
     }
+    this.onStateChange.emit(this.ok);
   }
 
   onKey(event: any) {

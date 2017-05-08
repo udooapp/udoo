@@ -3,12 +3,12 @@
   <h1>{{offer ? 'New offer' : 'New request'}}</h1>
   <form #userForm="ngForm">
     <span class="input-label">Title</span><br>
-    <text-input [type]="'text'" [placeholder]="'Title'" [validation]="validation" [refresh]="validation.errorId"
-                (text)="data.title=$event" (text)="data.title"></text-input>
+    <text-input [type]="'text'" [placeholder]="'Title'"
+                (text)="data.title=$event" [validators]="[emptyValidator]" (onStateChange)="valid[0] = $event"></text-input>
     <span class="input-label">Category</span><br>
-    <select-input [options]="category" (text)="onChangeSelect($event)"></select-input>
+    <select-input [options]="category" (text)="onChangeSelect($event)" (onStateChange)="valid[1] = $event"></select-input>
     <span class="input-label">Description</span><br>
-    <text-area [row]="4" [validators]="[emptyValidator]" [column]="50" [placeholder]="'Description'" (text)="data.description=$event" [value]="data.description"></text-area>
+    <text-area [row]="4" [validators]="[emptyValidator]" (onStateChange)="valid[2]=$event" [column]="50" [placeholder]="'Description'" (text)="data.description=$event" [value]="data.description"></text-area>
     <span class="input-label">Profile picture</span><br>
 
     <div class="input-profile-picture-background">
@@ -19,35 +19,28 @@
         [src]="getPictureUrl()">
     </div>
     <div class="picture-button-container">
-      <button class="input-file input-button button-dark">
-        <span>Browse</span>
-        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-      </button>
-      <button class="input-file input-button button-dark">
-        <span>Take</span>
-        <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
-      </button>
+      <file-input [text]="'Browse'" (value)="onClickBrowse($event)"></file-input>
+      <file-input [text]="'Take'" (value)="onClickBrowse($event)"></file-input>
       <input type="button" class="input-file input-button button-light" value="Clear"
              (click)="onClickCancel()"/>
     </div>
     <span class="input-label">Location</span><br>
-    <text-input [type]="'text'" [placeholder]="'Choose service location'" [validation]="validation"
-                [refresh]="validation.errorId"
+    <text-input [type]="'text'" [placeholder]="'Choose service location'"
                 [value]="location" (text)="data.location=$event; location=$event.address;"
-                (onClickInput)="onClickSelectLocation()"></text-input>
+                (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]" (onStateChange)="valid[3] = $event"></text-input>
     <span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
-    <text-input *ngIf="offer" [validation]="validation" [refresh]="validation.errorId" [type]="'text'"
-                [placeholder]="'Availability'" [value]="data.availability" (text)="data.availability=$event"></text-input>
+    <text-input *ngIf="offer" [type]="'text'"
+                [placeholder]="'Availability'" [value]="data.availability" (text)="data.availability=$event" [validators]="[emptyValidator]" (onStateChange)="valid[4] = $event"></text-input>
     <div *ngIf="!offer">
-      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'date'"
-                  [placeholder]="'Date'" [value]="data.jobdate" (text)="data.jobdate=$event"></text-input>
-      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'time'"></text-input>
-      <text-input [validation]="validation" [refresh]="validation.errorId" [type]="'number'"
+      <text-input [type]="'date'"
+                  [placeholder]="'Date'" [value]="data.jobdate" (text)="data.jobdate=$event" [validators]="[emptyValidator, dateValidator]" (onStateChange)="valid[4] = $event"></text-input>
+      <text-input [type]="'time'" [validators]="[emptyValidator, timeValidator]" (onStateChange)="valid[5] = $event"></text-input>
+      <text-input [type]="'number'" [validators]="[emptyValidator, numberValidator]" (onStateChange)="valid[6] = $event"
                   [placeholder]="'Period'"></text-input>
     </div>
     <span class="input-label">Expiry date</span><br>
-    <text-input [type]="'date'" [validation]="validation" [refresh]="validation.errorId" [value]="data.expirydate"
-                (text)="data.expirydate=$event"></text-input>
+    <text-input [type]="'date'" [value]="data.expirydate"
+                (text)="data.expirydate=$event" [validators]="[emptyValidator, dateValidator]" (onStateChange)="valid[!offer ? 7 : 5] = $event"></text-input>
 
     <input type="button" value="Save" class="input-button button-dark" (click)="save()"/>
   </form>

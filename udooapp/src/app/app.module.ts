@@ -12,14 +12,15 @@ import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
 import {NewOfferComponent} from "../newoffer/newoffer.component";
 import {NewRequestComponent} from "../newrequest/newrequest.component";
-import {RequestComponent} from "../requests/request.component";
-import {OfferComponent} from "../offers/offers.component";
+import {RequestListComponent} from "../requestlist/requestlist.component";
+import {OfferListComponent} from "../offerlist/offerlist.component";
 import {LocationComponent} from "../location/location.component";
-import {TextInputComponent} from "../textinput/textinput.component";
+import {TextInputComponent} from "../layout_elements/textinput/textinput.component";
 import {AuthGuard} from "../guard/AuthGuard";
 import {TokenService} from "../guard/TokenService";
-import {TextAreaComponent} from "../textarea/textarea.component";
-import {SelectInputComponent} from "../selectinput/selectinput.component";
+import {TextAreaComponent} from "../layout_elements/textarea/textarea.component";
+import {SelectInputComponent} from "../layout_elements/selectinput/selectinput.component";
+import {FileInputComponent} from "../layout_elements/fileInput/fileinput.component";
 
 @NgModule({
   declarations: [
@@ -31,12 +32,13 @@ import {SelectInputComponent} from "../selectinput/selectinput.component";
     PasswordComponent,
     NewOfferComponent,
     NewRequestComponent,
-    RequestComponent,
-    OfferComponent,
+    RequestListComponent,
+    OfferListComponent,
     LocationComponent,
     TextInputComponent,
     TextAreaComponent,
-    SelectInputComponent
+    SelectInputComponent,
+    FileInputComponent
   ],
   imports: [
     BrowserModule,
