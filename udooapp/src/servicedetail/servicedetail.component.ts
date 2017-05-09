@@ -15,7 +15,7 @@ import {UserService} from "../services/user.service";
 })
 export class ServiceDetailComponent implements OnInit {
   message: String;
-  user = new User(null, '', '', '', '', '', 0, '');
+  user = new User(null, '', '', '', '', '', 0, -1, '');
   error: string = '';
   type: boolean = false;
   data: any;

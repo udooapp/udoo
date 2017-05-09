@@ -39,4 +39,9 @@ export class OfferService {
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
+  getOffer(oid: number): Observable<Offer> {
+    return this.http.get(this.userUrl + '/offer/' + oid)
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
+  }
 }

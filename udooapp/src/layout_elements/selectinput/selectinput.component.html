@@ -2,7 +2,7 @@
 
   <select class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
           (change)="onKey($event)" [disabled]="disabled">
-    <option *ngFor="let cat of options; let i = index" [value]="i">{{cat}}</option>
+    <option *ngFor="let cat of options;" [value]="cat.cid">{{cat.name}}</option>
   </select>
   <div *ngIf="!error" class="input-border input-border-ok"></div>
   <div *ngIf="error" class="input-border input-border-error"></div>

@@ -27,29 +27,19 @@ export class RequestService {
   }
 
   getUserRequest(): Observable<Request[]> {
-    return this.http.post(this.userUrl + '/request' , this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(this.userUrl + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
-
-  private extractData(res: Response) {
-    const body = res.json();
-    return body || {};
   }
+
   deleteUserRequest(id : number): Observable<string> {
-    return this.http.post(this.userUrl + '/deleterequest/'+id , this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(this.userUrl + '/deleterequest/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
-
-  private handleError(error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    return Observable.throw(errMsg);
+  }
+  getRequest(rid : number): Observable<Request> {
+    return this.http.get(this.userUrl + '/request/' + rid, new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
   }
 }

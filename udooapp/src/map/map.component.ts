@@ -56,7 +56,7 @@ export class MapComponent implements OnInit {
             '<h1>' + requests[i].title + '</h1>' +
             '<div>' +
             '<p>' + requests[i].description + '</p>' +
-            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid === requests[i].category).name + '</p>' +
+            '<p><b>Category: </b>' + this.findCatName(requests[i].category) + '</p>' +
             '</div>' +
             '</div>'
           });
@@ -83,18 +83,17 @@ export class MapComponent implements OnInit {
         this.offers = offers;
         for (let i = 0; i < offers.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(this.offers[i].location),
+            position: JSON.parse(offers[i].location).coordinate,
             map: this.map,
             title: offers[i].title,
             icon: '/src/images/icon.png'
           });
-
           let infowindow = new google.maps.InfoWindow({
             content: '<div>' +
             '<h1>' + offers[i].title + '</h1>' +
             '<div>' +
             '<p>' + offers[i].description + '</p>' +
-            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid === offers[i].category).name + '</p>' +
+            '<p><b>Category: </b>' + this.findCatName(offers[i].category) + '</p>' +
             '</div>' +
             '</div>'
           });
@@ -112,6 +111,15 @@ export class MapComponent implements OnInit {
         }
       },
       error => this.error = <any>error);
+  }
+
+  findCatName(catID: number): string {
+    for (let i = 0; i < this.categories.length; ++i) {
+      if (catID == this.categories[i].cid) {
+        return this.categories[i].name;
+      }
+    }
+    return 'Unknown category';
   }
 
   refresh() {
@@ -133,7 +141,7 @@ export class MapComponent implements OnInit {
     this.mapService.getCategories().subscribe(
       data => {
         this.categories = data;
-        this.categories.splice(0, 0, {cid: 0, name: 'Select category'});
+        this.categories.splice(0, 0, {cid: -1, name: 'Select category'});
       },
       error => this.error = <any>error
     );
@@ -152,9 +160,11 @@ export class MapComponent implements OnInit {
     });
 
   }
-  getLocation(object : string) : String{
+
+  getLocation(object: string): String {
     return JSON.parse(object).address;
   }
+
   load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
@@ -208,21 +218,24 @@ export class MapComponent implements OnInit {
       this.refresh()
     }
   }
-  getPictureUrl(url : string) {
+
+  getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '/src/images/profile_picture.png';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
   }
+
   showList() {
     this.mapView = !this.mapView;
   }
 
   getCategory(category: number): string {
     let cat = this.categories.find(cat => cat.cid == category);
-    return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
+    return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
-  onClickService(type : boolean, id : number){
+
+  onClickService(type: boolean, id: number) {
     this.router.navigate(['/detail/' + id + '/' + (type ? 1 : 0)]);
   }
 }

@@ -40,7 +40,6 @@ public interface IRestServiceController {
 
     ResponseEntity<?> getAllOffers(int category, String searchText);
 
-    ResponseEntity<?> getAllRequests();
 
     void getImage(String name, HttpServletResponse response) throws IOException;
 

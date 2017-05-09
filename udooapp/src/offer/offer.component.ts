@@ -7,21 +7,22 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
+import {MapService} from "../services/map.service";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
-  providers: [OfferService, UserService]
+  providers: [OfferService, UserService, MapService]
 })
 export class OfferComponent implements OnInit {
   registration = true;
-  category = ['Cleaning', 'Washing', 'Other'];
+  category = [];
   message: String;
   error = '';
   offer = true;
   location = '';
   load = false;
-  data = new Offer(null, '', '', '', 1, '', '', '', '');
+  data = new Offer(null, '', '', -1, 1, '', '', '', '');
   loaderVisible = false;
   first = false;
   type: number = -1;
@@ -30,8 +31,14 @@ export class OfferComponent implements OnInit {
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute) {
-    this.data.category = this.category[0];
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
+    this.mapService.getCategories().subscribe(
+      data => {
+        this.category = data;
+        this.category.splice(0, 0, {cid: -1, name: 'Select category'})
+      },
+      error => this.error = <any>error
+    );
   }
 
   ngOnInit() {

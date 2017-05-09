@@ -154,9 +154,14 @@ public class RestServiceController implements IRestServiceController {
 
     }
 
-
-    @Override
     @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
+
+        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
+    }
+    @Override
+    @RequestMapping(value = "/request", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<List<Request>> getAllUserRequest(@RequestBody String token) {
         try {
@@ -187,12 +192,7 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
 
-        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
-    }
     @Override
     @RequestMapping(value = "/offer", method = RequestMethod.POST)
     public ResponseEntity<List<Offer>> getAllUserOffer(@RequestBody String token) {

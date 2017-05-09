@@ -12,8 +12,8 @@ export class SelectInputComponent {
   show = false;
   notChange = false;
   errorMessage = 'Invalid value';
-  valueText: number = 0;
-  @Input() options: string[] = [];
+  valueText: number = -1;
+  @Input() options: any[] = [];
   @Input() disabled = false;
   @Output() text = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
@@ -39,6 +39,7 @@ export class SelectInputComponent {
   }
 
   onKey(event: any) {
+    console.log(event.target.value);
     this.notChange = true;
     this.valueText = event.target.value;
     this.text.emit(event.target.value);
