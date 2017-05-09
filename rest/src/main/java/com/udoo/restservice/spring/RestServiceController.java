@@ -127,19 +127,24 @@ public class RestServiceController implements IRestServiceController {
 
 
     @Override
-    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/requestlist/{id}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<List<Request>> getAllUserRequest(@PathVariable("id") int uid) {
 
         return new ResponseEntity<>(requestRepository.findByUid(uid), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
+
+        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
+    }
     @Override
-    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/offerlist/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<Offer>> getAllUserOffer(@PathVariable("id") int id) {
         return new ResponseEntity<>(offerRepository.findByUid(id), HttpStatus.OK);
     }
-
     @Override
     @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "id") int id) {
@@ -154,6 +159,12 @@ public class RestServiceController implements IRestServiceController {
             }
         }
         return new ResponseEntity<>("Password changed", HttpStatus.NOT_MODIFIED);
+    }
+
+
+    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Offer> getOffer(@PathVariable("id") int id) {
+        return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
     }
 
     @Override
@@ -185,7 +196,7 @@ public class RestServiceController implements IRestServiceController {
         if (category > 0) {
             offers = offerRepository.findAllMatches(category, searchText);
         } else {
-            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText);
+            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
         }
         for (Offer offer : offers) {
             User usr = userRepository.findByUid(offer.getUid());
@@ -200,7 +211,7 @@ public class RestServiceController implements IRestServiceController {
         if (category > 0) {
             offers = offerRepository.findAllByCategory(category);
         } else {
-            offers = offerRepository.findAll();
+            offers = offerRepository.findAllActual();
         }
         for (Offer offer : offers) {
             User usr = userRepository.findByUid(offer.getUid());
@@ -217,7 +228,7 @@ public class RestServiceController implements IRestServiceController {
         if (category > 0) {
             requests =requestRepository.findAllMatches(category, searchText);
         } else {
-            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, searchText);
+            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
         }
         for (Request request : requests) {
             User usr = userRepository.findByUid(request.getUid());
@@ -232,7 +243,7 @@ public class RestServiceController implements IRestServiceController {
         if (category > 0) {
             requests = requestRepository.findAllByCategory(category);
         } else {
-            requests = requestRepository.findAll();
+            requests = requestRepository.findAllActual();
         }
         for (Request request : requests) {
             User usr = userRepository.findByUid(request.getUid());

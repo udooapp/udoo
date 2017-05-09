@@ -17,15 +17,19 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
 
     List<Offer> findAllByCategory(int category);
 
+
     List<Offer> findAll();
+
+    @Query("SELECT o FROM Offer o WHERE o.expirydate >= CURRENT_DATE ")
+    List<Offer> findAllActual();
 
     List<Offer> findByUid(int uid);
 
-    @Query("SELECT o FROM Offer o WHERE  o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%'))")
+    @Query("SELECT o FROM Offer o WHERE  o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%')) AND o.expirydate >= CURRENT_DATE ")
     List<Offer> findAllMatches(@Param("category") int category, @Param("searchText") String searchText);
 
-    @Query("SELECT o FROM Offer o WHERE LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%')")
-    List<Offer> findAllByTitleContainingOrDescriptionContaining(String searchText, String seachText2);
+    @Query("SELECT o FROM Offer o WHERE LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%') AND o.expirydate >= CURRENT_DATE ")
+    List<Offer> findAllByTitleContainingOrDescriptionContaining(String searchText);
 
     Offer findByOid(int id);
 

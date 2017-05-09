@@ -18,6 +18,7 @@ import {LocationComponent} from "../location/location.component";
 import {InputComponent} from "../input/input.component";
 import {AuthGuard} from "../guard/AuthGuard";
 import {TokenService} from "../guard/TokenService";
+import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {TokenService} from "../guard/TokenService";
     RequestComponent,
     OfferComponent,
     LocationComponent,
-    InputComponent
+    InputComponent,
+    ServiceDetailComponent
   ],
   imports: [
     BrowserModule,

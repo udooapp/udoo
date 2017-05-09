@@ -3,6 +3,7 @@ import {MapService} from "../services/map.service";
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
 import {DomSanitizer} from "@angular/platform-browser";
+import {Router} from "@angular/router";
 
 declare let google: any;
 
@@ -28,7 +29,7 @@ export class MapComponent implements OnInit {
   private mapView = true;
   private types: string[] = ['Select', 'Offer', 'Request'];
 
-  constructor(private mapService: MapService, private sanitizer: DomSanitizer) {
+  constructor(private mapService: MapService, private sanitizer: DomSanitizer, private router: Router) {
   }
 
   deleteMarkers() {
@@ -220,5 +221,8 @@ export class MapComponent implements OnInit {
   getCategory(category: number): string {
     let cat = this.categories.find(cat => cat.cid == category);
     return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
+  }
+  onClickService(type : boolean, id : number){
+    this.router.navigate(['/detail/' + id + '/' + (type ? 0 : 1)]);
   }
 }

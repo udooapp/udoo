@@ -35,22 +35,22 @@
     <button class="input-button button-light" (click)="showList()">Map View</button>
   </div>
   <div class="service-container">
-    <div class="service" *ngFor="let item of requests">
+    <div class="service" *ngFor="let item of requests" (click)="onClickService(true, item.rid)" routerLinkActive="active">
       <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
-        <div class="service-description">{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}</div>
-        <div class="service-location">{{getLocation(item.location)}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address</b>{{getLocation(item.location)}}</div>
         <div class="service-category"><b>Category:</b>{{getCategory(item.category)}}</div>
         <div class="service-date"><b>Date:</b> {{item.expridate}}</div>
       </div>
     </div>
-    <div class="service" *ngFor="let item of offers">
+    <div class="service" *ngFor="let item of offers" (click)="onClickService(false, item.oid)" >
       <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
-        <div class="service-description">{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}{{item.description}}</div>
-        <div class="service-location">{{getLocation(item.location)}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address</b>{{getLocation(item.location)}}</div>
         <div class="service-category"><b>Category:</b>{{getCategory(item.category)}}</div>
         <div class="service-date"><b>Date:</b> {{item.expridate}}</div>
       </div>

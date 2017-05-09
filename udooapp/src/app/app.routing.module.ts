@@ -10,6 +10,7 @@ import {NewRequestComponent} from "../newrequest/newrequest.component";
 import {RequestComponent} from "../requests/request.component";
 import {OfferComponent} from "../offers/offers.component";
 import {AuthGuard} from "../guard/AuthGuard";
+import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -22,6 +23,8 @@ const routes: Routes = [
   {path: 'request', component: RequestComponent, canActivate: [AuthGuard]},
   {path: 'offer', component: OfferComponent, canActivate: [AuthGuard]},
   {path: 'map', component: MapComponent},
+  {path: 'map/:id', component: MapComponent},
+  {path: 'detail/:id/:type', component: ServiceDetailComponent},
   {path: '**', redirectTo:'/map'}
 ];
 @NgModule({

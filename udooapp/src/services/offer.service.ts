@@ -28,11 +28,15 @@ export class OfferService {
   }
 
   getUserOffer(uid: number): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offer/' + uid)
+    return this.http.get(this.userUrl + '/offerlist/' + uid)
       .map(this.extractData)
       .catch(this.handleError);
   }
-
+  getOffer(oid: number): Observable<Offer> {
+    return this.http.get(this.userUrl + '/offer/' + oid)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
 
   private extractData(res: Response) {
     return res.json() || {};

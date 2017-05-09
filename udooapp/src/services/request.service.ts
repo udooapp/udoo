@@ -25,7 +25,12 @@ export class RequestService {
   }
 
   getUserRequest(uid : number): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/request/' + uid, new RequestOptions({headers: this.headers}))
+    return this.http.get(this.userUrl + '/requestlist/' + uid, new RequestOptions({headers: this.headers}))
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+  getRequest(rid : number): Observable<Request> {
+    return this.http.get(this.userUrl + '/request/' + rid, new RequestOptions({headers: this.headers}))
       .map(this.extractData)
       .catch(this.handleError);
   }

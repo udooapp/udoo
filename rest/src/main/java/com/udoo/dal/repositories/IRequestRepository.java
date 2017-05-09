@@ -17,10 +17,14 @@ public interface IRequestRepository extends Repository<Request, Integer> {
 
     List<Request> findAllByCategory(int category);
 
-    @Query("SELECT o FROM Request o WHERE o.category = :category AND (o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%'))")
+    @Query("SELECT o FROM Request o WHERE o.expirydate >= CURRENT_DATE ")
+    List<Request> findAllActual();
+
+    @Query("SELECT o FROM Request o WHERE o.category = :category AND (o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%')) AND o.expirydate > CURRENT_DATE ")
     List<Request> findAllMatches(@Param("category") int category,@Param("searchText") String searchText);
 
-    List<Request> findAllByTitleContainingOrDescriptionContaining(String searchText, String seachText2);
+    @Query("SELECT o FROM Request o WHERE o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%') AND o.expirydate > CURRENT_DATE ")
+    List<Request> findAllByTitleContainingOrDescriptionContaining(String searchText);
 
 
     List<Request> findByUid(int uid);
