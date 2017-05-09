@@ -56,9 +56,9 @@
 
 @media (max-width: 641px) {
   .input-button {
-    height: 50px;
     width: 87%;
     margin-left: 6%;
+    margin-bottom: 10px;
   }
 
   .service-container {

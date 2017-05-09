@@ -7,7 +7,7 @@ export class Request {
               public uid: number,
               public location: string,
               public jobdate: string,
-              public expridate: string,
+              public expirydate: number,
               public image: string) {
   }
 
@@ -20,7 +20,7 @@ export class Request {
       '"title" : "' + this.title + '",' +
       '"image" : "' + this.image + '",' +
       '"jobdate" : "' + this.jobdate + '",' +
-      '"expridate" : "' + this.expridate + '"}';
+      '"expirydate" : "' + this.expirydate + '"}';
 
   }
 }

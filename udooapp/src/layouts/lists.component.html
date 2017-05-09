@@ -1,5 +1,5 @@
 <div class="data-container">
-  <h1>{{offer ? 'My service offer' : 'My service request'}}</h1>
+  <h1>{{offer ? 'My service offers' : 'My service requests'}}</h1>
   <input *ngIf="offer" type="button" value="Add new offer" class="input-button button-light" routerLink="/offer"
          routerLinkActive="active">
   <input *ngIf="!offer" type="button" value="Add new request" class="input-button button-light" routerLink="/request"

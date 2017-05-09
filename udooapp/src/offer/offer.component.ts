@@ -22,7 +22,7 @@ export class OfferComponent implements OnInit {
   offer = true;
   location = '';
   load = false;
-  data = new Offer(null, '', '', -1, 1, '', '', '', '');
+  data = new Offer(null, '', '', -1, 1, '', '', 0, '');
   loaderVisible = false;
   first = false;
   type: number = -1;
@@ -32,6 +32,9 @@ export class OfferComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false];
 
   constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
+  }
+
+  ngOnInit() {
     this.mapService.getCategories().subscribe(
       data => {
         this.category = data;
@@ -39,9 +42,6 @@ export class OfferComponent implements OnInit {
       },
       error => this.error = <any>error
     );
-  }
-
-  ngOnInit() {
     let id: number = -1;
     this.route.params
       .subscribe((params: Params) => {
@@ -49,7 +49,13 @@ export class OfferComponent implements OnInit {
           id = +params['id'];
           if (id != null) {
             this.type = +params['type'];
-            console.log("" + id);
+            this.offerService.getOffer(id).subscribe(
+              data => {
+                this.data = data;
+                this.location = JSON.parse(data.location).address;
+              },
+              error => this.error = <any>error
+            )
           }
         }
       });
@@ -59,7 +65,11 @@ export class OfferComponent implements OnInit {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
-          this.router.navigate(['/request'])
+          if(this.type > -1){
+            this.router.navigate(['/offerlist']);
+          } else {
+            this.router.navigate(['/offer'])
+          }
         },
         error => {
           this.error = <any>error;
@@ -130,12 +140,22 @@ export class OfferComponent implements OnInit {
     this.onClickSelectLocation();
   }
 
-  deleteService(){
+  getDate(): string {
+    if (this.data.expirydate > 0) {
+      let date: Date = new Date(this.data.expirydate);
+      return date.getFullYear() + '-' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '-' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
+    }
+    return '';
+  }
+
+  deleteService() {
     this.offerService.deleteUserOffer(this.data.oid).subscribe(
-      ok=>{
+      ok => {
         this.router.navigate(['/offerlist'])
       },
-      error =>{this.error = error}
+      error => {
+        this.error = error
+      }
     );
   }
 }

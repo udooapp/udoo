@@ -21,7 +21,7 @@ export class RequestService {
   }
 
   saveRequest(request: Request): Observable<String> {
-    return this.http.post(this.userUrl + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, request.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(this.userUrl + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(request), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }

@@ -25,7 +25,7 @@ export class RequestComponent implements OnInit {
   load = false;
   error = '';
   location = '';
-  data = new Request(null, '', '', -1, 1, '', '', '', '');
+  data = new Request(null, '', '', -1, 1, '', '', 0, '');
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
@@ -37,17 +37,17 @@ export class RequestComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false, false];
 
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
+  }
+
+  ngOnInit() {
     this.data.category = this.category[0];
     this.mapService.getCategories().subscribe(
       data => {
-        this.category= data;
+        this.category = data;
         this.category.splice(0, 0, {cid: -1, name: 'Select category'})
       },
       error => this.error = <any>error
     );
-  }
-
-  ngOnInit() {
     let id: number = -1;
     this.route.params
       .subscribe((params: Params) => {
@@ -55,7 +55,14 @@ export class RequestComponent implements OnInit {
           id = +params['id'];
           if (id != null) {
             this.type = +params['type'];
-            console.log("" + id);
+            console.log(this.type);
+            this.requestService.getRequest(id).subscribe(
+              data => {
+                this.data = data;
+                this.location = JSON.parse(data.location).address;
+              },
+              error => this.error = <any>error
+            )
           }
         }
       });
@@ -66,7 +73,11 @@ export class RequestComponent implements OnInit {
       console.log("Save");
       this.requestService.saveRequest(this.data).subscribe(
         message => {
-          this.router.navigate(['/request'])
+          if (this.type > -1) {
+            this.router.navigate(['/requestlist']);
+          } else {
+            this.router.navigate(['/request']);
+          }
         },
         error => {
           this.error = 'ERROR';
@@ -137,12 +148,22 @@ export class RequestComponent implements OnInit {
     this.onClickSelectLocation();
   }
 
-  deleteService(){
+  getDate(): string {
+    if (this.data.expirydate > 0) {
+      let date: Date = new Date(this.data.expirydate);
+      return date.getFullYear() + '-' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '-' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
+    }
+    return '';
+  }
+
+  deleteService() {
     this.requestService.deleteUserRequest(this.data.rid).subscribe(
-      ok=>{
-        this.router.navigate(['/requestlist'])
+      ok => {
+        this.router.navigate(['/requestlist']);
       },
-      error =>{this.error = error}
+      error => {
+        this.error = error
+      }
     );
   }
 }

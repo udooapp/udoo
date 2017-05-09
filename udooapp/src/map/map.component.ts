@@ -43,7 +43,9 @@ export class MapComponent implements OnInit {
     this.mapService.getRequestLocations(this.category, this.searchString).subscribe(
       requests => {
         this.requests = requests;
+        let click: boolean[] = [];
         for (let i = 0; i < requests.length; ++i) {
+          click.push(false);
           let marker = new google.maps.Marker({
             position: JSON.parse(requests[i].location).coordinate,
             map: this.map,
@@ -61,14 +63,22 @@ export class MapComponent implements OnInit {
             '</div>'
           });
           let map = this.map;
+          infowindow.addListener('closeclick', function () {
+            click[i] = !click[i];
+            infowindow.close(map, marker);
+          });
           marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
           });
           marker.addListener('click', function () {
+            click[i] = !click[i];
             infowindow.open(map, marker);
           });
+
           marker.addListener('mouseout', function () {
-            infowindow.close(map, marker);
+            if(!click[i]) {
+              infowindow.close(map, marker);
+            }
           });
           this.markers.push(marker);
         }
@@ -81,7 +91,9 @@ export class MapComponent implements OnInit {
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
       offers => {
         this.offers = offers;
+        let click: boolean[] = [];
         for (let i = 0; i < offers.length; ++i) {
+          click.push(false);
           let marker = new google.maps.Marker({
             position: JSON.parse(offers[i].location).coordinate,
             map: this.map,
@@ -98,14 +110,22 @@ export class MapComponent implements OnInit {
             '</div>'
           });
           let map = this.map;
+          infowindow.addListener('closeclick', function () {
+            click[i] = !click[i];
+            infowindow.close(map, marker);
+          });
           marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
           });
           marker.addListener('click', function () {
+            click[i] = !click[i];
             infowindow.open(map, marker);
           });
+
           marker.addListener('mouseout', function () {
-            infowindow.close(map, marker);
+            if (!click[i]) {
+              infowindow.close(map, marker);
+            }
           });
           this.markers.push(marker);
         }

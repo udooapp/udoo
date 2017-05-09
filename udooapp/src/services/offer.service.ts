@@ -24,7 +24,7 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(this.userUrl + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, offer.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(this.userUrl + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }

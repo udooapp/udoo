@@ -7,7 +7,7 @@ export class Offer {
               public uid: number,
               public location: string,
               public availability: string,
-              public expridate: string,
+              public expirydate: number,
               public image: string) {
   }
 
@@ -20,6 +20,6 @@ export class Offer {
       '"location" : "' + this.location + '",' +
       '"availability" : "' + this.availability + '",' +
       '"image" : "' + this.image + '",' +
-      '"expridate" : "' + this.expridate + '"}';
+      '"expirydate" : "' + this.expirydate + '"}';
   }
 }

@@ -46,7 +46,7 @@
                   [placeholder]="'Period'"></text-input>
     </div>
     <span class="input-label">Expiry date</span><br>
-    <text-input [type]="'date'" [value]="data.expirydate"
+    <text-input [type]="'date'" [value]="getDate()"
                 (text)="data.expirydate=$event" [validators]="[emptyValidator, dateValidator]"
                 (onStateChange)="valid[!offer ? 7 : 5] = $event"></text-input>
 
