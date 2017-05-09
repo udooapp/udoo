@@ -1,2 +1,59 @@
-<div id="map"></div>
-
+<div id="map" [ngClass]="{'hide-map': !mapView}">
+</div>
+<div [ngClass]="{'hide-map-filter' : showSearch}" class="map-filter" (focusout)="refresh()" *ngIf="mapView">
+  <div [ngClass]="{'hide-map-inputs' : showSearch}" class="map-inputs-container">
+    <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
+    <div class="map-selector-container">
+      <div class="input-group">
+        <select class="map-select" (change)="onChangeTypeSelect($event)">
+          <option *ngFor="let type of types; let i = index" class="map-option" value="{{i}}">{{type}}</option>
+        </select>
+        <select class="map-select" (change)="onChangeCategorySelect($event)">
+          <option *ngFor="let cat of categories" class="map-option" value="{{cat.cid}}">{{cat.name}}</option>
+        </select>
+      </div>
+    </div>
+    <button class="input-button button-light" (click)="showList()">List View</button>
+  </div>
+  <div id="triangle-left" *ngIf="!showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
+  <div id="magnifying-glass" *ngIf="showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
+</div>
+<div class="data-container" *ngIf="!mapView">
+  <h1>Services</h1>
+  <div class="service-inputs-container">
+    <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
+    <div class="service-map-selector-container">
+      <div class="service-input-group">
+        <select class="map-select" (change)="onChangeTypeSelect($event)">
+          <option *ngFor="let type of types; let i = index" class="map-option" value="{{i}}">{{type}}</option>
+        </select>
+        <select class="map-select" (change)="onChangeCategorySelect($event)">
+          <option *ngFor="let cat of categories" class="map-option" value="{{cat.cid}}">{{cat.name}}</option>
+        </select>
+      </div>
+    </div>
+    <button class="input-button button-light" (click)="showList()">Map View</button>
+  </div>
+  <div class="service-container">
+    <div class="service" *ngFor="let item of requests" (click)="onClickService(false, item.rid)" routerLinkActive="active">
+      <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
+      <div class="service-content">
+        <div class="service-title">{{item.title}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address</b>{{getLocation(item.location)}}</div>
+        <div class="service-category"><b>Category:</b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b>Date:</b> {{item.expridate}}</div>
+      </div>
+    </div>
+    <div class="service" *ngFor="let item of offers" (click)="onClickService(true, item.oid)" >
+      <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
+      <div class="service-content">
+        <div class="service-title">{{item.title}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address</b>{{getLocation(item.location)}}</div>
+        <div class="service-category"><b>Category:</b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b>Date:</b> {{item.expridate}}</div>
+      </div>
+    </div>
+  </div>
+</div>

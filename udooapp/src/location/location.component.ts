@@ -50,6 +50,7 @@ export class LocationComponent implements OnInit {
       let marker = new google.maps.Marker({
         title: 'Service location',
         map: map,
+        icon: '/src/images/icon.png'
       });
       marker.addListener('click', function() {
         infoWindow.open(map, marker);

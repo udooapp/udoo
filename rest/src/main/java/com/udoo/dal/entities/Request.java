@@ -22,7 +22,7 @@ public class Request {
 
     private Date expirydate;
 
-    private String category;
+    private int category;
 
     private String image;
 
@@ -78,11 +78,11 @@ public class Request {
         return rid;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

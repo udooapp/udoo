@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {Http, Response, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -9,7 +9,6 @@ import 'rxjs/Rx';
 
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
-import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class MapService {
@@ -23,15 +22,39 @@ export class MapService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  getOfferLocations(): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offers')
-      .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+  getOfferLocations(category : number, searchText : string): Observable<Offer[]> {
+    return this.http.get(this.userUrl + '/offers/' + category + '/' + (searchText ? searchText : ''))
+      .map(this.extractData)
+      .catch(this.handleError);
   }
 
-  getRequestLocations(): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/requests')
-      .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+  getRequestLocations(category : number, searchText : string): Observable<Request[]> {
+    return this.http.get(this.userUrl + '/requests/' + category + '/' + (searchText ? searchText : ''))
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  getCategories() : Observable<Object[]>{
+    return this.http.get(this.userUrl + '/categories')
+      .map(this.extractData)
+      .catch(this.handleError)
+  }
+
+
+  private extractData(res: Response) {
+    return res.json() || {};
+  }
+
+  private handleError(error: Response | any) {
+    // In a real world app, you might use a remote logging infrastructure
+    let errMsg: string;
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    return Observable.throw(errMsg);
   }
 }

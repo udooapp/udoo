@@ -38,7 +38,7 @@ public interface IRestServiceController {
 
     User getUser(final String id);
 
-    ResponseEntity<?> getAllOffers();
+    ResponseEntity<?> getAllOffers(int category, String searchText);
 
     ResponseEntity<?> getAllRequests();
 
@@ -47,4 +47,5 @@ public interface IRestServiceController {
     ResponseEntity<?> upload(MultipartFile inputFile);
 
     ResponseEntity<?> multiFileUpload(MultipartFile[] files);
+    ResponseEntity<?> getAllRequests(int category, String searchText);
 }

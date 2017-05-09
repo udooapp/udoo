@@ -1,0 +1,18 @@
+.detail-description{
+  font-size: 14pt;
+  font-weight: lighter;
+}
+.detail-location{
+  font-size: 14pt;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: lighter;
+  color: #2B6665;
+}
+.detail-date{
+  font-size: 14pt;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #2B6665;
+}

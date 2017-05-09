@@ -1,9 +1,11 @@
 package com.udoo.restservice.spring;
 
 
+import com.udoo.dal.entities.Category;
 import com.udoo.dal.entities.Offer;
 import com.udoo.dal.entities.Request;
 import com.udoo.dal.entities.User;
+import com.udoo.dal.repositories.ICategoryRepository;
 import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
@@ -47,6 +49,8 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IRequestRepository requestRepository;
+    @Resource
+    private ICategoryRepository categoryRepository;
 
 
     @Override
@@ -152,7 +156,7 @@ public class RestServiceController implements IRestServiceController {
 
 
     @Override
-    @RequestMapping(value = "/request", method = RequestMethod.POST)
+    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<List<Request>> getAllUserRequest(@RequestBody String token) {
         try {
@@ -183,6 +187,12 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
+    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
+
+        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
+    }
     @Override
     @RequestMapping(value = "/offer", method = RequestMethod.POST)
     public ResponseEntity<List<Offer>> getAllUserOffer(@RequestBody String token) {
@@ -228,6 +238,12 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Incorrect email", HttpStatus.NOT_MODIFIED);
     }
 
+
+    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Offer> getOffer(@PathVariable("id") int id) {
+        return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
+    }
+
     @Override
     @RequestMapping(value = "/saveoffer/{email:.+}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveOffer(@RequestBody Offer offer, @PathVariable("email") String email) {
@@ -263,20 +279,70 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/offers", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffers() {
-        return new ResponseEntity<Object>(offerRepository.findAll(), HttpStatus.OK);
+    @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
+        List<Offer> offers;
+        if (category > 0) {
+            offers = offerRepository.findAllMatches(category, searchText);
+        } else {
+            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+        }
+        for (Offer offer : offers) {
+            User usr = userRepository.findByUid(offer.getUid());
+            offer.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(offers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
+        List<Offer> offers;
+        if (category > 0) {
+            offers = offerRepository.findAllByCategory(category);
+        } else {
+            offers = offerRepository.findAllActual();
+        }
+        for (Offer offer : offers) {
+            User usr = userRepository.findByUid(offer.getUid());
+            offer.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(offers, HttpStatus.OK);
     }
 
     @Override
-    @RequestMapping(value = "/requests", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequests() {
-        return new ResponseEntity<Object>(requestRepository.findAll(), HttpStatus.OK);
+    @RequestMapping(value = "/requests/{category}/{searchText}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
+                                            @PathVariable("searchText") String searchText) {
+        List<Request> requests;
+        if (category > 0) {
+            requests =requestRepository.findAllMatches(category, searchText);
+        } else {
+            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+        }
+        for (Request request : requests) {
+            User usr = userRepository.findByUid(request.getUid());
+            request.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(requests, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
+        List<Request> requests;
+        if (category > 0) {
+            requests = requestRepository.findAllByCategory(category);
+        } else {
+            requests = requestRepository.findAllActual();
+        }
+        for (Request request : requests) {
+            User usr = userRepository.findByUid(request.getUid());
+            request.setImage(usr.getPicture());
+        }
+        return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }
 
     @Bean
     public InternalResourceViewResolver internalResourceViewResolver() {
-
         final InternalResourceViewResolver result = new InternalResourceViewResolver();
         result.setViewClass(JstlView.class);
         result.setPrefix("/WEB-INF/jsp/");
@@ -289,8 +355,8 @@ public class RestServiceController implements IRestServiceController {
     private ServletContext context;
 
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
-    public @ResponseBody
-    void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+    public @ResponseBody void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+        System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
         response.setContentType("image/*");
@@ -321,32 +387,29 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
-
         List<String> imageNames = new ArrayList<>();
         for (MultipartFile file : files) {
-
             if (file.isEmpty()) {
                 continue; //next pls
             }
-
             try {
-
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + file.getOriginalFilename()));
                 Files.write(path, bytes);
-
                 imageNames.add(file.getOriginalFilename());
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         if (imageNames.isEmpty()) {
             return new ResponseEntity<>("Please select a file to upload", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(imageNames, HttpStatus.OK);
         }
+    }
 
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getCategories() {
+        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
     }
 }

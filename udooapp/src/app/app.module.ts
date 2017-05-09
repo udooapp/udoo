@@ -21,6 +21,7 @@ import {TokenService} from "../guard/TokenService";
 import {TextAreaComponent} from "../layout_elements/textarea/textarea.component";
 import {SelectInputComponent} from "../layout_elements/selectinput/selectinput.component";
 import {FileInputComponent} from "../layout_elements/fileInput/fileinput.component";
+import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {FileInputComponent} from "../layout_elements/fileInput/fileinput.compone
     TextInputComponent,
     TextAreaComponent,
     SelectInputComponent,
-    FileInputComponent
+    FileInputComponent,
+    ServiceDetailComponent
   ],
   imports: [
     BrowserModule,

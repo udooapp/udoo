@@ -2,8 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {MapService} from "../services/map.service";
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
+import {DomSanitizer} from "@angular/platform-browser";
+import {Router} from "@angular/router";
 
-declare var google: any;
+declare let google: any;
 
 @Component({
   selector: 'map',
@@ -15,91 +17,144 @@ export class MapComponent implements OnInit {
 
   private scriptLoadingPromise: Promise<void>;
   private map;
-  private requests: Request[];
-  private offers: Offer[];
   private error: string;
-  constructor(private mapService: MapService) {
+  private showSearch = true;
+  private searchString = '';
+  private type = 0;
+  private category = 0;
+  private categories: any[] = [{cid: 0, name: ''}];
+  private markers = [];
+  private requests: Request[] = [];
+  private offers: Offer[] = [];
+  private mapView = true;
+  private types: string[] = ['Select', 'Offer', 'Request'];
+
+  constructor(private mapService: MapService, private sanitizer: DomSanitizer, private router: Router) {
   }
 
-  refresh() {
-    this.mapService.getRequestLocations().subscribe(
-      data => {
-        this.requests = data;
-        for (let i = 0; i < this.requests.length; ++i) {
+  deleteMarkers() {
+    for (let i = 0; i < this.markers.length; i++) {
+      this.markers[i].setMap(null);
+    }
+    this.markers = [];
+  }
+
+  loadRequests() {
+    this.mapService.getRequestLocations(this.category, this.searchString).subscribe(
+      requests => {
+        this.requests = requests;
+        for (let i = 0; i < requests.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(this.requests[i].location).coordinate,
+            position: JSON.parse(requests[i].location).coordinate,
             map: this.map,
-            title: this.requests[i].title
+            title: requests[i].title,
+            icon: '/src/images/icon.png'
 
           });
           let infowindow = new google.maps.InfoWindow({
             content: '<div>' +
-            '<h1>'+ this.requests[i].title + '</h1>' +
+            '<h1>' + requests[i].title + '</h1>' +
             '<div>' +
-            '<p>' + this.requests[i].description + '</p>' +
-            '<p><b>Category: </b>' + this.requests[i].category + '</p>' +
-            '<p><b>Address: </b>' + JSON.parse(this.requests[i].location).address + '</p>' +
+            '<p>' + requests[i].description + '</p>' +
+            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid === requests[i].category).name + '</p>' +
             '</div>' +
             '</div>'
           });
           let map = this.map;
-           marker.addListener('mouseover', function() {
-             infowindow.open(map, marker);
-           });
-          marker.addListener('click', function() {
+          marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
           });
-          marker.addListener('mouseout', function() {
+          marker.addListener('click', function () {
+            infowindow.open(map, marker);
+          });
+          marker.addListener('mouseout', function () {
             infowindow.close(map, marker);
           });
+          this.markers.push(marker);
         }
       },
       error => this.error = <any>error);
-    this.mapService.getOfferLocations().subscribe(
-      data => {
-        this.offers = data;
-        for (let i = 0; i < this.offers.length; ++i) {
+  }
+
+  loadOffers() {
+
+    this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
+      offers => {
+        this.offers = offers;
+        for (let i = 0; i < offers.length; ++i) {
           let marker = new google.maps.Marker({
-            position: JSON.parse(this.offers[i].location).coordinate,
+            position: JSON.parse(this.offers[i].location),
             map: this.map,
-            title: this.offers[i].title
+            title: offers[i].title,
+            icon: '/src/images/icon.png'
           });
 
           let infowindow = new google.maps.InfoWindow({
             content: '<div>' +
-                        '<h1>' +this.offers[i].title + '</h1>' +
-                        '<div>' +
-                          '<p>' + this.offers[i].description + '</p>' +
-                          '<p><b>Category: </b>' + this.offers[i].category + '</p>' +
-                          '<p><b>Address: </b>' + JSON.parse(this.offers[i].location).address + '</p>' +
-                        '</div>' +
-                    '</div>'
+            '<h1>' + offers[i].title + '</h1>' +
+            '<div>' +
+            '<p>' + offers[i].description + '</p>' +
+            '<p><b>Category: </b>' + this.categories.find(cat => cat.cid === offers[i].category).name + '</p>' +
+            '</div>' +
+            '</div>'
           });
           let map = this.map;
-          marker.addListener('mouseover', function() {
+          marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
           });
-          marker.addListener('click', function() {
+          marker.addListener('click', function () {
             infowindow.open(map, marker);
           });
-         marker.addListener('mouseout', function() {
-           infowindow.close(map, marker);
-         });
+          marker.addListener('mouseout', function () {
+            infowindow.close(map, marker);
+          });
+          this.markers.push(marker);
         }
       },
       error => this.error = <any>error);
   }
 
+  refresh() {
+    this.deleteMarkers();
+    if (this.type == 0) {
+      this.loadRequests();
+      this.loadOffers();
+
+    } else if (this.type == 1) {
+      this.loadOffers();
+      this.requests = [];
+    } else if (this.type == 2) {
+      this.loadRequests();
+      this.offers = [];
+    }
+  }
+
   ngOnInit() {
+    this.mapService.getCategories().subscribe(
+      data => {
+        this.categories = data;
+        this.categories.splice(0, 0, {cid: 0, name: 'Select category'});
+      },
+      error => this.error = <any>error
+    );
     this.load().then(() => {
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 48.211029, lng: 16.373990},
-        zoom: 14
+        zoom: 14,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DEFAULT,
+          position: google.maps.ControlPosition.LEFT_BOTTOM
+        }
       });
-      this.refresh()
+      this.loadRequests();
+      this.loadOffers();
     });
-  }
 
+  }
+  getLocation(object : string) : String{
+    return JSON.parse(object).address;
+  }
   load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
@@ -128,4 +183,46 @@ export class MapComponent implements OnInit {
     return this.scriptLoadingPromise;
   }
 
+  onKey(event: any): void {
+    if (event.which === 13) {
+      this.refresh();
+    } else {
+      this.searchString = event.target.value;
+    }
+  }
+
+  onClickSearchPanel() {
+    this.showSearch = !this.showSearch;
+  }
+
+  onChangeTypeSelect(event: any) {
+    if (this.type != event.target.value) {
+      this.type = event.target.value;
+      this.refresh();
+    }
+  }
+
+  onChangeCategorySelect(event: any) {
+    if (this.category != event.target.value) {
+      this.category = event.target.value;
+      this.refresh()
+    }
+  }
+  getPictureUrl(url : string) {
+    if (url == null || url.length == 0 || url === 'null') {
+      return '/src/images/profile_picture.png';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
+  }
+  showList() {
+    this.mapView = !this.mapView;
+  }
+
+  getCategory(category: number): string {
+    let cat = this.categories.find(cat => cat.cid == category);
+    return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
+  }
+  onClickService(type : boolean, id : number){
+    this.router.navigate(['/detail/' + id + '/' + (type ? 1 : 0)]);
+  }
 }
