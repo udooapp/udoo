@@ -223,6 +223,6 @@ export class MapComponent implements OnInit {
     return cat.name ? cat.name : 'Category with ' +  category + ' id is not exist!';
   }
   onClickService(type : boolean, id : number){
-    this.router.navigate(['/detail/' + id + '/' + (type ? 0 : 1)]);
+    this.router.navigate(['/detail/' + id + '/' + (type ? 1 : 0)]);
   }
 }
