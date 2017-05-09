@@ -2,7 +2,7 @@
   <h1>{{data.title}}</h1>
   <div class="detail-description">{{data.description || ''}}</div>
   <div class="detail-location"><b>Location:</b> {{data.description || ''}}</div>
-  <div class="detail-date"><b>Job date:</b> {{data.jobdate || ''}}</div>
+  <div class="detail-date" *ngIf="!type"><b>Job date:</b> {{data.jobdate || ''}}</div>
   <div class="detail-date"><b>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
   <button class="input-button button-light" (click)="onBackPressed()">Back</button>
 </div>
