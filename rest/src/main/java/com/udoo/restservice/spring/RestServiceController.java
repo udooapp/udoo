@@ -156,7 +156,6 @@ public class RestServiceController implements IRestServiceController {
     public @ResponseBody
     ResponseEntity<List<Request>> getAllUserRequest(@RequestBody String token) {
         try {
-            System.out.println(token);
             List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
             if (users.size() > 0) {
                 System.out.println(users.get(0).getUid());
@@ -168,6 +167,20 @@ public class RestServiceController implements IRestServiceController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @RequestMapping(value = "/deleterequest/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> deleteUserRequest(@PathVariable("id") int id, @RequestBody String token) {
+        if(id > 0){
+            int succes = requestRepository.deleteByRid(id);
+            if(succes > -1) {
+                return new ResponseEntity<>("Request deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -185,7 +198,19 @@ public class RestServiceController implements IRestServiceController {
         }
 
     }
-
+    @RequestMapping(value = "/deleteoffer/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> deleteUserOffer(@PathVariable("id") int id, @RequestBody String token) {
+        if(id > 0){
+            int succes = offerRepository.deleteByOid(id);
+            if(succes > -1) {
+                return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
+    }
     @Override
     @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "email") String email) {
@@ -266,7 +291,6 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
     public @ResponseBody
     void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
-        System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
         response.setContentType("image/*");
@@ -279,7 +303,6 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         HttpHeaders headers = new HttpHeaders();
-        System.out.println("Upload image");
         if (!inputFile.isEmpty()) {
             try {
                 String originalFilename = inputFile.getOriginalFilename();

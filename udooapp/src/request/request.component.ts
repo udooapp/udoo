@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {EmptyValidator} from "../validator/empty.validator";
@@ -16,7 +16,7 @@ import {DateValidator} from "../validator/date.validator";
   styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
   providers: [RequestService, UserService]
 })
-export class NewRequestComponent {
+export class RequestComponent implements OnInit {
   registration = true;
   category = ['Cleaning', 'Washing', 'Other'];
   message: String;
@@ -28,14 +28,29 @@ export class NewRequestComponent {
   loaderVisible = false;
   first = false;
   pictureLoadError = false;
+  type: number = -1;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   timeValidator: IValidator = new TimeValidator();
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
 
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute) {
     this.data.category = this.category[0];
+  }
+
+  ngOnInit() {
+    let id: number = -1;
+    this.route.params
+      .subscribe((params: Params) => {
+        if (params['id'] != null && params['type'] != null && !isNaN(params['id']) && !isNaN(params['type'])) {
+          id = +params['id'];
+          if (id != null) {
+            this.type = +params['type'];
+            console.log("" + id);
+          }
+        }
+      });
   }
 
   save() {
@@ -54,6 +69,7 @@ export class NewRequestComponent {
       this.error = 'Incorrect or empty value';
     }
   }
+
   checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
@@ -62,6 +78,7 @@ export class NewRequestComponent {
     }
     return true;
   }
+
   getPictureUrl() {
     if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
       return '';
@@ -110,5 +127,14 @@ export class NewRequestComponent {
     this.data.location = JSON.stringify(location).replace(/"/g, '\\"');
     this.location = location.address;
     this.onClickSelectLocation();
+  }
+
+  deleteService(){
+    this.requestService.deleteUserRequest(this.data.rid).subscribe(
+      ok=>{
+        this.router.navigate(['/requestlist'])
+      },
+      error =>{this.error = error}
+    );
   }
 }

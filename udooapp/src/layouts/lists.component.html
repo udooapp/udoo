@@ -1,19 +1,24 @@
 <div class="data-container">
   <h1>{{offer ? 'My service offer' : 'My service request'}}</h1>
-  <input *ngIf="offer" type="button" value="Add new offer" class="input-button button-light" routerLink="/addoffer"
+  <input *ngIf="offer" type="button" value="Add new offer" class="input-button button-light" routerLink="/offer"
          routerLinkActive="active">
-  <input *ngIf="!offer" type="button" value="Add new request" class="input-button button-light" routerLink="/addrequest"
+  <input *ngIf="!offer" type="button" value="Add new request" class="input-button button-light" routerLink="/request"
          routerLinkActive="active">
   <div class="service-container">
-    <div class="service" *ngFor="let item of data">
+    <div class="service" *ngFor="let item of data;  let i = index">
+      <div class="service-button-container">
+        <img src="/src/images/trash.png" (click)="onClickDelete(offer ? item.oid : item.rid, i)">
+        <img src="/src/images/edit.png" (click)="onClickEdit(offer ? item.oid : item.rid)">
+      </div>
       <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
         <div class="service-description">{{item.description}}</div>
         <div class="service-category"><b>Category:</b>{{item.category}}</div>
         <div class="service-location"><b>Location:</b>{{getAddress(item.location)}}</div>
-        <div class="service-date">{{item.expridate}}</div>
+        <div class="service-date" [ngClass]="{'date-expired': isExpired(item.expirydate)}"><b *ngIf="!isExpired(item.expirydate)">Date:</b><b *ngIf="isExpired(item.expirydate)">Expired:</b>{{convertMillisToDate(item.expirydate)}}</div>
       </div>
+
     </div>
   </div>
 </div>

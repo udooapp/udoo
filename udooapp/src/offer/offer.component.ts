@@ -1,21 +1,19 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
-import {TimeValidator} from "../validator/time.validator";
-import {NumberValidator} from "../validator/number.validator";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
   styleUrls: ['../layouts/offerrequest.component.css', '../layouts/forminput.component.css'],
   providers: [OfferService, UserService]
 })
-export class NewOfferComponent {
+export class OfferComponent implements OnInit {
   registration = true;
   category = ['Cleaning', 'Washing', 'Other'];
   message: String;
@@ -26,16 +24,31 @@ export class NewOfferComponent {
   data = new Offer(null, '', '', '', 1, '', '', '', '');
   loaderVisible = false;
   first = false;
+  type: number = -1;
   pictureLoadError = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute) {
     this.data.category = this.category[0];
   }
-  save() {
 
+  ngOnInit() {
+    let id: number = -1;
+    this.route.params
+      .subscribe((params: Params) => {
+        if (params['id'] != null && params['type'] != null && !isNaN(params['id']) && !isNaN(params['type'])) {
+          id = +params['id'];
+          if (id != null) {
+            this.type = +params['type'];
+            console.log("" + id);
+          }
+        }
+      });
+  }
+
+  save() {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
@@ -108,5 +121,14 @@ export class NewOfferComponent {
     this.location = location.address;
     this.data.location = JSON.stringify(location).replace(/"/g, '\\"');
     this.onClickSelectLocation();
+  }
+
+  deleteService(){
+    this.offerService.deleteUserOffer(this.data.oid).subscribe(
+      ok=>{
+        this.router.navigate(['/offerlist'])
+      },
+      error =>{this.error = error}
+    );
   }
 }

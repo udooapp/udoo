@@ -5,8 +5,8 @@ import {LoginComponent} from '../login/login.component';
 import {MapComponent} from '../map/map.component';
 import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
-import {NewOfferComponent} from "../newoffer/newoffer.component";
-import {NewRequestComponent} from "../newrequest/newrequest.component";
+import {OfferComponent} from "../offer/offer.component";
+import {RequestComponent} from "../request/request.component";
 import {RequestListComponent} from "../requestlist/requestlist.component";
 import {OfferListComponent} from "../offerlist/offerlist.component";
 import {AuthGuard} from "../guard/AuthGuard";
@@ -18,10 +18,12 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'profile/1', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'password', component: PasswordComponent, canActivate: [AuthGuard]},
-  {path: 'addoffer', component: NewOfferComponent, canActivate: [AuthGuard]},
-  {path: 'addrequest', component: NewRequestComponent, canActivate: [AuthGuard]},
-  {path: 'request', component: RequestListComponent, canActivate: [AuthGuard]},
-  {path: 'offer', component: OfferListComponent, canActivate: [AuthGuard]},
+  {path: 'offer', component: OfferComponent, canActivate: [AuthGuard]},
+  {path: 'request', component: RequestComponent, canActivate: [AuthGuard]},
+  {path: 'offer/:id/:type', component: OfferComponent, canActivate: [AuthGuard]},
+  {path: 'request/:id/:type', component: RequestComponent, canActivate: [AuthGuard]},
+  {path: 'requestlist', component: RequestListComponent, canActivate: [AuthGuard]},
+  {path: 'offerlist', component: OfferListComponent, canActivate: [AuthGuard]},
   {path: 'map', component: MapComponent},
   {path: 'map/internet', component: MapComponent},
   {path: '**', redirectTo:'/map'}

@@ -10,8 +10,8 @@ import {LoginComponent} from '../login/login.component';
 import {AppRoutingModule} from './app.routing.module';
 import {ProfileComponent} from "../profile/profile.component";
 import {PasswordComponent} from "../password/password.component";
-import {NewOfferComponent} from "../newoffer/newoffer.component";
-import {NewRequestComponent} from "../newrequest/newrequest.component";
+import {OfferComponent} from "../offer/offer.component";
+import {RequestComponent} from "../request/request.component";
 import {RequestListComponent} from "../requestlist/requestlist.component";
 import {OfferListComponent} from "../offerlist/offerlist.component";
 import {LocationComponent} from "../location/location.component";
@@ -30,8 +30,8 @@ import {FileInputComponent} from "../layout_elements/fileInput/fileinput.compone
     LoginComponent,
     ProfileComponent,
     PasswordComponent,
-    NewOfferComponent,
-    NewRequestComponent,
+    OfferComponent,
+    RequestComponent,
     RequestListComponent,
     OfferListComponent,
     LocationComponent,

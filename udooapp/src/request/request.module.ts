@@ -3,12 +3,12 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
-import {NewRequestComponent} from './newrequest.component';
+import {RequestComponent} from './request.component';
 import {LocationComponent} from "../location/location.component";
 
 @NgModule({
   declarations: [
-    NewRequestComponent
+    RequestComponent
   ],
   imports: [
     BrowserModule,
@@ -16,7 +16,7 @@ import {LocationComponent} from "../location/location.component";
     HttpModule
   ],
   providers: [],
-  bootstrap: [NewRequestComponent]
+  bootstrap: [RequestComponent]
 })
 export class NewRequestModule {
 }

@@ -30,6 +30,12 @@ export class RequestService {
     return this.http.post(this.userUrl + '/request' , this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
-    
+
+  }
+  deleteUserRequest(id : number): Observable<string> {
+    return this.http.post(this.userUrl + '/deleterequest/'+id , this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
+
   }
 }

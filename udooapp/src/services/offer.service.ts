@@ -34,4 +34,9 @@ export class OfferService {
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
+  deleteUserOffer(id : number): Observable<string> {
+    return this.http.post(this.userUrl + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
+  }
 }

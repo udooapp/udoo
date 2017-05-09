@@ -3,12 +3,12 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
-import {NewOfferComponent} from './newoffer.component';
+import {OfferComponent} from './offer.component';
 import {LocationComponent} from "../location/location.component";
 
 @NgModule({
   declarations: [
-    NewOfferComponent
+    OfferComponent
   ],
   imports: [
     BrowserModule,
@@ -16,7 +16,7 @@ import {LocationComponent} from "../location/location.component";
     HttpModule
   ],
   providers: [],
-  bootstrap: [NewOfferComponent]
+  bootstrap: [OfferComponent]
 })
 export class NewOfferModule {
 }
