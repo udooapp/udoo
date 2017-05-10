@@ -16,3 +16,21 @@
   font-weight: 600;
   color: #2B6665;
 }
+@media (min-width: 2000px) {
+  .input-container {
+    padding: 1% 30% 2% 30%;
+  }
+}
+@media (min-width: 961px) {
+  .input-container {
+    width: 600px;
+    margin: 0 auto;
+    padding: 0 0 2% 0;
+  }
+  .input-button{
+    width: 50%;
+    margin-right: 25%;
+    margin-left: 25%;
+  }
+}
+

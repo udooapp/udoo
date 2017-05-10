@@ -58,9 +58,11 @@ export class MapComponent implements OnInit {
             '<h1>' + requests[i].title + '</h1>' +
             '<div>' +
             '<p>' + requests[i].description + '</p>' +
+            '<p><a routerLinkActive="active" routerLink="/detail/' + requests[i].rid + '/0"><b>More...</b></a></p>' +
             '<p><b>Category: </b>' + this.findCatName(requests[i].category) + '</p>' +
             '</div>' +
-            '</div>'
+            '</div>',
+            maxWidth: 300
           });
           let map = this.map;
           infowindow.addListener('closeclick', function () {
@@ -76,7 +78,7 @@ export class MapComponent implements OnInit {
           });
 
           marker.addListener('mouseout', function () {
-            if(!click[i]) {
+            if (!click[i]) {
               infowindow.close(map, marker);
             }
           });
@@ -101,13 +103,15 @@ export class MapComponent implements OnInit {
             icon: '/src/images/icon.png'
           });
           let infowindow = new google.maps.InfoWindow({
-            content: '<div>' +
+            content: '<div >' +
             '<h1>' + offers[i].title + '</h1>' +
             '<div>' +
             '<p>' + offers[i].description + '</p>' +
+            '<p><a routerLinkActive="active" routerLink="/detail/' + offers[i].oid + '/1"><b>More...</b></a></p>' +
             '<p><b>Category: </b>' + this.findCatName(offers[i].category) + '</p>' +
             '</div>' +
-            '</div>'
+            '</div>',
+            maxWidth: 300
           });
           let map = this.map;
           infowindow.addListener('closeclick', function () {

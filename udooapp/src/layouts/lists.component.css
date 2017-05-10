@@ -86,6 +86,7 @@ h1 {
 }
 
 .service {
+  cursor: pointer;
   min-height: 160px;
   overflow: hidden;
   position: relative;
@@ -93,7 +94,7 @@ h1 {
 }
 
 .service:hover {
-  background-color: #FCFCFC;
+  background-color: #FAFAFA;
 }
 
 .service-picture {

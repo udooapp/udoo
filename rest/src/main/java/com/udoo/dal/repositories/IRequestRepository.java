@@ -26,7 +26,7 @@ public interface IRequestRepository extends Repository<Request, Integer> {
     List<Request> findAllMatches(@Param("category") int category,@Param("searchText") String searchText);
 
     @Query("SELECT o FROM Request o WHERE o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%') AND o.expirydate > CURRENT_DATE ")
-    List<Request> findAllByTitleContainingOrDescriptionContaining(String searchText);
+    List<Request> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText);
 
 
     List<Request> findByUid(int uid);

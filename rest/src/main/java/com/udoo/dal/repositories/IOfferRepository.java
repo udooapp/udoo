@@ -32,7 +32,7 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
     List<Offer> findAllMatches(@Param("category") int category, @Param("searchText") String searchText);
 
     @Query("SELECT o FROM Offer o WHERE LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR lower(o.title) LIKE CONCAT('%',lower(:searchText),'%') AND o.expirydate >= CURRENT_DATE ")
-    List<Offer> findAllByTitleContainingOrDescriptionContaining(String searchText);
+    List<Offer> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText);
 
     Offer findByOid(int id);
 
