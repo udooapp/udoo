@@ -13,7 +13,6 @@ import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class MapService {
-  private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
   constructor(private http: Http) {
@@ -24,21 +23,21 @@ export class MapService {
   }
 
   getOfferLocations(category : number, searchText : string): Observable<Offer[]> {
-    return this.http.get(this.userUrl + '/offers/' + category + '/' + (searchText ? searchText : ''))
+    return this.http.get(HandlerService.URL + '/offers/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   getRequestLocations(category : number, searchText : string): Observable<Request[]> {
-    return this.http.get(this.userUrl + '/requests/' + category + '/' + (searchText ? searchText : ''))
+    return this.http.get(HandlerService.URL + '/requests/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   getCategories() : Observable<Object[]>{
-    return this.http.get(this.userUrl + '/categories')
+    return this.http.get(HandlerService.URL + '/categories')
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError)
   }
-  
+
 }

@@ -13,7 +13,6 @@ import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class OfferService {
-  private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
   constructor(private http: Http,  private tokenService: TokenService) {
@@ -24,23 +23,23 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(this.userUrl + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }
 
   getUserOffer(): Observable<Offer[]> {
-    return this.http.post(this.userUrl + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
   deleteUserOffer(id : number): Observable<string> {
-    return this.http.post(this.userUrl + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
   getOffer(oid: number): Observable<Offer> {
-    return this.http.get(this.userUrl + '/offer/' + oid)
+    return this.http.get(HandlerService.URL + '/offer/' + oid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

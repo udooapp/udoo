@@ -10,7 +10,6 @@ import {TokenService} from "../guard/TokenService";
 import {HandlerService} from "./handler.service";
 @Injectable()
 export class RequestService {
-  private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
   constructor(private http: Http, private tokenService : TokenService) {
@@ -21,24 +20,24 @@ export class RequestService {
   }
 
   saveRequest(request: Request): Observable<String> {
-    return this.http.post(this.userUrl + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(request), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(request), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }
 
   getUserRequest(): Observable<Request[]> {
-    return this.http.post(this.userUrl + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   deleteUserRequest(id : number): Observable<string> {
-    return this.http.post(this.userUrl + '/deleterequest/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/deleterequest/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
   getRequest(rid : number): Observable<Request> {
-    return this.http.get(this.userUrl + '/request/' + rid, new RequestOptions({headers: this.headers}))
+    return this.http.get(HandlerService.URL + '/request/' + rid, new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

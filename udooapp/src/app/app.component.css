@@ -1,12 +1,11 @@
 .header-title {
   margin: auto;
-  padding-right: 5%;
 }
 
 .header-button {
-  text-align: left;
-  padding-bottom: 2%;
+  position: absolute;
   padding-left: 15px;
+  padding-right: 15px;
   font-size: 25pt;
   cursor: pointer;
 }

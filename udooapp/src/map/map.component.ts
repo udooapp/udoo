@@ -26,7 +26,7 @@ export class MapComponent implements OnInit {
   private markers = [];
   private requests: Request[] = [];
   private offers: Offer[] = [];
-  private mapView = true;
+  public mapView = true;
   private types: string[] = ['Select', 'Offer', 'Request'];
 
   constructor(private mapService: MapService, private sanitizer: DomSanitizer, private router: Router) {
@@ -50,7 +50,7 @@ export class MapComponent implements OnInit {
             position: JSON.parse(requests[i].location).coordinate,
             map: this.map,
             title: requests[i].title,
-            icon: '/src/images/icon.png'
+            icon: './src/images/icon.png'
 
           });
           let infowindow = new google.maps.InfoWindow({
@@ -100,7 +100,7 @@ export class MapComponent implements OnInit {
             position: JSON.parse(offers[i].location).coordinate,
             map: this.map,
             title: offers[i].title,
-            icon: '/src/images/icon.png'
+            icon: './src/images/icon.png'
           });
           let infowindow = new google.maps.InfoWindow({
             content: '<div >' +

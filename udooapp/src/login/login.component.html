@@ -1,6 +1,6 @@
 <div class="input-container">
   <h1>Sign in</h1>
-  <form>
+  <form novalidate>
     <text-input [type]="'email'" [placeholder]="'Email'" [validators]="[emptyValidator, emailValidator]" (onStateChange)="valid[0]=$event"
                 (text)="user.email = $event"></text-input>
     <text-input [type]="'password'" [validators]="[emptyValidator, passwordValidator]" (onStateChange)="valid[1]=$event"

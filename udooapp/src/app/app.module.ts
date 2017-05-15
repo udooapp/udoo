@@ -22,6 +22,7 @@ import {TextAreaComponent} from "../layout_elements/textarea/textarea.component"
 import {SelectInputComponent} from "../layout_elements/selectinput/selectinput.component";
 import {FileInputComponent} from "../layout_elements/fileInput/fileinput.component";
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService],
+  providers: [AuthGuard, TokenService, {provide: APP_BASE_HREF, useValue : '/'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

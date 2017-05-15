@@ -11,7 +11,6 @@ import {HandlerService} from "./handler.service";
 
 @Injectable()
 export class UserService {
-  private userUrl = 'http://localhost:8090/rest';  // URL to web API
   private headers;
 
   constructor(private http: Http, private tokenService: TokenService) {
@@ -23,11 +22,11 @@ export class UserService {
 
   logout(): void {
     this.tokenService.clearToken();
-    this.http.post(this.userUrl + '/logout', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    this.http.post(HandlerService.URL + '/logout', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
   }
 
   loginUser(user: User): Observable<string> {
-    return this.http.post(this.userUrl + '/login', user.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/login', user.toString(), new RequestOptions({headers: this.headers}))
       .map((response: Response) => {
         let token = response.json() && response.json().token;
         if (token) {
@@ -41,7 +40,7 @@ export class UserService {
   }
 
   updateUser(user: User): Observable<String> {
-    return this.http.post(this.userUrl + '/update',
+    return this.http.post(HandlerService.URL + '/update',
       '{"uid" : "' + user.uid + '",' +
       '"name" : "' + user.name + '",' +
       '"email" : "' + user.email + '",' +
@@ -58,25 +57,25 @@ export class UserService {
 
 
   getUserCurrentUser(): Observable<User> {
-    return this.http.get(this.userUrl + '/user/' + JSON.parse(this.tokenService.getToken()).username)
+    return this.http.get(HandlerService.URL + '/user/' + JSON.parse(this.tokenService.getToken()).username)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   getUserData(token: any): Observable<User> {
-    return this.http.post(this.userUrl + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   registrateUser(user: User): Observable<String> {
-    return this.http.post(this.userUrl + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   changePassword(cpass: string, npass: string): Observable<String> {
-    return this.http.post(this.userUrl + '/password?cpass=' + cpass + '&npass=' + npass + "&email=" + JSON.parse(this.tokenService.getToken()).username, new RequestOptions({headers: this.headers}))
+    return this.http.post(HandlerService.URL + '/password?cpass=' + cpass + '&npass=' + npass + "&email=" + JSON.parse(this.tokenService.getToken()).username, new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
@@ -84,7 +83,7 @@ export class UserService {
   uploadPicture(file: File): Observable<String> {
     let formData: FormData = new FormData();
     formData.append('file', file);
-    return this.http.post(this.userUrl + '/upload', formData)
+    return this.http.post(HandlerService.URL + '/upload', formData)
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText)
   }
