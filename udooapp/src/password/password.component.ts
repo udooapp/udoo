@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 
 
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../layout_elements/textinput/validation.component";
 import {IValidator} from "../validator/validator.interface";
 import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";

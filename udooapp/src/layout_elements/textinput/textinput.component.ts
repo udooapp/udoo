@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ValidationComponent} from "./validation.component";
 import {IValidator} from "../../validator/validator.interface";
 
 

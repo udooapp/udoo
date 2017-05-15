@@ -4,7 +4,6 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
-import {ValidationComponent} from "../layout_elements/textinput/validation.component";
 import {DomSanitizer} from "@angular/platform-browser";
 import {TokenService} from "../guard/TokenService";
 import {Router} from "@angular/router";
@@ -18,7 +17,7 @@ import {PhoneValidator} from "../validator/phone.validator";
 @Component({
   templateUrl: '../layouts/forminput.component.html',
   styleUrls: ['../layouts/forminput.component.css'],
-  providers: [UserService, ValidationComponent, TokenService]
+  providers: [UserService, TokenService]
 })
 
 export class ProfileComponent implements OnInit {
