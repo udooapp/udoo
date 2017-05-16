@@ -2,17 +2,23 @@
 </div>
 <div [ngClass]="{'hide-map-filter' : showSearch}" class="map-filter" (focusout)="refresh()" *ngIf="mapView">
   <div [ngClass]="{'hide-map-inputs' : showSearch}" class="map-inputs-container">
-    <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
+    <text-input [placeholder]="'Search'" [type]="text" class="map-search" (onKeyEvent)="onKey($event)" [disableValidation]="true"></text-input>
     <div class="map-selector-container">
       <div class="input-group">
-        <select-input class="map-select" [values]="types" (text)="onChangeTypeSelect($event)" [disableValidation]="true"></select-input>
-        <select-input class="map-select" [options]="categories" (text)="onChangeCategorySelect($event)" [disableValidation]="true"></select-input>
+        <select-input class="map-select right-padding" [values]="types" (text)="onChangeTypeSelect($event)"
+                      [disableValidation]="true"></select-input>
+        <select-input class="map-select" [options]="categories" (text)="onChangeCategorySelect($event)"
+                      [disableValidation]="true"></select-input>
       </div>
     </div>
     <button class="input-button button-light" (click)="showList()">List View</button>
   </div>
-  <div id="close-icon" *ngIf="!showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
-  <div id="magnifying-glass" *ngIf="showSearch" class="map-triangle-container" (click)="onClickSearchPanel()"></div>
+  <div class="close-button" *ngIf="!showSearch" (click)="onClickSearchPanel()">
+    <div id="close-icon" ></div>
+  </div>
+  <div  *ngIf="showSearch"  class="search-button" (click)="onClickSearchPanel()">
+  <div id="magnifying-glass" class="map-triangle-container" ></div>
+  </div>
 </div>
 <div class="data-container" *ngIf="!mapView">
   <h1>Services</h1>
@@ -20,8 +26,10 @@
     <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
     <div class="service-map-selector-container">
       <div class="service-input-group">
-        <select-input class="map-select" [values]="types" (text)="onChangeTypeSelect($event)" [disableValidation]="true"></select-input>
-        <select-input class="map-select" [options]="categories" (text)="onChangeCategorySelect($event)" [disableValidation]="true"></select-input>
+        <select-input class="map-select" [values]="types" (text)="onChangeTypeSelect($event)"
+                      [disableValidation]="true"></select-input>
+        <select-input class="map-select" [options]="categories" (text)="onChangeCategorySelect($event)"
+                      [disableValidation]="true"></select-input>
       </div>
     </div>
     <button class="input-button button-light" (click)="showList()">Map View</button>

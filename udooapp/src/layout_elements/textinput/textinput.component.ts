@@ -15,11 +15,13 @@ export class TextInputComponent {
   errorMessage = '';
   valueText = '';
   inputText = '';
+  @Input() disableValidation = false;
   @Input() type: string;
   @Input() disabled = false;
   @Input() placeholder: string;
   @Input() validators: IValidator[];
   @Output() text = new EventEmitter<String>();
+  @Output() onKeyEvent = new EventEmitter<any>();
   @Output() onClickInput = new EventEmitter<boolean>();
   @Output() onStateChange = new EventEmitter<boolean>();
 
@@ -83,7 +85,8 @@ export class TextInputComponent {
     this.notChange = true;
     this.inputText = event.target.value;
     this.text.emit(event.target.value);
-    if (this.error) {
+    this.onKeyEvent.emit(event);
+    if (this.error && !this.disableValidation) {
       this.valid();
     }
   }
@@ -94,7 +97,7 @@ export class TextInputComponent {
 
   showInfo() {
     this.show = !this.show;
-    if (this.errorMessage.length == 0) {
+    if (this.errorMessage.length == 0 && !this.disableValidation) {
       this.valid()
     }
   }

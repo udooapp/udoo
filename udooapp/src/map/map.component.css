@@ -14,7 +14,7 @@
   }
 
   .map-inputs-container {
-    width: 95%;
+    width: 90%;
   }
 
   .service-container {
@@ -85,10 +85,15 @@
     margin-left: 5%;
   }
 }
-
+.map-inputs-container{
+  padding: 2%;
+}
 .hide-map-filter {
   margin: 0;
   width: 50px;
+  height: 50px;
+  overflow: hidden;
+  background-color: #378281;
 }
 
 .hide-map-inputs {
@@ -98,11 +103,10 @@
 .map-filter {
   position: absolute;
   margin: 1%;
-  padding: 1%;
   left: 0;
   top: 60px;
   min-height: 40px;
-  background-color: #378281;
+  background-color: #FFFFFF;
   box-shadow: 1px 1px 2px #9f9f9f;
   border-radius: 2px;
   display: -webkit-flex;
@@ -112,38 +116,31 @@
 }
 
 .map-search {
-  margin: 1%;
-  width: 96%;
-  border: 0;
-  padding: 1%;
-  height: 28px;
-  background-color: #f6f6f6;
-  border-radius: 3px;
-  font-size: 14pt;
+  position: relative;
+  width: 83%;
 }
 
 .map-select {
   float: left;
-  margin: 0 1% 0 1%;
-  width: 48%;
+  width: 49%;
   border-radius: 3px;
 }
 
-
-
-.map-selector-container {
-
-}
 #close-icon {
-  background: #FFFFFF;
+  background: #378281;
   height: 30px;
   position: relative;
   width: 4px;
   border-radius: 1px;
   transform: rotate(45deg);
 }
+.close-button{
+  cursor: pointer;
+  margin: 2% auto;
+  float:right;
+}
 #close-icon:after {
-  background: #FFFFFF;
+  background: #378281;
   content: "";
   height: 4px;
   left: -13px;
@@ -152,7 +149,12 @@
   top: 13px;
   width: 30px;
 }
-
+.search-button{
+  background-color: #378281;
+  width: 100%;
+  padding-left: 13px;
+  padding-top: 13px;
+}
 #magnifying-glass {
   font-size: 2em;
   display: inline-block;
@@ -184,20 +186,21 @@
   visibility: hidden;
   display: none;
 }
-
+.right-padding{
+  padding-right: 2%;
+}
 .input-group {
   height: 40px;
 }
 
 .map-triangle-container {
   margin: auto;
+  position: relative;
 }
 
 .input-button {
   margin-top: 0;
-  margin-bottom: 2%;
-  width: 98%;
-  margin-left: 1%
+  width: 100%;
 }
 
 /*Service*/

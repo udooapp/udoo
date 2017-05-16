@@ -4,7 +4,7 @@
           (change)="onKey($event)" [disabled]="disabled">
     <option *ngFor="let cat of data;" [value]="cat.cid">{{cat.name}}</option>
   </select>
-  <select *ngIf="!isOption" class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"  (change)="onKey($event)" [disabled]="disabled">
+  <select *ngIf="!isOption" class="input-select" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"  (change)="onKey($event)" [disabled]="disabled">
     <option *ngFor="let cat of data; let i = index" value="{{i}}">{{cat}}</option>
   </select>
   <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>

@@ -11,7 +11,7 @@
   margin-bottom: 2%;
 }
 
-@media (min-width: 961px) {
+@media(min-width: 961px) {
   .input-button {
     width: 20%;
   }
@@ -33,7 +33,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@media(max-width: 960px) {
   .input-button {
     width: 78%;
     height: 40px;
@@ -54,7 +54,7 @@
   margin-left: 11%;
 }
 
-@media (max-width: 641px) {
+@media(max-width: 641px) {
   .input-button {
     width: 87%;
     margin-left: 6%;

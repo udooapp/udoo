@@ -3,9 +3,9 @@
          class="input-area" (keyup)="onKey($event)" (change)="onKey($event)"
          [ngClass]="{'date-input' : (type == 'date' || type == 'time' || type == 'number') && (ok || error)}"
          (focusout)="focusChange()" (click)="onClickInputBox()" [disabled]="disabled">
-  <div *ngIf="!error" class="input-border input-border-ok"></div>
-  <div *ngIf="error" class="input-border input-border-error"></div>
-  <div *ngIf="ok || error" class="input-validation">
+  <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>
+  <div *ngIf="error && !disableValidation" class="input-border input-border-error"></div>
+  <div *ngIf="(ok || error) && !disableValidation" class="input-validation">
     <img *ngIf="ok" src="/src/images/check_icon.png" class="input-validation input-validation-ok"/>
     <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup">{{errorMessage}}</span>
     <div *ngIf="show" class="popup-background" (click)="show = !show"></div>
