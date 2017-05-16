@@ -58,7 +58,7 @@ export class MapComponent implements OnInit {
             '<h1>' + requests[i].title + '</h1>' +
             '<div>' +
             '<p>' + requests[i].description + '</p>' +
-            '<p><a routerLinkActive="active" routerLink="/detail/' + requests[i].rid + '/0"><b>More...</b></a></p>' +
+            '<p><a  href="/detail/' + requests[i].rid + '/0"><b>More...</b></a></p>' +
             '<p><b>Category: </b>' + this.findCatName(requests[i].category) + '</p>' +
             '</div>' +
             '</div>',
@@ -68,6 +68,11 @@ export class MapComponent implements OnInit {
           infowindow.addListener('closeclick', function () {
             click[i] = !click[i];
             infowindow.close(map, marker);
+          });
+          let rout = this.router;
+          infowindow.addListener('click', function () {
+            console.log("Click");
+            rout.navigate(['/detail/'+ requests[i].rid + '/0']);
           });
           marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
@@ -87,7 +92,6 @@ export class MapComponent implements OnInit {
       },
       error => this.error = <any>error);
   }
-
   loadOffers() {
 
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
@@ -117,6 +121,11 @@ export class MapComponent implements OnInit {
           infowindow.addListener('closeclick', function () {
             click[i] = !click[i];
             infowindow.close(map, marker);
+          });
+          let rout = this.router;
+          infowindow.addListener('click', function () {
+            console.log("Click");
+            rout.navigate(['/detail/'+ offers[i].oid + '/1']);
           });
           marker.addListener('mouseover', function () {
             infowindow.open(map, marker);
@@ -262,4 +271,5 @@ export class MapComponent implements OnInit {
   onClickService(type: boolean, id: number) {
     this.router.navigate(['/detail/' + id + '/' + (type ? 1 : 0)]);
   }
+
 }

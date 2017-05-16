@@ -23,10 +23,10 @@
 <div class="data-container" *ngIf="!mapView">
   <h1>Services</h1>
   <div class="service-inputs-container">
-    <input class="map-search" type="text" placeholder="Search" (keyup)="onKey($event)">
+    <text-input [placeholder]="'Search'" [type]="text" class="map-search" (onKeyEvent)="onKey($event)" [disableValidation]="true"></text-input>
     <div class="service-map-selector-container">
-      <div class="service-input-group">
-        <select-input class="map-select" [values]="types" (text)="onChangeTypeSelect($event)"
+      <div class="input-group">
+        <select-input class="map-select right-padding" [values]="types" (text)="onChangeTypeSelect($event)"
                       [disableValidation]="true"></select-input>
         <select-input class="map-select" [options]="categories" (text)="onChangeCategorySelect($event)"
                       [disableValidation]="true"></select-input>

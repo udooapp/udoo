@@ -61,7 +61,7 @@
 
 @media (max-width: 641px) {
   .map-filter {
-    width: 95%;
+    width: 98%;
   }
 
   .map-triangle-container {
@@ -125,29 +125,33 @@
   width: 49%;
   border-radius: 3px;
 }
-
-#close-icon {
-  background: #378281;
-  height: 30px;
-  position: relative;
-  width: 4px;
-  border-radius: 1px;
-  transform: rotate(45deg);
-}
 .close-button{
   cursor: pointer;
   margin: 2% auto;
   float:right;
 }
+
+#close-icon {
+  background: #378281;
+  height: 12px;
+  position: relative;
+  width: 2px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
 #close-icon:after {
   background: #378281;
   content: "";
-  height: 4px;
-  left: -13px;
+  height: 2px;
+  left: -5px;
   position: absolute;
   border-radius: 1px;
-  top: 13px;
-  width: 30px;
+  top: 5px;
+  width: 12px;
+}
+.service-inputs-container{
+  margin-bottom: 10px;
 }
 .search-button{
   background-color: #378281;
