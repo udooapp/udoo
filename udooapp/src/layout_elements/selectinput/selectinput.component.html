@@ -1,12 +1,15 @@
 <div class="input-select-container">
 
-  <select class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
+  <select *ngIf="isOption" class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
           (change)="onKey($event)" [disabled]="disabled">
-    <option *ngFor="let cat of options;" [value]="cat.cid">{{cat.name}}</option>
+    <option *ngFor="let cat of data;" [value]="cat.cid">{{cat.name}}</option>
   </select>
-  <div *ngIf="!error" class="input-border input-border-ok"></div>
-  <div *ngIf="error" class="input-border input-border-error"></div>
-  <div *ngIf="ok || error" class="input-validation">
+  <select *ngIf="!isOption" class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"  (change)="onKey($event)" [disabled]="disabled">
+    <option *ngFor="let cat of data; let i = index" value="{{i}}">{{cat}}</option>
+  </select>
+  <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>
+  <div *ngIf="error && !disableValidation" class="input-border input-border-error"></div>
+  <div *ngIf="(ok || error) && !disableValidation" class="input-validation">
     <img *ngIf="ok" src="/src/images/check_icon.png" class="input-validation input-validation-ok"/>
     <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup">{{errorMessage}}</span>
     <div *ngIf="show" class="popup-background" (click)="show = !show"></div>

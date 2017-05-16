@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, Headers} from '@angular/http';
+import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -10,6 +10,7 @@ import 'rxjs/Rx';
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
 import {HandlerService} from "./handler.service";
+import {config} from "../config/url.config";
 
 @Injectable()
 export class MapService {
@@ -22,20 +23,20 @@ export class MapService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  getOfferLocations(category : number, searchText : string): Observable<Offer[]> {
-    return this.http.get(HandlerService.URL + '/offers/' + category + '/' + (searchText ? searchText : ''))
+  getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
+    return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  getRequestLocations(category : number, searchText : string): Observable<Request[]> {
-    return this.http.get(HandlerService.URL + '/requests/' + category + '/' + (searchText ? searchText : ''))
+  getRequestLocations(category: number, searchText: string): Observable<Request[]> {
+    return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  getCategories() : Observable<Object[]>{
-    return this.http.get(HandlerService.URL + '/categories')
+  getCategories(): Observable<Object[]> {
+    return this.http.get(config.server + '/categories')
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError)
   }

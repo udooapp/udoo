@@ -230,15 +230,15 @@ export class MapComponent implements OnInit {
   }
 
   onChangeTypeSelect(event: any) {
-    if (this.type != event.target.value) {
-      this.type = event.target.value;
+    if (this.type != event) {
+      this.type = event;
       this.refresh();
     }
   }
 
   onChangeCategorySelect(event: any) {
-    if (this.category != event.target.value) {
-      this.category = event.target.value;
+    if (this.category != event) {
+      this.category = event;
       this.refresh()
     }
   }

@@ -10,6 +10,7 @@ import 'rxjs/Rx';
 import {Offer} from "../entity/offer";
 import {TokenService} from "../guard/TokenService";
 import {HandlerService} from "./handler.service";
+import {config} from "../config/url.config";
 
 @Injectable()
 export class OfferService {
@@ -23,23 +24,23 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(HandlerService.URL + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }
 
   getUserOffer(): Observable<Offer[]> {
-    return this.http.post(HandlerService.URL + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
   deleteUserOffer(id : number): Observable<string> {
-    return this.http.post(HandlerService.URL + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
   getOffer(oid: number): Observable<Offer> {
-    return this.http.get(HandlerService.URL + '/offer/' + oid)
+    return this.http.get(config.server  + '/offer/' + oid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

@@ -1,6 +1,6 @@
 <div class="input-container">
   <h1>{{registration ? 'Registration form' : 'Profile'}}</h1>
-  <form #userForm="ngForm">
+  <form #userForm="ngForm" novalidate>
     <div *ngIf="registration">
       <span class="input-label">Type</span><br>
       <ul>

@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import {Request} from '../entity/request'
 import {TokenService} from "../guard/TokenService";
 import {HandlerService} from "./handler.service";
+import {config} from "../config/url.config";
 @Injectable()
 export class RequestService {
   private headers;
@@ -20,24 +21,24 @@ export class RequestService {
   }
 
   saveRequest(request: Request): Observable<String> {
-    return this.http.post(HandlerService.URL + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(request), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/saverequest/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(request), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleError);
   }
 
   getUserRequest(): Observable<Request[]> {
-    return this.http.post(HandlerService.URL + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   deleteUserRequest(id : number): Observable<string> {
-    return this.http.post(HandlerService.URL + '/deleterequest/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/deleterequest/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
   getRequest(rid : number): Observable<Request> {
-    return this.http.get(HandlerService.URL + '/request/' + rid, new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/request/' + rid, new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

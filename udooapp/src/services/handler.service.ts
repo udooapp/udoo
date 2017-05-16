@@ -2,8 +2,7 @@ import {Observable} from "rxjs/Observable";
 import {Response} from '@angular/http';
 
 export class HandlerService {
-  public static URL = 'http://localhost:8090/rest';
-  
+
   public static extractText(res: Response) {
     return res.text();
   }
