@@ -70,7 +70,7 @@
 }
 
 .input-profile-picture-image {
-  background: url("../images/profile_picture.png") no-repeat;
+  background: url("../assets/profile_picture.png") no-repeat;
   background-size: 75% 75%;
   background-position-y: 45%;
   background-position-x: 45%;

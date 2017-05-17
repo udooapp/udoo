@@ -7,6 +7,7 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OfferService} from "../services/offer.service";
 import {RequestService} from "../services/request.service";
 import {UserService} from "../services/user.service";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -20,8 +21,10 @@ export class ServiceDetailComponent implements OnInit {
   type: boolean = false;
   data: any;
   loaded: boolean = false;
-
-  constructor(private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute) {
+  stars: number[] = [0, 0, 0, 0, 0];
+  image: SafeUrl;
+  constructor(private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
+    this.image = this.getPictureUrl('');
   }
 
   ngOnInit() {
@@ -34,16 +37,17 @@ export class ServiceDetailComponent implements OnInit {
           if (this.type) {
             this.offerService.getOffer(id).subscribe(
               data => {
-                this.loaded = true;
+
                 this.data = data;
+                this.loadUser();
               },
               error => this.error = <any>error
             );
           } else {
             this.requestService.getRequest(id).subscribe(
               data => {
-                this.loaded = true;
                 this.data = data;
+                this.loadUser();
               },
               error => this.error = <any>error
             );
@@ -53,12 +57,46 @@ export class ServiceDetailComponent implements OnInit {
         }
       });
   }
+  loadUser(){
+    this.userService.getUserInfo(this.data.uid).subscribe(
+      data => {
+        this.loaded = true;
+        this.user= data;
+        this.image = this.getPictureUrl(this.user.picture);
+        let star = this.user.stars;
+        for (let i = 0; i < 5; ++i) {
+          if (star >= 1) {
+            this.stars[i] = 2;
+          } else if (star > 0) {
+            this.stars[i] = 1;
+          } else {
+            this.stars[i] = 0;
+          }
+          star -= 1;
+        }
+      },
+      error => this.error = <any>error
+    );
+  }
 
+  getPictureUrl(src : string) {
+    if(src == null || src.length == 0 || src === 'null'){
+      return './assets/profile_picture.png';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
+  }
+
+  getLocation(location : string): string{
+    return JSON.parse(location).address;
+  }
   convertNumberToDate(millis : number): string{
     let date : Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0'+ date.getMonth())+ '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
   onBackPressed() {
     this.router.navigate(['/map']);
+  }
+  onClickAddToCOntact(){
+
   }
 }

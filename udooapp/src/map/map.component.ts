@@ -21,16 +21,16 @@ export class MapComponent implements OnInit {
   private showSearch = true;
   private searchString = '';
   private type = 0;
-  private category = 0;
-  private categories: any[] = [{cid: 0, name: ''}];
+  private category = -1;
+  private categories: any[] = [{cid: -1, name: ''}];
   private markers = [];
   private requests: Request[] = [];
   private offers: Offer[] = [];
   public mapView = true;
   private types: string[] = ['Select', 'Offer', 'Request'];
-
   constructor(private mapService: MapService, private sanitizer: DomSanitizer, private router: Router) {
   }
+  private icon = {};
 
   deleteMarkers() {
     for (let i = 0; i < this.markers.length; i++) {
@@ -50,7 +50,7 @@ export class MapComponent implements OnInit {
             position: JSON.parse(requests[i].location).coordinate,
             map: this.map,
             title: requests[i].title,
-            icon: './src/images/icon.png'
+            icon: this.icon
 
           });
           let infowindow = new google.maps.InfoWindow({
@@ -97,6 +97,7 @@ export class MapComponent implements OnInit {
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
       offers => {
         this.offers = offers;
+
         let click: boolean[] = [];
         for (let i = 0; i < offers.length; ++i) {
           click.push(false);
@@ -104,14 +105,14 @@ export class MapComponent implements OnInit {
             position: JSON.parse(offers[i].location).coordinate,
             map: this.map,
             title: offers[i].title,
-            icon: './src/images/icon.png'
+            icon: this.icon
           });
           let infowindow = new google.maps.InfoWindow({
             content: '<div >' +
             '<h1>' + offers[i].title + '</h1>' +
             '<div>' +
             '<p>' + offers[i].description + '</p>' +
-            '<p><a routerLinkActive="active" routerLink="/detail/' + offers[i].oid + '/1"><b>More...</b></a></p>' +
+            '<p><a href="/detail/' + offers[i].oid + '/1"><b>More...</b></a></p>' +
             '<p><b>Category: </b>' + this.findCatName(offers[i].category) + '</p>' +
             '</div>' +
             '</div>',
@@ -188,6 +189,12 @@ export class MapComponent implements OnInit {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         }
       });
+      this.icon = {
+        url: "/assets/pin.png", // url
+        scaledSize: new google.maps.Size(30, 50), // scaled size
+        origin: new google.maps.Point(0,0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+      };
       this.loadRequests();
       this.loadOffers();
     });
@@ -254,7 +261,7 @@ export class MapComponent implements OnInit {
 
   getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
-      return '/src/images/profile_picture.png';
+      return '/assets/profile_picture.png';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
   }

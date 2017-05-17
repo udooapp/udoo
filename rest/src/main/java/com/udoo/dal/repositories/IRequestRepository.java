@@ -16,15 +16,16 @@ public interface IRequestRepository extends Repository<Request, Integer> {
 
     List<Request> findAll();
 
-    List<Request> findAllByCategory(int category);
+    @Query("SELECT o FROM Request o WHERE o.category = :category AND o.expirydate > CURRENT_DATE")
+    List<Request> findAllActualByCategory(@Param("category") int category);
 
-    @Query("SELECT o FROM Request o WHERE o.expirydate >= CURRENT_DATE ")
+    @Query("SELECT o FROM Request o WHERE o.expirydate >= CURRENT_DATE")
     List<Request> findAllActual();
 
-    @Query("SELECT o FROM Request o WHERE o.category = :category AND (o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%')) AND o.expirydate > CURRENT_DATE ")
+    @Query("SELECT o FROM Request o WHERE o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(o.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND o.expirydate > CURRENT_DATE")
     List<Request> findAllMatches(@Param("category") int category,@Param("searchText") String searchText);
 
-    @Query("SELECT o FROM Request o WHERE o.description LIKE CONCAT('%',:searchText,'%') OR o.title LIKE CONCAT('%',:searchText,'%') AND o.expirydate > CURRENT_DATE ")
+    @Query("SELECT o FROM Request o WHERE (LOWER(o.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(o.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND o.expirydate > CURRENT_DATE")
     List<Request> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText);
 
 
@@ -36,6 +37,6 @@ public interface IRequestRepository extends Repository<Request, Integer> {
 
     @Modifying
     @Transactional
-    @Query("delete from Request r where r.rid= ?1")
+    @Query("DELETE FROM Request r WHERE r.rid= ?1")
     int deleteByRid(int uid);
 }

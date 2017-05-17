@@ -65,9 +65,9 @@ export class AppComponent implements OnInit {
   getPictureUrl(src : string) {
 
     if (!this.login) {
-      return '/src/images/profile_picture.png';
+      return './assets/profile_picture.png';
     } else if(src == null || src.length == 0 || src === 'null'){
-      return '/src/images/profile_picture.png';
+      return './assets/profile_picture.png';
     }
     return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
   }

@@ -45,12 +45,12 @@ export class LoginComponent {
             this.router.navigate(['/map']);
             } else {
               err += message;
-              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err;
+              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err === "Unauthorized" ? 'Incorrect email or password' : err;
             }
           },
           error => {
             err += error;
-            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err;
+            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' :  err === "Unauthorized" ? 'Incorrect email or password' : err;
           }
         );
     } else {

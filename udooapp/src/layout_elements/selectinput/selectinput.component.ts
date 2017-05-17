@@ -39,7 +39,7 @@ export class SelectInputComponent {
 
 
   valid() {
-    if (this.valueText < 0 || this.valueText > this.options.length) {
+    if (this.valueText < 0 || this.valueText > this.data.length) {
       this.error = true;
       this.ok = false;
     } else {
@@ -51,11 +51,10 @@ export class SelectInputComponent {
   }
 
   onKey(event: any) {
-    console.log(event.target.value);
     this.notChange = true;
     this.valueText = event.target.value;
     this.text.emit(event.target.value);
-    if (this.error && !this.disableValidation) {
+    if (!this.disableValidation) {
       this.valid();
     }
   }

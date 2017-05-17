@@ -12,6 +12,9 @@
   float: right;
   border-radius: 5px;
 }
+.input-file:hover{
+  opacity: 0.8;
+}
 .input-file input {
   position: absolute;
   top: 0;

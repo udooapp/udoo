@@ -17,15 +17,19 @@ export class HandlerService {
         case 404:
           errMsg = 'Not found';
           break;
+        case 401:
+          errMsg = 'Unauthorized';
+          break;
         case 500:
           errMsg = 'Server error';
           break;
         default:
-          errMsg= error.toString();
+          errMsg= 'Something\'s wrong here...\tTry again later';
       }
     } else {
-      errMsg = error.toString();
+      errMsg = 'Something\'s wrong here...\tTry again later';
     }
+    console.log(error.toString());
     return Observable.throw(errMsg);
   }
 
@@ -46,6 +50,9 @@ export class HandlerService {
         case 404:
           errMsg = 'Not found';
           break;
+        case 401:
+          errMsg = 'Incorrect password or data';
+          break;
         case 500:
           errMsg = 'Server error';
           break;
@@ -55,5 +62,6 @@ export class HandlerService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
+    console.log(error.toString());
     return Observable.throw(errMsg);
   }}

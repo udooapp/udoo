@@ -73,11 +73,7 @@ export class RequestComponent implements OnInit {
       console.log("Save");
       this.requestService.saveRequest(this.data).subscribe(
         message => {
-          if (this.type > -1) {
-            this.router.navigate(['/requestlist']);
-          } else {
-            this.router.navigate(['/request']);
-          }
+          this.router.navigate(['/requestlist']);
         },
         error => {
           this.error = 'ERROR';
@@ -143,7 +139,7 @@ export class RequestComponent implements OnInit {
   }
 
   saveLocation(location) {
-    this.data.location = JSON.stringify(location).replace(/"/g, '\\"');
+    this.data.location = JSON.stringify(location).replace(/"/g, '\"');
     this.location = location.address;
     this.onClickSelectLocation();
   }

@@ -32,7 +32,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -160,6 +162,7 @@ public class RestServiceController implements IRestServiceController {
 
         return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
     }
+
     @Override
     @RequestMapping(value = "/request", method = RequestMethod.POST)
     public @ResponseBody
@@ -181,9 +184,9 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/deleterequest/{id}", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<String> deleteUserRequest(@PathVariable("id") int id, @RequestBody String token) {
-        if(id > 0){
+        if (id > 0) {
             int succes = requestRepository.deleteByRid(id);
-            if(succes > -1) {
+            if (succes > -1) {
                 return new ResponseEntity<>("Request deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -208,12 +211,30 @@ public class RestServiceController implements IRestServiceController {
         }
 
     }
+
+    @RequestMapping(value = "/addcontact/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> addContact(@PathVariable("id") int id, @RequestBody String token) throws JSONException{
+        if(id > 0){
+            User user = userRepository.findByUid(id);
+            if(user.getUid() > -1) {
+                JSONObject obj = new JSONObject(token);
+                User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
+
+                return new ResponseEntity<>("Succes", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(value = "/deleteoffer/{id}", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<String> deleteUserOffer(@PathVariable("id") int id, @RequestBody String token) {
-        if(id > 0){
+        if (id > 0) {
             int succes = offerRepository.deleteByOid(id);
-            if(succes > -1) {
+            if (succes > -1) {
                 return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -221,6 +242,7 @@ public class RestServiceController implements IRestServiceController {
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
+
     @Override
     @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "email") String email) {
@@ -282,7 +304,8 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
         List<Offer> offers;
-        if (category > 0) {
+        System.out.println("Category long:" + category);
+        if (category >= 0) {
             offers = offerRepository.findAllMatches(category, searchText);
         } else {
             offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
@@ -297,8 +320,10 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
         List<Offer> offers;
-        if (category > 0) {
-            offers = offerRepository.findAllByCategory(category);
+        System.out.println("Category short:" + category);
+        if (category >= 0) {
+            System.out.println("Selected category:" + category);
+            offers = offerRepository.findAllActualByCategory(category);
         } else {
             offers = offerRepository.findAllActual();
         }
@@ -314,8 +339,9 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
                                             @PathVariable("searchText") String searchText) {
         List<Request> requests;
+        System.out.println("Category long:" + category);
         if (category > 0) {
-            requests =requestRepository.findAllMatches(category, searchText);
+            requests = requestRepository.findAllMatches(category, searchText);
         } else {
             requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
         }
@@ -329,8 +355,9 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
         List<Request> requests;
+        System.out.println("Category short:" + category);
         if (category > 0) {
-            requests = requestRepository.findAllByCategory(category);
+            requests = requestRepository.findAllActualByCategory(category);
         } else {
             requests = requestRepository.findAllActual();
         }
@@ -355,7 +382,8 @@ public class RestServiceController implements IRestServiceController {
     private ServletContext context;
 
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
-    public @ResponseBody void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
+    public @ResponseBody
+    void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
         System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
@@ -365,17 +393,31 @@ public class RestServiceController implements IRestServiceController {
         FileCopyUtils.copy(in, response.getOutputStream());
     }
 
+    @RequestMapping(value = "/userinfo/{uid}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<?> getUser(@PathVariable("uid") int uid) throws IOException {
+        if (uid > 0) {
+            User user = userRepository.findByUid(uid);
+            if (user != null && user.getUid() >= 0) {
+                user.setPassword("");
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<String>("Not found", HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         HttpHeaders headers = new HttpHeaders();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         if (!inputFile.isEmpty()) {
             try {
-                String originalFilename = inputFile.getOriginalFilename();
-                File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + originalFilename);
+                String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
+                File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
                 inputFile.transferTo(destinationFile);
-                headers.add("File Uploaded Successfully - ", originalFilename);
-                return new ResponseEntity<>(originalFilename, headers, HttpStatus.OK);
+                headers.add("File Uploaded Successfully - ", filename);
+                return new ResponseEntity<>(filename, headers, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -388,15 +430,17 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
         List<String> imageNames = new ArrayList<>();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         for (MultipartFile file : files) {
             if (file.isEmpty()) {
                 continue; //next pls
             }
             try {
                 byte[] bytes = file.getBytes();
-                Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + file.getOriginalFilename()));
+                String fileName = date.format(new Date()) + "_" + file.getOriginalFilename();
+                Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + fileName));
                 Files.write(path, bytes);
-                imageNames.add(file.getOriginalFilename());
+                imageNames.add(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

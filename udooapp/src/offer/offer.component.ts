@@ -65,11 +65,7 @@ export class OfferComponent implements OnInit {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
-          if(this.type > -1){
             this.router.navigate(['/offerlist']);
-          } else {
-            this.router.navigate(['/offer'])
-          }
         },
         error => {
           this.error = <any>error;
@@ -136,7 +132,7 @@ export class OfferComponent implements OnInit {
 
   saveLocation(location) {
     this.location = location.address;
-    this.data.location = JSON.stringify(location).replace(/"/g, '\\"');
+    this.data.location = JSON.stringify(location).replace(/"/g, '\"');
     this.onClickSelectLocation();
   }
 

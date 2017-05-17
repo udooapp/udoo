@@ -16,7 +16,7 @@ public class Offer {
 
     private String description;
 
-    private String category;
+    private int category;
 
     private String location;
 
@@ -82,11 +82,11 @@ public class Offer {
         this.expirydate = expirydate;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

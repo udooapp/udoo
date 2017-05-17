@@ -35,9 +35,9 @@ export class UserService {
           // return true to indicate successful login
           return '';
         } else {
-          return response.text();
-        }
-      }).catch((response: Response) => { return response.text()});
+          return HandlerService.handleText(response);
+      }
+      }).catch((response: Response) => { return HandlerService.handleText(response)});
   }
 
   updateUser(user: User): Observable<String> {
@@ -65,6 +65,12 @@ export class UserService {
 
   getUserData(token: any): Observable<User> {
     return this.http.post(config.server + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
+  }
+
+  getUserInfo(uid: any): Observable<User> {
+    return this.http.get(config.server + '/userinfo/' +uid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

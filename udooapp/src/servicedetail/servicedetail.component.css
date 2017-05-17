@@ -18,19 +18,126 @@
 }
 @media (min-width: 2000px) {
   .input-container {
-    padding: 1% 30% 2% 30%;
+    padding: 1% 20% 2% 20%;
+    -webkit-flex-direction: row;
+    flex-direction: row;
   }
 }
 @media (min-width: 961px) {
   .input-container {
-    width: 600px;
+    width: auto;
     margin: 0 auto;
-    padding: 0 0 2% 0;
+    padding: 2% 10% 2% 10%;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+
   }
   .input-button{
-    width: 50%;
-    margin-right: 25%;
-    margin-left: 25%;
+    width: 70%;
+    margin-right: 15%;
+    margin-left: 15%;
+
+  }
+  .contact-container{
+    width: 20%;
+    margin-right: 30px;
+  }
+  .contact-picture-image{
+    width: 150px;
+    height: 150px;
+    margin: -15px 0 0 -15px;
+  }
+
+}
+@media (max-width: 960px) {
+  .input-container {
+    width: auto;
+    margin: 0 auto;
+    padding: 2% 5% 2% 5%;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+  }
+  .service-container{
+    width: 70%;
+  }
+  .contact-picture-image{
+    width: 150px;
+    height: 150px;
+    margin: -15px 0 0 -15px;
+  }
+
+  .contact-container{
+    width: 30%;
+    margin-right: 20px;
   }
 }
+@media (max-width: 641px) {
+  .input-container {
+    padding: 2% 5% 5% 5%;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+  .service-container{
+    width: 100%;
+  }
+  .contact-container{
+    width: 93%;
+    margin-left: 0;
+  }
+  .contact-picture-image{
+    width: 170px;
+    height: 170px;
+    margin: -25px 0 0 -25px;
+    object-fit: cover;
+  }
+}
+.input-container{
+  display: -webkit-flex;
+  display: flex;
+}
 
+.contact-container{
+  background-color: #EBF2F2;
+  text-align: center;
+  padding: 3%;
+  margin-top: 20px;
+  border-radius: 10px;
+  color:#2B6665;
+}
+.contact-picture-image{
+  object-fit: cover;
+}
+
+.contact-profile-picture {
+  margin: 15px auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  background-color: #FAFAFA;
+  padding: 5%;
+  overflow: hidden;
+}
+.contact-name{
+  font-size: 16pt;
+  padding: 10px 0 10px 0;
+}
+.contact-phone{
+  font-size: 14pt;
+  padding: 5px;
+}
+.contact-email{
+  font-size: 14pt;
+  padding: 5px;
+}
+.contact-profile-stars {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+}
+.contact-stars{
+  margin: 10px auto;
+  display: -webkit-flex;
+  display: inline-flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}

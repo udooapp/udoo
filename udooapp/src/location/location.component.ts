@@ -47,10 +47,16 @@ export class LocationComponent implements OnInit {
         });
 
       });
+      let icon = {
+        url: "/assets/pin.png", // url
+        scaledSize: new google.maps.Size(30, 50), // scaled size
+        origin: new google.maps.Point(0,0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+      };
       let marker = new google.maps.Marker({
         title: 'Service location',
         map: map,
-        icon: '/src/images/icon.png'
+        icon: icon
       });
       marker.addListener('click', function() {
         infoWindow.open(map, marker);

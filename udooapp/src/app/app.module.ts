@@ -49,7 +49,7 @@ import { APP_BASE_HREF } from '@angular/common';
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, {provide: APP_BASE_HREF, useValue : '/'}],
+  providers: [AuthGuard, TokenService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
