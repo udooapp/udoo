@@ -35,6 +35,7 @@ export class RequestComponent implements OnInit {
   timeValidator: IValidator = new TimeValidator();
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
+  lastImage: string = '';
 
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
   }
@@ -59,6 +60,7 @@ export class RequestComponent implements OnInit {
             this.requestService.getRequest(id).subscribe(
               data => {
                 this.data = data;
+                this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
               error => this.error = <any>error
@@ -98,7 +100,7 @@ export class RequestComponent implements OnInit {
     if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
       return '';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.data.image);
+    return this.data.image;
   }
 
   onClickBrowse(event) {
@@ -108,7 +110,6 @@ export class RequestComponent implements OnInit {
       if (fileList.length > 0) {
         this.userService.uploadPicture(fileList[0]).subscribe(
           message => {
-            console.log('Message: ' + message);
             this.data.image = message.toString();
             this.loaderVisible = false;
             this.pictureLoadError = false;
@@ -127,7 +128,7 @@ export class RequestComponent implements OnInit {
 
   onClickCancel() {
     if (this.data.image.length > 0) {
-      this.data.image = "";
+      this.data.image = this.lastImage;
     }
   }
 

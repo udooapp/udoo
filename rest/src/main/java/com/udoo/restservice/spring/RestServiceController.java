@@ -5,6 +5,8 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -451,11 +453,14 @@ public class RestServiceController implements IRestServiceController {
         SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         if (!inputFile.isEmpty()) {
             try {
-                String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
-                File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
-                inputFile.transferTo(destinationFile);
-                headers.add("File Uploaded Successfully - ", filename);
-                return new ResponseEntity<>(filename, headers, HttpStatus.OK);
+              //  String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
+               // File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
+              //  inputFile.transferTo(destinationFile);
+              //  headers.add("File Uploaded Successfully - ", filename);
+                StringBuilder sb = new StringBuilder();
+                sb.append("data:image/png;base64,");
+                sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(inputFile.getBytes(), false)));
+                return new ResponseEntity<>(sb, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }

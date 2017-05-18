@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
-  image : SafeUrl;
+  image : string;
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private sanitizer: DomSanitizer) {
     let before : string = '';
     router.events.subscribe((event) => {
@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     } else if(src == null || src.length == 0 || src === 'null'){
       return './assets/profile_picture.png';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
+    return this.user.picture;
   }
 
   logOut() {

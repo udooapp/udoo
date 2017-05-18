@@ -263,7 +263,7 @@ export class MapComponent implements OnInit {
     if (url == null || url.length == 0 || url === 'null') {
       return '/assets/profile_picture.png';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
+    return url;
   }
 
   showList() {

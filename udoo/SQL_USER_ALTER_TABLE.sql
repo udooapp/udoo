@@ -1,0 +1,1 @@
+ALTER TABLE `users` CHANGE `picture` `picture` LONGTEXT CHARACTER SET utf8 COLLATE utf8_german2_ci NULL DEFAULT NULL;

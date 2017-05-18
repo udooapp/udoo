@@ -10,7 +10,7 @@
         <img src="./assets/trash.png" (click)="onClickDelete(offer ? item.oid : item.rid, i)">
       </div>
       <div class="service-all-content" [routerLink]="'/' + (offer ? ('offer/' + item.oid +'/0') : ('request/' +item.rid + '/1'))" routerLinkActive="active">
-        <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
+        <div class="service-picture"><img class="service-image" [src]="item.image"></div>
         <div class="service-content">
           <div class="service-title">{{item.title}}</div>
           <div class="service-description">{{item.description}}</div>

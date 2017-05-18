@@ -39,7 +39,7 @@ export class RegistrationComponent {
     if (this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
+    return this.user.picture;
   }
 
   onClickBrowse(event) {
@@ -49,7 +49,6 @@ export class RegistrationComponent {
       if (fileList.length > 0) {
         this.userService.uploadPicture(fileList[0]).subscribe(
           message => {
-            console.log('Message: ' + message);
             this.user.picture = message.toString();
             this.loaderVisible = false;
             this.pictureLoadError = false;

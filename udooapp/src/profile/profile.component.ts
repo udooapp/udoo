@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
   dateValidator: IValidator = new DateValidator();
   phoneValidator: IValidator = new PhoneValidator();
   valid = [false, false, false];
-
+  lastPicture : string = '';
   constructor(private userService: UserService, private sanitizer: DomSanitizer, private tokenService: TokenService, private router: Router) {
     this.passwordVerification = '';
   }
@@ -46,6 +46,7 @@ export class ProfileComponent implements OnInit {
           this.first = false;
         }
         this.user = user;
+        this.lastPicture = this.user.picture;
         this.error = '';
       },
       error => this.error = 'Please try again later');
@@ -55,7 +56,7 @@ export class ProfileComponent implements OnInit {
     if (this.user.picture == null || this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + this.user.picture);
+    return this.user.picture;
   }
 
   onClickBrowse(event) {
@@ -65,7 +66,6 @@ export class ProfileComponent implements OnInit {
       if (fileList.length > 0) {
         this.userService.uploadPicture(fileList[0]).subscribe(
           message => {
-            console.log('Message: ' + message);
             this.user.picture = message.toString();
             this.loaderVisible = false;
             this.pictureLoadError = false;
@@ -84,7 +84,7 @@ export class ProfileComponent implements OnInit {
 
   onClickCancel() {
     if (this.user.picture.length > 0) {
-      this.user.picture = "";
+      this.user.picture = this.lastPicture;
     }
   }
 

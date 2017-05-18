@@ -32,7 +32,7 @@ export class RequestListComponent implements OnInit {
     if (url == null || url.length == 0 || url === 'null') {
       return '';
     }
-    return this.sanitizer.bypassSecurityTrustUrl('http://localhost:8090/rest/image/' + url);
+    return url;
   }
 
   isExpired(millis: number) {
