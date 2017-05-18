@@ -23,6 +23,7 @@ import {SelectInputComponent} from "../layout_elements/selectinput/selectinput.c
 import {FileInputComponent} from "../layout_elements/fileInput/fileinput.component";
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 import { APP_BASE_HREF } from '@angular/common';
+import {ContactsComponent} from "../contacts/contact.component";
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { APP_BASE_HREF } from '@angular/common';
     RequestComponent,
     RequestListComponent,
     OfferListComponent,
+    ContactsComponent,
     LocationComponent,
     TextInputComponent,
     TextAreaComponent,

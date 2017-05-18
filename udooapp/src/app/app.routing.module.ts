@@ -11,6 +11,7 @@ import {RequestListComponent} from "../requestlist/requestlist.component";
 import {OfferListComponent} from "../offerlist/offerlist.component";
 import {AuthGuard} from "../guard/AuthGuard";
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
+import {ContactsComponent} from "../contacts/contact.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -25,7 +26,8 @@ const routes: Routes = [
   {path: 'request/:id/:type', component: RequestComponent, canActivate: [AuthGuard]},
   {path: 'requestlist', component: RequestListComponent, canActivate: [AuthGuard]},
   {path: 'offerlist', component: OfferListComponent, canActivate: [AuthGuard]},
-  {path: 'map', component: MapComponent},
+  {path: 'map', component: MapComponent, canActivate: [AuthGuard]},
+  {path: 'contact', component: ContactsComponent},
   {path: 'map/internet', component: MapComponent},
   {path: 'map/:id', component: MapComponent},
   {path: 'detail/:id/:type', component: ServiceDetailComponent},

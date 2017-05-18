@@ -7,8 +7,12 @@
   padding-left: 15px;
   padding-right: 15px;
   color: white;
+  height: 60px;
+  width: 50px;
   font-size: 25pt;
   cursor: pointer;
+  background: url("../assets/ic_hamburger.png") no-repeat center;
+  background-size: 50px 50px;
 }
 
 .header {

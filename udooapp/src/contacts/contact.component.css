@@ -1,0 +1,160 @@
+.input-select {
+  width: 50%;
+  height: 30px;
+  border-radius: 2px;
+  text-align: center;
+  margin: 2%;
+}
+
+.input-button {
+  margin-left: 10%;
+  margin-bottom: 2%;
+}
+
+@media(min-width: 961px) {
+  .input-button {
+    width: 20%;
+  }
+
+  .data-container {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+  }
+
+  .service-container {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+    margin-bottom: 50px;
+  }
+  .contact-content{
+    margin-left: 170px;
+  }
+}
+
+@media(max-width: 960px) {
+  .input-button {
+    width: 78%;
+    height: 40px;
+  }
+
+  .contact-container {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+    margin-bottom: 50px;
+  }
+  .contact-content{
+    margin-left: 170px;
+  }
+}
+
+.input-button {
+  margin-left: 11%;
+}
+
+@media(max-width: 641px) {
+  .input-button {
+    width: 87%;
+    margin-left: 6%;
+    margin-bottom: 10px;
+  }
+
+  .contact-container {
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-bottom: 50px;
+  }
+  .contact-picture{
+    visibility: hidden;
+    display: none;
+  }
+  .contact-content{
+    margin-left: 0;
+  }
+}
+
+h1 {
+  text-align: center;
+  color: #378281;
+}
+
+.data-container {
+  padding: 0;
+}
+
+.contact {
+  min-height: 160px;
+  overflow: hidden;
+  position: relative;
+  border-top: 2px solid #378281;
+}
+
+.contact:hover {
+  background-color: #FAFAFA;
+}
+.contact-all-content{
+  margin-right: 40px;
+  cursor: pointer;
+}
+.contact-picture {
+  height: 130px;
+  width: 130px;
+  margin: 10px 0 10px 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 2px;
+  overflow: hidden;
+  float: left;
+}
+
+.contact-image {
+  height: 134px;
+  width: 134px;
+  margin-left: -2px;
+  margin-top: -2px;
+  background-color: #FAFAFA;
+  object-fit: cover;
+}
+
+.contact-content {
+  padding: 10px 10px 10px 10px;
+  margin-right: 10px;
+  color: dimgrey;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.contact-name {
+  color: #378281;
+  font-weight: lighter;
+  font-size: 18pt;
+}
+
+.contact-email {
+  word-wrap: break-word;
+  font-size: 14pt;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.date-expired{
+  color: #FF0000;
+}
+.contact-button-container{
+  width: 40px;
+  margin: 5px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  overflow: hidden;
+  float: right;
+
+}
+.contact-button-container img{
+  width: 30px;
+  height: 30px;
+  margin: 10px 5px;
+  cursor: pointer;
+}
+.contact-button-container img:hover{
+  opacity: 0.8;
+}

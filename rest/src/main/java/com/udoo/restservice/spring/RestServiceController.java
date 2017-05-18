@@ -1,14 +1,8 @@
 package com.udoo.restservice.spring;
 
 
-import com.udoo.dal.entities.Category;
-import com.udoo.dal.entities.Offer;
-import com.udoo.dal.entities.Request;
-import com.udoo.dal.entities.User;
-import com.udoo.dal.repositories.ICategoryRepository;
-import com.udoo.dal.repositories.IOfferRepository;
-import com.udoo.dal.repositories.IRequestRepository;
-import com.udoo.dal.repositories.IUserRepository;
+import com.udoo.dal.entities.*;
+import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
 import org.json.JSONException;
@@ -51,9 +45,12 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IRequestRepository requestRepository;
+
     @Resource
     private ICategoryRepository categoryRepository;
 
+    @Resource
+    private IContactRepository contactRepository;
 
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -209,22 +206,63 @@ public class RestServiceController implements IRestServiceController {
         } catch (JSONException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @RequestMapping(value = "/addcontact/{id}", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> addContact(@PathVariable("id") int id, @RequestBody String token) throws JSONException{
-        if(id > 0){
+    ResponseEntity<String> addContact(@PathVariable("id") int id, @RequestBody String token) throws JSONException {
+        if (id > 0) {
             User user = userRepository.findByUid(id);
-            if(user.getUid() > -1) {
+            if (user.getUid() > -1) {
                 JSONObject obj = new JSONObject(token);
                 User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
-
-                return new ResponseEntity<>("Succes", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                if (currentUser != null && currentUser.getUid() > 0) {
+                    if(!currentUser.getUid().equals(user.getUid())) {
+                        contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
+                        return new ResponseEntity<>("Success", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("It's you are!", HttpStatus.OK);
+                    }
+                }
             }
+            return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/contacts", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<?> getContacts(@RequestBody String token) throws JSONException {
+        JSONObject obj = new JSONObject(token);
+        User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
+        if (currentUser != null && currentUser.getUid() > 0) {
+            List<Contact> contact = contactRepository.findByUid(currentUser.getUid());
+            List<User> users = new ArrayList<>();
+            for(Contact cont: contact){
+                User  usr = userRepository.findByUid(cont.getCid());
+                if(usr != null){
+                    users.add(usr);
+                }
+            }
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Something wrong", HttpStatus.UNAUTHORIZED);
+    }
+
+    @RequestMapping(value = "/deleteContact/{id}", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<?> deleteContacts(@PathVariable("id") int id, @RequestBody String token) throws JSONException {
+        if (id > 0) {
+            User user = userRepository.findByUid(id);
+            if (user.getUid() > -1) {
+                JSONObject obj = new JSONObject(token);
+                User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
+                if (currentUser != null && currentUser.getUid() > 0) {
+                    contactRepository.deleteByIds(currentUser.getUid(), user.getUid());
+                    return new ResponseEntity<>("Contact removed", HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }

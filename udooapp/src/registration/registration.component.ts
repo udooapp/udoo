@@ -57,6 +57,7 @@ export class RegistrationComponent {
           error => {
             console.log('Error: ' + error);
             this.pictureLoadError = true;
+            this.loaderVisible = false;
           }
         );
       } else {

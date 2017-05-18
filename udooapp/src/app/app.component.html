@@ -1,5 +1,5 @@
 <div class="header">
-  <div class="header-button" (click)="visibleMenu = !visibleMenu">☰</div>
+  <div class="header-button" (click)="visibleMenu = !visibleMenu"></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
@@ -28,7 +28,7 @@
     <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu"><img
       class="menu-link-image" src="./assets/offers.png">My service
       offer</a>
-    <a class="menu-link" (click)="visibleMenu = !visibleMenu"><img class="menu-link-image"
+    <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu"><img class="menu-link-image"
                                                                    src="./assets/contacts.png">Contacts</a>
     <div class="menu-placeholder">&nbsp;</div>
     <a class="menu-link" (click)="visibleMenu = !visibleMenu"><img class="menu-link-image"

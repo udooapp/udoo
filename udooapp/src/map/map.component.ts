@@ -174,8 +174,8 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     this.mapService.getCategories().subscribe(
       data => {
+        data.splice(0, 0, {cid: "-1", name: 'Select category'});
         this.categories = data;
-        this.categories.splice(0, 0, {cid: -1, name: 'Select category'});
       },
       error => this.error = <any>error
     );

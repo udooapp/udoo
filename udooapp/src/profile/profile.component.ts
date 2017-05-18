@@ -73,6 +73,7 @@ export class ProfileComponent implements OnInit {
           error => {
             console.log('Error: ' + error);
             this.pictureLoadError = true;
+            this.loaderVisible = false;
           }
         );
       }
@@ -107,7 +108,6 @@ export class ProfileComponent implements OnInit {
   }
   insertUser() {
     if (this.checkValidation()) {
-      console.log("Valid");
       this.userService.updateUser(this.user).subscribe(
         message => {
           this.error = '';

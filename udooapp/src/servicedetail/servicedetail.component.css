@@ -74,8 +74,8 @@
 @media (max-width: 641px) {
   .input-container {
     padding: 2% 5% 5% 5%;
-    -webkit-flex-direction: column;
-    flex-direction: column;
+    -webkit-flex-direction: column-reverse;
+    flex-direction: column-reverse;
   }
   .service-container{
     width: 100%;

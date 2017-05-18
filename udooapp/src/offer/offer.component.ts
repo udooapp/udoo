@@ -108,6 +108,7 @@ export class OfferComponent implements OnInit {
           error => {
             console.log('Error: ' + error);
             this.pictureLoadError = true;
+            this.loaderVisible = false;
           }
         );
       }

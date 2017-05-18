@@ -13,7 +13,9 @@
     <div class="contact-name">{{user.name}}</div>
     <div class="contact-pnone">{{user.phone}}</div>
     <div class="contact-email">{{user.email}}</div>
-    <button class="input-button button-dark" (click)="onClickAddToCOntact()">Add to contact</button>
+    <button class="input-button button-dark" (click)="onClickAddToContact()">Add to contact</button>
+    <div *ngIf="message.length > 0" class="response-message ok-message">{{message}}</div>
+    <div *ngIf="error.length > 0" class="response-message error-message">{{error}}</div>
   </div>
   <div class="service-container">
     <h1>{{data.title}}</h1>
