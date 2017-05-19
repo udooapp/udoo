@@ -36,7 +36,7 @@ import java.util.List;
 /**
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class RestServiceController implements IRestServiceController {
 
     @Resource
