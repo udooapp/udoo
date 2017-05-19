@@ -6,7 +6,7 @@
     [ngClass]="{'hide-map-inputs' : (showSearch && mapView), 'data-container' : !mapView, 'map-inputs-container' : mapView}">
     <h1 *ngIf="!mapView">Services</h1>
     <div [ngClass]="{'service-inputs-container' : !mapView}">
-      <text-input [placeholder]="'Search'" [type]="text" class="map-search" (onKeyEvent)="onKey($event)"
+      <text-input [placeholder]="'Search'" [type]="'text'" class="map-search" (onKeyEvent)="onKey($event)"
                   [disableValidation]="true"></text-input>
       <div [ngClass]="{'map-selector-container' : mapView}">
         <div class="input-group">
@@ -16,7 +16,7 @@
                         [disableValidation]="true"></select-input>
         </div>
       </div>
-      <button class="input-button button-light" (click)="showList()">{{mapView ? 'Map' : 'List'}} View</button>
+      <button class="input-button button-light" (click)="showList()">{{!mapView ? 'Map' : 'List'}} View</button>
     </div>
   </div>
   <div class="close-button" *ngIf="!showSearch && mapView" (click)="onClickSearchPanel()">
@@ -45,7 +45,7 @@
         <div class="service-description">{{item.description}}</div>
         <div class="service-location"><b>Address: </b>{{getLocation(item.location)}}</div>
         <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="service-date"><b>Date: </b> {{item.expridate}}</div>
+        <div class="service-date"><b>Date: </b> {{convertMillisToDate(item.expirydate)}}</div>
       </div>
     </div>
   </div>

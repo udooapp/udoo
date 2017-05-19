@@ -29,7 +29,7 @@ export class HandlerService {
     } else {
       errMsg = 'Something\'s wrong here...\tTry again later';
     }
-    console.log(error.toString());
+    console.log('Error: ' + error.toString());
     return Observable.throw(errMsg);
   }
 
@@ -62,6 +62,6 @@ export class HandlerService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.log(error.toString());
+    console.log('Error: ' + error.toString());
     return Observable.throw(errMsg);
   }}

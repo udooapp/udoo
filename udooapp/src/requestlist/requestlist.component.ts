@@ -1,30 +1,39 @@
 import {Component, OnInit} from '@angular/core';
 import {RequestService} from "../services/request.service";
 import {Request} from "../entity/request";
-import {DomSanitizer} from "@angular/platform-browser";
 import {Router} from "@angular/router";
+import {MapService} from "../services/map.service";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
   styleUrls: ['../layouts/lists.component.css'],
-  providers: [RequestService]
+  providers: [RequestService, MapService]
 })
 export class RequestListComponent implements OnInit {
   data: Request[];
   offer = false;
   error: string;
   message: string = '';
-
-  constructor(private requestService: RequestService, private sanitizer: DomSanitizer, private router: Router) {
+  categories = [];
+  constructor(private requestService: RequestService, private mapService: MapService, private router: Router) {
   }
 
   ngOnInit() {
     this.requestService.getUserRequest().subscribe(
       data => this.data = data,
       error => this.error = <any>error);
+    this.mapService.getCategories().subscribe(
+      data => this.categories = data,
+      error =>this.error = <any> error
+    );
   }
 
   getAddress(location: string) {
+    if(location == null || location === 'null' || location.length == 0){
+      return '';
+    } else if(!location.match('address')){
+      return location;
+    }
     return JSON.parse(location).address;
   }
 
@@ -45,7 +54,6 @@ export class RequestListComponent implements OnInit {
   }
 
   onClickDelete(id: number, index: number) {
-    console.log("Deleted:" + id);
     this.requestService.deleteUserRequest(id).subscribe(
       result => {
         this.message = result;
@@ -53,6 +61,14 @@ export class RequestListComponent implements OnInit {
       },
       error => this.error = <any>error
     );
+  }
+  getCategory(cat: number) {
+    for (let i = 0; i < this.categories.length; ++i) {
+      if (cat == this.categories[i].cid) {
+        return this.categories[i].name;
+      }
+    }
+    return 'Unknown category';
   }
 
   onClickEdit(id: number) {

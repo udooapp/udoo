@@ -16,6 +16,7 @@ export class TextAreaComponent {
   errorMessage = '';
   valueText = '';
   inputText = '';
+  refresh: boolean = false;
   @Input() row: number;
   @Input() column: number;
   @Input() type: string;
@@ -37,6 +38,13 @@ export class TextAreaComponent {
     this.valid();
   }
 
+  @Input() set checkValidate(value: boolean) {
+    if (value != this.refresh) {
+      this.refresh = value;
+      this.valid()
+    }
+  }
+
   @Input() set value(value: string) {
     if (!this.notChange) {
       this.valueText = value;
@@ -50,20 +58,20 @@ export class TextAreaComponent {
   }
 
   valid() {
-    if(this.validators == null || this.validators.length == 0){
+    if (this.validators == null || this.validators.length == 0) {
       this.error = false;
       this.show = false;
       this.ok = true;
-    }else {
+    } else {
       this.error = false;
-      for(let i = 0; i < this.validators.length; ++i){
-        if(!this.validators[i].validate(this.inputText)){
+      for (let i = 0; i < this.validators.length; ++i) {
+        if (!this.validators[i].validate(this.inputText)) {
           this.error = true;
           this.errorMessage = this.validators[i].getText();
           break;
         }
       }
-      if(!this.error){
+      if (!this.error) {
         this.show = false;
         this.ok = true;
       } else {

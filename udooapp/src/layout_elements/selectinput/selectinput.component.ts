@@ -10,6 +10,7 @@ export class SelectInputComponent {
   error = false;
   ok = false;
   show = false;
+  refresh : boolean = false;
   notChange = false;
   errorMessage = 'Invalid value';
   valueText: number = -1;
@@ -27,6 +28,14 @@ export class SelectInputComponent {
   focusChange() {
     this.valid();
   }
+
+  @Input() set checkValidate(value: boolean) {
+    if (value != this.refresh) {
+      this.refresh = value;
+      this.valid()
+    }
+  }
+
 
   @Input() set options(options: any[]) {
     this.data = options;

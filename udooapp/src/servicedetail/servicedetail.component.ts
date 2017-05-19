@@ -6,9 +6,8 @@ import {User} from '../entity/user';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OfferService} from "../services/offer.service";
 import {RequestService} from "../services/request.service";
-import {UserService} from "../services/user.service";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {ContactService} from "../services/contact.service";
+import {UserService} from "../services/user.service";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -26,7 +25,7 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private sanitizer: DomSanitizer, private  contactServiece: ContactService) {
+  constructor(private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
   }
 
@@ -40,7 +39,6 @@ export class ServiceDetailComponent implements OnInit {
           if (this.type) {
             this.offerService.getOffer(id).subscribe(
               data => {
-
                 this.data = data;
                 this.loadUser();
               },
@@ -66,6 +64,7 @@ export class ServiceDetailComponent implements OnInit {
       data => {
         this.loaded = true;
         this.user = data;
+        console.log("User name:" + data.name);
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         for (let i = 0; i < 5; ++i) {

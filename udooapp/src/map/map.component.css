@@ -242,8 +242,12 @@
 h1 {
   text-align: center;
   color: #378281;
+  font-weight: 100;
 }
-
+.link{
+  color: #2B6665;
+  font-size: 14pt;
+}
 .service-content {
   margin-left: 140px;
   padding: 10px 10px 10px 10px;

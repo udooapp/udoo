@@ -3,7 +3,6 @@ import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
-import {DomSanitizer} from "@angular/platform-browser";
 import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
@@ -20,6 +19,7 @@ export class OfferComponent implements OnInit {
   message: String;
   error = '';
   offer = true;
+  refresh : boolean = false;
   location = '';
   load = false;
   data = new Offer(null, '', '', -1, 1, '', '', 0, '');
@@ -32,7 +32,7 @@ export class OfferComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false];
   lastImage: string = '';
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService) {
   }
 
   ngOnInit() {
@@ -70,6 +70,7 @@ export class OfferComponent implements OnInit {
             this.router.navigate(['/offerlist']);
         },
         error => {
+          console.log(<any>error);
           this.error = <any>error;
           this.message = ''
         });
@@ -81,7 +82,7 @@ export class OfferComponent implements OnInit {
   checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
-        console.log(i);
+        this.refresh = !this.refresh;
         return false;
       }
     }
@@ -107,7 +108,6 @@ export class OfferComponent implements OnInit {
             this.pictureLoadError = false;
           },
           error => {
-            console.log('Error: ' + error);
             this.pictureLoadError = true;
             this.loaderVisible = false;
           }

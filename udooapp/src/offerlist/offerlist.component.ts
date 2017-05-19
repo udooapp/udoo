@@ -1,27 +1,32 @@
 import {Component, OnInit} from '@angular/core';
 import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
-import {DomSanitizer} from "@angular/platform-browser";
 import {Router} from "@angular/router";
+import {MapService} from "../services/map.service";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
   styleUrls: ['../layouts/lists.component.css'],
-  providers: [OfferService]
+  providers: [OfferService, MapService]
 })
 export class OfferListComponent implements OnInit {
   data: Offer[];
   offer = true;
   error: string;
   message: string = '';
+  categories = [];
 
-  constructor(private offerService: OfferService, private sanitizer: DomSanitizer, private router: Router) {
+  constructor(private offerService: OfferService, private mapService: MapService, private router: Router) {
   }
 
   ngOnInit() {
     this.offerService.getUserOffer().subscribe(
       data => this.data = data,
       error => this.error = <any>error);
+    this.mapService.getCategories().subscribe(
+      data => this.categories = data,
+      error => this.error = <any>error
+    );
   }
 
   getPictureUrl(url: string) {
@@ -36,6 +41,11 @@ export class OfferListComponent implements OnInit {
   }
 
   getAddress(location: string) {
+    if (location == null || location === 'null' || location.length == 0) {
+      return '';
+    } else if(!location.match('address')){
+      return location;
+    }
     return JSON.parse(location).address;
   }
 
@@ -45,7 +55,6 @@ export class OfferListComponent implements OnInit {
   }
 
   onClickDelete(id: number, index: number) {
-    console.log("Deleted:" + id);
     this.offerService.deleteUserOffer(id).subscribe(
       result => {
         this.message = result;
@@ -53,6 +62,15 @@ export class OfferListComponent implements OnInit {
       },
       error => this.error = <any>error
     );
+  }
+
+  getCategory(cat: number) {
+    for (let i = 0; i < this.categories.length; ++i) {
+      if (cat == this.categories[i].cid) {
+        return this.categories[i].name;
+      }
+    }
+    return 'Unknown category';
   }
 
   onClickEdit(id: number) {

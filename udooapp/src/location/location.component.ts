@@ -48,7 +48,7 @@ export class LocationComponent implements OnInit {
 
       });
       let icon = {
-        url: "/assets/pin.png", // url
+        url: "assets/pin.png", // url
         scaledSize: new google.maps.Size(30, 50), // scaled size
         origin: new google.maps.Point(0,0), // origin
         anchor: new google.maps.Point(0, 0) // anchor

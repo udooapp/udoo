@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {User} from '../entity/user';
 import {UserService} from "../services/user.service";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {SafeResourceUrl} from "@angular/platform-browser";
 import {Router} from "@angular/router";
 import {PhoneValidator} from "../validator/phone.validator";
 import {IValidator} from "../validator/validator.interface";
@@ -18,6 +18,7 @@ import {PasswordValidator} from "../validator/password.validator";
 export class RegistrationComponent {
   message: String;
   error: string;
+  refresh = false;
   registration = true;
   user = new User(null, '', '', '', '', '', 0, 0, '');
   passwordVerification: string;
@@ -31,7 +32,7 @@ export class RegistrationComponent {
   passwordValidator: IValidator = new PasswordValidator();
   valid : boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router: Router, private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private userService: UserService) {
     this.passwordVerification = '';
   }
 
@@ -54,7 +55,6 @@ export class RegistrationComponent {
             this.pictureLoadError = false;
           },
           error => {
-            console.log('Error: ' + error);
             this.pictureLoadError = true;
             this.loaderVisible = false;
           }
@@ -86,6 +86,7 @@ export class RegistrationComponent {
   checkValidation() : boolean {
     for(let i = 0; i < this.valid.length; ++i){
       if(!this.valid[i]){
+        this.refresh = !this.refresh;
         return false;
       }
     }
@@ -97,7 +98,6 @@ export class RegistrationComponent {
         this.userService.registrateUser(this.user)
           .subscribe(
             message => {
-              console.log("Error" + message);
               this.router.navigate(['/login']);
               this.message = message
             },

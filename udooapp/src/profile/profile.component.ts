@@ -4,7 +4,6 @@ import 'rxjs/add/operator/switchMap';
 
 import {User} from "../entity/user";
 import {UserService} from "../services/user.service";
-import {DomSanitizer} from "@angular/platform-browser";
 import {TokenService} from "../guard/TokenService";
 import {Router} from "@angular/router";
 import {EmailValidator} from "../validator/email.validator";
@@ -24,6 +23,7 @@ export class ProfileComponent implements OnInit {
   registration = false;
   message: String;
   error: string;
+  refresh: boolean = false;
   user = new User(null, '', '', '', '', '', 0, 0, '');
   passwordVerification: string;
   loaderVisible = false;
@@ -34,8 +34,9 @@ export class ProfileComponent implements OnInit {
   dateValidator: IValidator = new DateValidator();
   phoneValidator: IValidator = new PhoneValidator();
   valid = [false, false, false];
-  lastPicture : string = '';
-  constructor(private userService: UserService, private sanitizer: DomSanitizer, private tokenService: TokenService, private router: Router) {
+  lastPicture: string = '';
+
+  constructor(private userService: UserService, private tokenService: TokenService, private router: Router) {
     this.passwordVerification = '';
   }
 
@@ -71,7 +72,6 @@ export class ProfileComponent implements OnInit {
             this.pictureLoadError = false;
           },
           error => {
-            console.log('Error: ' + error);
             this.pictureLoadError = true;
             this.loaderVisible = false;
           }
@@ -98,25 +98,28 @@ export class ProfileComponent implements OnInit {
       }
     }
   }
-  checkValidation() : boolean {
-    for(let i = 0; i < this.valid.length; ++i){
-      if(!this.valid[i]){
+
+  checkValidation(): boolean {
+    for (let i = 0; i < this.valid.length; ++i) {
+      if (!this.valid[i]) {
+        this.refresh = !this.refresh;
         return false;
       }
     }
     return true;
   }
+
   insertUser() {
     if (this.checkValidation()) {
       this.userService.updateUser(this.user).subscribe(
         message => {
           this.error = '';
           this.message = message;
+          this.tokenService.setRefresh(true);
           this.tokenService.saveToken(JSON.parse(this.tokenService.getToken()).token, this.user.email);
         },
         error => {
           this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';
-          console.log(this.error + ' ');
         });
     } else {
       this.error = 'Invalid or empty value';

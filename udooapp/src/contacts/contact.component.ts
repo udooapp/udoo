@@ -1,8 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Offer} from "../entity/offer";
-import {OfferService} from "../services/offer.service";
-import {DomSanitizer} from "@angular/platform-browser";
-import {Router} from "@angular/router";
 import {ContactService} from "../services/contact.service";
 import {User} from "../entity/user";
 
@@ -17,7 +13,7 @@ export class ContactsComponent implements OnInit {
   error: string;
   message: string = '';
 
-  constructor(private contactService: ContactService, private sanitizer: DomSanitizer) {
+  constructor(private contactService: ContactService) {
   }
 
   ngOnInit() {
@@ -34,7 +30,6 @@ export class ContactsComponent implements OnInit {
   }
 
   onClickDelete(id: number, index: number) {
-    console.log("Deleted:" + id);
     this.contactService.removeContact(id).subscribe(
       result => {
         this.message = result;

@@ -18,7 +18,7 @@ export class MapService {
 
   constructor(private http: Http) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
+    this.headers.append('Access-Control-Allow-Origin', config.client);
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
@@ -26,13 +26,13 @@ export class MapService {
   getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
     return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleText);
   }
 
   getRequestLocations(category: number, searchText: string): Observable<Request[]> {
     return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleText);
   }
 
   getCategories(): Observable<Object[]> {

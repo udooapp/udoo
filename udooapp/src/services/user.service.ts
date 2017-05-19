@@ -16,7 +16,7 @@ export class UserService {
 
   constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
+    this.headers.append('Access-Control-Allow-Origin', config.client);
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }

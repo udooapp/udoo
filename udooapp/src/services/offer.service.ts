@@ -18,7 +18,7 @@ export class OfferService {
 
   constructor(private http: Http,  private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200');
+    this.headers.append('Access-Control-Allow-Origin', config.client);
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
@@ -26,7 +26,7 @@ export class OfferService {
   saveOffer(offer: Offer): Observable<String> {
     return this.http.post(config.server + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleText);
   }
 
   getUserOffer(): Observable<Offer[]> {

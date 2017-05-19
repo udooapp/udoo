@@ -4,7 +4,6 @@ import {Request} from '../entity/request'
 import {RequestService} from "../services/request.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
-import {DomSanitizer} from "@angular/platform-browser";
 import {EmptyValidator} from "../validator/empty.validator";
 import {IValidator} from "../validator/validator.interface";
 import {TimeValidator} from "../validator/time.validator";
@@ -24,6 +23,7 @@ export class RequestComponent implements OnInit {
   offer = false;
   load = false;
   error = '';
+  refresh:boolean = false;
   location = '';
   data = new Request(null, '', '', -1, 1, '', '', 0, '');
   loaderVisible = false;
@@ -37,7 +37,7 @@ export class RequestComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false, false];
   lastImage: string = '';
 
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private sanitizer: DomSanitizer, private route: ActivatedRoute, private mapService: MapService) {
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService) {
   }
 
   ngOnInit() {
@@ -56,7 +56,6 @@ export class RequestComponent implements OnInit {
           id = +params['id'];
           if (id != null) {
             this.type = +params['type'];
-            console.log(this.type);
             this.requestService.getRequest(id).subscribe(
               data => {
                 this.data = data;
@@ -72,15 +71,14 @@ export class RequestComponent implements OnInit {
 
   save() {
     if (this.checkValidation()) {
-      console.log("Save");
       this.requestService.saveRequest(this.data).subscribe(
         message => {
           this.router.navigate(['/requestlist']);
         },
         error => {
-          this.error = 'ERROR';
+          console.log(<any>error);
+          this.error = <any>error;
           this.message = '';
-          console.error(<any>error)
         });
     } else {
       this.error = 'Incorrect or empty value';
@@ -90,6 +88,7 @@ export class RequestComponent implements OnInit {
   checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
+        this.refresh = !this.refresh;
         return false;
       }
     }
@@ -115,7 +114,6 @@ export class RequestComponent implements OnInit {
             this.pictureLoadError = false;
           },
           error => {
-            console.log('Error: ' + error);
             this.pictureLoadError = true;
             this.loaderVisible = false;
           }

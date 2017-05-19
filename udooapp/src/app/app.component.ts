@@ -5,7 +5,6 @@ import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,7 +18,7 @@ export class AppComponent implements OnInit {
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
   image : string;
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService) {
     let before : string = '';
     router.events.subscribe((event) => {
       // see also
@@ -71,7 +70,14 @@ export class AppComponent implements OnInit {
     }
     return this.user.picture;
   }
-
+  onClickMenu(){
+    this.visibleMenu = !this.visibleMenu;
+    if(this.visibleMenu === true){
+      if(this.tokenService.getRefresh()){
+        this.checkUser();
+      }
+    }
+  }
   logOut() {
     this.visibleMenu = !this.visibleMenu;
     this.image = this.getPictureUrl('');

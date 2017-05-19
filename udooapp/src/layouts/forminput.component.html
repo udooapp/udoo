@@ -19,29 +19,29 @@
       </ul>
     </div>
     <span class="input-label" *ngIf="!user.type">Organization</span>
-    <span class="input-label" *ngIf="user.type">Username</span>
-    <text-input [type]="'text'" [validators]="[emptyValidator]" [value]="user.name"
+    <span class="input-label" *ngIf="user.type">Name</span>
+    <text-input [type]="'text'" [validators]="[emptyValidator]" [checkValidate]="refresh" [value]="user.name"
                 [placeholder]="'Name'" (text)="user.name= $event" (onStateChange)="valid[0] = $event"></text-input>
 
     <span class="input-label">Email</span><br>
-    <text-input [type]="'email'" [validators]="[emptyValidator, emailValidator]" [placeholder]="'Email'"
+    <text-input [type]="'email'" [validators]="[emptyValidator, emailValidator]" [checkValidate]="refresh" [placeholder]="'Email'"
                 [value]="user.email" (text)="user.email = $event" (onStateChange)="valid[1] = $event"></text-input>
 
     <span class="input-label">Phone number</span><br>
-    <text-input [type]="'phone'" [validators]="[emptyValidator, phoneValidator]" [placeholder]="'Phone'"
+    <text-input [type]="'phone'" [validators]="[emptyValidator, phoneValidator]" [checkValidate]="refresh" [placeholder]="'Phone'"
                 [value]="user.phone" (text)="user.phone= $event" (onStateChange)="valid[2] = $event"></text-input>
     <div *ngIf="user.type">
       <span class="input-label">Birth date</span><br>
-      <text-input [type]="'date'" [validators]="[emptyValidator, dateValidator]" [placeholder]="'Date'"
+      <text-input [type]="'date'" [validators]="[emptyValidator, dateValidator]" [checkValidate]="refresh" [placeholder]="'Date'"
                   [value]="user.birthdate" (text)="user.birthdate = $event" (onStateChange)="valid[3] = $event"></text-input>
     </div>
     <div *ngIf="registration">
       <span class="input-label">Password</span><br>
       <text-input [type]="'password'" [validators]="[emptyValidator, passwordValidator]"
-                  [placeholder]="'Password'" [value]="''" (text)="user.password = $event" (onStateChange)="valid[4] = $event"></text-input>
+                  [placeholder]="'Password'" [value]="''" (text)="user.password = $event" [checkValidate]="refresh" (onStateChange)="valid[4] = $event"></text-input>
       <span class="input-label">Password verification</span><br>
       <text-input [type]="'password'" [validators]="[emptyValidator, passwordValidator]"
-                  [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)" (onStateChange)="valid[5] = $event"></text-input>
+                  [placeholder]="'Password verification'" [value]="''" (text)="onKey($event)" [checkValidate]="refresh" (onStateChange)="valid[5] = $event"></text-input>
     </div>
     <span class="input-label">Profile picture</span><br>
     <div class="input-profile-picture-background">

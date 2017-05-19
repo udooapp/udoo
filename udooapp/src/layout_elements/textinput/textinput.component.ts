@@ -12,6 +12,7 @@ export class TextInputComponent {
   ok = false;
   show = false;
   notChange = false;
+  refresh : boolean = false;
   errorMessage = '';
   valueText = '';
   inputText = '';
@@ -75,10 +76,11 @@ export class TextInputComponent {
     this.onStateChange.emit(this.ok);
   }
 
-  @Input() set refresh(refresh: number) {
-      if (refresh > -1 || this.valueText.length > 0) {
-        this.valid();
-      }
+  @Input() set checkValidate(value: boolean){
+    if(value != this.refresh){
+      this.refresh = value;
+      this.valid()
+    }
   }
 
   onKey(event: any) {

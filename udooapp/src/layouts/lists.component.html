@@ -14,7 +14,7 @@
         <div class="service-content">
           <div class="service-title">{{item.title}}</div>
           <div class="service-description">{{item.description}}</div>
-          <div class="service-category"><b>Category: </b>{{item.category}}</div>
+          <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
           <div class="service-location"><b>Location: </b>{{getAddress(item.location)}}</div>
           <div class="service-date" [ngClass]="{'date-expired': isExpired(item.expirydate)}"><b
             *ngIf="!isExpired(item.expirydate)">Date: </b><b *ngIf="isExpired(item.expirydate)">Expired: </b>{{convertMillisToDate(item.expirydate)}}

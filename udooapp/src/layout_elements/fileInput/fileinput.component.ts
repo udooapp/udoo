@@ -16,7 +16,6 @@ export class FileInputComponent {
   }
 
   onClickBrowse(event){
-    console.log(event.toString());
     this.value.emit(event);
   }
 }

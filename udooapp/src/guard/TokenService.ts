@@ -16,4 +16,12 @@ export class TokenService {
   clearToken(){
     localStorage.removeItem(this.tokenName);
   }
+  setRefresh(value: boolean){
+    localStorage.setItem("refresh", value ? "1" : "0");
+  }
+  getRefresh() : boolean {
+    let ref : string = localStorage.getItem('refresh');
+    localStorage.setItem('refresh', '0');
+    return ref == null ? false :  ref === '1';
+  }
 }

@@ -5,13 +5,13 @@
     <span class="input-label">Title</span><br>
     <text-input [type]="'text'" [placeholder]="'Title'" [value]="data.title"
                 (text)="data.title=$event" [validators]="[emptyValidator]"
-                (onStateChange)="valid[0] = $event"></text-input>
+                (onStateChange)="valid[0] = $event" [checkValidate]="refresh"></text-input>
     <span class="input-label">Category</span><br>
     <select-input [options]="category" (text)="onChangeSelect($event)"
-                  (onStateChange)="valid[1] = $event"></select-input>
+                  (onStateChange)="valid[1] = $event" [checkValidate]="refresh"></select-input>
     <span class="input-label">Description</span><br>
     <text-area [row]="4" [validators]="[emptyValidator]" (onStateChange)="valid[2]=$event" [column]="50"
-               [placeholder]="'Description'" (text)="data.description=$event" [value]="data.description"></text-area>
+               [placeholder]="'Description'" (text)="data.description=$event" [value]="data.description" [checkValidate]="refresh"></text-area>
     <span class="input-label">Profile picture</span><br>
 
     <div class="input-profile-picture-background">
@@ -31,24 +31,24 @@
     <text-input [type]="'text'" [placeholder]="'Choose service location'"
                 [value]="location" (text)="data.location=$event; location=$event.address;"
                 (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]"
-                (onStateChange)="valid[3] = $event"></text-input>
+                (onStateChange)="valid[3] = $event" [checkValidate]="refresh"></text-input>
     <span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>
     <text-input *ngIf="offer" [type]="'text'"
                 [placeholder]="'Availability'" [value]="data.availability" (text)="data.availability=$event"
-                [validators]="[emptyValidator]" (onStateChange)="valid[4] = $event"></text-input>
+                [validators]="[emptyValidator]" (onStateChange)="valid[4] = $event" [checkValidate]="refresh"></text-input>
     <div *ngIf="!offer">
       <text-input [type]="'date'"
                   [placeholder]="'Date'" [value]="data.jobdate" (text)="data.jobdate=$event"
-                  [validators]="[emptyValidator, dateValidator]" (onStateChange)="valid[4] = $event"></text-input>
+                  [validators]="[emptyValidator, dateValidator]" (onStateChange)="valid[4] = $event" [checkValidate]="refresh"></text-input>
       <text-input [type]="'time'" [validators]="[emptyValidator, timeValidator]"
-                  (onStateChange)="valid[5] = $event"></text-input>
+                  (onStateChange)="valid[5] = $event" [checkValidate]="refresh"></text-input>
       <text-input [type]="'number'" [validators]="[emptyValidator, numberValidator]" (onStateChange)="valid[6] = $event"
-                  [placeholder]="'Period'"></text-input>
+                  [placeholder]="'Period'" [checkValidate]="refresh"></text-input>
     </div>
     <span class="input-label">Expiry date</span><br>
     <text-input [type]="'date'" [value]="getDate()"
                 (text)="data.expirydate=$event" [validators]="[emptyValidator, dateValidator]"
-                (onStateChange)="valid[!offer ? 7 : 5] = $event"></text-input>
+                (onStateChange)="valid[!offer ? 7 : 5] = $event" [checkValidate]="refresh"></text-input>
 
     <input type="button" [value]="(type >= 0 ? 'Update' : 'Save')" class="input-button button-dark" (click)="save()"/>
     <input *ngIf="type > -1" type="button" value="Delete" class="input-button button-dark" (click)="deleteService()"/>
