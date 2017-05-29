@@ -16,7 +16,7 @@ import {config} from "../config/url.config";
 export class OfferService {
   private headers;
 
-  constructor(private http: Http,  private tokenService: TokenService) {
+  constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
     this.headers.append('Access-Control-Allow-Origin', config.client);
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
@@ -24,7 +24,10 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(config.server + '/saveoffer/' + JSON.parse(this.tokenService.getToken()).username, JSON.stringify(offer), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/saveoffer', JSON.stringify({
+        token: JSON.parse(this.tokenService.getToken()),
+        offer: offer
+      }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
@@ -34,13 +37,18 @@ export class OfferService {
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
-  deleteUserOffer(id : number): Observable<string> {
-    return this.http.post(config.server + '/deleteoffer/' + id, this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+
+  deleteUserOffer(id: number): Observable<string> {
+    return this.http.post(config.server + '/deleteoffer', JSON.stringify({
+      id: id,
+      token: JSON.parse(this.tokenService.getToken())
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
+
   getOffer(oid: number): Observable<Offer> {
-    return this.http.get(config.server  + '/offer/' + oid)
+    return this.http.get(config.server + '/offer/' + oid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

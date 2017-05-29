@@ -23,11 +23,14 @@ export class ContactService {
   }
 
   addContact(uid: number): Observable<string> {
-    if(!this.tokenService.getToken()){
+    if (!this.tokenService.getToken()) {
       this.router.navigate(['/login']);
       return Observable.throw('First, login');
     }
-    return this.http.post(config.server + '/addcontact/' + uid, JSON.parse(this.tokenService.getToken()), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/addcontact', JSON.stringify({
+      id: uid,
+      token: JSON.parse(this.tokenService.getToken())
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
@@ -39,7 +42,10 @@ export class ContactService {
   }
 
   removeContact(uid: number): Observable<string> {
-    return this.http.post(config.server + '/deleteContact/' + uid, JSON.parse(this.tokenService.getToken()), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/deleteContact/', JSON.stringify({
+      id: uid,
+      token: JSON.parse(this.tokenService.getToken())
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }

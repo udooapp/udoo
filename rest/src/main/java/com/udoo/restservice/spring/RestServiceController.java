@@ -1,6 +1,8 @@
 package com.udoo.restservice.spring;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
@@ -180,18 +182,26 @@ public class RestServiceController implements IRestServiceController {
 
     }
 
-    @RequestMapping(value = "/deleterequest/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleterequest", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> deleteUserRequest(@PathVariable("id") int id, @RequestBody String token) {
-        if (id > 0) {
-            int succes = requestRepository.deleteByRid(id);
-            if (succes > -1) {
-                return new ResponseEntity<>("Request deleted", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    ResponseEntity<String> deleteUserRequest(@RequestBody String request) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(request);
+            Integer id = mapper.convertValue(node.get("id"), Integer.class);
+            if (id > 0) {
+                int succes = requestRepository.deleteByRid(id);
+                if (succes > -1) {
+                    return new ResponseEntity<>("Request deleted", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            return new ResponseEntity<String>("Invalid body", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
 
@@ -210,24 +220,30 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
-    @RequestMapping(value = "/addcontact/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addcontact", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> addContact(@PathVariable("id") int id, @RequestBody String token) throws JSONException {
-        if (id > 0) {
-            User user = userRepository.findByUid(id);
-            if (user.getUid() > -1) {
-                JSONObject obj = new JSONObject(token);
-                User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
-                if (currentUser != null && currentUser.getUid() > 0) {
-                    if(!currentUser.getUid().equals(user.getUid())) {
-                        contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
-                        return new ResponseEntity<>("Success", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("It's you are!", HttpStatus.OK);
+    ResponseEntity<String> addContact(@RequestBody String req) throws JSONException {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(req);
+            Integer id = mapper.convertValue(node.get("id"), Integer.class);
+            if (id > 0) {
+                User user = userRepository.findByUid(id);
+                if (user.getUid() > -1) {
+                    User currentUser = userRepository.findByEmail(mapper.convertValue(node.get("token").get("username"), String.class)).get(0);
+                    if (currentUser != null && currentUser.getUid() > 0) {
+                        if (!currentUser.getUid().equals(user.getUid())) {
+                            contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
+                            return new ResponseEntity<>("Success", HttpStatus.OK);
+                        } else {
+                            return new ResponseEntity<>("It's you are!", HttpStatus.OK);
+                        }
                     }
                 }
+                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
@@ -240,9 +256,9 @@ public class RestServiceController implements IRestServiceController {
         if (currentUser != null && currentUser.getUid() > 0) {
             List<Contact> contact = contactRepository.findByUid(currentUser.getUid());
             List<User> users = new ArrayList<>();
-            for(Contact cont: contact){
-                User  usr = userRepository.findByUid(cont.getCid());
-                if(usr != null){
+            for (Contact cont : contact) {
+                User usr = userRepository.findByUid(cont.getCid());
+                if (usr != null) {
                     users.add(usr);
                 }
             }
@@ -251,53 +267,75 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Something wrong", HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/deleteContact/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<?> deleteContacts(@PathVariable("id") int id, @RequestBody String token) throws JSONException {
-        if (id > 0) {
-            User user = userRepository.findByUid(id);
-            if (user.getUid() > -1) {
-                JSONObject obj = new JSONObject(token);
-                User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
-                if (currentUser != null && currentUser.getUid() > 0) {
-                    contactRepository.deleteByIds(currentUser.getUid(), user.getUid());
-                    return new ResponseEntity<>("Contact removed", HttpStatus.OK);
+    ResponseEntity<?> deleteContacts(@RequestBody String req) throws JSONException {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(req);
+            Integer id = mapper.convertValue(node.get("id"), Integer.class);
+            if (id > 0) {
+                User user = userRepository.findByUid(id);
+                if (user.getUid() > -1) {
+                    User currentUser = userRepository.findByEmail(mapper.convertValue(node.get("token").get("username"), String.class)).get(0);
+                    if (currentUser != null && currentUser.getUid() > 0) {
+                        contactRepository.deleteByIds(currentUser.getUid(), user.getUid());
+                        return new ResponseEntity<>("Contact removed", HttpStatus.OK);
+                    }
                 }
+                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/deleteoffer/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteoffer", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> deleteUserOffer(@PathVariable("id") int id, @RequestBody String token) {
-        if (id > 0) {
-            int succes = offerRepository.deleteByOid(id);
-            if (succes > -1) {
-                return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    ResponseEntity<String> deleteUserOffer(@RequestBody String request) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(request);
+            Integer id = mapper.convertValue(node.get("id"), Integer.class);
+            if (id > 0) {
+                int succes = offerRepository.deleteByOid(id);
+                if (succes > -1) {
+                    return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
     @Override
     @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePassword(@RequestParam(value = "cpass") String currentpassword, @RequestParam(value = "npass") String newpassword, @RequestParam(value = "email") String email) {
-        if (currentpassword != null && newpassword != null && email != null && !email.isEmpty()) {
-            List<User> user = userRepository.findByEmail(email);
+    public ResponseEntity<String> updatePassword(@RequestBody String req) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(req);
+            String email = mapper.convertValue(node.get("token").get("username"), String.class);
+            String currentpassword = mapper.convertValue(node.get("cpass"), String.class);
+            String newpassword = mapper.convertValue(node.get("npass"), String.class);
+            if (currentpassword != null && newpassword != null && email != null && !email.isEmpty()) {
+                List<User> user = userRepository.findByEmail(email);
 
-            if (user.get(0).getPassword().equals(currentpassword)) {
-                user.get(0).setPassword(newpassword);
-                userRepository.save(user.get(0));
-                return new ResponseEntity<>("Password changed", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
+                if (user.get(0).getPassword().equals(currentpassword)) {
+                    user.get(0).setPassword(newpassword);
+                    userRepository.save(user.get(0));
+                    return new ResponseEntity<>("Password changed", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
+                }
             }
+        }catch (IOException e){
+            System.out.println( e.toString());
         }
-        return new ResponseEntity<>("Incorrect email", HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>("Incorrect parameter", HttpStatus.NOT_MODIFIED);
     }
 
 
@@ -307,42 +345,61 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/saveoffer/{email:.+}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(@RequestBody Offer offer, @PathVariable("email") String email) {
-        if (offer != null && email != null) {
-            List<User> users = userRepository.findByEmail(email);
-            if (users.size() > 0) {
-                offer.setUid(users.get(0).getUid());
-                offerRepository.save(offer);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
+    @RequestMapping(value = "/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveOffer(@RequestBody String req) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(req);
+            String email = mapper.convertValue(node.get("token").get("username"), String.class);
+            Offer offer = mapper.convertValue(node.get("offer"), Offer.class);
+            if (offer != null && email != null) {
+                List<User> users = userRepository.findByEmail(email);
+                if (users.size() > 0) {
+                    offer.setUid(users.get(0).getUid());
+                    offerRepository.save(offer);
+                    return new ResponseEntity<>("Saved", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+                }
             } else {
-                return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
             }
-        } else {
-            return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            return new ResponseEntity<>("Invalid request parameters", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    @RequestMapping(value = "/saverequest/{email:.+}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveRequest(@RequestBody Request request, @PathVariable("email") String email) {
-        if (request != null && email != null) {
-            List<User> users = userRepository.findByEmail(email);
-            if (users.size() > 0) {
-                request.setUid(users.get(0).getUid());
-                requestRepository.save(request);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
+    @RequestMapping(value = "/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveRequest(@RequestBody String req) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(req);
+            String email = mapper.convertValue(node.get("token").get("username"), String.class);
+            Request request = mapper.convertValue(node.get("request"), Request.class);
+            if (request != null && email != null) {
+                List<User> users = userRepository.findByEmail(email);
+                if (users.size() > 0) {
+                    request.setUid(users.get(0).getUid());
+                    requestRepository.save(request);
+                    return new ResponseEntity<>("Saved", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+                }
             } else {
-                return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
             }
-        } else {
-            return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            return new ResponseEntity<>("Invalid request", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category, @PathVariable("searchText") String searchText) {
+    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category,
+                                          @PathVariable("searchText") String searchText) {
         List<Offer> offers;
         System.out.println("Category long:" + category);
         if (category >= 0) {
@@ -453,10 +510,10 @@ public class RestServiceController implements IRestServiceController {
         SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         if (!inputFile.isEmpty()) {
             try {
-              //  String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
-               // File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
-              //  inputFile.transferTo(destinationFile);
-              //  headers.add("File Uploaded Successfully - ", filename);
+                //  String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
+                // File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
+                //  inputFile.transferTo(destinationFile);
+                //  headers.add("File Uploaded Successfully - ", filename);
                 StringBuilder sb = new StringBuilder();
                 sb.append("data:image/png;base64,");
                 sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(inputFile.getBytes(), false)));

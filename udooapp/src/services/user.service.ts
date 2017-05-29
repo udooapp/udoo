@@ -36,21 +36,15 @@ export class UserService {
           return '';
         } else {
           return HandlerService.handleText(response);
-      }
-      }).catch((response: Response) => { return HandlerService.handleText(response)});
+        }
+      }).catch((response: Response) => {
+        return HandlerService.handleText(response)
+      });
   }
 
   updateUser(user: User): Observable<String> {
     return this.http.post(config.server + '/update',
-      '{"uid" : "' + user.uid + '",' +
-      '"name" : "' + user.name + '",' +
-      '"email" : "' + user.email + '",' +
-      '"password" : "' + user.password + '",' +
-      '"phone" : "' + user.phone + '",' +
-      '"type" : "' + user.type + '",' +
-      '"stars" : "' + user.stars + '",' +
-      '"birthdate" : "' + user.birthdate + '",' +
-      '"picture" : "' + user.picture + '"}'
+      JSON.stringify(user)
       , new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
@@ -70,7 +64,7 @@ export class UserService {
   }
 
   getUserInfo(uid: any): Observable<User> {
-    return this.http.get(config.server + '/userinfo/' +uid)
+    return this.http.get(config.server + '/userinfo/' + uid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
@@ -82,7 +76,11 @@ export class UserService {
   }
 
   changePassword(cpass: string, npass: string): Observable<String> {
-    return this.http.post(config.server + '/password?cpass=' + cpass + '&npass=' + npass + "&email=" + JSON.parse(this.tokenService.getToken()).username, new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/password', JSON.stringify({
+      cpass: cpass,
+      npass: npass,
+      token: JSON.parse(this.tokenService.getToken())
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }

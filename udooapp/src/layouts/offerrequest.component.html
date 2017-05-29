@@ -29,7 +29,7 @@
     </div>
     <span class="input-label">Location</span><br>
     <text-input [type]="'text'" [placeholder]="'Choose service location'"
-                [value]="location" (text)="data.location=$event; location=$event.address;"
+                [value]="location"
                 (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]"
                 (onStateChange)="valid[3] = $event" [checkValidate]="refresh"></text-input>
     <span class="input-label">{{offer ? 'Availability' : 'Job date'}}</span>

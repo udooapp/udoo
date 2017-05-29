@@ -28,11 +28,11 @@ public interface IRestServiceController {
 
     ResponseEntity<?> getAllUserOffer(String token);
 
-    ResponseEntity<String> saveOffer(Offer offer, String email);
+    ResponseEntity<String> saveOffer(String req);
 
-    ResponseEntity<String> saveRequest(Request request, String email);
+    ResponseEntity<String> saveRequest(String req);
 
-    ResponseEntity<String> updatePassword(String currentpassword, String newpassword, String email);
+    ResponseEntity<String> updatePassword(String req);
 
     ResponseEntity<String> updateUser(final User user);
 
