@@ -17,15 +17,16 @@ export class AppComponent implements OnInit {
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
-  image : string;
+  image: string;
+
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService) {
-    let before : string = '';
+    let before: string = '';
     router.events.subscribe((event) => {
       // see also
-      if ((event.url === '/map' && (before == '/login' || before == '')) || (before === '/profile'&& event.url === '/profile')) {
+      if ((event.url === '/map' && (before == '/login' || before == '')) || (before === '/profile' && event.url === '/profile')) {
         this.checkUser();
       }
-      if(event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd) {
         before = event.url;
       }
     });
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
       this.login = true;
-      this.userService.getUserData(token).subscribe(
+      this.userService.getUserData().subscribe(
         user => {
           this.user = user;
           this.image = this.getPictureUrl(user.picture);
@@ -61,29 +62,40 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getPictureUrl(src : string) {
+  getPictureUrl(src: string) {
 
     if (!this.login) {
       return './assets/profile_picture.png';
-    } else if(src == null || src.length == 0 || src === 'null'){
+    } else if (src == null || src.length == 0 || src === 'null') {
       return './assets/profile_picture.png';
     }
     return this.user.picture;
   }
-  onClickMenu(){
+
+  onClickMenu() {
     this.visibleMenu = !this.visibleMenu;
-    if(this.visibleMenu === true){
-      if(this.tokenService.getRefresh()){
+    if (this.visibleMenu === true) {
+      if (this.tokenService.getRefresh()) {
         this.checkUser();
       }
     }
   }
+
   logOut() {
     this.visibleMenu = !this.visibleMenu;
     this.image = this.getPictureUrl('');
-    this.userService.logout();
-    this.login = false;
-    this.user = new User(null, '', '', '', '', '', 0, 0, '');
-    this.router.navigate(['/map']);
+    this.userService.logout().subscribe(
+      message => {
+        this.login = false;
+        this.user = new User(null, '', '', '', '', '', 0, 0, '');
+        this.router.navigate(['/map']);
+        this.tokenService.clearToken()
+      },
+      error => {
+       // this.tokenService.clearToken();
+        console.log("Error:" + error)
+      }
+    );
+
   }
 }

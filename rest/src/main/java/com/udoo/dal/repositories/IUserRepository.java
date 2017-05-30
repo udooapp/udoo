@@ -18,6 +18,8 @@ public interface IUserRepository extends Repository<User, Integer> {
 
     User findByUid(int id);
 
+    User getByEmail(String email);
+
     List<User> findByName(String name);
 
     List<User> findByEmail(String email);

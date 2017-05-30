@@ -11,9 +11,9 @@ import javax.persistence.*;
 public class Contact {
 
     @Id
-    int uid;
+    private int uid;
     @Id
-    int cid;
+    private int cid;
 
     public Contact() {
     }

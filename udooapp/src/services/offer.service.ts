@@ -24,24 +24,33 @@ export class OfferService {
   }
 
   saveOffer(offer: Offer): Observable<String> {
-    return this.http.post(config.server + '/saveoffer', JSON.stringify({
-        token: JSON.parse(this.tokenService.getToken()),
-        offer: offer
-      }), new RequestOptions({headers: this.headers}))
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/saveoffer', JSON.stringify({
+      offer: offer
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   getUserOffer(): Observable<Offer[]> {
-    return this.http.post(config.server + '/offer', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.get(config.server + '/user/offer', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   deleteUserOffer(id: number): Observable<string> {
-    return this.http.post(config.server + '/deleteoffer', JSON.stringify({
-      id: id,
-      token: JSON.parse(this.tokenService.getToken())
+    this.headers.append("Token", JSON.parse(this.tokenService.getToken()).token);
+    return this.http.post(config.server + '/user/deleteoffer', JSON.stringify({
+      id: id
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);

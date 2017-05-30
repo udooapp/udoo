@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getUserData(this.tokenService.getToken()).subscribe(
+    this.userService.getUserData().subscribe(
       user => {
         if (user.picture.length > 4) {
           this.first = false;
@@ -116,7 +116,6 @@ export class ProfileComponent implements OnInit {
           this.error = '';
           this.message = message;
           this.tokenService.setRefresh(true);
-          this.tokenService.saveToken(JSON.parse(this.tokenService.getToken()).token, this.user.email);
         },
         error => {
           this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';

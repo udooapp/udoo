@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Http, Response, Headers, RequestOptions, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -12,26 +12,37 @@ import {config} from "../config/url.config";
 
 @Injectable()
 export class UserService {
-  private headers;
+  private headers: Headers;
 
   constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', config.client);
+    this.headers.append('Access-Control-Allow-Origin', `${config.client}`);
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
 
-  logout(): void {
-    this.tokenService.clearToken();
-    this.http.post(config.server + '/logout', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+  logout(): Observable<String> {
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+
+    let param: URLSearchParams = new URLSearchParams();
+    param.append("param", "param");
+    return this.http.get(config.server + '/user/logout', new RequestOptions({headers: this.headers, search: param}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
   }
 
   loginUser(user: User): Observable<string> {
+
     return this.http.post(config.server + '/login', user.toString(), new RequestOptions({headers: this.headers}))
       .map((response: Response) => {
-        let token = response.json() && response.json().token;
+        let token = response.text();
         if (token) {
-          this.tokenService.saveToken(token, user.email);
+          console.log("Token:" + token);
+          this.tokenService.saveToken(token);
           // return true to indicate successful login
           return '';
         } else {
@@ -43,22 +54,25 @@ export class UserService {
   }
 
   updateUser(user: User): Observable<String> {
-    return this.http.post(config.server + '/update',
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/update',
       JSON.stringify(user)
       , new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
-
-  getUserCurrentUser(): Observable<User> {
-    return this.http.get(config.server + '/user/' + JSON.parse(this.tokenService.getToken()).username)
-      .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
-  }
-
-  getUserData(token: any): Observable<User> {
-    return this.http.post(config.server + '/userdata', token.toString(), new RequestOptions({headers: this.headers}))
+  getUserData(): Observable<User> {
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.get(config.server + '/user/userdata', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
@@ -76,19 +90,29 @@ export class UserService {
   }
 
   changePassword(cpass: string, npass: string): Observable<String> {
-    return this.http.post(config.server + '/password', JSON.stringify({
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/password', JSON.stringify({
       cpass: cpass,
       npass: npass,
-      token: JSON.parse(this.tokenService.getToken())
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   uploadPicture(file: File): Observable<String> {
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+
     let formData: FormData = new FormData();
     formData.append('file', file);
-    return this.http.post(config.server + '/upload', formData)
+    return this.http.post(config.server + '/user/upload', formData)
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText)
   }

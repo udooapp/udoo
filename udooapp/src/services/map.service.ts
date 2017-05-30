@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -24,19 +24,19 @@ export class MapService {
   }
 
   getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
-    return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''))
+    return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
 
   getRequestLocations(category: number, searchText: string): Observable<Request[]> {
-    return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''))
+    return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
 
   getCategories(): Observable<Object[]> {
-    return this.http.get(config.server + '/categories')
+    return this.http.get(config.server + '/categories', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError)
   }

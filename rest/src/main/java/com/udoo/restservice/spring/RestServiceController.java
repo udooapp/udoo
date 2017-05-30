@@ -7,13 +7,19 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
+import org.apache.catalina.Server;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.omg.CORBA.ServerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,21 +31,28 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 
 /**
  */
 @RestController
 @CrossOrigin
+@PropertySource("classpath:app.properties")
 public class RestServiceController implements IRestServiceController {
+
+    public static final String USERID = "UID";
+    @Autowired
+    Environment env;
 
     @Resource
     private IUserRepository userRepository;
@@ -55,6 +68,9 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IContactRepository contactRepository;
+
+    @Resource
+    private ITokenRepository tokenRepository;
 
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,13 +91,13 @@ public class RestServiceController implements IRestServiceController {
 
 
     @Override
-    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateUser(@RequestBody final User user) {
+    @RequestMapping(value = "/user/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateUser(ServletRequest request, @RequestBody final User user) {
         if (user != null) {
             if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
                 user.setBirthdate(null);
             }
-            User cuser = userRepository.findByUid(user.getUid());
+            User cuser = userRepository.findByUid(Integer.parseInt(request.getAttribute("USERID").toString()));
             if (cuser == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
@@ -98,18 +114,42 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> logoutUser(User user) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @RequestMapping(value = "/user/logout", method = RequestMethod.GET)
+    public ResponseEntity<?> logoutUser(ServletRequest request) {
+        Token token = tokenRepository.getByToken(((HttpServletRequest) request).getHeader(AUTHORIZATION).substring(7));
+        if (token != null) {
+            token.setDisable(true);
+            tokenRepository.save(token);
+            return new ResponseEntity<>("Succes", HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>("Incorrect parameter", HttpStatus.UNAUTHORIZED);
     }
 
     @Override
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginUser(@RequestBody User user) {
-        List<User> users = userRepository.findByEmail(user.getEmail());
-        if (users.size() > 0) {
-            if (users.get(0).getPassword().equals(user.getPassword())) {
-                return new ResponseEntity<>("{\"token\": \"012dsa2sa2d2sa\"}", HttpStatus.OK);
+        User user2 = userRepository.getByEmail(user.getEmail());
+
+        if (user2 != null) {
+            if (user2.getPassword().equals(user.getPassword())) {
+                List<Token> tokens = tokenRepository.findByUid(user2.getUid());
+                Token token = null;
+                for (Token tok : tokens) {
+                    if (tok.isDisable()) {
+                        token = tok;
+                    }
+                }
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
+                if (token == null) {
+                    token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
+                } else {
+                    token.setExpirydate(c.getTime());
+                    token.setDisable(false);
+                    token = tokenRepository.save(token);
+                }
+                return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }
@@ -118,7 +158,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public String getUserName(@PathVariable("id") final Integer id) {
         if (id != null) {
             User user = userRepository.findByUid(id);
@@ -142,19 +182,14 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
-    @RequestMapping(value = "/userdata", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUserData(@RequestBody String token) {
-        try {
-            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if (users.size() > 0) {
-                return new ResponseEntity<>(users.get(0), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (JSONException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @RequestMapping(value = "/user/userdata", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserData(ServletRequest request) {
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
@@ -165,64 +200,58 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/request", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/request", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<List<Request>> getAllUserRequest(@RequestBody String token) {
-        try {
-            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if (users.size() > 0) {
-                System.out.println(users.get(0).getUid());
-                return new ResponseEntity<>(requestRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (JSONException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request) {
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if (user != null) {
+            return new ResponseEntity<>(requestRepository.findByUid(user.getUid()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
 
-    @RequestMapping(value = "/deleterequest", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/deleterequest", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> deleteUserRequest(@RequestBody String request) {
+    ResponseEntity<String> deleteUserRequest(ServletRequest req, @RequestBody String request) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(request);
             Integer id = mapper.convertValue(node.get("id"), Integer.class);
             if (id > 0) {
-                int succes = requestRepository.deleteByRid(id);
-                if (succes > -1) {
-                    return new ResponseEntity<>("Request deleted", HttpStatus.OK);
+                if (requestRepository.findByRid(id).getUid() == Integer.parseInt(req.getAttribute(USERID).toString())) {
+                    int succes = requestRepository.deleteByRid(id);
+                    if (succes > -1) {
+                        return new ResponseEntity<>("Request deleted", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
-                    return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
                 }
             }
             return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
-            System.out.println(e.toString());
-            return new ResponseEntity<String>("Invalid body", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid body", HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @Override
-    @RequestMapping(value = "/offer", method = RequestMethod.POST)
-    public ResponseEntity<List<Offer>> getAllUserOffer(@RequestBody String token) {
-        try {
-            List<User> users = userRepository.findByEmail(new JSONObject(token).getString("username"));
-            if (users.size() > 0) {
-                return new ResponseEntity<>(offerRepository.findByUid(users.get(0).getUid()), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (JSONException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @RequestMapping(value = "/user/offer", method = RequestMethod.GET)
+    public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request) {
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if (user != null) {
+            return new ResponseEntity<>(offerRepository.findByUid(user.getUid()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @RequestMapping(value = "/addcontact", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/addcontact", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> addContact(@RequestBody String req) throws JSONException {
+    ResponseEntity<String> addContact(ServletRequest request, @RequestBody String req) throws JSONException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
@@ -230,7 +259,7 @@ public class RestServiceController implements IRestServiceController {
             if (id > 0) {
                 User user = userRepository.findByUid(id);
                 if (user.getUid() > -1) {
-                    User currentUser = userRepository.findByEmail(mapper.convertValue(node.get("token").get("username"), String.class)).get(0);
+                    User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
                     if (currentUser != null && currentUser.getUid() > 0) {
                         if (!currentUser.getUid().equals(user.getUid())) {
                             contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
@@ -248,11 +277,10 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/contacts", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/contacts", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<?> getContacts(@RequestBody String token) throws JSONException {
-        JSONObject obj = new JSONObject(token);
-        User currentUser = userRepository.findByEmail(obj.getString("username")).get(0);
+    ResponseEntity<?> getContacts(ServletRequest request) throws JSONException {
+        User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (currentUser != null && currentUser.getUid() > 0) {
             List<Contact> contact = contactRepository.findByUid(currentUser.getUid());
             List<User> users = new ArrayList<>();
@@ -267,9 +295,9 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Something wrong", HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/deleteContact", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<?> deleteContacts(@RequestBody String req) throws JSONException {
+    ResponseEntity<?> deleteContacts(ServletRequest request, @RequestBody String req) throws JSONException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
@@ -277,7 +305,7 @@ public class RestServiceController implements IRestServiceController {
             if (id > 0) {
                 User user = userRepository.findByUid(id);
                 if (user.getUid() > -1) {
-                    User currentUser = userRepository.findByEmail(mapper.convertValue(node.get("token").get("username"), String.class)).get(0);
+                    User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
                     if (currentUser != null && currentUser.getUid() > 0) {
                         contactRepository.deleteByIds(currentUser.getUid(), user.getUid());
                         return new ResponseEntity<>("Contact removed", HttpStatus.OK);
@@ -291,19 +319,23 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/deleteoffer", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/deleteoffer", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> deleteUserOffer(@RequestBody String request) {
+    ResponseEntity<String> deleteUserOffer(ServletRequest req, @RequestBody String request) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(request);
             Integer id = mapper.convertValue(node.get("id"), Integer.class);
             if (id > 0) {
-                int succes = offerRepository.deleteByOid(id);
-                if (succes > -1) {
-                    return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
+                if (offerRepository.findByOid(id).getUid() == Integer.parseInt(req.getAttribute(USERID).toString())) {
+                    int succes = offerRepository.deleteByOid(id);
+                    if (succes > -1) {
+                        return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 } else {
-                    return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
                 }
             }
         } catch (IOException e) {
@@ -313,27 +345,25 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePassword(@RequestBody String req) {
+    @RequestMapping(value = "/user/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updatePassword(ServletRequest request, @RequestBody String req) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
-            String email = mapper.convertValue(node.get("token").get("username"), String.class);
+            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
             String currentpassword = mapper.convertValue(node.get("cpass"), String.class);
             String newpassword = mapper.convertValue(node.get("npass"), String.class);
-            if (currentpassword != null && newpassword != null && email != null && !email.isEmpty()) {
-                List<User> user = userRepository.findByEmail(email);
-
-                if (user.get(0).getPassword().equals(currentpassword)) {
-                    user.get(0).setPassword(newpassword);
-                    userRepository.save(user.get(0));
+            if (user != null && currentpassword != null && newpassword != null) {
+                if (user.getPassword().equals(currentpassword)) {
+                    user.setPassword(newpassword);
+                    userRepository.save(user);
                     return new ResponseEntity<>("Password changed", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
                 }
             }
-        }catch (IOException e){
-            System.out.println( e.toString());
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
         return new ResponseEntity<>("Incorrect parameter", HttpStatus.NOT_MODIFIED);
     }
@@ -345,17 +375,16 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(@RequestBody String req) {
+    @RequestMapping(value = "/user/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody String req) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
-            String email = mapper.convertValue(node.get("token").get("username"), String.class);
             Offer offer = mapper.convertValue(node.get("offer"), Offer.class);
-            if (offer != null && email != null) {
-                List<User> users = userRepository.findByEmail(email);
-                if (users.size() > 0) {
-                    offer.setUid(users.get(0).getUid());
+            if (offer != null) {
+                User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+                if (user != null) {
+                    offer.setUid(user.getUid());
                     offerRepository.save(offer);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
@@ -371,18 +400,17 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveRequest(@RequestBody String req) {
+    @RequestMapping(value = "/user/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveRequest(ServletRequest request, @RequestBody String req) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
-            String email = mapper.convertValue(node.get("token").get("username"), String.class);
-            Request request = mapper.convertValue(node.get("request"), Request.class);
-            if (request != null && email != null) {
-                List<User> users = userRepository.findByEmail(email);
-                if (users.size() > 0) {
-                    request.setUid(users.get(0).getUid());
-                    requestRepository.save(request);
+            Request newrequest = mapper.convertValue(node.get("request"), Request.class);
+            if (newrequest != null) {
+                User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+                if (user != null) {
+                    newrequest.setUid(user.getUid());
+                    requestRepository.save(newrequest);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
@@ -401,7 +429,6 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<?> getAllOffers(@PathVariable("category") int category,
                                           @PathVariable("searchText") String searchText) {
         List<Offer> offers;
-        System.out.println("Category long:" + category);
         if (category >= 0) {
             offers = offerRepository.findAllMatches(category, searchText);
         } else {
@@ -417,9 +444,7 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
         List<Offer> offers;
-        System.out.println("Category short:" + category);
         if (category >= 0) {
-            System.out.println("Selected category:" + category);
             offers = offerRepository.findAllActualByCategory(category);
         } else {
             offers = offerRepository.findAllActual();
@@ -436,7 +461,6 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
                                             @PathVariable("searchText") String searchText) {
         List<Request> requests;
-        System.out.println("Category long:" + category);
         if (category > 0) {
             requests = requestRepository.findAllMatches(category, searchText);
         } else {
@@ -452,7 +476,6 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
         List<Request> requests;
-        System.out.println("Category short:" + category);
         if (category > 0) {
             requests = requestRepository.findAllActualByCategory(category);
         } else {
@@ -481,7 +504,6 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/image/{image:.+}", method = RequestMethod.GET)
     public @ResponseBody
     void getImage(@PathVariable("image") String name, HttpServletResponse response) throws IOException {
-        System.out.println(name);
         File file = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + name);
         InputStream in = new FileInputStream(file);
         response.setContentType("image/*");
@@ -504,10 +526,8 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
-        HttpHeaders headers = new HttpHeaders();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         if (!inputFile.isEmpty()) {
             try {
                 //  String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
@@ -527,20 +547,18 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
         List<String> imageNames = new ArrayList<>();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd_G_HH_mm_ss_S");
         for (MultipartFile file : files) {
             if (file.isEmpty()) {
                 continue; //next pls
             }
             try {
-                byte[] bytes = file.getBytes();
-                String fileName = date.format(new Date()) + "_" + file.getOriginalFilename();
-                Path path = Paths.get(context.getRealPath("/WEB-INF/uploaded" + File.separator + fileName));
-                Files.write(path, bytes);
-                imageNames.add(fileName);
+                StringBuilder sb = new StringBuilder();
+                sb.append("data:image/png;base64,");
+                sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(file.getBytes(), false)));
+                imageNames.add(sb.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -555,5 +573,9 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     public ResponseEntity<List<Category>> getCategories() {
         return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
+    }
+
+    String generateToken() {
+        return Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact();
     }
 }

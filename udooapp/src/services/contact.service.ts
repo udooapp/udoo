@@ -27,24 +27,37 @@ export class ContactService {
       this.router.navigate(['/login']);
       return Observable.throw('First, login');
     }
-    return this.http.post(config.server + '/addcontact', JSON.stringify({
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/addcontact', JSON.stringify({
       id: uid,
-      token: JSON.parse(this.tokenService.getToken())
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   getContacts(): Observable<any[]> {
-    return this.http.post(config.server + '/contacts', JSON.parse(this.tokenService.getToken()), new RequestOptions({headers: this.headers}))
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.get(config.server + '/user/contacts', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   removeContact(uid: number): Observable<string> {
-    return this.http.post(config.server + '/deleteContact/', JSON.stringify({
-      id: uid,
-      token: JSON.parse(this.tokenService.getToken())
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/deleteContact/', JSON.stringify({
+      id: uid
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);

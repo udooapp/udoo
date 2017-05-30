@@ -4,10 +4,10 @@ import {Injectable} from "@angular/core";
 @Injectable()
 export class TokenService {
   constructor() { }
-  private tokenName : string = 'currentUser';
+  private tokenName : string = 'token';
 
-  saveToken(token : string, user : string) {
-    localStorage.setItem(this.tokenName, JSON.stringify({ username: user, token: token }));
+  saveToken(token : string) {
+    localStorage.setItem(this.tokenName, token);
   }
 
   getToken() {

@@ -21,24 +21,35 @@ export class RequestService {
   }
 
   saveRequest(request: Request): Observable<String> {
-    return this.http.post(config.server + '/saverequest', JSON.stringify({
-      token: JSON.parse(this.tokenService.getToken()),
-      request: request
-    }), new RequestOptions({headers: this.headers}))
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/saverequest', JSON.stringify(request), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   getUserRequest(): Observable<Request[]> {
-    return this.http.post(config.server + '/request', this.tokenService.getToken(), new RequestOptions({headers: this.headers}))
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.get(config.server + '/user/request', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   deleteUserRequest(id: number): Observable<string> {
-    return this.http.post(config.server + '/deleterequest', JSON.stringify({
-      id: id,
-      token: JSON.parse(this.tokenService.getToken())
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+    return this.http.post(config.server + '/user/deleterequest', JSON.stringify({
+      id: id
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
