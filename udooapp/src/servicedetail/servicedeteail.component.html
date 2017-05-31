@@ -1,7 +1,7 @@
 <div class="input-container" *ngIf="loaded">
   <div class="contact-container">
     <div class="contact-profile-picture">
-      <img class="contact-picture-image" [src]="image" >
+      <img class="contact-picture-image" [src]="image">
     </div>
     <div class="contact-stars">
       <div *ngFor="let i of stars">
@@ -25,5 +25,5 @@
     <div class="detail-date"><b>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
     <button class="input-button button-light" (click)="onBackPressed()">Back</button>
   </div>
-
 </div>
+<div *ngIf="!loaded && error.length > 0" class="response-message error-message">{{error}}</div>

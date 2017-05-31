@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterContentInit, Component, NgZone, OnInit} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 
@@ -8,6 +8,8 @@ import {OfferService} from "../services/offer.service";
 import {RequestService} from "../services/request.service";
 import {ContactService} from "../services/contact.service";
 import {UserService} from "../services/user.service";
+import {Offer} from "../entity/offer";
+import {Request} from "../entity/request"
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -25,34 +27,44 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private _ngZone: NgZone, private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
+  }
+
+  processOutsideOfAngularZone(id: number) {
+    this._ngZone.run(() => {
+      if (this.type) {
+        this.offerService.getOffer(id).subscribe(
+          data => {
+            this.data = data;
+            this.loaded = true;
+            this.loadUser();
+          },
+          error => this.error = <any>error
+        );
+      } else {
+        this.requestService.getRequest(id).subscribe(
+          data => {
+            this.data = data;
+            this.loaded = true;
+            this.loadUser();
+          },
+          error => this.error = <any>error
+        );
+      }
+    });
   }
 
   ngOnInit() {
     let id: number = -1;
     this.route.params
       .subscribe((params: Params) => {
+
         id = +params['id'];
         this.type = (+params['type'] === 1);
         if (id > -1) {
-          if (this.type) {
-            this.offerService.getOffer(id).subscribe(
-              data => {
-                this.data = data;
-                this.loadUser();
-              },
-              error => this.error = <any>error
-            );
-          } else {
-            this.requestService.getRequest(id).subscribe(
-              data => {
-                this.data = data;
-                this.loadUser();
-              },
-              error => this.error = <any>error
-            );
-          }
+         // this.data = !this.type ? new Request(null, '', '', -1, 1, '', '', 0, '') : new Offer(null, '', '', -1, 1, '', '', 0, '');
+          this.processOutsideOfAngularZone(id);
         } else {
           this.error = 'Invalid parameter'
         }
@@ -64,6 +76,9 @@ export class ServiceDetailComponent implements OnInit {
       data => {
         this.loaded = true;
         this.user = data;
+        console.log("User: " + data.name);
+        console.log("Email: " + data.email);
+        console.log("DataLoaded: " + this.loaded);
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         for (let i = 0; i < 5; ++i) {
@@ -89,6 +104,9 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   getLocation(location: string): string {
+    if (location.length == 0) {
+      return ''
+    }
     return JSON.parse(location).address;
   }
 
