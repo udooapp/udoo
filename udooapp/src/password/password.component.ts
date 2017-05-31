@@ -5,6 +5,8 @@ import {UserService} from "../services/user.service";
 import {IValidator} from "../validator/validator.interface";
 import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";
+import {NotifierService} from "../services/notify.service";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: './password.component.html',
@@ -20,7 +22,13 @@ export class PasswordComponent {
   passwordValidator: IValidator = new PasswordValidator();
   emptyValidator: IValidator = new EmptyValidator();
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
+    notifier.notify(1);
+    notifier.pageChanged$.subscribe(action=>{
+        if(action == 10){
+          router.navigate(['/profile']);
+        }
+      })
   }
 
   checkValidation(): boolean {

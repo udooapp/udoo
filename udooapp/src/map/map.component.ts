@@ -99,7 +99,6 @@ export class MapComponent implements OnInit {
   }
 
   loadOffers() {
-
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
       offers => {
         this.offers = offers;

@@ -5,6 +5,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
+import {NotifierService} from "../services/notify.service";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,8 +19,9 @@ export class AppComponent implements OnInit {
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
   image: string;
+  private menuButton: boolean = true;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
     let before: string = '';
     router.events.subscribe((event) => {
       // see also
@@ -28,6 +30,20 @@ export class AppComponent implements OnInit {
       }
       if (event instanceof NavigationEnd) {
         before = event.url;
+      }
+    });
+    notifier.pageChanged$.subscribe(action => {
+      console.log("Action: " + action);
+      switch (action){
+        case 0:
+          this.menuButton = true;
+          break;
+        case 1:
+          this.menuButton = false;
+          break;
+        case 2:
+          this.checkUser();
+          break;
       }
     });
   }
@@ -73,11 +89,11 @@ export class AppComponent implements OnInit {
   }
 
   onClickMenu() {
-    this.visibleMenu = !this.visibleMenu;
-    if (this.visibleMenu === true) {
-      if (this.tokenService.getRefresh()) {
-        this.checkUser();
-      }
+    if(this.menuButton) {
+      this.visibleMenu = !this.visibleMenu;
+    } else {
+      this.notifier.notify(10);
+      this.menuButton = true;
     }
   }
 
@@ -92,7 +108,7 @@ export class AppComponent implements OnInit {
         this.tokenService.clearToken()
       },
       error => {
-       // this.tokenService.clearToken();
+        // this.tokenService.clearToken();
         console.log("Error:" + error)
       }
     );

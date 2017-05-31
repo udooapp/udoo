@@ -23,6 +23,7 @@ import {SelectInputComponent} from "../layout_elements/selectinput/selectinput.c
 import {FileInputComponent} from "../layout_elements/fileInput/fileinput.component";
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 import {ContactsComponent} from "../contacts/contact.component";
+import {NotifierService} from "../services/notify.service";
 
 @NgModule({
       declarations: [
@@ -50,7 +51,7 @@ import {ContactsComponent} from "../contacts/contact.component";
       HttpModule,
       AppRoutingModule
     ],
-   providers: [AuthGuard, TokenService],
+   providers: [AuthGuard, TokenService, NotifierService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

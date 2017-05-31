@@ -23,7 +23,7 @@ export class LocationComponent implements OnInit {
         center: {lat: 48.211029, lng: 16.373990},
         zoom: 14
       });
-      let input = document.getElementById('pac-input');
+      let input = document.getElementById('search-input');
       let searchBox = new google.maps.places.SearchBox(input);
       map.addListener('bounds_changed', function () {
         searchBox.setBounds(map.getBounds());
@@ -64,7 +64,7 @@ export class LocationComponent implements OnInit {
               loc.position.lng = marker.getPosition().lng();
               loc.position.lat = marker.getPosition().lat();
               loc.position.address = results[0].formatted_address;
-              document.getElementById("pac-input").nodeValue = results[0].formatted_address;
+              document.getElementById('search-input').nodeValue = results[0].formatted_address;
             } else {
               console.log('No results found');
             }

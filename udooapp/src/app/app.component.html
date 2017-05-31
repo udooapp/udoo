@@ -1,5 +1,5 @@
 <div class="header">
-  <div class="header-button" (click)="onClickMenu()"></div>
+  <div class="header-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}" (click)="onClickMenu()"></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>

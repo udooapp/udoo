@@ -11,6 +11,7 @@ import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
 import {PhoneValidator} from "../validator/phone.validator";
+import {NotifierService} from "../services/notify.service";
 
 
 @Component({
@@ -36,7 +37,7 @@ export class ProfileComponent implements OnInit {
   valid = [false, false, false];
   lastPicture: string = '';
 
-  constructor(private userService: UserService, private tokenService: TokenService, private router: Router) {
+  constructor(private userService: UserService, private notifyer: NotifierService) {
     this.passwordVerification = '';
   }
 
@@ -115,7 +116,7 @@ export class ProfileComponent implements OnInit {
         message => {
           this.error = '';
           this.message = message;
-          this.tokenService.setRefresh(true);
+          this.notifyer.notify(2);
         },
         error => {
           this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';

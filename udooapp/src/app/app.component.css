@@ -1,17 +1,20 @@
 .header-title {
   margin: auto;
 }
-
-.header-button {
-  position: absolute;
+.header-button{
   padding-left: 15px;
   padding-right: 15px;
-  color: white;
+  position: absolute;
+  cursor: pointer;
   height: 60px;
   width: 50px;
-  font-size: 25pt;
-  cursor: pointer;
+}
+.header-button-menu {
   background: url("../assets/ic_hamburger.png") no-repeat center;
+  background-size: 50px 50px;
+}
+.header-button-back {
+  background: url("../assets/back_arrow.png") no-repeat center;
   background-size: 50px 50px;
 }
 
