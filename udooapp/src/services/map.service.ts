@@ -34,7 +34,6 @@ export class MapService {
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
-
   getCategories(): Observable<Object[]> {
     return this.http.get(config.server + '/categories', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)

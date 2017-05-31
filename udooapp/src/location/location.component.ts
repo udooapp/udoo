@@ -17,40 +17,66 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.load().then(() => {
       const loc = this;
       const map = new google.maps.Map(document.getElementById('location'), {
         center: {lat: 48.211029, lng: 16.373990},
         zoom: 14
       });
-      let infoWindow= new google.maps.InfoWindow();
+      let input = document.getElementById('pac-input');
+      let searchBox = new google.maps.places.SearchBox(input);
+      map.addListener('bounds_changed', function () {
+        searchBox.setBounds(map.getBounds());
+      });
+      searchBox.addListener('places_changed', function () {
+        let places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+        let bounds = new google.maps.LatLngBounds();
+        places.forEach(function (place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+          marker.setPosition(place.geometry.location);
+          loc.position.lng = marker.getPosition().lng();
+          loc.position.lat = marker.getPosition().lat();
+          loc.position.address = place.formatted_address;
+          // Create a marker for each place.
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+      let geocoder = new google.maps.Geocoder;
       map.addListener('click', function (e) {
-
         marker.setPosition(e.latLng);
-        let geocoder = new google.maps.Geocoder;
-        geocoder.geocode({'location': marker.getPosition()}, function(results, status) {
+        geocoder.geocode({'location': marker.getPosition()}, function (results, status) {
           if (status === 'OK') {
-            infoWindow.close();
             if (results[1]) {
-
-              infoWindow.setContent('<div class="location-text"><b>Location: </b>' + results[0].formatted_address + '</div>');
-
-              loc.savePosition({coordinate: {lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, address: results[0].formatted_address});
+              loc.position.lng = marker.getPosition().lng();
+              loc.position.lat = marker.getPosition().lat();
+              loc.position.address = results[0].formatted_address;
+              document.getElementById("pac-input").nodeValue = results[0].formatted_address;
             } else {
-              infoWindow.setContent('<div class="error-message">No results found</div>');
+              console.log('No results found');
             }
-            infoWindow.open(map, marker);
           } else {
             window.alert('Geocoder failed due to: ' + status);
           }
         });
-
       });
       let icon = {
         url: "assets/pin.png", // url
         scaledSize: new google.maps.Size(30, 50), // scaled size
-        origin: new google.maps.Point(0,0), // origin
+        origin: new google.maps.Point(0, 0), // origin
         anchor: new google.maps.Point(0, 0) // anchor
       };
       let marker = new google.maps.Marker({
@@ -58,16 +84,9 @@ export class LocationComponent implements OnInit {
         map: map,
         icon: icon
       });
-      marker.addListener('click', function() {
-        infoWindow.open(map, marker);
-      });
     });
   }
 
-  savePosition(pos) {
-
-    this.position = pos;
-  }
 
   load(): Promise<void> {
     if (this.scriptLoadingPromise) {
@@ -79,8 +98,8 @@ export class LocationComponent implements OnInit {
     script.async = true;
     script.defer = true;
 
-    const callbackName = 'initMap';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
+    const callbackName = 'initAutocomplete';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&libraries=places&callback=&callback=' + callbackName;
 
     this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
       (<any>window)[callbackName] = () => {
@@ -98,7 +117,7 @@ export class LocationComponent implements OnInit {
   }
 
   saveLocation() {
-    if (this.position != null) {
+    if (this.position.lng != 0) {
       this.onSaved.emit(this.position);
     } else {
       this.error = 'Select your service location!'

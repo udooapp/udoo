@@ -27,12 +27,12 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private _ngZone: NgZone, private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private zone: NgZone, private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
   }
 
   processOutsideOfAngularZone(id: number) {
-    this._ngZone.run(() => {
+    this.zone.run(() => {
       if (this.type) {
         this.offerService.getOffer(id).subscribe(
           data => {

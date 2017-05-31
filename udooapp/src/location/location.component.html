@@ -1,10 +1,14 @@
 <div class="location-dialog">
-    <h3 class="input-label">Choose your service location</h3>
-    <label class="error-message">{{error}}</label>
-    <div class="button-container">
-      <input type="button" value="Cancel" class="input-button button-light" (click)="onClickBack()">
-      <input type="button" value="Choose" class="input-button button-dark" (click)="saveLocation()">
-    </div>
-    <div id="location"></div>
+  <h3 class="input-label">Choose your service location</h3>
+  <label class="error-message">{{error}}</label>
+  <div class="button-container">
+    <input type="button" value="Cancel" class="input-button button-light" (click)="onClickBack()">
+    <input type="button" value="Choose" class="input-button button-dark" (click)="saveLocation()">
+  </div>
+  <div class="search-box-container" >
+    <input class="search-box" id="pac-input" placeholder="Choose your location" [value]="position.address">
+    <div class="search-box-border"></div>
+  </div>
+  <div id="location"></div>
 </div>
 

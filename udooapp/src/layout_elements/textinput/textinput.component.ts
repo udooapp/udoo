@@ -44,7 +44,7 @@ export class TextInputComponent {
       this.valueText = value;
       this.inputText = value;
 
-      if (value.length > 0) {
+      if (value.length > 0 && !this.disableValidation) {
         this.valid();
       }
     } else {

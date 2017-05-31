@@ -1,12 +1,41 @@
 
 .error-message {
   position: absolute;
-  margin-top: 3%;
+  margin-top: 20px;
   text-align: center;
   padding-left: 30%;
   padding-right: 30%;
   font-size: 10pt;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.search-box-container {
+  position: relative;
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 96%;
+}
+
+.search-box {
+  color: #2B6665;
+  margin-top: 10px;
+  width: calc(100% - 20px);
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 33px;
+  border-radius: 5px;
+  background-color: #f6f6f6;
+  border: none;
+}
+
+.search-box-border {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 43px;
+  border-bottom: 3px solid #378281;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .location-dialog {
@@ -26,14 +55,7 @@ h3 {
   margin-left: 10%;
   margin-right: 10%;
 }
-.location-text{
-  width: 50%;
-  background-color: #FAFAFA;
-  padding: 10px 10px 10px 10px;
-  border-radius: 5px;
-  margin: 2%;
-  color: #378281;
-}
+
 .input-label {
   text-align: center;
   color: #378281;
@@ -59,8 +81,28 @@ h3 {
 }
 
 @media (min-width: 961px) {
+  .input-button {
+    width: 41%;
+  }
 
+  .search-box-container {
+    width: 60%;
+    margin-bottom: 10px;
+  }
+
+  .button-container {
+    position: absolute;
+    margin-top: 7px;
+    width: 40%;
+    margin-left: 62%;
+  }
+  .error-message {
+    padding-left: 5%;
+    padding-right: 2%;
+    margin-top: 50px;
+  }
   #location {
+    margin-top: 25px;
     height: 430px;
   }
 }
@@ -68,37 +110,55 @@ h3 {
 @media (max-width: 960px) {
 
   .input-button {
-    width: 15%;
+    width: 41%;
+  }
+
+  .search-box-container {
+    width: 50%
+  }
+
+  .button-container {
+    position: absolute;
+    width: 50%;
+    margin-top: 6px;
+    margin-left: 53%;
   }
 
   #location {
+    margin-top: 25px;
     height: 400px;
   }
+
   .error-message {
-    padding-left: 40%;
+    padding-left: 5%;
     padding-right: 2%;
+    margin-top: 50px;
   }
 }
 
 @media (max-width: 641px) {
   .button-container {
     position: absolute;
-    margin-top: 340px;
+    margin-top: 390px;
     margin-left: 6%;
     margin-right: 6%;
+    width: 100%;
   }
-
+  .search-box-container {
+    width: 96%
+  }
   .input-button {
     float: inherit;
     width: 40%;
   }
 
   #location {
+    margin-top: 10px;
     height: 300px;
   }
 
   .error-message {
     padding-left: 30%;
-    margin-top: 315px;
+    margin-top: 370px;
   }
 }
