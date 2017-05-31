@@ -76,9 +76,6 @@ export class ServiceDetailComponent implements OnInit {
       data => {
         this.loaded = true;
         this.user = data;
-        console.log("User: " + data.name);
-        console.log("Email: " + data.email);
-        console.log("DataLoaded: " + this.loaded);
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         for (let i = 0; i < 5; ++i) {

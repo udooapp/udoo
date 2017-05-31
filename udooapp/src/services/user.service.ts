@@ -109,10 +109,11 @@ export class UserService {
     } else {
       this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     }
-
+    let header = new Headers(this.headers);
+    header.delete("Content-Type");
     let formData: FormData = new FormData();
     formData.append('file', file);
-    return this.http.post(config.server + '/user/upload', formData)
+    return this.http.post(config.server + '/user/upload', formData, new RequestOptions({headers: header}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText)
   }

@@ -94,10 +94,10 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/user/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateUser(ServletRequest request, @RequestBody final User user) {
         if (user != null) {
-            if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
+            if (user.getBirthdate() != null && (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null"))) {
                 user.setBirthdate(null);
             }
-            User cuser = userRepository.findByUid(Integer.parseInt(request.getAttribute("USERID").toString()));
+            User cuser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
             if (cuser == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
@@ -522,18 +522,14 @@ public class RestServiceController implements IRestServiceController {
                 return new ResponseEntity<>(user, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<String>("Not found", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Not found", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    @RequestMapping(value = "/user/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/upload", method = RequestMethod.POST, headers = "content-type=multipart/*")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         if (!inputFile.isEmpty()) {
             try {
-                //  String filename = date.format(new Date()) + "_" + inputFile.getOriginalFilename();
-                // File destinationFile = new File(context.getRealPath("/WEB-INF/uploaded") + File.separator + filename);
-                //  inputFile.transferTo(destinationFile);
-                //  headers.add("File Uploaded Successfully - ", filename);
                 StringBuilder sb = new StringBuilder();
                 sb.append("data:image/png;base64,");
                 sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(inputFile.getBytes(), false)));
