@@ -1,4 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {NotifierService} from "../services/notify.service";
 
 declare let google: any;
 
@@ -13,7 +14,13 @@ export class LocationComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
 
-  constructor() {
+  constructor(private notifier: NotifierService) {
+    notifier.pageChanged$.subscribe(action => {
+      if (action == 'close') {
+        this.onSaved.emit('');
+      }
+    });
+    notifier.notify('dialog');
   }
 
   ngOnInit() {
@@ -124,7 +131,4 @@ export class LocationComponent implements OnInit {
     }
   }
 
-  onClickBack() {
-    this.onSaved.emit('');
-  }
 }

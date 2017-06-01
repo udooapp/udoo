@@ -20,12 +20,12 @@ export class AppComponent implements OnInit {
   login = false;
   image: string;
   private menuButton: boolean = true;
+  private page: boolean = true;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
     let before: string = '';
     router.events.subscribe((event) => {
-      // see also
-      if ((event.url === '/map' && (before == '/login' || before == '')) || (before === '/profile' && event.url === '/profile')) {
+      if (event.url === '/map' && (before == '/login' || before == '')){
         this.checkUser();
       }
       if (event instanceof NavigationEnd) {
@@ -33,16 +33,16 @@ export class AppComponent implements OnInit {
       }
     });
     notifier.pageChanged$.subscribe(action => {
-      console.log("Action: " + action);
-      switch (action){
-        case 0:
+      switch (action) {
+        case '':
           this.menuButton = true;
           break;
-        case 1:
-          this.menuButton = false;
-          break;
-        case 2:
+        case 'Refresh':
           this.checkUser();
+          break;
+        default:
+          this.page = action != 'dialog';
+          this.menuButton = false;
           break;
       }
     });
@@ -52,6 +52,11 @@ export class AppComponent implements OnInit {
     this.checkUser();
   }
 
+  changeButton(){
+    if(!this.menuButton){
+      this.menuButton = true;
+    }
+  }
   checkUser() {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
@@ -89,14 +94,23 @@ export class AppComponent implements OnInit {
   }
 
   onClickMenu() {
-    if(this.menuButton) {
-      this.visibleMenu = !this.visibleMenu;
+    if (!this.menuButton && !this.visibleMenu) {
+      if(this.page) {
+        this.notifier.notify('');
+        this.menuButton = true;
+      } else{
+        this.notifier.notify('close');
+      }
+
     } else {
-      this.notifier.notify(10);
-      this.menuButton = true;
+      this.visibleMenu = true;
+      this.menuButton = false;
     }
   }
-
+  clickMenuButton(){
+    this.visibleMenu = false;
+    this.menuButton = true;
+  }
   logOut() {
     this.visibleMenu = !this.visibleMenu;
     this.image = this.getPictureUrl('');

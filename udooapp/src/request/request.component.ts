@@ -10,6 +10,7 @@ import {TimeValidator} from "../validator/time.validator";
 import {NumberValidator} from "../validator/number.validator";
 import {DateValidator} from "../validator/date.validator";
 import {MapService} from "../services/map.service";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -23,7 +24,7 @@ export class RequestComponent implements OnInit {
   offer = false;
   load = false;
   error = '';
-  refresh:boolean = false;
+  refresh: boolean = false;
   location = '';
   data = new Request(null, '', '', -1, 1, '', '', 0, '');
   loaderVisible = false;
@@ -37,7 +38,13 @@ export class RequestComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false, false];
   lastImage: string = '';
 
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService) {
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
+    notifier.pageChanged$.subscribe(action => {
+      if (action == '') {
+        router.navigate(['/requestlist']);
+      }
+    });
+    this.notifier.notify('Request');
   }
 
   ngOnInit() {
@@ -139,9 +146,14 @@ export class RequestComponent implements OnInit {
   }
 
   saveLocation(location) {
-    this.data.location = JSON.stringify(location).replace(/"/g, '\"');
-    this.location = location.address;
-    this.onClickSelectLocation();
+    let data: String = JSON.stringify(location);
+    if((data.length < 10 && this.location.length > 0)){
+      this.onClickSelectLocation();;
+    } else {
+      this.data.location = data.replace(/"/g, '\"');
+      this.location = location.address;
+      this.onClickSelectLocation();
+    }
   }
 
   getDate(): string {

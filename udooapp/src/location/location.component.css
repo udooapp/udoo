@@ -82,19 +82,19 @@ h3 {
 
 @media (min-width: 961px) {
   .input-button {
-    width: 41%;
+    width: 78%;
   }
 
   .search-box-container {
-    width: 60%;
+    width: 80%;
     margin-bottom: 10px;
   }
 
   .button-container {
     position: absolute;
-    margin-top: 7px;
-    width: 40%;
-    margin-left: 62%;
+    margin-top: 8px;
+    width: 20%;
+    margin-left: 82%;
   }
   .error-message {
     padding-left: 5%;
@@ -110,18 +110,18 @@ h3 {
 @media (max-width: 960px) {
 
   .input-button {
-    width: 41%;
+    width: 73%;
   }
 
   .search-box-container {
-    width: 50%
+    width: 80%
   }
 
   .button-container {
     position: absolute;
-    width: 50%;
-    margin-top: 6px;
-    margin-left: 53%;
+    width: 20%;
+    margin-top: 10px;
+    margin-left: 83%;
   }
 
   #location {
@@ -140,16 +140,17 @@ h3 {
   .button-container {
     position: absolute;
     margin-top: 390px;
-    margin-left: 6%;
-    margin-right: 6%;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
   }
   .search-box-container {
     width: 96%
   }
   .input-button {
-    float: inherit;
     width: 40%;
+    margin-left: 30%;
+    margin-right: 30%;
   }
 
   #location {

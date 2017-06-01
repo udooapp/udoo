@@ -7,6 +7,7 @@ import {IValidator} from "../validator/validator.interface";
 import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
 import {MapService} from "../services/map.service";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -19,7 +20,7 @@ export class OfferComponent implements OnInit {
   message: String;
   error = '';
   offer = true;
-  refresh : boolean = false;
+  refresh: boolean = false;
   location = '';
   load = false;
   data = new Offer(null, '', '', -1, 1, '', '', 0, '');
@@ -32,10 +33,17 @@ export class OfferComponent implements OnInit {
   valid: boolean[] = [false, false, false, false, false, false];
   lastImage: string = '';
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
+    notifier.pageChanged$.subscribe(action => {
+      if (action == '') {
+        router.navigate(['/offerlist']);
+      }
+    });
+    this.notifier.notify('Offer');
   }
 
   ngOnInit() {
+
     this.mapService.getCategories().subscribe(
       data => {
         this.category = data;
@@ -67,7 +75,7 @@ export class OfferComponent implements OnInit {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
-            this.router.navigate(['/offerlist']);
+          this.router.navigate(['/offerlist']);
         },
         error => {
           console.log(<any>error);
@@ -133,9 +141,14 @@ export class OfferComponent implements OnInit {
   }
 
   saveLocation(location) {
-    this.location = location.address;
-    this.data.location = JSON.stringify(location).replace(/"/g, '\"');
-    this.onClickSelectLocation();
+    let data: String = JSON.stringify(location);
+    if((data.length < 10 && this.location.length > 0)){
+      this.onClickSelectLocation();;
+    } else {
+      this.data.location = data.replace(/"/g, '\"');
+      this.location = location.address;
+      this.onClickSelectLocation();
+    }
   }
 
   getDate(): string {

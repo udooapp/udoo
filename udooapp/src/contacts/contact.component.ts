@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ContactService} from "../services/contact.service";
 import {User} from "../entity/user";
+import {NotifierService} from "../services/notify.service";
+import {Location} from "@angular/common";
 
 @Component({
   templateUrl: './contact.component.html',
@@ -14,6 +16,7 @@ export class ContactsComponent implements OnInit {
   message: string = '';
 
   constructor(private contactService: ContactService) {
+
   }
 
   ngOnInit() {

@@ -37,11 +37,18 @@ export class ProfileComponent implements OnInit {
   valid = [false, false, false];
   lastPicture: string = '';
 
-  constructor(private userService: UserService, private notifyer: NotifierService) {
+  constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
     this.passwordVerification = '';
+    notifier.pageChanged$.subscribe(action => {
+      if (action == '') {
+        router.navigate(['/requestlist']);
+      }
+    });
+    this.notifier.notify('Profile');
   }
 
   ngOnInit() {
+    this.notifier.notify('Profile');
     this.userService.getUserData().subscribe(
       user => {
         if (user.picture.length > 4) {
@@ -116,7 +123,7 @@ export class ProfileComponent implements OnInit {
         message => {
           this.error = '';
           this.message = message;
-          this.notifyer.notify(2);
+          this.notifier.notify('Refresh');
         },
         error => {
           this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';

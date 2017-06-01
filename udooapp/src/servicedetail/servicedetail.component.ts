@@ -1,15 +1,15 @@
-import {AfterContentInit, Component, NgZone, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 
 import {User} from '../entity/user';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Params} from "@angular/router";
 import {OfferService} from "../services/offer.service";
 import {RequestService} from "../services/request.service";
 import {ContactService} from "../services/contact.service";
 import {UserService} from "../services/user.service";
-import {Offer} from "../entity/offer";
-import {Request} from "../entity/request"
+import {Location} from "@angular/common";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -27,8 +27,14 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private zone: NgZone, private router: Router, private offerService: OfferService, private requestService: RequestService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private location: Location, private notifier: NotifierService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
+    notifier.pageChanged$.subscribe(action => {
+      if (action == '') {
+        location.back()
+      }
+    })
+    this.notifier.notify('ServiceDetail');
   }
 
   processOutsideOfAngularZone(id: number) {
@@ -63,7 +69,7 @@ export class ServiceDetailComponent implements OnInit {
         id = +params['id'];
         this.type = (+params['type'] === 1);
         if (id > -1) {
-         // this.data = !this.type ? new Request(null, '', '', -1, 1, '', '', 0, '') : new Offer(null, '', '', -1, 1, '', '', 0, '');
+          // this.data = !this.type ? new Request(null, '', '', -1, 1, '', '', 0, '') : new Offer(null, '', '', -1, 1, '', '', 0, '');
           this.processOutsideOfAngularZone(id);
         } else {
           this.error = 'Invalid parameter'
@@ -110,10 +116,6 @@ export class ServiceDetailComponent implements OnInit {
   convertNumberToDate(millis: number): string {
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
-  }
-
-  onBackPressed() {
-    this.router.navigate(['/map']);
   }
 
   onClickAddToContact() {

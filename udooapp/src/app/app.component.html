@@ -1,12 +1,12 @@
 <div class="header">
   <div class="header-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}" (click)="onClickMenu()"></div>
-  <div class="header-title"><a routerLink="/" routerLinkActive="active">
+  <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
 </div>
 
 <div class="content">
-  <div class="menu-container-background" *ngIf="visibleMenu" (click)="visibleMenu = !visibleMenu"></div>
+  <div class="menu-container-background" *ngIf="visibleMenu" (click)="clickMenuButton()"></div>
   <div class="menu-container" *ngIf="visibleMenu">
     <div class="menu-profile">
       <div class="menu-profile-picture">
@@ -21,20 +21,20 @@
         </div>
       </div>
       <a routerLink="/login" routerLinkActive="active" class="login-button button-dark"
-         (click)="visibleMenu = !visibleMenu" *ngIf="!login">Login</a>
+         (click)="clickMenuButton()" *ngIf="!login">Login</a>
     </div>
-    <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu"><img
+    <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
       class="menu-link-image" src="./assets/request.png">My service request</a>
-    <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu"><img
+    <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
       class="menu-link-image" src="./assets/offers.png">My service
       offer</a>
-    <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="visibleMenu = !visibleMenu"><img class="menu-link-image"
+    <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
                                                                    src="./assets/contacts.png">Contacts</a>
     <div class="menu-placeholder">&nbsp;</div>
-    <a class="menu-link" (click)="visibleMenu = !visibleMenu"><img class="menu-link-image"
+    <a class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
                                                                    src="./assets/settings.png">Settings</a>
     <a routerLink="/profile" routerLinkActive="active" class="menu-link"
-       (click)="visibleMenu = !visibleMenu"><img class="menu-link-image" src="./assets/profile.png">Profile</a>
+       (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png">Profile</a>
     <a class="menu-link" *ngIf="login" (click)="logOut()"><img class="menu-link-image" src="./assets/logout.png">Log
       out</a>
   </div>

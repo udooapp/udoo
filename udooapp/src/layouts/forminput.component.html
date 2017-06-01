@@ -57,8 +57,6 @@
       <input type="button" class="input-file button-light" value="Clear"
              (click)="onClickCancel()"/>
     </div>
-    <input type="reset" value="Cancel" class="button-light input-button" routerLink="/map" routerLinkActive="active"
-           *ngIf="registration"/>
     <input type="submit" value="Save" class="input-button button-dark" (click)="insertUser()"/>
     <div *ngIf="!registration">
       <input type="reset" value="Change password" class="input-button button-dark" routerLink="/password"

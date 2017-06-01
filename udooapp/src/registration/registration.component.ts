@@ -9,6 +9,8 @@ import {DateValidator} from "../validator/date.validator";
 import {EmailValidator} from "../validator/email.validator";
 import {EmptyValidator} from "../validator/empty.validator";
 import {PasswordValidator} from "../validator/password.validator";
+import {NotifierService} from "../services/notify.service";
+import {Location} from "@angular/common";
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
@@ -30,10 +32,16 @@ export class RegistrationComponent {
   dateValidator: IValidator = new DateValidator();
   phoneValidator: IValidator = new PhoneValidator();
   passwordValidator: IValidator = new PasswordValidator();
-  valid : boolean[] = [false, false, false, false, false, false];
+  valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router: Router, private userService: UserService) {
+  constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
     this.passwordVerification = '';
+    notifier.notify('Registration');
+    notifier.pageChanged$.subscribe(action => {
+      if (action == '') {
+        router.navigate(['/login']);
+      }
+    })
   }
 
   getPictureUrl(): SafeResourceUrl {
@@ -83,15 +91,17 @@ export class RegistrationComponent {
       this.user.picture = '';
     }
   }
-  checkValidation() : boolean {
-    for(let i = 0; i < this.valid.length; ++i){
-      if(!this.valid[i]){
+
+  checkValidation(): boolean {
+    for (let i = 0; i < this.valid.length; ++i) {
+      if (!this.valid[i]) {
         this.refresh = !this.refresh;
         return false;
       }
     }
     return true;
   }
+
   insertUser() {
     if (this.checkValidation()) {
       if (this.user.password === this.passwordVerification) {
