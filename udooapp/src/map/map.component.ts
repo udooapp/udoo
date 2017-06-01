@@ -3,6 +3,8 @@ import {MapService} from "../services/map.service";
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
 import {Router} from "@angular/router";
+import {NotifierService} from "../services/notify.service";
+import {TokenService} from "../guard/TokenService";
 
 declare let google: any;
 
@@ -29,7 +31,12 @@ export class MapComponent implements OnInit {
   private icon = {};
   private offers: Offer[] = [];
 
-  constructor(private mapService: MapService, private router: Router) {
+  constructor(private mapService: MapService, private router: Router, private notifier: NotifierService, private tokenService: TokenService) {
+    notifier.tryAgain$.subscribe(again => {
+      if(this.error.length > 0){
+        this.ngOnInit();
+      }
+    });
   }
 
   deleteMarkers() {
@@ -95,7 +102,10 @@ export class MapComponent implements OnInit {
           }
         }
       },
-      error => this.error = <any>error);
+      error => {
+        this.error = <any>error;
+        this.checkError();
+      });
   }
 
   loadOffers() {
@@ -154,7 +164,10 @@ export class MapComponent implements OnInit {
           }
         }
       },
-      error => this.error = <any>error);
+      error => {
+        this.error = <any>error;
+        this.checkError()
+      });
   }
 
   findCatName(catID: number): string {
@@ -193,13 +206,22 @@ export class MapComponent implements OnInit {
     }
   }
 
+  checkError() {
+      this.notifier.notifyError(this.error);
+  }
+
   ngOnInit() {
+    this.mapView = !this.tokenService.getMapState();
+    this.error = '';
     this.mapService.getCategories().subscribe(
       data => {
         data.splice(0, 0, {cid: "-1", name: 'Select category'});
         this.categories = data;
       },
-      error => this.error = <any>error
+      error => {
+        this.error = <any>error;
+        this.checkError();
+      }
     );
     this.load().then(() => {
       this.map = new google.maps.Map(document.getElementById('map'), {
@@ -219,6 +241,8 @@ export class MapComponent implements OnInit {
       };
       this.loadRequests();
       this.loadOffers();
+    }).catch((error)=>{
+      console.log("ERROR: " + error.toString());
     });
 
   }
@@ -293,6 +317,7 @@ export class MapComponent implements OnInit {
 
   showList() {
     this.mapView = !this.mapView;
+    this.tokenService.setMapState(!this.mapView);
   }
 
   getCategory(category: number): string {

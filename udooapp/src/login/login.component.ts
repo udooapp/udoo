@@ -9,6 +9,7 @@ import {IValidator} from "../validator/validator.interface";
 import {EmailValidator} from "../validator/email.validator";
 import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: './login.component.html',
@@ -23,7 +24,8 @@ export class LoginComponent {
   emailValidator : IValidator = new EmailValidator();
   passwordValidator : IValidator = new PasswordValidator();
   valid = [false, false];
-  constructor(private router: Router, private userService: UserService) {
+  constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
+
   }
 
   checkValidation(): boolean {
@@ -50,6 +52,7 @@ export class LoginComponent {
           },
           error => {
             err += error;
+            this.notifier.notifyError(err);
             this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' :  err === "Unauthorized" ? 'Incorrect email or password' : err;
           }
         );

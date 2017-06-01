@@ -15,14 +15,21 @@ export class ContactsComponent implements OnInit {
   error: string;
   message: string = '';
 
-  constructor(private contactService: ContactService) {
-
+  constructor(private contactService: ContactService, private notifier: NotifierService) {
+    notifier.tryAgain$.subscribe(tryAgain => {
+      if (this.error.length > 0) {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit() {
     this.contactService.getContacts().subscribe(
       data => this.data = data,
-      error => this.error = <any>error);
+      error => {
+        this.error = <any>error;
+        this.notifier.notifyError(this.error)
+      });
   }
 
   getPictureUrl(url: string) {

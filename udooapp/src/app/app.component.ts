@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
   login = false;
   image: string;
   menuButton: boolean = true;
+  errorMessage: string = '';
+  error = false;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
     let before: string = '';
@@ -34,7 +36,7 @@ export class AppComponent implements OnInit {
     notifier.pageChanged$.subscribe(action => {
 
       switch (action) {
-        case '':
+        case ' ':
           this.menuButton = true;
           break;
         case 'refresh':
@@ -46,6 +48,10 @@ export class AppComponent implements OnInit {
           }
           break;
       }
+    });
+    notifier.errorMessage$.subscribe(message => {
+        this.errorMessage = message;
+        this.error = true;
     });
   }
 
@@ -130,6 +136,10 @@ export class AppComponent implements OnInit {
         console.log("Error:" + error);
       }
     );
+  }
 
+  onClickTryAgain() {
+    this.error = false;
+    this.notifier.tryAgain();
   }
 }

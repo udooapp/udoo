@@ -1,6 +1,8 @@
 package com.udoo.restservice;
 
 
+import com.udoo.dal.entities.Offer;
+import com.udoo.dal.entities.Request;
 import com.udoo.dal.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +27,9 @@ public interface IRestServiceController {
 
     ResponseEntity<?> getAllUserOffer(ServletRequest request);
 
-    ResponseEntity<String> saveOffer(ServletRequest request, String req);
+    ResponseEntity<String> saveOffer(ServletRequest request, Offer offer);
 
-    ResponseEntity<String> saveRequest(ServletRequest request, String req);
+    ResponseEntity<String> saveRequest(ServletRequest req, Request request);
 
     ResponseEntity<String> updatePassword(ServletRequest request, String req);
 

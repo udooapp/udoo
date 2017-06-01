@@ -9,7 +9,7 @@ declare let google: any;
   styleUrls: ['./location.component.css']
 })
 export class LocationComponent implements OnInit {
-  private static NAME : string = 'dialog';
+  private static NAME: string = 'dialog';
   position = {lat: 0, lng: 0, address: ''};
   error: string;
   private scriptLoadingPromise: Promise<void>;
@@ -22,6 +22,9 @@ export class LocationComponent implements OnInit {
       }
     });
     notifier.notify(LocationComponent.NAME);
+    notifier.tryAgain$.subscribe(tryAgain => {
+      this.ngOnInit();
+    });
   }
 
   ngOnInit() {
@@ -92,6 +95,8 @@ export class LocationComponent implements OnInit {
         map: map,
         icon: icon
       });
+    }).catch(error => {
+      this.notifier.notifyError('No internet connection');
     });
   }
 
@@ -126,7 +131,11 @@ export class LocationComponent implements OnInit {
 
   saveLocation() {
     if (this.position.lng != 0) {
-      this.onSaved.emit(this.position);
+      let t = {coordinate: {lat: 0, lng: 0}, address: ''};
+      t.coordinate.lng = this.position.lng;
+      t.coordinate.lat = this.position.lat;
+      t.address = this.position.address;
+      this.onSaved.emit(t);
     } else {
       this.error = 'Select your service location!'
     }

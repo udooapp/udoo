@@ -3,9 +3,12 @@ export class NotifierService {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<String>;
   public errorMessage$: EventEmitter<String>;
+  public tryAgain$: EventEmitter<boolean>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
+    this.errorMessage$ = new EventEmitter();
+    this.tryAgain$ = new EventEmitter();
   }
 
   public back(): string {
@@ -30,11 +33,18 @@ export class NotifierService {
     this.pageList.push(action);
     this.pageChanged$.emit(action + "New");
   }
-  public clear(){
+
+  public clear() {
     this.pageList = [];
   }
+
   public notifyError(errorMessage: string) {
-    this.errorMessage$.emit(errorMessage);
+    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable') {
+      this.errorMessage$.emit(errorMessage);
+    }
   }
 
+  public tryAgain() {
+    this.tryAgain$.emit(true);
+  }
 }

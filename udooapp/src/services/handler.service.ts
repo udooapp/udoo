@@ -12,6 +12,9 @@ export class HandlerService {
     let errMsg : string ='';
     if(error  instanceof  Response){
       switch (error.status) {
+        case 0:
+          errMsg = 'No internet connection';
+          break;
         case 408:
           errMsg = 'Time out';
           break;
@@ -24,13 +27,20 @@ export class HandlerService {
         case 500:
           errMsg = 'Server error';
           break;
+        case 503:
+          errMsg = 'Service Unavailable';
+          break;
         default:
-          errMsg= 'Something\'s wrong here...\tTry again later';
+          if(error.status >= 500 && error.status < 600){
+            errMsg = 'Server error';
+          } else {
+            errMsg = 'Something\'s wrong here...\tTry again later';
+          }
       }
     } else {
       errMsg = 'Something\'s wrong here...\tTry again later';
     }
-    console.log('Error: ' + error.toString());
+    console.log('Error: ' + error.toString() + "\n" + errMsg);
     return Observable.throw(errMsg);
   }
 
@@ -45,6 +55,9 @@ export class HandlerService {
       const body = error.json() || '';
       const err = body.error || JSON.stringify(body);
       switch (error.status) {
+        case 0:
+          errMsg = 'No internet connection';
+          break;
         case 408:
           errMsg = 'Time out';
           break;
@@ -57,8 +70,15 @@ export class HandlerService {
         case 500:
           errMsg = 'Server error';
           break;
+        case 503:
+          errMsg = 'Service Unavailable';
+          break;
         default:
-          errMsg= `${error.status} - ${error.statusText || ''} ${err}`;
+          if(error.status >= 500 && error.status < 600){
+            errMsg = 'Server error';
+          } else {
+            errMsg = 'Something\'s wrong here...\tTry again later';
+          }
       }
     } else {
       errMsg = error.message ? error.message : error.toString();

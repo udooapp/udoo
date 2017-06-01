@@ -15,7 +15,7 @@ import {NotifierService} from "../services/notify.service";
   providers: [OfferService, UserService, MapService]
 })
 export class OfferComponent implements OnInit {
-  private static NAME : string = 'Offer';
+  private static NAME: string = 'Offer';
   registration = true;
   category = [];
   message: String;
@@ -41,6 +41,9 @@ export class OfferComponent implements OnInit {
       }
     });
     this.notifier.notify(OfferComponent.NAME);
+    notifier.tryAgain$.subscribe(tryAgain => {
+      this.ngOnInit();
+    });
   }
 
   ngOnInit() {
@@ -65,7 +68,10 @@ export class OfferComponent implements OnInit {
                 this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
-              error => this.error = <any>error
+              error => {
+                this.error = <any>error;
+                this.notifier.notifyError(this.error)
+              }
             )
           }
         }
@@ -76,10 +82,11 @@ export class OfferComponent implements OnInit {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
+          this.notifier.back();
+          this.notifier.pageChanged$.emit(' ');
           this.router.navigate(['/offerlist']);
         },
         error => {
-          console.log(<any>error);
           this.error = <any>error;
           this.message = ''
         });
@@ -143,8 +150,9 @@ export class OfferComponent implements OnInit {
 
   saveLocation(location) {
     let data: String = JSON.stringify(location);
-    if((data.length < 10 && this.location.length > 0)){
-      this.onClickSelectLocation();;
+    if ((data.length < 10 && this.location.length > 0)) {
+      this.onClickSelectLocation();
+      ;
     } else {
       this.data.location = data.replace(/"/g, '\"');
       this.location = location.address;
@@ -163,6 +171,8 @@ export class OfferComponent implements OnInit {
   deleteService() {
     this.offerService.deleteUserOffer(this.data.oid).subscribe(
       ok => {
+        this.notifier.back();
+        this.notifier.pageChanged$.emit(' ');
         this.router.navigate(['/offerlist'])
       },
       error => {

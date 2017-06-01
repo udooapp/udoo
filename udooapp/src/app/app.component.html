@@ -1,5 +1,6 @@
 <div class="header">
-  <div class="header-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}" (click)="onClickMenu()"></div>
+  <div class="header-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
+       (click)="onClickMenu()"></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
@@ -10,7 +11,8 @@
   <div class="menu-container" *ngIf="visibleMenu">
     <div class="menu-profile">
       <div class="menu-profile-picture">
-        <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture.length > 3)}" [src]="image" >
+        <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture.length > 3)}"
+             [src]="image">
       </div>
       <div class="menu-profile-name" *ngIf="login">{{user.name}}</div>
       <div *ngIf="login" class="menu-profile-stars-container">
@@ -28,11 +30,12 @@
     <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
       class="menu-link-image" src="./assets/offers.png">My service
       offer</a>
-    <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
-                                                                   src="./assets/contacts.png">Contacts</a>
+    <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+      class="menu-link-image"
+      src="./assets/contacts.png">Contacts</a>
     <div class="menu-placeholder">&nbsp;</div>
     <a class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
-                                                                   src="./assets/settings.png">Settings</a>
+                                                          src="./assets/settings.png">Settings</a>
     <a routerLink="/profile" routerLinkActive="active" class="menu-link"
        (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png">Profile</a>
     <a class="menu-link" *ngIf="login" (click)="logOut()"><img class="menu-link-image" src="./assets/logout.png">Log
@@ -42,4 +45,11 @@
   <div class="map-container">
     <router-outlet></router-outlet>
   </div>
+</div>
+<div class="error-background" *ngIf="error">
+  <div class="error-dialog">
+    <div class="error-message">{{errorMessage}}</div>
+    <div class="error-button button-dark" (click)="onClickTryAgain()">Try Again</div>
+  </div>
+  <div class="error-placeholder"></div>
 </div>

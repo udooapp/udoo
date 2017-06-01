@@ -3,6 +3,7 @@ import {RequestService} from "../services/request.service";
 import {Request} from "../entity/request";
 import {Router} from "@angular/router";
 import {MapService} from "../services/map.service";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
@@ -15,7 +16,13 @@ export class RequestListComponent implements OnInit {
   error: string;
   message: string = '';
   categories = [];
-  constructor(private requestService: RequestService, private mapService: MapService, private router: Router) {
+
+  constructor(private requestService: RequestService, private mapService: MapService, private router: Router, private notifier: NotifierService) {
+    notifier.tryAgain$.subscribe(tryAgain => {
+      if (this.error.length > 0) {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit() {
@@ -24,14 +31,17 @@ export class RequestListComponent implements OnInit {
       error => this.error = <any>error);
     this.mapService.getCategories().subscribe(
       data => this.categories = data,
-      error =>this.error = <any> error
+      error => {
+        this.error = <any> error;
+        this.notifier.notifyError(this.error);
+      }
     );
   }
 
   getAddress(location: string) {
-    if(location == null || location === 'null' || location.length == 0){
+    if (location == null || location === 'null' || location.length == 0) {
       return '';
-    } else if(!location.match('address')){
+    } else if (!location.match('address')) {
       return location;
     }
     return JSON.parse(location).address;
@@ -62,6 +72,7 @@ export class RequestListComponent implements OnInit {
       error => this.error = <any>error
     );
   }
+
   getCategory(cat: number) {
     for (let i = 0; i < this.categories.length; ++i) {
       if (cat == this.categories[i].cid) {

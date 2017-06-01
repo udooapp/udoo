@@ -3,6 +3,7 @@ import {Offer} from "../entity/offer";
 import {OfferService} from "../services/offer.service";
 import {Router} from "@angular/router";
 import {MapService} from "../services/map.service";
+import {NotifierService} from "../services/notify.service";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
@@ -16,16 +17,27 @@ export class OfferListComponent implements OnInit {
   message: string = '';
   categories = [];
 
-  constructor(private offerService: OfferService, private mapService: MapService, private router: Router) {
+  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private notifier: NotifierService) {
+    notifier.tryAgain$.subscribe(tryAgain => {
+      if (this.error.length > 0) {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit() {
     this.offerService.getUserOffer().subscribe(
       data => this.data = data,
-      error => this.error = <any>error);
+      error => {
+        this.error = <any>error;
+        this.notifier.notifyError(error.toString());
+      });
     this.mapService.getCategories().subscribe(
       data => this.categories = data,
-      error => this.error = <any>error
+      error => {
+        this.error = <any>error,
+          this.notifier.notifyError(error.toString());
+      }
     );
   }
 
@@ -43,7 +55,7 @@ export class OfferListComponent implements OnInit {
   getAddress(location: string) {
     if (location == null || location === 'null' || location.length == 0) {
       return '';
-    } else if(!location.match('address')){
+    } else if (!location.match('address')) {
       return location;
     }
     return JSON.parse(location).address;
@@ -60,7 +72,10 @@ export class OfferListComponent implements OnInit {
         this.message = result;
         this.data.splice(index, 1)
       },
-      error => this.error = <any>error
+      error => {
+        this.error = <any>error;
+        this.notifier.notifyError(error.toString());
+      }
     );
   }
 

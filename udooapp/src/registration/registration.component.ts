@@ -66,6 +66,7 @@ export class RegistrationComponent {
           error => {
             this.pictureLoadError = true;
             this.loaderVisible = false;
+            this.notifier.notifyError(error.toString());
           }
         );
       } else {
@@ -109,10 +110,14 @@ export class RegistrationComponent {
         this.userService.registrateUser(this.user)
           .subscribe(
             message => {
+              this.notifier.back();
+              this.notifier.pageChanged$.emit(' ');
               this.router.navigate(['/login']);
-              this.message = message
             },
-            error => this.error = <any>error);
+            error => {
+              this.error = error.toString()=== 'Unauthorized' ? 'Email address is exist!' : <any>error;
+              this.notifier.notifyError(error.toString());
+            });
 
       } else {
         this.error = 'Invalid password';

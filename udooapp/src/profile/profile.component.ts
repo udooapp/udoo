@@ -22,7 +22,7 @@ import {Location} from "@angular/common";
 })
 
 export class ProfileComponent implements OnInit {
-  private static NAME : string = 'Profile';
+  private static NAME: string = 'Profile';
   registration = false;
   message: String;
   error: string;
@@ -46,11 +46,14 @@ export class ProfileComponent implements OnInit {
         router.navigate(['/map'])
       }
     });
-
+    notifier.tryAgain$.subscribe(tryAgain => {
+      this.ngOnInit()
+    })
+    this.notifier.notify(ProfileComponent.NAME);
   }
 
   ngOnInit() {
-    this.notifier.notify(ProfileComponent.NAME);
+
     this.userService.getUserData().subscribe(
       user => {
         if (user.picture.length > 4) {
@@ -60,7 +63,11 @@ export class ProfileComponent implements OnInit {
         this.lastPicture = this.user.picture;
         this.error = '';
       },
-      error => this.error = 'Please try again later');
+      error => {
+        this.message = '';
+        this.error = 'Please try again later';
+        this.notifier.notifyError(error.toString());
+      });
   }
 
   getPictureUrl() {
@@ -128,7 +135,8 @@ export class ProfileComponent implements OnInit {
           this.notifier.refreshMainData();
         },
         error => {
-          this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';
+          this.message = '';
+          this.error = error.toString().match('401') || error.toString() === 'Unauthorized' ? 'Email address is exist' : 'Please try again later';
         });
     } else {
       this.error = 'Invalid or empty value';

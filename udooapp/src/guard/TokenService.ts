@@ -16,12 +16,11 @@ export class TokenService {
   clearToken(){
     localStorage.removeItem(this.tokenName);
   }
-  setRefresh(value: boolean){
-    localStorage.setItem("refresh", value ? "1" : "0");
+  setMapState(value: boolean){
+    localStorage.setItem("state", value ? "1" : "0");
   }
-  getRefresh() : boolean {
-    let ref : string = localStorage.getItem('refresh');
-    localStorage.setItem('refresh', '0');
+  getMapState() : boolean {
+    let ref : string = localStorage.getItem('state');
     return ref == null ? false :  ref === '1';
   }
 }

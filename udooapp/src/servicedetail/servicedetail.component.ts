@@ -3,12 +3,11 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 
 import {User} from '../entity/user';
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OfferService} from "../services/offer.service";
 import {RequestService} from "../services/request.service";
 import {ContactService} from "../services/contact.service";
 import {UserService} from "../services/user.service";
-import {Location} from "@angular/common";
 import {NotifierService} from "../services/notify.service";
 
 @Component({
@@ -28,14 +27,19 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private location: Location, private notifier: NotifierService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
-        location.back()
+        this.router.navigate(['/map']);
       }
     })
     this.notifier.notify(ServiceDetailComponent.NAME);
+    notifier.tryAgain$.subscribe(tryAgain => {
+      if (this.error.length > 0) {
+        this.ngOnInit();
+      }
+    });
   }
 
   processOutsideOfAngularZone(id: number) {
@@ -70,7 +74,6 @@ export class ServiceDetailComponent implements OnInit {
         id = +params['id'];
         this.type = (+params['type'] === 1);
         if (id > -1) {
-          // this.data = !this.type ? new Request(null, '', '', -1, 1, '', '', 0, '') : new Offer(null, '', '', -1, 1, '', '', 0, '');
           this.processOutsideOfAngularZone(id);
         } else {
           this.error = 'Invalid parameter'
@@ -96,7 +99,10 @@ export class ServiceDetailComponent implements OnInit {
           star -= 1;
         }
       },
-      error => this.error = <any>error
+      error => {
+        this.error = <any>error;
+        this.notifier.notifyError(this.error);
+      }
     );
   }
 

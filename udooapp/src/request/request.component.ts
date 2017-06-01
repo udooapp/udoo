@@ -45,6 +45,11 @@ export class RequestComponent implements OnInit {
         router.navigate(['/requestlist']);
       }
     });
+    notifier.tryAgain$.subscribe(tryAgain => {
+      if (this.error.length > 0) {
+        this.ngOnInit();
+      }
+    });
     this.notifier.notify(RequestComponent.NAME);
   }
 
@@ -70,7 +75,7 @@ export class RequestComponent implements OnInit {
                 this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
-              error => this.error = <any>error
+              error => {this.error = <any>error; this.notifier.notifyError(error.toString());}
             )
           }
         }
@@ -81,10 +86,11 @@ export class RequestComponent implements OnInit {
     if (this.checkValidation()) {
       this.requestService.saveRequest(this.data).subscribe(
         message => {
+          this.notifier.back();
+          this.notifier.pageChanged$.emit(' ');
           this.router.navigate(['/requestlist']);
         },
-        error => {
-          console.log(<any>error);
+        error => {;
           this.error = <any>error;
           this.message = '';
         });
@@ -168,6 +174,8 @@ export class RequestComponent implements OnInit {
   deleteService() {
     this.requestService.deleteUserRequest(this.data.rid).subscribe(
       ok => {
+        this.notifier.back();
+        this.notifier.pageChanged$.emit(' ');
         this.router.navigate(['/requestlist']);
       },
       error => {

@@ -376,52 +376,39 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/user/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody String req) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(req);
-            Offer offer = mapper.convertValue(node.get("offer"), Offer.class);
-            if (offer != null) {
-                User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-                if (user != null) {
-                    offer.setUid(user.getUid());
-                    offerRepository.save(offer);
-                    return new ResponseEntity<>("Saved", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
-                }
+    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody Offer offer) {
+        if (offer != null) {
+            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+            if (user != null) {
+                offer.setUid(user.getUid());
+                offerRepository.save(offer);
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
             }
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return new ResponseEntity<>("Invalid request parameters", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @Override
     @RequestMapping(value = "/user/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveRequest(ServletRequest request, @RequestBody String req) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(req);
-            Request newrequest = mapper.convertValue(node.get("request"), Request.class);
-            if (newrequest != null) {
-                User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-                if (user != null) {
-                    newrequest.setUid(user.getUid());
-                    requestRepository.save(newrequest);
-                    return new ResponseEntity<>("Saved", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Email not found", HttpStatus.NO_CONTENT);
-                }
+    public ResponseEntity<String> saveRequest(ServletRequest req, @RequestBody Request request) {
+        if (request != null) {
+
+            User user = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
+            if (user != null) {
+                request.setUid(user.getUid());
+                requestRepository.save(request);
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Error", HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>("Invalid user", HttpStatus.UNAUTHORIZED);
             }
-        } catch (IOException e) {
-            System.out.println(e.toString());
-            return new ResponseEntity<>("Invalid request", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @Override
@@ -526,7 +513,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/user/upload", method = RequestMethod.POST, headers = "content-type=multipart/*")
+    @RequestMapping(value = "/upload", method = RequestMethod.POST, headers = "content-type=multipart/*")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
         if (!inputFile.isEmpty()) {
             try {
@@ -543,7 +530,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/user/uploadMulti", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadMulti", method = RequestMethod.POST)
     public ResponseEntity<?> multiFileUpload(@RequestParam("files") MultipartFile[] files) {
         List<String> imageNames = new ArrayList<>();
         for (MultipartFile file : files) {

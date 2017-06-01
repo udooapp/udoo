@@ -29,9 +29,7 @@ export class OfferService {
     } else {
       this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     }
-    return this.http.post(config.server + '/user/saveoffer', JSON.stringify({
-      offer: offer
-    }), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/user/saveoffer', JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }

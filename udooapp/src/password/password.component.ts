@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
   providers: [UserService,]
 })
 export class PasswordComponent {
-  private static NAME : string = 'Password';
+  private static NAME: string = 'Password';
   message: String;
   error = '';
   password = '';
@@ -46,7 +46,10 @@ export class PasswordComponent {
     if (this.checkValidation()) {
       this.userService.changePassword(this.currentpassword, this.password).subscribe(
         message => this.message = message,
-        error => this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error);
+        error => {
+          this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error;
+          this.notifier.notifyError(error.toString());
+        });
     } else {
       this.error = 'Incorrect or empty value';
     }
