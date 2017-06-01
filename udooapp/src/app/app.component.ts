@@ -20,12 +20,11 @@ export class AppComponent implements OnInit {
   login = false;
   image: string;
   menuButton: boolean = true;
-  private page: boolean = true;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
     let before: string = '';
     router.events.subscribe((event) => {
-      if (event.url === '/map' && (before == '/login' || before == '')){
+      if (event.url === '/map' && (before == '/login' || before == '')) {
         this.checkUser();
       }
       if (event instanceof NavigationEnd) {
@@ -33,16 +32,18 @@ export class AppComponent implements OnInit {
       }
     });
     notifier.pageChanged$.subscribe(action => {
+
       switch (action) {
         case '':
           this.menuButton = true;
           break;
-        case 'Refresh':
+        case 'refresh':
           this.checkUser();
           break;
         default:
-          this.page = action != 'dialog';
-          this.menuButton = false;
+          if (action.endsWith('New')) {
+            this.menuButton = false;
+          }
           break;
       }
     });
@@ -52,11 +53,13 @@ export class AppComponent implements OnInit {
     this.checkUser();
   }
 
-  changeButton(){
-    if(!this.menuButton){
+  changeButton() {
+    if (!this.menuButton && !this.visibleMenu) {
       this.menuButton = true;
     }
+    this.notifier.clear();
   }
+
   checkUser() {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
@@ -95,24 +98,25 @@ export class AppComponent implements OnInit {
 
   onClickMenu() {
     if (!this.menuButton && !this.visibleMenu) {
-      if(this.page) {
-        this.notifier.notify('');
+      this.notifier.back();
+      if (this.notifier.isEmpty()) {
         this.menuButton = true;
-      } else{
-        this.notifier.notify('close');
       }
 
     } else {
-      this.visibleMenu = true;
-      this.menuButton = false;
+      this.visibleMenu = !this.visibleMenu;
+      this.menuButton = !this.menuButton;
     }
   }
-  clickMenuButton(){
+
+  clickMenuButton() {
     this.visibleMenu = false;
     this.menuButton = true;
   }
+
   logOut() {
     this.visibleMenu = !this.visibleMenu;
+    this.menuButton = true;
     this.image = this.getPictureUrl('');
     this.userService.logout().subscribe(
       message => {
@@ -123,7 +127,7 @@ export class AppComponent implements OnInit {
       },
       error => {
         // this.tokenService.clearToken();
-        console.log("Error:" + error)
+        console.log("Error:" + error);
       }
     );
 

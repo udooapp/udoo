@@ -12,6 +12,7 @@ import {EmptyValidator} from "../validator/empty.validator";
 import {DateValidator} from "../validator/date.validator";
 import {PhoneValidator} from "../validator/phone.validator";
 import {NotifierService} from "../services/notify.service";
+import {Location} from "@angular/common";
 
 
 @Component({
@@ -21,6 +22,7 @@ import {NotifierService} from "../services/notify.service";
 })
 
 export class ProfileComponent implements OnInit {
+  private static NAME : string = 'Profile';
   registration = false;
   message: String;
   error: string;
@@ -40,15 +42,15 @@ export class ProfileComponent implements OnInit {
   constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
     this.passwordVerification = '';
     notifier.pageChanged$.subscribe(action => {
-      if (action == '') {
-        router.navigate(['/requestlist']);
+      if (action == ProfileComponent.NAME) {
+        router.navigate(['/map'])
       }
     });
-    this.notifier.notify('Profile');
+
   }
 
   ngOnInit() {
-    this.notifier.notify('Profile');
+    this.notifier.notify(ProfileComponent.NAME);
     this.userService.getUserData().subscribe(
       user => {
         if (user.picture.length > 4) {
@@ -123,7 +125,7 @@ export class ProfileComponent implements OnInit {
         message => {
           this.error = '';
           this.message = message;
-          this.notifier.notify('Refresh');
+          this.notifier.refreshMainData();
         },
         error => {
           this.error = error.toString().match('401') ? 'Email address is exist' : 'Please try again later';

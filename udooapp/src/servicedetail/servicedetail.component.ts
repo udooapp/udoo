@@ -17,6 +17,7 @@ import {NotifierService} from "../services/notify.service";
   providers: [OfferService, RequestService, UserService, ContactService]
 })
 export class ServiceDetailComponent implements OnInit {
+  private static NAME: string = 'ServiceDetail';
   message: string = '';
   user = new User(null, '', '', '', '', '', 0, -1, '');
   error: string = '';
@@ -30,11 +31,11 @@ export class ServiceDetailComponent implements OnInit {
   constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private location: Location, private notifier: NotifierService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
-      if (action == '') {
+      if (action == ServiceDetailComponent.NAME) {
         location.back()
       }
     })
-    this.notifier.notify('ServiceDetail');
+    this.notifier.notify(ServiceDetailComponent.NAME);
   }
 
   processOutsideOfAngularZone(id: number) {

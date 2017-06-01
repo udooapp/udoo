@@ -41,7 +41,6 @@ export class UserService {
       .map((response: Response) => {
         let token = response.text();
         if (token) {
-          console.log("Token:" + token);
           this.tokenService.saveToken(token);
           // return true to indicate successful login
           return '';

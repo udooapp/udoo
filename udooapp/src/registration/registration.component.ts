@@ -18,6 +18,7 @@ import {Location} from "@angular/common";
   providers: [UserService]
 })
 export class RegistrationComponent {
+  static NAME: string = 'Registration';
   message: String;
   error: string;
   refresh = false;
@@ -36,9 +37,9 @@ export class RegistrationComponent {
 
   constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
     this.passwordVerification = '';
-    notifier.notify('Registration');
+    notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
-      if (action == '') {
+      if (action == RegistrationComponent.NAME) {
         router.navigate(['/login']);
       }
     })

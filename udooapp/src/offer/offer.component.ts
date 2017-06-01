@@ -15,6 +15,7 @@ import {NotifierService} from "../services/notify.service";
   providers: [OfferService, UserService, MapService]
 })
 export class OfferComponent implements OnInit {
+  private static NAME : string = 'Offer';
   registration = true;
   category = [];
   message: String;
@@ -35,11 +36,11 @@ export class OfferComponent implements OnInit {
 
   constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
     notifier.pageChanged$.subscribe(action => {
-      if (action == '') {
+      if (action == OfferComponent.NAME) {
         router.navigate(['/offerlist']);
       }
     });
-    this.notifier.notify('Offer');
+    this.notifier.notify(OfferComponent.NAME);
   }
 
   ngOnInit() {

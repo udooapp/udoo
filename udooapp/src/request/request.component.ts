@@ -18,6 +18,7 @@ import {NotifierService} from "../services/notify.service";
   providers: [RequestService, UserService, MapService]
 })
 export class RequestComponent implements OnInit {
+  private static NAME : string = 'Request';
   registration = true;
   category = [];
   message: String;
@@ -40,11 +41,11 @@ export class RequestComponent implements OnInit {
 
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
     notifier.pageChanged$.subscribe(action => {
-      if (action == '') {
+      if (action == RequestComponent.NAME) {
         router.navigate(['/requestlist']);
       }
     });
-    this.notifier.notify('Request');
+    this.notifier.notify(RequestComponent.NAME);
   }
 
   ngOnInit() {

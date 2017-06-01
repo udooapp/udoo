@@ -6,7 +6,7 @@ import {IValidator} from "../validator/validator.interface";
 import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";
 import {NotifierService} from "../services/notify.service";
-import {Location} from "@angular/common";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: './password.component.html',
@@ -14,6 +14,7 @@ import {Location} from "@angular/common";
   providers: [UserService,]
 })
 export class PasswordComponent {
+  private static NAME : string = 'Password';
   message: String;
   error = '';
   password = '';
@@ -22,13 +23,14 @@ export class PasswordComponent {
   passwordValidator: IValidator = new PasswordValidator();
   emptyValidator: IValidator = new EmptyValidator();
 
-  constructor(private userService: UserService, private notifier: NotifierService, private location: Location) {
-    notifier.notify('Password');
-    notifier.pageChanged$.subscribe(action=>{
-        if(action == ''){
-          location.back();
-        }
-      })
+  constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
+    notifier.notify(PasswordComponent.NAME);
+    notifier.pageChanged$.subscribe(action => {
+      if (action == PasswordComponent.NAME) {
+        notifier.back();
+        router.navigate(['/profile']);
+      }
+    })
   }
 
   checkValidation(): boolean {
@@ -44,7 +46,7 @@ export class PasswordComponent {
     if (this.checkValidation()) {
       this.userService.changePassword(this.currentpassword, this.password).subscribe(
         message => this.message = message,
-        error => this.error =  (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error);
+        error => this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error);
     } else {
       this.error = 'Incorrect or empty value';
     }

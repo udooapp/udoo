@@ -9,6 +9,7 @@ declare let google: any;
   styleUrls: ['./location.component.css']
 })
 export class LocationComponent implements OnInit {
+  private static NAME : string = 'dialog';
   position = {lat: 0, lng: 0, address: ''};
   error: string;
   private scriptLoadingPromise: Promise<void>;
@@ -16,11 +17,11 @@ export class LocationComponent implements OnInit {
 
   constructor(private notifier: NotifierService) {
     notifier.pageChanged$.subscribe(action => {
-      if (action == 'close') {
+      if (action == LocationComponent.NAME) {
         this.onSaved.emit('');
       }
     });
-    notifier.notify('dialog');
+    notifier.notify(LocationComponent.NAME);
   }
 
   ngOnInit() {
