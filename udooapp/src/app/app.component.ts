@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   user = new User(null, '', '', '', '', '', 0, 0, '');
   login = false;
   image: string;
-  private menuButton: boolean = true;
+  menuButton: boolean = true;
   private page: boolean = true;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
