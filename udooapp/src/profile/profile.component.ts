@@ -13,6 +13,7 @@ import {DateValidator} from "../validator/date.validator";
 import {PhoneValidator} from "../validator/phone.validator";
 import {NotifierService} from "../services/notify.service";
 import {Location} from "@angular/common";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 
 @Component({
@@ -43,7 +44,7 @@ export class ProfileComponent implements OnInit {
     this.passwordVerification = '';
     notifier.pageChanged$.subscribe(action => {
       if (action == ProfileComponent.NAME) {
-        router.navigate(['/map'])
+        router.navigate([AppRoutingModule.MAP])
       }
     });
     notifier.tryAgain$.subscribe(tryAgain => {
@@ -70,14 +71,14 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  getPictureUrl() {
+  public getPictureUrl() {
     if (this.user.picture == null || this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
     return this.user.picture;
   }
 
-  onClickBrowse(event) {
+  public onClickBrowse(event) {
     if (!this.first) {
       this.loaderVisible = true;
       let fileList: FileList = event.target.files;
@@ -99,13 +100,13 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  onClickCancel() {
+  public onClickCancel() {
     if (this.user.picture.length > 0) {
       this.user.picture = this.lastPicture;
     }
   }
 
-  onKey(event: any) { // without type info
+  public onKey(event: any) { // without type info
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
@@ -116,7 +117,7 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  checkValidation(): boolean {
+  private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
         this.refresh = !this.refresh;
@@ -126,7 +127,7 @@ export class ProfileComponent implements OnInit {
     return true;
   }
 
-  insertUser() {
+  public insertUser() {
     if (this.checkValidation()) {
       this.userService.updateUser(this.user).subscribe(
         message => {

@@ -23,18 +23,18 @@ export class MapService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
 
-  getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
+  public getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
     return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
 
-  getRequestLocations(category: number, searchText: string): Observable<Request[]> {
+  public getRequestLocations(category: number, searchText: string): Observable<Request[]> {
     return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
-  getCategories(): Observable<Object[]> {
+  public getCategories(): Observable<Object[]> {
     return this.http.get(config.server + '/categories', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError)

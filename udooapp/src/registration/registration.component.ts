@@ -11,6 +11,7 @@ import {EmptyValidator} from "../validator/empty.validator";
 import {PasswordValidator} from "../validator/password.validator";
 import {NotifierService} from "../services/notify.service";
 import {Location} from "@angular/common";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: '../layouts/forminput.component.html',
@@ -40,19 +41,19 @@ export class RegistrationComponent {
     notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RegistrationComponent.NAME) {
-        router.navigate(['/login']);
+        router.navigate([AppRoutingModule.LOGIN]);
       }
     })
   }
 
-  getPictureUrl(): SafeResourceUrl {
+  public getPictureUrl(): SafeResourceUrl {
     if (this.user.picture.length == 0 || this.user.picture === 'null') {
       return '';
     }
     return this.user.picture;
   }
 
-  onClickBrowse(event) {
+  public onClickBrowse(event) {
     if (!this.first) {
       this.loaderVisible = true;
       let fileList: FileList = event.target.files;
@@ -77,7 +78,7 @@ export class RegistrationComponent {
     }
   }
 
-  onKey(event: any) { // without type info
+  public onKey(event: any) { // without type info
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
@@ -88,13 +89,13 @@ export class RegistrationComponent {
     }
   }
 
-  onClickCancel() {
+  public onClickCancel() {
     if (this.user.picture.length > 0) {
       this.user.picture = '';
     }
   }
 
-  checkValidation(): boolean {
+  private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
         this.refresh = !this.refresh;
@@ -104,7 +105,7 @@ export class RegistrationComponent {
     return true;
   }
 
-  insertUser() {
+  public insertUser() {
     if (this.checkValidation()) {
       if (this.user.password === this.passwordVerification) {
         this.userService.registrateUser(this.user)
@@ -112,7 +113,7 @@ export class RegistrationComponent {
             message => {
               this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
-              this.router.navigate(['/login']);
+              this.router.navigate([AppRoutingModule.LOGIN]);
             },
             error => {
               this.error = error.toString()=== 'Unauthorized' ? 'Email address is exist!' : <any>error;

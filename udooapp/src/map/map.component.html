@@ -1,5 +1,4 @@
-<div id="map" [ngClass]="{'hide-map': !mapView}">
-</div>
+<div id="map" [ngClass]="{'hide-map': !mapView, 'show-map': mapView}"></div>
 <div [ngClass]="{'hide-map-filter' : (showSearch && mapView), 'map-filter' : mapView}" (focusout)="refresh()">
 
   <div
@@ -35,7 +34,7 @@
         <div class="service-description">{{item.description}}</div>
         <div class="service-location"><b>Address: </b>{{getLocation(item.location)}}</div>
         <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="service-date"><b>Date: </b> {{item.expridate}}</div>
+        <div class="service-date"><b>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
       </div>
     </div>
     <div class="service" *ngFor="let item of offers" (click)="onClickService(true, item.oid)">

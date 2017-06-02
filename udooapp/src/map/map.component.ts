@@ -5,6 +5,7 @@ import {Request} from "../entity/request";
 import {Router} from "@angular/router";
 import {NotifierService} from "../services/notify.service";
 import {TokenService} from "../guard/TokenService";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 declare let google: any;
 
@@ -33,20 +34,77 @@ export class MapComponent implements OnInit {
 
   constructor(private mapService: MapService, private router: Router, private notifier: NotifierService, private tokenService: TokenService) {
     notifier.tryAgain$.subscribe(again => {
-      if(this.error.length > 0){
+      if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
   }
 
-  deleteMarkers() {
+  ngOnInit() {
+    this.mapView = !this.tokenService.getMapState();
+    this.error = '';
+    this.mapService.getCategories().subscribe(
+      data => {
+        data.splice(0, 0, {cid: "-1", name: 'Select category'});
+        this.categories = data;
+      },
+      error => {
+        this.error = <any>error;
+        this.checkError();
+      }
+    );
+    this.load().then(() => {
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 48.211029, lng: 16.373990},
+        zoom: 14,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DEFAULT,
+          position: google.maps.ControlPosition.LEFT_BOTTOM
+        }
+      });
+      this.icon = {
+        url: "assets/pin.png", // url
+        scaledSize: new google.maps.Size(30, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+      };
+      this.loadRequests();
+      this.loadOffers();
+    }).catch((error) => {
+      console.log("ERROR: " + error.toString());
+    });
+
+  }
+
+  private initMap() {
+    this.load().then(() => {
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 48.211029, lng: 16.373990},
+        zoom: 14,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DEFAULT,
+          position: google.maps.ControlPosition.LEFT_BOTTOM
+        }
+      });
+      this.icon = {
+        url: "assets/pin.png", // url
+        scaledSize: new google.maps.Size(30, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+      };
+    });
+  }
+
+  private deleteMarkers() {
     for (let i = 0; i < this.markers.length; i++) {
       this.markers[i].setMap(null);
     }
     this.markers = [];
   }
 
-  loadRequests() {
+  private loadRequests() {
     this.mapService.getRequestLocations(this.category, this.searchString).subscribe(
       requests => {
         this.requests = requests;
@@ -108,7 +166,7 @@ export class MapComponent implements OnInit {
       });
   }
 
-  loadOffers() {
+  private loadOffers() {
     this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
       offers => {
         this.offers = offers;
@@ -170,7 +228,7 @@ export class MapComponent implements OnInit {
       });
   }
 
-  findCatName(catID: number): string {
+  public findCatName(catID: number): string {
     for (let i = 0; i < this.categories.length; ++i) {
       if (catID == this.categories[i].cid) {
         return this.categories[i].name;
@@ -179,19 +237,19 @@ export class MapComponent implements OnInit {
     return 'Unknown category';
   }
 
-  getAddress(location: string) {
+  public getAddress(location: string) {
     if (!location.match('address') && !location.match('coordinate')) {
       return null
     }
     return JSON.parse(location).coordinate;
   }
 
-  convertMillisToDate(millis: number): string {
+  public convertMillisToDate(millis: number): string {
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
 
-  refresh() {
+  private refresh() {
     this.deleteMarkers();
     if (this.type == 0) {
       this.loadRequests();
@@ -206,55 +264,18 @@ export class MapComponent implements OnInit {
     }
   }
 
-  checkError() {
-      this.notifier.notifyError(this.error);
+  private checkError() {
+    this.notifier.notifyError(this.error);
   }
 
-  ngOnInit() {
-    this.mapView = !this.tokenService.getMapState();
-    this.error = '';
-    this.mapService.getCategories().subscribe(
-      data => {
-        data.splice(0, 0, {cid: "-1", name: 'Select category'});
-        this.categories = data;
-      },
-      error => {
-        this.error = <any>error;
-        this.checkError();
-      }
-    );
-    this.load().then(() => {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 48.211029, lng: 16.373990},
-        zoom: 14,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          style: google.maps.MapTypeControlStyle.DEFAULT,
-          position: google.maps.ControlPosition.LEFT_BOTTOM
-        }
-      });
-      this.icon = {
-        url: "assets/pin.png", // url
-        scaledSize: new google.maps.Size(30, 50), // scaled size
-        origin: new google.maps.Point(0, 0), // origin
-        anchor: new google.maps.Point(0, 0) // anchor
-      };
-      this.loadRequests();
-      this.loadOffers();
-    }).catch((error)=>{
-      console.log("ERROR: " + error.toString());
-    });
-
-  }
-
-  getLocation(object: string): String {
+  public getLocation(object: string): String {
     if (object == null || object === 'null' || object.length == 0 || !object.match('address')) {
       return '';
     }
     return JSON.parse(object).address;
   }
 
-  load(): Promise<void> {
+  private load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
     }
@@ -282,7 +303,7 @@ export class MapComponent implements OnInit {
     return this.scriptLoadingPromise;
   }
 
-  onKey(event: any): void {
+  public onKey(event: any): void {
     if (event.which === 13) {
       this.refresh();
     } else {
@@ -290,43 +311,43 @@ export class MapComponent implements OnInit {
     }
   }
 
-  onClickSearchPanel() {
+  public onClickSearchPanel() {
     this.showSearch = !this.showSearch;
   }
 
-  onChangeTypeSelect(event: any) {
+  public onChangeTypeSelect(event: any) {
     if (this.type != event) {
       this.type = event;
       this.refresh();
     }
   }
 
-  onChangeCategorySelect(event: any) {
+  public onChangeCategorySelect(event: any) {
     if (this.category != event) {
       this.category = event;
       this.refresh()
     }
   }
 
-  getPictureUrl(url: string) {
+  public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '/assets/profile_picture.png';
     }
     return url;
   }
 
-  showList() {
+  public showList() {
     this.mapView = !this.mapView;
     this.tokenService.setMapState(!this.mapView);
   }
 
-  getCategory(category: number): string {
+  public getCategory(category: number): string {
     let cat = this.categories.find(cat => cat.cid == category);
     return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
 
-  onClickService(type: boolean, id: number) {
-    this.router.navigate(['/detail/' + id + '/' + (type ? 1 : 0)]);
+  public onClickService(type: boolean, id: number) {
+    this.router.navigate([AppRoutingModule.DETAIL + id + '/' + (type ? 1 : 0)]);
   }
 
 }

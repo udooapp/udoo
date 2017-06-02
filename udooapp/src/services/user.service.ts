@@ -21,13 +21,8 @@ export class UserService {
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
 
-  logout(): Observable<String> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
-
+  public logout(): Observable<String> {
+    this.refreshHeaderToken();
     let param: URLSearchParams = new URLSearchParams();
     param.append("param", "param");
     return this.http.get(config.server + '/user/logout', new RequestOptions({headers: this.headers, search: param}))
@@ -35,7 +30,7 @@ export class UserService {
       .catch(HandlerService.handleText);
   }
 
-  loginUser(user: User): Observable<string> {
+  public loginUser(user: User): Observable<string> {
 
     return this.http.post(config.server + '/login', user.toString(), new RequestOptions({headers: this.headers}))
       .map((response: Response) => {
@@ -52,48 +47,35 @@ export class UserService {
       });
   }
 
-  updateUser(user: User): Observable<String> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public updateUser(user: User): Observable<String> {
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/update',
       JSON.stringify(user)
       , new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
-
-  getUserData(): Observable<User> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public getUserData(): Observable<User> {
+    this.refreshHeaderToken();
     return this.http.get(config.server + '/user/userdata', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  getUserInfo(uid: any): Observable<User> {
+  public getUserInfo(uid: any): Observable<User> {
     return this.http.get(config.server + '/userinfo/' + uid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  registrateUser(user: User): Observable<String> {
+  public registrateUser(user: User): Observable<String> {
     return this.http.post(config.server + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
-  changePassword(cpass: string, npass: string): Observable<String> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public changePassword(cpass: string, npass: string): Observable<String> {
+    this.refreshHeaderToken()
     return this.http.post(config.server + '/user/password', JSON.stringify({
       cpass: cpass,
       npass: npass,
@@ -102,13 +84,19 @@ export class UserService {
       .catch(HandlerService.handleText);
   }
 
-  uploadPicture(file: File): Observable<String> {
+  public uploadPicture(file: File): Observable<String> {
     let formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post(config.server + '/upload', formData)
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText)
   }
-
+  private refreshHeaderToken(): void {
+    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    } else {
+      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
+    }
+  }
 
 }

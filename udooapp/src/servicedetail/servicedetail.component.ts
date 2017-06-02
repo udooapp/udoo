@@ -9,6 +9,7 @@ import {RequestService} from "../services/request.service";
 import {ContactService} from "../services/contact.service";
 import {UserService} from "../services/user.service";
 import {NotifierService} from "../services/notify.service";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -31,7 +32,7 @@ export class ServiceDetailComponent implements OnInit {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
-        this.router.navigate(['/map']);
+        this.router.navigate([AppRoutingModule.MAP]);
       }
     })
     this.notifier.notify(ServiceDetailComponent.NAME);
@@ -42,7 +43,7 @@ export class ServiceDetailComponent implements OnInit {
     });
   }
 
-  processOutsideOfAngularZone(id: number) {
+  private processOutsideOfAngularZone(id: number) {
     this.zone.run(() => {
       if (this.type) {
         this.offerService.getOffer(id).subscribe(
@@ -81,7 +82,7 @@ export class ServiceDetailComponent implements OnInit {
       });
   }
 
-  loadUser() {
+  private loadUser() {
     this.userService.getUserInfo(this.data.uid).subscribe(
       data => {
         this.loaded = true;
@@ -106,26 +107,26 @@ export class ServiceDetailComponent implements OnInit {
     );
   }
 
-  getPictureUrl(src: string) {
+  public getPictureUrl(src: string) {
     if (src == null || src.length == 0 || src === 'null') {
       return './assets/profile_picture.png';
     }
     return this.user.picture;
   }
 
-  getLocation(location: string): string {
+  public getLocation(location: string): string {
     if (location.length == 0) {
       return ''
     }
     return JSON.parse(location).address;
   }
 
-  convertNumberToDate(millis: number): string {
+  public convertNumberToDate(millis: number): string {
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
 
-  onClickAddToContact() {
+  public onClickAddToContact() {
     if (!this.added) {
       this.contactServiece.addContact(this.data.uid).subscribe(
         message => {

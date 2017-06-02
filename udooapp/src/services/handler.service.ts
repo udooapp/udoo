@@ -24,6 +24,9 @@ export class HandlerService {
         case 401:
           errMsg = 'Unauthorized';
           break;
+        case 498:
+          errMsg = 'Invalid token';
+          break;
         case 500:
           errMsg = 'Server error';
           break;
@@ -66,6 +69,9 @@ export class HandlerService {
           break;
         case 401:
           errMsg = 'Incorrect password or data';
+          break;
+        case 498:
+          errMsg = 'Invalid token';
           break;
         case 500:
           errMsg = 'Server error';

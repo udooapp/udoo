@@ -10,6 +10,7 @@ import {EmailValidator} from "../validator/email.validator";
 import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";
 import {NotifierService} from "../services/notify.service";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: './login.component.html',
@@ -28,7 +29,7 @@ export class LoginComponent {
 
   }
 
-  checkValidation(): boolean {
+  private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
         return false;
@@ -36,7 +37,7 @@ export class LoginComponent {
     }
     return true;
   }
-  login() {
+  public login() {
     if (this.checkValidation()) {
       this.error = '';
       let err: string ='';
@@ -44,7 +45,7 @@ export class LoginComponent {
         .subscribe(
           message => {
             if(message.length == 0){
-            this.router.navigate(['/map']);
+            this.router.navigate([AppRoutingModule.MAP]);
             } else {
               err += message;
               this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err === "Unauthorized" ? 'Incorrect email or password' : err;

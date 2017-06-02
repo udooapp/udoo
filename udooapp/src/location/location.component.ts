@@ -101,7 +101,7 @@ export class LocationComponent implements OnInit {
   }
 
 
-  load(): Promise<void> {
+  private load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
     }
@@ -129,7 +129,7 @@ export class LocationComponent implements OnInit {
     return this.scriptLoadingPromise;
   }
 
-  saveLocation() {
+  public saveLocation() {
     if (this.position.lng != 0) {
       let t = {coordinate: {lat: 0, lng: 0}, address: ''};
       t.coordinate.lng = this.position.lng;

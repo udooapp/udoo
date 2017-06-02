@@ -4,6 +4,7 @@ import {Request} from "../entity/request";
 import {Router} from "@angular/router";
 import {MapService} from "../services/map.service";
 import {NotifierService} from "../services/notify.service";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: '../layouts/lists.component.html',
@@ -38,7 +39,7 @@ export class RequestListComponent implements OnInit {
     );
   }
 
-  getAddress(location: string) {
+  public getAddress(location: string) {
     if (location == null || location === 'null' || location.length == 0) {
       return '';
     } else if (!location.match('address')) {
@@ -47,23 +48,23 @@ export class RequestListComponent implements OnInit {
     return JSON.parse(location).address;
   }
 
-  getPictureUrl(url: string) {
+  public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '';
     }
     return url;
   }
 
-  isExpired(millis: number) {
+  public isExpired(millis: number) {
     return millis == null || new Date() > new Date(millis);
   }
 
-  convertMillisToDate(millis: number): string {
+  public convertMillisToDate(millis: number): string {
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
 
-  onClickDelete(id: number, index: number) {
+  public onClickDelete(id: number, index: number) {
     this.requestService.deleteUserRequest(id).subscribe(
       result => {
         this.message = result;
@@ -73,16 +74,12 @@ export class RequestListComponent implements OnInit {
     );
   }
 
-  getCategory(cat: number) {
+  public getCategory(cat: number) {
     for (let i = 0; i < this.categories.length; ++i) {
       if (cat == this.categories[i].cid) {
         return this.categories[i].name;
       }
     }
     return 'Unknown category';
-  }
-
-  onClickEdit(id: number) {
-    this.router.navigate(['request/' + id + '/' + 1])
   }
 }

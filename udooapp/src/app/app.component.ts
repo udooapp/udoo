@@ -6,11 +6,12 @@ import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
 import {NotifierService} from "../services/notify.service";
+import {AppRoutingModule} from "./app.routing.module";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [UserService, TokenService]
+  providers: [UserService]
 })
 
 export class AppComponent implements OnInit {
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
   menuButton: boolean = true;
   errorMessage: string = '';
   error = false;
+  mainError = false;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
     let before: string = '';
@@ -50,8 +52,13 @@ export class AppComponent implements OnInit {
       }
     });
     notifier.errorMessage$.subscribe(message => {
+      if(message === 'Invalid token'){
+        this.tokenService.clearToken();
+        this.router.navigate([AppRoutingModule.LOGIN]);
+      } else {
         this.errorMessage = message;
         this.error = true;
+      }
     });
   }
 
@@ -59,14 +66,14 @@ export class AppComponent implements OnInit {
     this.checkUser();
   }
 
-  changeButton() {
+  public changeButton() {
     if (!this.menuButton && !this.visibleMenu) {
       this.menuButton = true;
     }
     this.notifier.clear();
   }
 
-  checkUser() {
+  private checkUser() {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
       this.login = true;
@@ -86,13 +93,24 @@ export class AppComponent implements OnInit {
             star -= 1;
           }
         },
-        error => console.log(error));
+        error => {console.log(error);
+          if (error === 'Server error' || error === 'No internet connection' || error === 'Service Unavailable') {
+            this.error = true;
+            this.errorMessage = error;
+            this.mainError = true;
+          } else if(error === 'Invalid token'){
+            this.tokenService.clearToken();
+            this.router.navigate([AppRoutingModule.LOGIN]);
+          }
+        });
     } else {
+      this.user = new User(null, '', '', '', '', '', 0, 0, '');
+      this.login = false;
       this.image = this.getPictureUrl('');
     }
   }
 
-  getPictureUrl(src: string) {
+  public getPictureUrl(src: string) {
 
     if (!this.login) {
       return './assets/profile_picture.png';
@@ -102,7 +120,7 @@ export class AppComponent implements OnInit {
     return this.user.picture;
   }
 
-  onClickMenu() {
+  public onClickMenu() {
     if (!this.menuButton && !this.visibleMenu) {
       this.notifier.back();
       if (this.notifier.isEmpty()) {
@@ -115,12 +133,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  clickMenuButton() {
+  public clickMenuButton() {
     this.visibleMenu = false;
     this.menuButton = true;
   }
 
-  logOut() {
+  public logOut() {
     this.visibleMenu = !this.visibleMenu;
     this.menuButton = true;
     this.image = this.getPictureUrl('');
@@ -128,7 +146,7 @@ export class AppComponent implements OnInit {
       message => {
         this.login = false;
         this.user = new User(null, '', '', '', '', '', 0, 0, '');
-        this.router.navigate(['/map']);
+        this.router.navigate([AppRoutingModule.MAP]);
         this.tokenService.clearToken()
       },
       error => {
@@ -138,8 +156,12 @@ export class AppComponent implements OnInit {
     );
   }
 
-  onClickTryAgain() {
+  public onClickTryAgain() {
     this.error = false;
     this.notifier.tryAgain();
+    if(this.mainError){
+      this.mainError = false;
+      this.ngOnInit();
+    }
   }
 }

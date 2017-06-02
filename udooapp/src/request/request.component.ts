@@ -11,6 +11,7 @@ import {NumberValidator} from "../validator/number.validator";
 import {DateValidator} from "../validator/date.validator";
 import {MapService} from "../services/map.service";
 import {NotifierService} from "../services/notify.service";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: '../layouts/offerrequest.component.html',
@@ -42,7 +43,7 @@ export class RequestComponent implements OnInit {
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
-        router.navigate(['/requestlist']);
+        router.navigate([AppRoutingModule.REQUEST_LIST]);
       }
     });
     notifier.tryAgain$.subscribe(tryAgain => {
@@ -82,13 +83,13 @@ export class RequestComponent implements OnInit {
       });
   }
 
-  save() {
+  public save() {
     if (this.checkValidation()) {
       this.requestService.saveRequest(this.data).subscribe(
         message => {
           this.notifier.back();
           this.notifier.pageChanged$.emit(' ');
-          this.router.navigate(['/requestlist']);
+          this.router.navigate([AppRoutingModule.REQUEST_LIST]);
         },
         error => {;
           this.error = <any>error;
@@ -99,7 +100,7 @@ export class RequestComponent implements OnInit {
     }
   }
 
-  checkValidation(): boolean {
+  private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
         this.refresh = !this.refresh;
@@ -109,14 +110,14 @@ export class RequestComponent implements OnInit {
     return true;
   }
 
-  getPictureUrl() {
+  public getPictureUrl() {
     if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
       return '';
     }
     return this.data.image;
   }
 
-  onClickBrowse(event) {
+  public onClickBrowse(event) {
     if (!this.first) {
       this.loaderVisible = true;
       let fileList: FileList = event.target.files;
@@ -138,21 +139,21 @@ export class RequestComponent implements OnInit {
     }
   }
 
-  onClickCancel() {
+  public onClickCancel() {
     if (this.data.image.length > 0) {
       this.data.image = this.lastImage;
     }
   }
 
-  onChangeSelect(event) {
+  public onChangeSelect(event) {
     this.data.category = event;
   }
 
-  onClickSelectLocation() {
+  public onClickSelectLocation() {
     this.load = !this.load;
   }
 
-  saveLocation(location) {
+  public saveLocation(location) {
     let data: String = JSON.stringify(location);
     if((data.length < 10 && this.location.length > 0)){
       this.onClickSelectLocation();;
@@ -163,7 +164,7 @@ export class RequestComponent implements OnInit {
     }
   }
 
-  getDate(): string {
+  public getDate(): string {
     if (this.data.expirydate > 0) {
       let date: Date = new Date(this.data.expirydate);
       return date.getFullYear() + '-' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '-' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
@@ -171,12 +172,12 @@ export class RequestComponent implements OnInit {
     return '';
   }
 
-  deleteService() {
+  public deleteService() {
     this.requestService.deleteUserRequest(this.data.rid).subscribe(
       ok => {
         this.notifier.back();
         this.notifier.pageChanged$.emit(' ');
-        this.router.navigate(['/requestlist']);
+        this.router.navigate([AppRoutingModule.REQUEST_LIST]);
       },
       error => {
         this.error = error

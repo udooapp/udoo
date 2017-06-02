@@ -7,6 +7,7 @@ import {PasswordValidator} from "../validator/password.validator";
 import {EmptyValidator} from "../validator/empty.validator";
 import {NotifierService} from "../services/notify.service";
 import {Router} from "@angular/router";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Component({
   templateUrl: './password.component.html',
@@ -28,12 +29,12 @@ export class PasswordComponent {
     notifier.pageChanged$.subscribe(action => {
       if (action == PasswordComponent.NAME) {
         notifier.back();
-        router.navigate(['/profile']);
+        router.navigate([AppRoutingModule.PROFILE]);
       }
     })
   }
 
-  checkValidation(): boolean {
+  private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {
         return false;
@@ -42,7 +43,7 @@ export class PasswordComponent {
     return true;
   }
 
-  save() {
+  public save() {
     if (this.checkValidation()) {
       this.userService.changePassword(this.currentpassword, this.password).subscribe(
         message => this.message = message,

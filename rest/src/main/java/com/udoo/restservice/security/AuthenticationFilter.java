@@ -45,7 +45,7 @@ public class AuthenticationFilter implements Filter {
                     token.setDisable(true);
                     tokenRepository.save(token);
                 }
-                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access request");
+                res.sendError(498, "Unauthorized access request");
             } else {
                 request.setAttribute(USERID, token.getUid());
                 chain.doFilter(request, response);

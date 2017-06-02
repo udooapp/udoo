@@ -22,31 +22,29 @@ export class OfferService {
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET');
   }
-
-  saveOffer(offer: Offer): Observable<String> {
+  private refreshHeaderToken(){
     if (!this.headers.has(HandlerService.AUTHORIZATION)) {
       this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     } else {
       this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     }
+  }
+  public saveOffer(offer: Offer): Observable<String> {
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/saveoffer', JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
-  getUserOffer(): Observable<Offer[]> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public getUserOffer(): Observable<Offer[]> {
+    this.refreshHeaderToken();
     return this.http.get(config.server + '/user/offer', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  deleteUserOffer(id: number): Observable<string> {
-    this.headers.append("Token", JSON.parse(this.tokenService.getToken()).token);
+  public deleteUserOffer(id: number): Observable<string> {
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/deleteoffer', JSON.stringify({
       id: id
     }), new RequestOptions({headers: this.headers}))
@@ -54,7 +52,7 @@ export class OfferService {
       .catch(HandlerService.handleText);
   }
 
-  getOffer(oid: number): Observable<Offer> {
+  public getOffer(oid: number): Observable<Offer> {
     return this.http.get(config.server + '/offer/' + oid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);

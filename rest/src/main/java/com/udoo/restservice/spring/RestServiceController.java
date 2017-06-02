@@ -86,7 +86,7 @@ public class RestServiceController implements IRestServiceController {
                 return new ResponseEntity<>("Registration complete", HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Invalid data", HttpStatus.BAD_REQUEST);
     }
 
 

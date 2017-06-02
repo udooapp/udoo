@@ -9,6 +9,7 @@ import {TokenService} from "../guard/TokenService";
 import {HandlerService} from "./handler.service";
 import {config} from "../config/url.config";
 import {Router} from "@angular/router";
+import {AppRoutingModule} from "../app/app.routing.module";
 
 @Injectable()
 export class ContactService {
@@ -20,17 +21,19 @@ export class ContactService {
     this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
     this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
   }
-
-  addContact(uid: number): Observable<string> {
-    if (!this.tokenService.getToken()) {
-      this.router.navigate(['/login']);
-      return Observable.throw('First, login');
-    }
+  private refreshHeaderToken(){
     if (!this.headers.has(HandlerService.AUTHORIZATION)) {
       this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     } else {
       this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     }
+  }
+  public addContact(uid: number): Observable<string> {
+    if (!this.tokenService.getToken()) {
+      this.router.navigate([AppRoutingModule.LOGIN]);
+      return Observable.throw('First, login');
+    }
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/addcontact', JSON.stringify({
       id: uid,
     }), new RequestOptions({headers: this.headers}))
@@ -38,23 +41,15 @@ export class ContactService {
       .catch(HandlerService.handleText);
   }
 
-  getContacts(): Observable<any[]> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public getContacts(): Observable<any[]> {
+    this.refreshHeaderToken();
     return this.http.get(config.server + '/user/contacts', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  removeContact(uid: number): Observable<string> {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
+  public removeContact(uid: number): Observable<string> {
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/deleteContact/', JSON.stringify({
       id: uid
     }), new RequestOptions({headers: this.headers}))

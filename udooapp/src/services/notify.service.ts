@@ -39,7 +39,7 @@ export class NotifierService {
   }
 
   public notifyError(errorMessage: string) {
-    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable') {
+    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage == 'Invalid token') {
       this.errorMessage$.emit(errorMessage);
     }
   }

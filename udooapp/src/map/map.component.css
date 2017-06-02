@@ -1,9 +1,5 @@
 /* Always set the map height explicitly to define the size of the div
      * element that contains the map. */
-#map {
-  height: 100%;
-}
-
 @media (min-width: 961px) {
   .map-filter {
     width: 40%;
@@ -187,8 +183,10 @@
 }
 
 .hide-map {
-  visibility: hidden;
-  display: none;
+  height: 0;
+}
+.show-map{
+  height: 100%;
 }
 .right-padding{
   padding-right: 2%;
