@@ -249,7 +249,7 @@ export class MapComponent implements OnInit {
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
 
-  private refresh() {
+  public refresh() {
     this.deleteMarkers();
     if (this.type == 0) {
       this.loadRequests();
