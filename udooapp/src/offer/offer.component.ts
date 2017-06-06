@@ -83,7 +83,6 @@ export class OfferComponent implements OnInit {
     if (this.checkValidation()) {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
-          this.notifier.back();
           this.notifier.pageChanged$.emit(' ');
           this.router.navigate([AppRoutingModule.OFFER_LIST]);
         },
@@ -172,7 +171,6 @@ export class OfferComponent implements OnInit {
   public deleteService() {
     this.offerService.deleteUserOffer(this.data.oid).subscribe(
       ok => {
-        this.notifier.back();
         this.notifier.pageChanged$.emit(' ');
         this.router.navigate([AppRoutingModule.OFFER_LIST])
       },

@@ -30,8 +30,12 @@ export class NotifierService {
   }
 
   public notify(action: string) {
-    this.pageList.push(action);
-    this.pageChanged$.emit(action + "New");
+    let pageListLength = this.pageList.length;
+    if((pageListLength > 0 && this.pageList[pageListLength - 1] !== action) || pageListLength === 0){
+      this.pageList.push(action);
+      console.log(action);
+      this.pageChanged$.emit(action + "New");
+    }
   }
 
   public clear() {

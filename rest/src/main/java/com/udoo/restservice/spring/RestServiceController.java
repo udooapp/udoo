@@ -7,15 +7,13 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
+import com.udoo.restservice.email.EmailServiceImp;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
-import org.apache.catalina.Server;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.omg.CORBA.ServerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -52,7 +50,10 @@ public class RestServiceController implements IRestServiceController {
 
     public static final String USERID = "UID";
     @Autowired
-    Environment env;
+    private Environment env;
+
+    @Autowired
+    private EmailServiceImp emailServiceImp;
 
     @Resource
     private IUserRepository userRepository;

@@ -28,7 +28,6 @@ export class PasswordComponent {
     notifier.notify(PasswordComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == PasswordComponent.NAME) {
-        notifier.back();
         router.navigate([AppRoutingModule.PROFILE]);
       }
     })

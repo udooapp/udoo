@@ -10,6 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -26,7 +29,7 @@ import java.util.Properties;
 public class PersistenceConfig {
 
     @Autowired
-    Environment env;
+    private Environment env;
 
     private static final String PROPERTY_HIBERNATE_DIALECT = "hibernate.dialect";
     private static final String PROPERTY_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
@@ -72,5 +75,12 @@ public class PersistenceConfig {
         final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(factory.getObject());
         return transactionManager;
+    }
+
+    @Bean
+    public SimpleMailMessage templateSimpleMessage() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setText("This is the test email template for your email:\n%s\n");
+        return message;
     }
 }

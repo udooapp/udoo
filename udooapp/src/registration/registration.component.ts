@@ -111,7 +111,6 @@ export class RegistrationComponent {
         this.userService.registrateUser(this.user)
           .subscribe(
             message => {
-              this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
               this.router.navigate([AppRoutingModule.LOGIN]);
             },

@@ -87,7 +87,6 @@ export class RequestComponent implements OnInit {
     if (this.checkValidation()) {
       this.requestService.saveRequest(this.data).subscribe(
         message => {
-          this.notifier.back();
           this.notifier.pageChanged$.emit(' ');
           this.router.navigate([AppRoutingModule.REQUEST_LIST]);
         },
@@ -175,7 +174,6 @@ export class RequestComponent implements OnInit {
   public deleteService() {
     this.requestService.deleteUserRequest(this.data.rid).subscribe(
       ok => {
-        this.notifier.back();
         this.notifier.pageChanged$.emit(' ');
         this.router.navigate([AppRoutingModule.REQUEST_LIST]);
       },
