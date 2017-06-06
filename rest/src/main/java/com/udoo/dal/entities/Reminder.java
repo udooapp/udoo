@@ -20,6 +20,12 @@ public class Reminder {
 
     String token;
 
+    public Reminder(){
+        this.rid = -1;
+        this.uid = -1;
+        this.expiryDate = null;
+        this.token = "";
+    }
     public Reminder(int uid, String token, Date expiryDate){
         this.uid = uid;
         this.token = token;

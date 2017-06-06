@@ -24,35 +24,37 @@ import {FileInputComponent} from "../layout_elements/fileInput/fileinput.compone
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 import {ContactsComponent} from "../contacts/contact.component";
 import {NotifierService} from "../services/notify.service";
+import {ReminderComponent} from "../reminder/reminder.component";
 
 @NgModule({
-      declarations: [
-      AppComponent,
-      MapComponent,
-      RegistrationComponent,
-      LoginComponent,
-      ProfileComponent,
-      PasswordComponent,
-      OfferComponent,
-      RequestComponent,
-      RequestListComponent,
-      OfferListComponent,
-      ContactsComponent,
-      LocationComponent,
-      TextInputComponent,
-      TextAreaComponent,
-      SelectInputComponent,
-      FileInputComponent,
-      ServiceDetailComponent
-    ],
-    imports: [
-      BrowserModule,
-      FormsModule,
-      HttpModule,
-      AppRoutingModule
-    ],
-   providers: [AuthGuard, TokenService, NotifierService],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    MapComponent,
+    RegistrationComponent,
+    LoginComponent,
+    ProfileComponent,
+    PasswordComponent,
+    OfferComponent,
+    RequestComponent,
+    RequestListComponent,
+    OfferListComponent,
+    ContactsComponent,
+    LocationComponent,
+    TextInputComponent,
+    TextAreaComponent,
+    SelectInputComponent,
+    FileInputComponent,
+    ServiceDetailComponent,
+    ReminderComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    AppRoutingModule
+  ],
+  providers: [AuthGuard, TokenService, NotifierService],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

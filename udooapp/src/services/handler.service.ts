@@ -15,6 +15,8 @@ export class HandlerService {
         case 0:
           errMsg = 'No internet connection';
           break;
+        case 400:
+          errMsg = 'Invalid parameter';
         case 408:
           errMsg = 'Time out';
           break;
@@ -68,7 +70,7 @@ export class HandlerService {
           errMsg = 'Not found';
           break;
         case 401:
-          errMsg = 'Incorrect password or data';
+          errMsg = 'Incorrect data or data';
           break;
         case 498:
           errMsg = 'Invalid token';

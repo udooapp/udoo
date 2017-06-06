@@ -48,13 +48,13 @@ export class LoginComponent {
             this.router.navigate([AppRoutingModule.MAP]);
             } else {
               err += message;
-              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' : err === "Unauthorized" ? 'Incorrect email or password' : err;
+              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or data' : 'Please try again later' : err === "Unauthorized" ? 'Incorrect email or data' : err;
             }
           },
           error => {
             err += error;
             this.notifier.notifyError(err);
-            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or password' : 'Please try again later' :  err === "Unauthorized" ? 'Incorrect email or password' : err;
+            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or data' : 'Please try again later' :  err === "Unauthorized" ? 'Incorrect email or data' : err;
           }
         );
     } else {

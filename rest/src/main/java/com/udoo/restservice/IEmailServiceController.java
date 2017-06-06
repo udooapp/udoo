@@ -16,4 +16,6 @@ public interface IEmailServiceController {
 
     ResponseEntity<String> changePassword(String data);
 
+    ResponseEntity<String> checkReminder(String token);
+
 }

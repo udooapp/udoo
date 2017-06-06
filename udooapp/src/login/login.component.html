@@ -8,7 +8,7 @@
     <input type="submit" value="Login" class="input-button button-dark" (click)="login()"/>
     <div class="error-message response-message">{{error}}</div>
   </form>
-  <p class="input-link">Forgot password?</p>
+  <p class="input-link" routerLink="/reminder" routerLinkActive="active">Forgot password?</p>
   <div class="social-container">
     <input type="submit" value="Login with Facebook" class="social-button button-facebook"/>
     <input type="submit" value="Login with Google" class="social-button button-google"/>

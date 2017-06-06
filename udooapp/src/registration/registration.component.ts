@@ -82,7 +82,7 @@ export class RegistrationComponent {
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
-        this.error = 'Invalid password';
+        this.error = 'Invalid data';
       } else {
         this.error = '';
       }
@@ -120,7 +120,7 @@ export class RegistrationComponent {
             });
 
       } else {
-        this.error = 'Invalid password';
+        this.error = 'Invalid data';
       }
     } else {
       this.error = 'Invalid or empty value';

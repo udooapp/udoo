@@ -110,7 +110,7 @@ export class ProfileComponent implements OnInit {
     this.passwordVerification = event;
     if (this.user.password.length > 5) {
       if (this.user.password !== event) {
-        this.error = 'Invalid password';
+        this.error = 'Invalid data';
       } else {
         this.error = '';
       }

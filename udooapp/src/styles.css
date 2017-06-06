@@ -101,6 +101,7 @@ body {
 }
 
 .input-link {
+  cursor: pointer;
   text-align: center;
   color: #378281;
   text-decoration: none;

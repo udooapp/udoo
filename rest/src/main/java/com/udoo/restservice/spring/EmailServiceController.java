@@ -48,10 +48,28 @@ public class EmailServiceController implements IEmailServiceController {
     }
 
     @Override
+    @RequestMapping(value = "/valid", method = RequestMethod.POST)
+    public ResponseEntity<String> checkReminder(@RequestBody String token) {
+        if (token != null && token.startsWith("{\"token\":\"")) {
+            Reminder reminder = reminderRepository.getByToken(token.substring(10, token.length() - 2));
+            if (reminder != null) {
+                if (0 > new Date().compareTo(reminder.getExpiryDate())) {
+                    return new ResponseEntity<>("Valid!", HttpStatus.OK);
+                } else {
+                    reminderRepository.deleteByRid(reminder.getRid());
+                    return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
+                }
+            }
+            return new ResponseEntity<>("Invalid email address", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+
+    }
+    @Override
     @RequestMapping(value = "/reminder", method = RequestMethod.POST)
     public ResponseEntity<String> sendPasswordReminder(@RequestBody String email) {
-        if (email != null && email.startsWith("{email:\"")) {
-            User user = userRepository.getByEmail(email.substring(8, email.length() - 2));
+        if (email != null && email.startsWith("{\"email\":\"")) {
+            User user = userRepository.getByEmail(email.substring(10, email.length() - 2));
             if (user != null) {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE, 1);
@@ -61,7 +79,7 @@ public class EmailServiceController implements IEmailServiceController {
                                 cal.getTime());
                 reminderRepository.save(reminder);
                 emailServiceImp.sendEmailPasswordReminder(user.getEmail(), user.getName(), "http://localhost:4200/reminder/" + reminder.getToken());
-                return new ResponseEntity<>("Email sent!", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Email sent!", HttpStatus.OK);
             }
             return new ResponseEntity<>("Invalid email address", HttpStatus.NOT_FOUND);
         }
@@ -70,21 +88,21 @@ public class EmailServiceController implements IEmailServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/check", method = RequestMethod.POST)
+    @RequestMapping(value = "/password", method = RequestMethod.POST)
     public ResponseEntity<String> changePassword(@RequestBody String data) {
-
         if (data != null) {
             try {
                 JSONObject object = new JSONObject(data);
                 Reminder reminder = reminderRepository.getByToken(object.getString("token"));
+                System.out.println("Token: " + reminder.getToken());
                 String password = object.getString("password");
                 if (reminder != null && password != null) {
                     if (0 > new Date().compareTo(reminder.getExpiryDate())) {
                         reminderRepository.deleteByRid(reminder.getRid());
                         User user = userRepository.findByUid(reminder.getUid());
                         user.setPassword(password);
-                        emailServiceImp.sendEmailPasswordReminder(user.getEmail(), user.getName(), "http://localhost:4200/reminder/" + reminder.getToken());
-                        return new ResponseEntity<>("Password changed!", HttpStatus.NOT_FOUND);
+                        userRepository.save(user);
+                        return new ResponseEntity<>("Password changed!", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("Token expired", HttpStatus.UNAUTHORIZED);
                     }

@@ -47,7 +47,7 @@ export class PasswordComponent {
       this.userService.changePassword(this.currentpassword, this.password).subscribe(
         message => this.message = message,
         error => {
-          this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error;
+          this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect emailAddress' : 'Please try again later' : <any>error;
           this.notifier.notifyError(error.toString());
         });
     } else {

@@ -13,6 +13,7 @@ import {AuthGuard} from "../guard/AuthGuard";
 import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 import {ContactsComponent} from "../contacts/contact.component";
 import {puts} from "util";
+import {ReminderComponent} from "../reminder/reminder.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -28,6 +29,8 @@ const routes: Routes = [
   {path: 'requestlist', component: RequestListComponent, canActivate: [AuthGuard]},
   {path: 'offerlist', component: OfferListComponent, canActivate: [AuthGuard]},
   {path: 'map', component: MapComponent},
+  {path: 'reminder', component: ReminderComponent},
+  {path: 'reminder/:token', component: ReminderComponent},
   {path: 'contact', component: ContactsComponent, canActivate: [AuthGuard]},
   {path: 'detail/:id/:type', component: ServiceDetailComponent},
   {path: '**', redirectTo:'/map'}
@@ -40,7 +43,7 @@ export class AppRoutingModule {
   public static LOGIN: string = '/login';
   public static REGISTRATION: string = '/registration';
   public static PROFILE: string = '/profile';
-  public static PASSWORD: string = '/password';
+  public static PASSWORD: string = '/data';
   public static OFFER: string = '/offer';
   public static REQUEST: string = '/request';
   public static OFFER_TYPE: string = '/offer/';
@@ -50,4 +53,5 @@ export class AppRoutingModule {
   public static MAP: string = '/map';
   public static CONTACT: string = '/contact';
   public static DETAIL: string = '/detail/';
+  public static REMINDER: string = '/reminder';
 }
