@@ -31,21 +31,21 @@ export class OfferService {
   }
   public saveOffer(offer: Offer): Observable<String> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/saveoffer', JSON.stringify(offer), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/offer/user/saveoffer', JSON.stringify(offer), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   public getUserOffer(): Observable<Offer[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/user/offer', new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/offer/user/offer', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   public deleteUserOffer(id: number): Observable<string> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/deleteoffer', JSON.stringify({
+    return this.http.post(config.server + '/offer/user/deleteoffer', JSON.stringify({
       id: id
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)

@@ -24,13 +24,13 @@ export class MapService {
   }
 
   public getOfferLocations(category: number, searchText: string): Observable<Offer[]> {
-    return this.http.get(config.server + '/offers/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/offer/offers/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
 
   public getRequestLocations(category: number, searchText: string): Observable<Request[]> {
-    return this.http.get(config.server + '/requests/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/request/requests/' + category + '/' + (searchText ? searchText : ''), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }

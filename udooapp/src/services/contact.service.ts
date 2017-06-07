@@ -34,7 +34,7 @@ export class ContactService {
       return Observable.throw('First, login');
     }
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/addcontact', JSON.stringify({
+    return this.http.post(config.server + '/contact/addcontact', JSON.stringify({
       id: uid,
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
@@ -43,14 +43,14 @@ export class ContactService {
 
   public getContacts(): Observable<any[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/user/contacts', new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/contact/contacts', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   public removeContact(uid: number): Observable<string> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/deleteContact/', JSON.stringify({
+    return this.http.post(config.server + '/contact/deleteContact/', JSON.stringify({
       id: uid
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)

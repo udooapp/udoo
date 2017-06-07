@@ -13,7 +13,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -60,16 +59,7 @@ public class RestServiceController implements IRestServiceController {
     private IUserRepository userRepository;
 
     @Resource
-    private IOfferRepository offerRepository;
-
-    @Resource
-    private IRequestRepository requestRepository;
-
-    @Resource
     private ICategoryRepository categoryRepository;
-
-    @Resource
-    private IContactRepository contactRepository;
 
     @Resource
     private ITokenRepository tokenRepository;
@@ -98,7 +88,6 @@ public class RestServiceController implements IRestServiceController {
         }
         return new ResponseEntity<>("Invalid data", HttpStatus.BAD_REQUEST);
     }
-
 
     @Override
     @RequestMapping(value = "/user/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -202,158 +191,6 @@ public class RestServiceController implements IRestServiceController {
         }
     }
 
-    @RequestMapping(value = "/request/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
-
-        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
-    }
-
-    @Override
-    @RequestMapping(value = "/user/request", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request) {
-        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-        if (user != null) {
-            return new ResponseEntity<>(requestRepository.findByUid(user.getUid()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-    }
-
-    @RequestMapping(value = "/user/deleterequest", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> deleteUserRequest(ServletRequest req, @RequestBody String request) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(request);
-            Integer id = mapper.convertValue(node.get("id"), Integer.class);
-            if (id > 0) {
-                if (requestRepository.findByRid(id).getUid() == Integer.parseInt(req.getAttribute(USERID).toString())) {
-                    int succes = requestRepository.deleteByRid(id);
-                    if (succes > -1) {
-                        return new ResponseEntity<>("Request deleted", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                } else {
-                    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-                }
-            }
-            return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
-        } catch (IOException e) {
-            return new ResponseEntity<>("Invalid body", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-    @Override
-    @RequestMapping(value = "/user/offer", method = RequestMethod.GET)
-    public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request) {
-        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-        if (user != null) {
-            return new ResponseEntity<>(offerRepository.findByUid(user.getUid()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @RequestMapping(value = "/user/addcontact", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> addContact(ServletRequest request, @RequestBody String req) throws JSONException {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(req);
-            Integer id = mapper.convertValue(node.get("id"), Integer.class);
-            if (id > 0) {
-                User user = userRepository.findByUid(id);
-                if (user.getUid() > -1) {
-                    User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-                    if (currentUser != null && currentUser.getUid() > 0) {
-                        if (!currentUser.getUid().equals(user.getUid())) {
-                            contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
-                            return new ResponseEntity<>("Success", HttpStatus.OK);
-                        } else {
-                            return new ResponseEntity<>("It's you are!", HttpStatus.OK);
-                        }
-                    }
-                }
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
-    }
-
-    @RequestMapping(value = "/user/contacts", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<?> getContacts(ServletRequest request) throws JSONException {
-        User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-        if (currentUser != null && currentUser.getUid() > 0) {
-            List<Contact> contact = contactRepository.findByUid(currentUser.getUid());
-            List<User> users = new ArrayList<>();
-            for (Contact cont : contact) {
-                User usr = userRepository.findByUid(cont.getCid());
-                if (usr != null) {
-                    users.add(usr);
-                }
-            }
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Something wrong", HttpStatus.UNAUTHORIZED);
-    }
-
-    @RequestMapping(value = "/user/deleteContact", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<?> deleteContacts(ServletRequest request, @RequestBody String req) throws JSONException {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(req);
-            Integer id = mapper.convertValue(node.get("id"), Integer.class);
-            if (id > 0) {
-                User user = userRepository.findByUid(id);
-                if (user.getUid() > -1) {
-                    User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-                    if (currentUser != null && currentUser.getUid() > 0) {
-                        contactRepository.deleteByIds(currentUser.getUid(), user.getUid());
-                        return new ResponseEntity<>("Contact removed", HttpStatus.OK);
-                    }
-                }
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
-    }
-
-    @RequestMapping(value = "/user/deleteoffer", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> deleteUserOffer(ServletRequest req, @RequestBody String request) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(request);
-            Integer id = mapper.convertValue(node.get("id"), Integer.class);
-            if (id > 0) {
-                if (offerRepository.findByOid(id).getUid() == Integer.parseInt(req.getAttribute(USERID).toString())) {
-                    int succes = offerRepository.deleteByOid(id);
-                    if (succes > -1) {
-                        return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                } else {
-                    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-        return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
-    }
-
     @Override
     @RequestMapping(value = "/user/password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePassword(ServletRequest request, @RequestBody String req) {
@@ -376,129 +213,6 @@ public class RestServiceController implements IRestServiceController {
             System.out.println(e.toString());
         }
         return new ResponseEntity<>("Incorrect parameter", HttpStatus.NOT_MODIFIED);
-    }
-
-
-    @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Offer> getOffer(@PathVariable("id") int id) {
-        return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
-    }
-
-    @Override
-    @RequestMapping(value = "/user/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody Offer offer) {
-        if (offer != null) {
-            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-            if (user != null) {
-                offer.setUid(user.getUid());
-                offerRepository.save(offer);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
-        }
-
-    }
-
-    @Override
-    @RequestMapping(value = "/user/saverequest", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveRequest(ServletRequest req, @RequestBody Request request) {
-        if (request != null) {
-
-            User user = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
-            if (user != null) {
-                request.setUid(user.getUid());
-                requestRepository.save(request);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid user", HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
-        }
-
-    }
-
-    @Override
-    @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category,
-                                          @PathVariable("searchText") String searchText) {
-        List<Offer> offers;
-        if (category >= 0) {
-            offers = offerRepository.findAllMatches(category, searchText);
-        } else {
-            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-        }
-        for (Offer offer : offers) {
-            User usr = userRepository.findByUid(offer.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                offer.setImage(usr.getPicture());
-            } else {
-                offer.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(offers, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
-        List<Offer> offers;
-        if (category >= 0) {
-            offers = offerRepository.findAllActualByCategory(category);
-        } else {
-            offers = offerRepository.findAllActual();
-        }
-        for (Offer offer : offers) {
-            User usr = userRepository.findByUid(offer.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                offer.setImage(usr.getPicture());
-            } else {
-                offer.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(offers, HttpStatus.OK);
-    }
-
-    @Override
-    @RequestMapping(value = "/requests/{category}/{searchText}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
-                                            @PathVariable("searchText") String searchText) {
-        List<Request> requests;
-        if (category > 0) {
-            requests = requestRepository.findAllMatches(category, searchText);
-        } else {
-            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-        }
-        for (Request request : requests) {
-            User usr = userRepository.findByUid(request.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                request.setImage(usr.getPicture());
-            } else {
-                request.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(requests, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
-        List<Request> requests;
-        if (category > 0) {
-            requests = requestRepository.findAllActualByCategory(category);
-        } else {
-            requests = requestRepository.findAllActual();
-        }
-        for (Request request : requests) {
-            User usr = userRepository.findByUid(request.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                request.setImage(usr.getPicture());
-            } else {
-                request.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }
 
     @Bean

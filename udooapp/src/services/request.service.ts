@@ -28,21 +28,21 @@ export class RequestService {
   }
   public saveRequest(request: Request): Observable<String> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/saverequest', JSON.stringify(request), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/request/user/saverequest', JSON.stringify(request), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   public getUserRequest(): Observable<Request[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/user/request', new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/request/user/request', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
   public deleteUserRequest(id: number): Observable<string> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/user/deleterequest', JSON.stringify({
+    return this.http.post(config.server + '/request/user/deleterequest', JSON.stringify({
       id: id
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)

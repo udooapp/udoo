@@ -2,7 +2,6 @@ package com.udoo.restservice;
 
 
 import com.udoo.dal.entities.Offer;
-import com.udoo.dal.entities.Request;
 import com.udoo.dal.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,27 +22,15 @@ public interface IRestServiceController {
 
     String getUserName(final Integer id);
 
-    ResponseEntity<?> getAllUserRequest(ServletRequest request);
-
-    ResponseEntity<?> getAllUserOffer(ServletRequest request);
-
-    ResponseEntity<String> saveOffer(ServletRequest request, Offer offer);
-
-    ResponseEntity<String> saveRequest(ServletRequest req, Request request);
-
     ResponseEntity<String> updatePassword(ServletRequest request, String req);
 
     ResponseEntity<String> updateUser(ServletRequest request, final User user);
 
     User getUser(final String id);
 
-    ResponseEntity<?> getAllOffers(int category, String searchText);
-
-
     void getImage(String name, HttpServletResponse response) throws IOException;
 
     ResponseEntity<?> upload(MultipartFile inputFile);
 
     ResponseEntity<?> multiFileUpload(MultipartFile[] files);
-    ResponseEntity<?> getAllRequests(int category, String searchText);
 }
