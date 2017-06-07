@@ -25,6 +25,7 @@ import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
 import {ContactsComponent} from "../contacts/contact.component";
 import {NotifierService} from "../services/notify.service";
 import {ReminderComponent} from "../reminder/reminder.component";
+import {VerificationComponent} from "../verification/verification.component";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {ReminderComponent} from "../reminder/reminder.component";
     SelectInputComponent,
     FileInputComponent,
     ServiceDetailComponent,
-    ReminderComponent
+    ReminderComponent,
+    VerificationComponent
   ],
   imports: [
     BrowserModule,

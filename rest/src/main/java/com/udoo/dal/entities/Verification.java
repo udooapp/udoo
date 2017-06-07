@@ -9,10 +9,10 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "Reminders")
-public class Reminder {
+@Table(name = "Verification")
+public class Verification {
     @Id
-    private int rid;
+    private int vid;
 
     private int uid;
 
@@ -20,25 +20,25 @@ public class Reminder {
 
     private String token;
 
-    public Reminder() {
-        this.rid = -1;
+    public Verification() {
+        this.vid = -1;
         this.uid = -1;
         this.expiryDate = null;
         this.token = "";
     }
 
-    public Reminder(int uid, String token, Date expiryDate) {
+    public Verification(int uid, String token, Date expiryDate) {
         this.uid = uid;
         this.token = token;
         this.expiryDate = expiryDate;
     }
 
-    public int getRid() {
-        return rid;
+    public int getVid() {
+        return vid;
     }
 
-    public void setRid(int rid) {
-        this.rid = rid;
+    public void setVid(int vid) {
+        this.vid = vid;
     }
 
     public int getUid() {

@@ -80,13 +80,6 @@ export class RegistrationComponent {
 
   public onKey(event: any) { // without type info
     this.passwordVerification = event;
-    if (this.user.password.length > 5) {
-      if (this.user.password !== event) {
-        this.error = 'Invalid data';
-      } else {
-        this.error = '';
-      }
-    }
   }
 
   public onClickCancel() {
@@ -120,7 +113,7 @@ export class RegistrationComponent {
             });
 
       } else {
-        this.error = 'Invalid data';
+        this.error = 'Different passwords';
       }
     } else {
       this.error = 'Invalid or empty value';

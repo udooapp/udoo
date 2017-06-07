@@ -21,10 +21,12 @@ export class LoginComponent {
   message: String;
   user = new User(null, '', '', '', '', '', 0, 0, '');
   error: string;
-  emptyValidator : IValidator = new EmptyValidator();
-  emailValidator : IValidator = new EmailValidator();
-  passwordValidator : IValidator = new PasswordValidator();
+  emptyValidator: IValidator = new EmptyValidator();
+  emailValidator: IValidator = new EmailValidator();
+  passwordValidator: IValidator = new PasswordValidator();
   valid = [false, false];
+  activate: boolean = false;
+
   constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
 
   }
@@ -37,24 +39,20 @@ export class LoginComponent {
     }
     return true;
   }
+
   public login() {
     if (this.checkValidation()) {
       this.error = '';
-      let err: string ='';
       this.userService.loginUser(this.user)
         .subscribe(
-          message => {
-            if(message.length == 0){
-            this.router.navigate([AppRoutingModule.MAP]);
-            } else {
-              err += message;
-              this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or data' : 'Please try again later' : err === "Unauthorized" ? 'Incorrect email or data' : err;
-            }
-          },
+          message =>
+            this.router.navigate([AppRoutingModule.MAP]),
           error => {
-            err += error;
-            this.notifier.notifyError(err);
-            this.error = err.match(/[0-9]{3}/) ? err.match('401') ? 'Incorrect email or data' : 'Please try again later' :  err === "Unauthorized" ? 'Incorrect email or data' : err;
+            this.notifier.notifyError(error);
+            this.error = error;
+            if(this.error = 'Please activate your account!'){
+              this.activate = true;
+            }
           }
         );
     } else {

@@ -11,11 +11,11 @@ import {EmailValidator} from "../validator/email.validator";
 import {ReminderService} from "../services/reminder.service";
 
 @Component({
-  templateUrl: './reminder.component.html',
-  styleUrls: ['./reminder.component.css'],
+  templateUrl: './verification.component.html',
+  styleUrls: ['./verification.component.css'],
   providers: [ReminderService]
 })
-export class ReminderComponent implements OnInit {
+export class VerificationComponent implements OnInit {
   private static NAME: string = 'Reminder';
   message: string = '';
   error = '';
@@ -25,13 +25,13 @@ export class ReminderComponent implements OnInit {
   emailValidator: IValidator = new EmailValidator();
   emptyValidator: IValidator = new EmptyValidator();
   token: string = '';
-  reminder: boolean = false;
+  verification: boolean = false;
   invalid: boolean = false;
 
   constructor(private reminderService: ReminderService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute) {
-    notifier.notify(ReminderComponent.NAME);
+    notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
-      if (action == ReminderComponent.NAME) {
+      if (action == VerificationComponent.NAME) {
         router.navigate([AppRoutingModule.LOGIN]);
       }
     })
@@ -41,14 +41,15 @@ export class ReminderComponent implements OnInit {
     this.route.params
       .subscribe((params: Params) => {
         this.token = params['token'];
-        if(this.token != null && this.token.length > 0) {
-          this.reminder = true;
-          this.emailValidator = new PasswordValidator();
-          this.reminderService.checkToken(this.token).subscribe(
-            message => this.message = '',
+        if (this.token != null && this.token.length > 0) {
+          this.verification = true;
+          this.reminderService.checkVerification(this.token).subscribe(
+            message =>
+              this.message="Your account is active!",
             error => {
               this.notifier.notifyError(error);
-              this.error = 'This link is expired!';
+              this.error = error;
+              this.message = '';
               this.invalid = true
             }
           );
@@ -62,25 +63,13 @@ export class ReminderComponent implements OnInit {
   public send() {
     if (!this.invalid) {
       if (this.valid) {
-        if(this.token.length === 0) {
-          this.reminderService.sendReminder(this.data).subscribe(
+        if (this.token.length === 0) {
+          this.reminderService.sendVerification(this.data).subscribe(
             message => {
-              this.message = message + '\nCheck your email address!';
+              this.message = message;
               this.error = '';
             },
             error => {
-              this.error = error;
-              this.message = '';
-            }
-          );
-        } else {
-          this.reminderService.sendNewPassword(this.data, this.token).subscribe(
-            message => {
-              this.router.navigate([AppRoutingModule.LOGIN]);
-              this.error = '';
-            },
-            error => {
-              this.notifier.notifyError(error);
               this.error = error;
               this.message = '';
             }

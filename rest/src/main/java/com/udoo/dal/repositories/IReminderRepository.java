@@ -19,4 +19,9 @@ public interface IReminderRepository extends Repository<Reminder, Integer> {
     @Transactional
     @Query("delete from Reminder r where r.rid= ?1")
     int deleteByRid(int rid);
+
+    @Modifying
+    @Transactional
+    @Query("delete from Reminder r where r.uid= ?1")
+    int deleteByUid(int uid);
 }

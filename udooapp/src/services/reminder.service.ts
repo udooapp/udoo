@@ -14,19 +14,32 @@ export class ReminderService {
   constructor(private http: Http) {
   }
 
-  public sendReminder(email : string): Observable<string> {
-    return this.http.post(config.server + '/mail/reminder', JSON.stringify({email:email}))
+  public sendReminder(email: string): Observable<string> {
+    return this.http.post(config.server + '/mail/reminder', JSON.stringify({email: email}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
-  public sendNewPassword(password : string, token: string): Observable<string> {
-    return this.http.post(config.server + '/mail/password', JSON.stringify({password:password, token: token}))
+  public sendVerification(email: string): Observable<string> {
+    return this.http.post(config.server + '/mail/verification', JSON.stringify({email: email}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
-  public checkToken(token : string): Observable<string> {
-    return this.http.post(config.server + '/mail/valid', JSON.stringify({token:token}))
+
+  public checkVerification(token: string): Observable<string> {
+    return this.http.post(config.server + '/mail/verification/valid', JSON.stringify({token: token}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleErrorText);
+  }
+
+  public sendNewPassword(password: string, token: string): Observable<string> {
+    return this.http.post(config.server + '/mail/reminder/password', JSON.stringify({password: password, token: token}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
+  }
+
+  public checkToken(token: string): Observable<string> {
+    return this.http.post(config.server + '/mail/reminder/valid', JSON.stringify({token: token}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }

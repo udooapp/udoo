@@ -1,0 +1,8 @@
+CREATE TABLE Verification(
+	VID INT NOT NUll AUTO_INCREMENT,
+    UID INT NOT NULL,
+    Token VARCHAR(500) NOT NULL,
+    expirydate DATE NOT NULL,
+    PRIMARY KEY (VID),
+    CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
+);

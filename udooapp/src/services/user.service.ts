@@ -37,15 +37,14 @@ export class UserService {
         let token = response.text();
         if (token) {
           this.tokenService.saveToken(token);
-          // return true to indicate successful login
           return '';
-        } else {
-          return HandlerService.handleText(response);
         }
       }).catch((response: Response) => {
-        return HandlerService.handleText(response)
+        return HandlerService.handleErrorText(response)
       });
   }
+
+
 
   public updateUser(user: User): Observable<String> {
     this.refreshHeaderToken();
@@ -55,6 +54,7 @@ export class UserService {
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
+
   public getUserData(): Observable<User> {
     this.refreshHeaderToken();
     return this.http.get(config.server + '/user/userdata', new RequestOptions({headers: this.headers}))
@@ -91,6 +91,7 @@ export class UserService {
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText)
   }
+
   private refreshHeaderToken(): void {
     if (!this.headers.has(HandlerService.AUTHORIZATION)) {
       this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);

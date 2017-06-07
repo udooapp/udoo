@@ -18,4 +18,9 @@ public interface IEmailServiceController {
 
     ResponseEntity<String> checkReminder(String token);
 
+    ResponseEntity<String> sendEmailVerification(String email);
+
+    ResponseEntity<String> checkVerification(String token);
+
+
 }

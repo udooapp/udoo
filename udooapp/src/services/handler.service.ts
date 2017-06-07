@@ -52,7 +52,37 @@ export class HandlerService {
   public static extractData(res: Response) {
     return JSON.parse(res.text()) || {};
   }
-
+  public static handleErrorText(error: Response | any) {
+    let errMsg: string;
+    if (error instanceof Response) {
+      switch (error.status) {
+        case 0:
+          errMsg = 'No internet connection';
+          break;
+        case 408:
+          errMsg = 'Time out! Please, try again later';
+          break;
+        case 404:
+          errMsg = error.text() + '!';
+          break;
+        case 500:
+          errMsg = 'Server error';
+          break;
+        case 503:
+          errMsg = 'Service Unavailable! Please, try again later';
+          break;
+        default:
+          if(error.status >= 500 && error.status < 600){
+            errMsg = 'Server error';
+          } else {
+            errMsg = error.text();
+          }
+      }
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    return Observable.throw(errMsg);
+  }
   public static handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;

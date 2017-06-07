@@ -49,6 +49,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class RestServiceController implements IRestServiceController {
 
     public static final String USERID = "UID";
+
     @Autowired
     private Environment env;
 
@@ -73,6 +74,8 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private ITokenRepository tokenRepository;
 
+    @Resource
+    private IVerificationRepository verificationRepository;
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveUser(@RequestBody final User user) {
@@ -83,7 +86,12 @@ public class RestServiceController implements IRestServiceController {
             if (userRepository.findByEmail(user.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
-                userRepository.save(user);
+                User user2 = userRepository.save(user);
+                String token = generateToken();
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, 1);
+                verificationRepository.save(new Verification(user2.getUid(), token, cal.getTime()));
+                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(),token);
                 return new ResponseEntity<>("Registration complete", HttpStatus.OK);
             }
         }
@@ -121,7 +129,7 @@ public class RestServiceController implements IRestServiceController {
         if (token != null) {
             token.setDisable(true);
             tokenRepository.save(token);
-            return new ResponseEntity<>("Succes", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("Success", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>("Incorrect parameter", HttpStatus.UNAUTHORIZED);
     }
@@ -133,24 +141,24 @@ public class RestServiceController implements IRestServiceController {
 
         if (user2 != null) {
             if (user2.getPassword().equals(user.getPassword())) {
-                List<Token> tokens = tokenRepository.findByUid(user2.getUid());
-                Token token = null;
-                for (Token tok : tokens) {
-                    if (tok.isDisable()) {
-                        token = tok;
+                    List<Token> tokens = tokenRepository.findByUid(user2.getUid());
+                    Token token = null;
+                    for (Token tok : tokens) {
+                        if (tok.isDisable()) {
+                            token = tok;
+                        }
                     }
-                }
-                Calendar c = Calendar.getInstance();
-                c.setTime(new Date());
-                c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
-                if (token == null) {
-                    token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
-                } else {
-                    token.setExpirydate(c.getTime());
-                    token.setDisable(false);
-                    token = tokenRepository.save(token);
-                }
-                return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
+                    if (token == null) {
+                        token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
+                    } else {
+                        token.setExpirydate(c.getTime());
+                        token.setDisable(false);
+                        token = tokenRepository.save(token);
+                    }
+                    return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }

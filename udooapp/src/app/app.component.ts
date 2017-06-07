@@ -150,7 +150,7 @@ export class AppComponent implements OnInit {
         this.tokenService.clearToken()
       },
       error => {
-        // this.tokenService.clearToken();
+        //this.tokenService.clearToken();
         console.log("Error:" + error);
       }
     );
