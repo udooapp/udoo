@@ -76,6 +76,7 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IVerificationRepository verificationRepository;
+
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveUser(@RequestBody final User user) {
@@ -91,7 +92,7 @@ public class RestServiceController implements IRestServiceController {
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE, 1);
                 verificationRepository.save(new Verification(user2.getUid(), token, cal.getTime()));
-                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(),token);
+                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), token);
                 return new ResponseEntity<>("Registration complete", HttpStatus.OK);
             }
         }
@@ -141,24 +142,24 @@ public class RestServiceController implements IRestServiceController {
 
         if (user2 != null) {
             if (user2.getPassword().equals(user.getPassword())) {
-                    List<Token> tokens = tokenRepository.findByUid(user2.getUid());
-                    Token token = null;
-                    for (Token tok : tokens) {
-                        if (tok.isDisable()) {
-                            token = tok;
-                        }
+                List<Token> tokens = tokenRepository.findByUid(user2.getUid());
+                Token token = null;
+                for (Token tok : tokens) {
+                    if (tok.isDisable()) {
+                        token = tok;
                     }
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(new Date());
-                    c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
-                    if (token == null) {
-                        token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
-                    } else {
-                        token.setExpirydate(c.getTime());
-                        token.setDisable(false);
-                        token = tokenRepository.save(token);
-                    }
-                    return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
+                }
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
+                if (token == null) {
+                    token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
+                } else {
+                    token.setExpirydate(c.getTime());
+                    token.setDisable(false);
+                    token = tokenRepository.save(token);
+                }
+                return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }
@@ -432,7 +433,11 @@ public class RestServiceController implements IRestServiceController {
         }
         for (Offer offer : offers) {
             User usr = userRepository.findByUid(offer.getUid());
-            offer.setImage(usr.getPicture());
+            if (usr != null && usr.getPicture() != null) {
+                offer.setImage(usr.getPicture());
+            } else {
+                offer.setImage("");
+            }
         }
         return new ResponseEntity<Object>(offers, HttpStatus.OK);
     }
@@ -447,7 +452,11 @@ public class RestServiceController implements IRestServiceController {
         }
         for (Offer offer : offers) {
             User usr = userRepository.findByUid(offer.getUid());
-            offer.setImage(usr.getPicture());
+            if (usr != null && usr.getPicture() != null) {
+                offer.setImage(usr.getPicture());
+            } else {
+                offer.setImage("");
+            }
         }
         return new ResponseEntity<Object>(offers, HttpStatus.OK);
     }
@@ -464,7 +473,11 @@ public class RestServiceController implements IRestServiceController {
         }
         for (Request request : requests) {
             User usr = userRepository.findByUid(request.getUid());
-            request.setImage(usr.getPicture());
+            if (usr != null && usr.getPicture() != null) {
+                request.setImage(usr.getPicture());
+            } else {
+                request.setImage("");
+            }
         }
         return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }
@@ -479,7 +492,11 @@ public class RestServiceController implements IRestServiceController {
         }
         for (Request request : requests) {
             User usr = userRepository.findByUid(request.getUid());
-            request.setImage(usr.getPicture());
+            if (usr != null && usr.getPicture() != null) {
+                request.setImage(usr.getPicture());
+            } else {
+                request.setImage("");
+            }
         }
         return new ResponseEntity<Object>(requests, HttpStatus.OK);
     }

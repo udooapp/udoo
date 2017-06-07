@@ -25,7 +25,6 @@ export class LoginComponent {
   emailValidator: IValidator = new EmailValidator();
   passwordValidator: IValidator = new PasswordValidator();
   valid = [false, false];
-  activate: boolean = false;
 
   constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
 
@@ -50,9 +49,6 @@ export class LoginComponent {
           error => {
             this.notifier.notifyError(error);
             this.error = error;
-            if(this.error = 'Please activate your account!'){
-              this.activate = true;
-            }
           }
         );
     } else {

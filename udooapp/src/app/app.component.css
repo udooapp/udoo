@@ -92,6 +92,15 @@
     margin-left: 10%;
   }
 }
+.account-activation{
+  width: 100%;
+  height: 20px;
+  padding: 5px;
+  text-align: center;
+  background-color: #4A9594;
+  color: #FFFFFF;
+  z-index: 1;
+}
 .error-background{
   position: absolute;
   top:0;
