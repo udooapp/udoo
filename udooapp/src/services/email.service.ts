@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -9,7 +9,7 @@ import {HandlerService} from "./handler.service";
 import {config} from "../config/url.config";
 
 @Injectable()
-export class ReminderService {
+export class EmailService {
 
   constructor(private http: Http) {
   }
@@ -28,6 +28,17 @@ export class ReminderService {
 
   public checkVerification(token: string): Observable<string> {
     return this.http.post(config.server + '/mail/verification/valid', JSON.stringify({token: token}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleErrorText);
+  }
+
+  public checkUserVerification(token: string): Observable<string> {
+    let headers: Headers = new Headers({'Content-Type': 'application/json'});
+    headers.append('Access-Control-Allow-Origin', config.client);
+    headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
+    headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
+    headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + token);
+    return this.http.get(config.server + '/mail/user/verification', new RequestOptions({headers: headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleErrorText);
   }

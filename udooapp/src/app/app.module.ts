@@ -26,6 +26,7 @@ import {ContactsComponent} from "../contacts/contact.component";
 import {NotifierService} from "../services/notify.service";
 import {ReminderComponent} from "../reminder/reminder.component";
 import {VerificationComponent} from "../verification/verification.component";
+import {FirstLoginComponent} from "../firstlogin/firstlogin.component";
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {VerificationComponent} from "../verification/verification.component";
     FileInputComponent,
     ServiceDetailComponent,
     ReminderComponent,
-    VerificationComponent
+    VerificationComponent,
+    FirstLoginComponent
   ],
   imports: [
     BrowserModule,

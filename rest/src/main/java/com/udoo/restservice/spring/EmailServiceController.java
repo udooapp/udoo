@@ -20,8 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.udoo.restservice.spring.RestServiceController.USERID;
 
 
 /**
@@ -116,6 +119,20 @@ public class EmailServiceController implements IEmailServiceController {
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
 
+    }
+
+    @Override
+    @RequestMapping(value = "/user/verification")
+    public ResponseEntity<String> checkUserVerification(ServletRequest request) {
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if(user != null){
+            if(verificationRepository.getByUid(user.getUid()) == null){
+                return new ResponseEntity<>("Ok", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Verify", HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("Unknown user", HttpStatus.UNAUTHORIZED);
     }
 
     @Override

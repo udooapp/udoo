@@ -8,12 +8,12 @@ import {NotifierService} from "../services/notify.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {AppRoutingModule} from "../app/app.routing.module";
 import {EmailValidator} from "../validator/email.validator";
-import {ReminderService} from "../services/reminder.service";
+import {EmailService} from "../services/email.service";
 
 @Component({
   templateUrl: './reminder.component.html',
   styleUrls: ['./reminder.component.css'],
-  providers: [ReminderService]
+  providers: [EmailService]
 })
 export class ReminderComponent implements OnInit {
   private static NAME: string = 'Reminder';
@@ -28,7 +28,7 @@ export class ReminderComponent implements OnInit {
   reminder: boolean = false;
   invalid: boolean = false;
 
-  constructor(private reminderService: ReminderService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute) {
+  constructor(private reminderService: EmailService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute) {
     notifier.notify(ReminderComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == ReminderComponent.NAME) {

@@ -7,29 +7,36 @@ import {User} from "../entity/user";
 import {TokenService} from "../guard/TokenService";
 import {NotifierService} from "../services/notify.service";
 import {AppRoutingModule} from "./app.routing.module";
+import {EmailService} from "../services/email.service";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [UserService]
+  providers: [UserService, EmailService]
 })
 
 export class AppComponent implements OnInit {
-  visibleMenu = false;
+  visibleMenu:boolean = false;
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '');
-  login = false;
+  login:boolean = false;
   image: string;
   menuButton: boolean = true;
   errorMessage: string = '';
-  error = false;
-  mainError = false;
+  message: string = '';
+  error :boolean= false;
+  mainError:boolean = false;
+  activated:boolean = true;
+  checkLogin:boolean = false;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService, private emailService: EmailService) {
     let before: string = '';
     router.events.subscribe((event) => {
       if (event.url === '/map' && (before == '/login' || before == '')) {
+        this.checkLogin = true;
         this.checkUser();
+      } else {
+        this.checkLogin = false;
       }
       if (event instanceof NavigationEnd) {
         before = event.url;
@@ -52,7 +59,7 @@ export class AppComponent implements OnInit {
       }
     });
     notifier.errorMessage$.subscribe(message => {
-      if(message === 'Invalid token'){
+      if (message === 'Invalid token') {
         this.tokenService.clearToken();
         this.router.navigate([AppRoutingModule.LOGIN]);
       } else {
@@ -93,16 +100,23 @@ export class AppComponent implements OnInit {
             star -= 1;
           }
         },
-        error => {console.log(error);
+        error => {
+          console.log(error);
           if (error === 'Server error' || error === 'No internet connection' || error === 'Service Unavailable') {
             this.error = true;
             this.errorMessage = error;
             this.mainError = true;
-          } else if(error === 'Invalid token'){
+          } else if (error === 'Invalid token') {
             this.tokenService.clearToken();
             this.router.navigate([AppRoutingModule.LOGIN]);
           }
         });
+      this.emailService.checkUserVerification(this.tokenService.getToken()).subscribe(
+        message => {this.activated = message === 'Ok'; if(!this.activated && this.checkLogin){
+          this.router.navigate([AppRoutingModule.CREATE]);
+        }},
+        error => this.error = error
+      );
     } else {
       this.user = new User(null, '', '', '', '', '', 0, 0, '');
       this.login = false;
@@ -156,12 +170,24 @@ export class AppComponent implements OnInit {
     );
   }
 
-  public onClickTryAgain() {
-    this.error = false;
-    this.notifier.tryAgain();
-    if(this.mainError){
-      this.mainError = false;
-      this.ngOnInit();
+  public onClickDialogButton() {
+    if(this.message.length > 0){
+      this.message = ''
+    } else {
+      this.error = false;
+      this.notifier.tryAgain();
+      if (this.mainError) {
+        this.mainError = false;
+        this.ngOnInit();
+      }
+    }
+  }
+  public sendNewVerification(){
+    if(this.tokenService.getToken() != null && this.tokenService.getToken().length > 0){
+      this.emailService.sendVerification(this.user.email).subscribe(
+        message=>this.message = message,
+        error => console.log(error)
+      )
     }
   }
 }

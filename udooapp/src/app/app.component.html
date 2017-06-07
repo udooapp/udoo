@@ -5,7 +5,7 @@
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
 </div>
-<!--<div class="account-activation">Activate your account!</div>-->
+<div *ngIf="!activated" class="account-activation">Activate your account! <a (click)="sendNewVerification()">Send a new email!</a></div>
 <div class="content">
   <div class="menu-container-background" *ngIf="visibleMenu" (click)="clickMenuButton()"></div>
   <div class="menu-container" *ngIf="visibleMenu">
@@ -46,9 +46,9 @@
     <router-outlet></router-outlet>
   </div>
 </div>
-<div class="error-background" *ngIf="error">
+<div class="error-background" *ngIf="error || (message.length > 0)">
   <div class="error-dialog">
-    <div class="error-message">{{errorMessage}}</div>
-    <div class="error-button button-dark" (click)="onClickTryAgain()">Try Again</div>
+    <div class="error-message">{{errorMessage||message}}</div>
+    <div class="error-button button-dark" (click)="onClickDialogButton()">{{message.length > 0 ? 'Ok' : 'Try Again'}}</div>
   </div>
 </div>

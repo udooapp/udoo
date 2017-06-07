@@ -15,6 +15,7 @@ import {ContactsComponent} from "../contacts/contact.component";
 import {puts} from "util";
 import {ReminderComponent} from "../reminder/reminder.component";
 import {VerificationComponent} from "../verification/verification.component";
+import {FirstLoginComponent} from "../firstlogin/firstlogin.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -36,6 +37,7 @@ const routes: Routes = [
   {path: 'verification', component: VerificationComponent},
   {path: 'contact', component: ContactsComponent, canActivate: [AuthGuard]},
   {path: 'detail/:id/:type', component: ServiceDetailComponent},
+  {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo:'/map'}
 ];
 @NgModule({
@@ -57,4 +59,6 @@ export class AppRoutingModule {
   public static CONTACT: string = '/contact';
   public static DETAIL: string = '/detail/';
   public static REMINDER: string = '/reminder';
+  public static VERIFICATION: string = '/verification';
+  public static CREATE: string = '/create';
 }

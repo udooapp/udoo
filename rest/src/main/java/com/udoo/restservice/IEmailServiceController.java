@@ -3,6 +3,8 @@ package com.udoo.restservice;
 
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.ServletRequest;
+
 /**
  */
 public interface IEmailServiceController {
@@ -22,5 +24,6 @@ public interface IEmailServiceController {
 
     ResponseEntity<String> checkVerification(String token);
 
+    ResponseEntity<String> checkUserVerification(ServletRequest request);
 
 }
