@@ -46,13 +46,6 @@ public class EmailServiceController implements IEmailServiceController {
     private IReminderRepository reminderRepository;
 
     @Override
-    @RequestMapping("/test")
-    public ResponseEntity<String> sendTestMail() {
-        emailServiceImp.sendEmailNewMessage("jozsatibold@yahoo.com", "Jozsa Tibold", "Udoo");
-        return new ResponseEntity<>("Email sent!", HttpStatus.OK);
-    }
-
-    @Override
     @RequestMapping(value = "/reminder/valid", method = RequestMethod.POST)
     public ResponseEntity<String> checkReminder(@RequestBody String token) {
         if (token != null && token.startsWith("{\"token\":\"")) {

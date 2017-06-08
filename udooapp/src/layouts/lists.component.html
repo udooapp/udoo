@@ -1,15 +1,15 @@
 <div class="data-container">
   <h1>{{offer ? 'My service offers' : 'My service requests'}}</h1>
-  <input *ngIf="offer" type="button" value="Add new offer" class="input-button button-light" routerLink="/offer"
-         routerLinkActive="active">
-  <input *ngIf="!offer" type="button" value="Add new request" class="input-button button-light" routerLink="/request"
+  <input *ngIf="offer" type="button" [value]="offer ? 'Add new offer' : 'Add new request'"
+         class="input-button button-light" [routerLink]="offer ? '/offer' : '/request'"
          routerLinkActive="active">
   <div class="service-container">
     <div class="service" *ngFor="let item of data;  let i = index">
-      <div class="service-button-container">
-        <img src="./assets/trash.png" (click)="onClickDelete(offer ? item.oid : item.rid, i)">
-      </div>
-      <div class="service-all-content" [routerLink]="'/' + (offer ? ('offer/' + item.oid +'/0') : ('request/' +item.rid + '/1'))" routerLinkActive="active">
+      <img class="service-button-container" src="./assets/trash.png"
+           (click)="onClickDelete(offer ? item.oid : item.rid, i)">
+      <div class="service-all-content"
+           [routerLink]="'/' + (offer ? ('offer/' + item.oid +'/0') : ('request/' +item.rid + '/1'))"
+           routerLinkActive="active">
         <div class="service-picture"><img class="service-image" [src]="item.image"></div>
         <div class="service-content">
           <div class="service-title">{{item.title}}</div>

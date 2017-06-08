@@ -2,16 +2,12 @@
   <h1>Contacts</h1>
   <div class="contact-container">
     <div class="contact" *ngFor="let item of data;  let i = index">
-      <div class="contact-button-container">
-        <img src="./assets/trash.png" (click)="onClickDelete(item.uid, i)">
-      </div>
+      <img class="contact-button-container" src="./assets/trash.png" (click)="onClickDelete(item.uid, i)">
       <div class="contact-picture"><img class="contact-image" [src]="getPictureUrl(item.picture)"></div>
-      <div class="contact-all-content">
-        <div class="contact-content">
-          <div class="contact-name">{{item.name}}</div>
-          <div class="contact-email"><b>Email: </b>{{item.email}}</div>
-          <div class="contact-phone"><b>Phone: </b>{{item.phone}}</div>
-        </div>
+      <div class="contact-content">
+        <div class="contact-name">{{item.name}}</div>
+        <div class="contact-email"><b>Email: </b>{{item.email}}</div>
+        <div class="contact-phone"><b>Phone: </b>{{item.phone}}</div>
       </div>
     </div>
   </div>

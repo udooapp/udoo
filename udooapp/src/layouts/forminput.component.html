@@ -18,8 +18,7 @@
         </li>
       </ul>
     </div>
-    <span class="input-label" *ngIf="!user.type">Organization</span>
-    <span class="input-label" *ngIf="user.type">Name</span>
+    <span class="input-label" *ngIf="!user.type">{{!user.type ? 'Organization' : 'Name'}}</span>
     <text-input [type]="'text'" [validators]="[emptyValidator]" [checkValidate]="refresh" [value]="user.name"
                 [placeholder]="'Name'" (text)="user.name= $event" (onStateChange)="valid[0] = $event"></text-input>
 

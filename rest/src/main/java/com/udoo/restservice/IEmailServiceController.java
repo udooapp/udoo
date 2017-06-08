@@ -9,9 +9,6 @@ import javax.servlet.ServletRequest;
  */
 public interface IEmailServiceController {
 
-
-    ResponseEntity<String> sendTestMail();
-
     ResponseEntity<String> sendPasswordReminder(String email);
 
     ResponseEntity<String> sendMessage();

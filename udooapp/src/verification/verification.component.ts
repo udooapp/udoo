@@ -13,7 +13,7 @@ import {TokenService} from "../guard/TokenService";
 
 @Component({
   templateUrl: './verification.component.html',
-  styleUrls: ['./verification.component.css'],
+  styleUrls: ['../password/password.component.css'],
   providers: [EmailService]
 })
 export class VerificationComponent implements OnInit {
@@ -33,7 +33,7 @@ export class VerificationComponent implements OnInit {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {
-        router.navigate([tokenService.getToken() ? AppRoutingModule.CREATE : AppRoutingModule.LOGIN]);
+        router.navigate([tokenService.getToken() ? AppRoutingModule.MAP : AppRoutingModule.LOGIN]);
       }
     })
   }

@@ -12,7 +12,7 @@ import {EmailService} from "../services/email.service";
 
 @Component({
   templateUrl: './reminder.component.html',
-  styleUrls: ['./reminder.component.css'],
+  styleUrls: ['../password/password.component.css'],
   providers: [EmailService]
 })
 export class ReminderComponent implements OnInit {

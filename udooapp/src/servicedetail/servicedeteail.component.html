@@ -4,11 +4,7 @@
       <img class="contact-picture-image" [src]="image">
     </div>
     <div class="contact-stars">
-      <div *ngFor="let i of stars">
-        <img class="contact-profile-stars" *ngIf="i == 1" src="./assets/star3.png">
-        <img class="contact-profile-stars" *ngIf="i == 0" src="./assets/star2.png">
-        <img class="contact-profile-stars" *ngIf="i == 2" src="./assets/star1.png">
-      </div>
+      <img class="contact-profile-stars"  *ngFor="let i of stars" [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
     </div>
     <div class="contact-name">{{user.name}}</div>
     <div class="contact-phone">{{user.phone}}</div>
