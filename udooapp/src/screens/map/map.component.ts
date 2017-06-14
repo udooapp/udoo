@@ -5,9 +5,9 @@ import {Request} from "../../entity/request";
 import {Router} from "@angular/router";
 import {NotifierService} from "../../services/notify.service";
 import {TokenService} from "../../services/token.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
-import {Observable} from "rxjs/Observable";
-import {config} from "../../environments/url.config";
+import {DETAIL} from "../../app/app.routing.module";
+// import {Observable} from "rxjs/Observable";
+// import {config} from "../../environments/url.config";
 import {ConversionMethods} from "../layouts/conversion.methods";
 
 declare let google: any;
@@ -37,8 +37,8 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private icon = {};
   private offers: Offer[] = [];
   private offersRealTime: Offer[] = [];
-  private stompClient: any;
-  messages: Array<string> = new Array<string>();
+//  private stompClient: any;
+ // messages: Array<string> = new Array<string>();
 
   constructor(private mapService: MapService, private router: Router, private notifier: NotifierService, private tokenService: TokenService) {
     super();
@@ -78,7 +78,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   ngOnInit() {
-    this.connect();
+ //   this.connect();
 
     this.mapView = !this.tokenService.getMapState();
     this.error = '';
@@ -179,7 +179,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
             google.maps.event.addListener(infowindow, 'domready', function () {
               document.getElementById('infoWindow-linkr' + requests[i].rid).addEventListener("click", function () {
-                rout.navigate(['/detail/' + requests[i].rid + '/0']);
+                rout.navigate([DETAIL + requests[i].rid + '/0']);
               });
             });
             marker.addListener('mouseover', function () {
@@ -245,7 +245,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
             google.maps.event.addListener(infowindow, 'domready', function () {
               document.getElementById('infoWindow-linko' + offers[i].oid).addEventListener("click", function () {
-                rout.navigate(['/detail/' + offers[i].oid + '/1']);
+                rout.navigate([DETAIL + offers[i].oid + '/1']);
               });
             });
             infowindow.addListener('closeclick', function () {
@@ -376,7 +376,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   public onClickService(type: boolean, id: number) {
-    this.router.navigate([AppRoutingModule.DETAIL + id + '/' + (type ? 1 : 0)]);
+    this.router.navigate([DETAIL + id + '/' + (type ? 1 : 0)]);
   }
 
 }

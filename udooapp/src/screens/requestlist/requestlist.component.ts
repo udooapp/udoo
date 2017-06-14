@@ -4,7 +4,7 @@ import {Request} from "../../entity/request";
 import {MapService} from "../../services/map.service";
 import {NotifierService} from "../../services/notify.service";
 import {IList} from "../layouts/list/lists.interface";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import { REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 
 @Component({
@@ -61,7 +61,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   }
 
   public getButtonRouteText(): string {
-    return AppRoutingModule.REQUEST;
+    return REQUEST;
   }
 
   public getTitle(): string {
@@ -74,7 +74,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
 
   public getServiceRouteText(index: number): string {
     if (index >= 0 && index < this.data.length) {
-      return AppRoutingModule.REQUEST_TYPE + this.data[index].rid + '/1';
+      return REQUEST_TYPE + this.data[index].rid + '/1';
     }
     return '';
   }

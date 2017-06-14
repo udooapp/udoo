@@ -10,7 +10,7 @@ import {EmailValidator} from "../../validator/email.validator";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {MAP} from "../../app/app.routing.module";
 
 @Component({
   templateUrl: './login.component.html',
@@ -45,7 +45,7 @@ export class LoginComponent {
       this.userService.loginUser(this.user)
         .subscribe(
           message =>
-            this.router.navigate([AppRoutingModule.MAP]),
+            this.router.navigate([MAP]),
           error => {
             this.notifier.notifyError(error);
             this.error = error;

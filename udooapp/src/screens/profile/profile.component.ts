@@ -12,7 +12,7 @@ import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {PhoneValidator} from "../../validator/phone.validator";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {MAP} from "../../app/app.routing.module";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
 
 
@@ -44,7 +44,7 @@ export class ProfileComponent implements OnInit, IFormInput {
     this.passwordVerification = '';
     notifier.pageChanged$.subscribe(action => {
       if (action == ProfileComponent.NAME) {
-        router.navigate([AppRoutingModule.MAP])
+        router.navigate([MAP])
       }
     });
     notifier.tryAgain$.subscribe(tryAgain => {

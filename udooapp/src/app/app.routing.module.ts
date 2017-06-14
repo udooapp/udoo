@@ -44,20 +44,20 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-  public static LOGIN: string = '/login';
-  public static REGISTRATION: string = '/registration';
-  public static PROFILE: string = '/profile';
-  public static PASSWORD: string = '/data';
-  public static OFFER: string = '/offer';
-  public static REQUEST: string = '/request';
-  public static OFFER_TYPE: string = '/offer/';
-  public static REQUEST_TYPE: string = '/request/';
-  public static REQUEST_LIST: string = '/requestlist';
-  public static OFFER_LIST: string = '/offerlist';
-  public static MAP: string = '/map';
-  public static CONTACT: string = '/contact';
-  public static DETAIL: string = '/detail/';
-  public static REMINDER: string = '/reminder';
-  public static VERIFICATION: string = '/verification';
-  public static CREATE: string = '/create';
 }
+export const LOGIN: string = '/login';
+export const REGISTRATION: string = '/registration';
+export const PROFILE: string = '/profile';
+export const PASSWORD: string = '/password';
+export const OFFER: string = '/offer';
+export const REQUEST: string = '/request';
+export const OFFER_TYPE: string = '/offer/';
+export const REQUEST_TYPE: string = '/request/';
+export const REQUEST_LIST: string = '/requestlist';
+export const OFFER_LIST: string = '/offerlist';
+export const MAP: string = '/map';
+export const CONTACT: string = '/contact';
+export const DETAIL: string = '/detail/';
+export const REMINDER: string = '/reminder';
+export const VERIFICATION: string = '/verification';
+export const CREATE: string = '/create';

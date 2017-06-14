@@ -4,7 +4,7 @@ import {OfferService} from "../../services/offer.service";
 import {Router} from "@angular/router";
 import {MapService} from "../../services/map.service";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 
 @Component({
@@ -68,7 +68,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
 
 
   public getButtonRouteText(): string {
-    return AppRoutingModule.OFFER;
+    return OFFER;
   }
 
   public getTitle(): string {
@@ -81,7 +81,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
 
   public getServiceRouteText(index: number): string {
     if (index >= 0 && index < this.data.length) {
-      return AppRoutingModule.OFFER_TYPE + this.data[index].oid + '/0';
+      return OFFER_TYPE + this.data[index].oid + '/0';
     }
     return '';
   }

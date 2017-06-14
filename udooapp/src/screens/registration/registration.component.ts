@@ -9,7 +9,7 @@ import {EmailValidator} from "../../validator/email.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {Router} from "@angular/router";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {LOGIN} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
 
@@ -43,7 +43,7 @@ export class RegistrationComponent implements IFormInput {
     notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RegistrationComponent.NAME) {
-        router.navigate([AppRoutingModule.LOGIN]);
+        router.navigate([LOGIN]);
       }
     })
   }
@@ -127,7 +127,7 @@ export class RegistrationComponent implements IFormInput {
           .subscribe(
             message => {
               this.notifier.pageChanged$.emit(' ');
-              this.router.navigate([AppRoutingModule.LOGIN]);
+              this.router.navigate([LOGIN]);
             },
             error => {
               this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;

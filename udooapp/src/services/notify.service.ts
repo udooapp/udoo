@@ -4,14 +4,20 @@ export class NotifierService {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<String>;
   public errorMessage$: EventEmitter<String>;
+  public notificationMessage$: EventEmitter<String>;
   public tryAgain$: EventEmitter<boolean>;
+  public verification$: EventEmitter<boolean>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
     this.errorMessage$ = new EventEmitter();
     this.tryAgain$ = new EventEmitter();
+    this.verification$ = new EventEmitter();
+    this.notificationMessage$ = new EventEmitter();
   }
-
+  public sendVerification(){
+    this.verification$.emit(true);
+  }
   public back(): string {
     if (this.pageList.length > 0) {
       let action: string = this.pageList.pop();
@@ -46,6 +52,10 @@ export class NotifierService {
     if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage === 'Invalid token') {
       this.errorMessage$.emit(errorMessage);
     }
+  }
+  public sendMessage(message: string) {
+    this.notificationMessage$.emit(message);
+
   }
 
   public tryAgain() {

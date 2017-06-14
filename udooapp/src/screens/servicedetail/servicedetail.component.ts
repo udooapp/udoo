@@ -9,7 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import { MAP} from "../../app/app.routing.module";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -32,7 +32,7 @@ export class ServiceDetailComponent implements OnInit {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
-        this.router.navigate([AppRoutingModule.MAP]);
+        this.router.navigate([MAP]);
       }
     })
     this.notifier.notify(ServiceDetailComponent.NAME);

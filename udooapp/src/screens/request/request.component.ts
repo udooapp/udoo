@@ -11,7 +11,7 @@ import {NumberValidator} from "../../validator/number.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 
 @Component({
@@ -43,7 +43,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
-        router.navigate([AppRoutingModule.REQUEST_LIST]);
+        router.navigate([REQUEST_LIST]);
       }
     });
     notifier.tryAgain$.subscribe(tryAgain => {
@@ -88,7 +88,7 @@ export class RequestComponent implements OnInit, IServiceForm {
       this.requestService.saveRequest(this.data).subscribe(
         message => {
           this.notifier.pageChanged$.emit(' ');
-          this.router.navigate([AppRoutingModule.REQUEST_LIST]);
+          this.router.navigate([REQUEST_LIST]);
         },
         error => {
           this.error = <any>error;
@@ -175,7 +175,7 @@ export class RequestComponent implements OnInit, IServiceForm {
     this.requestService.deleteUserRequest(this.data.rid).subscribe(
       ok => {
         this.notifier.pageChanged$.emit(' ');
-        this.router.navigate([AppRoutingModule.REQUEST_LIST]);
+        this.router.navigate([REQUEST_LIST]);
       },
       error => {
         this.error = error

@@ -5,7 +5,7 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierService} from "../../services/notify.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import {LOGIN, MAP} from "../../app/app.routing.module";
 import {EmailValidator} from "../../validator/email.validator";
 import {EmailService} from "../../services/email.service";
 import {TokenService} from "../../services/token.service";
@@ -32,7 +32,7 @@ export class VerificationComponent implements OnInit {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {
-        router.navigate([tokenService.getToken() ? AppRoutingModule.MAP : AppRoutingModule.LOGIN]);
+        router.navigate([tokenService.getToken() ? MAP : LOGIN]);
       }
     })
   }

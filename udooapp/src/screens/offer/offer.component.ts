@@ -8,7 +8,7 @@ import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierService} from "../../services/notify.service";
-import {AppRoutingModule} from "../../app/app.routing.module";
+import { OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 
 @Component({
@@ -39,7 +39,7 @@ export class OfferComponent implements OnInit, IServiceForm {
     notifier.pageChanged$.subscribe(action => {
       if (action == OfferComponent.NAME) {
         console.log("Action:" + action);
-        router.navigate([AppRoutingModule.OFFER_LIST]);
+        router.navigate([OFFER_LIST]);
       }
     });
     this.notifier.notify(OfferComponent.NAME);
@@ -85,7 +85,7 @@ export class OfferComponent implements OnInit, IServiceForm {
       this.offerService.saveOffer(this.data).subscribe(
         message => {
           this.notifier.pageChanged$.emit(' ');
-          this.router.navigate([AppRoutingModule.OFFER_LIST]);
+          this.router.navigate([OFFER_LIST]);
         },
         error => {
           this.error = <any>error;
@@ -176,7 +176,7 @@ export class OfferComponent implements OnInit, IServiceForm {
     this.offerService.deleteUserOffer(this.data.oid).subscribe(
       ok => {
         this.notifier.pageChanged$.emit(' ');
-        this.router.navigate([AppRoutingModule.OFFER_LIST])
+        this.router.navigate([OFFER_LIST])
       },
       error => {
         this.error = error
