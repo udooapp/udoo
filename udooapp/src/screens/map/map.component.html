@@ -1,0 +1,46 @@
+<div id="map" [ngClass]="{'hide-map': !mapView, 'show-map': mapView}"></div>
+<div [ngClass]="{'hide-map-filter' : (showSearch && mapView), 'map-filter' : mapView}" (focusout)="refresh()">
+
+  <div [ngClass]="{'hide-map-inputs' : (showSearch && mapView), 'data-container' : !mapView, 'map-inputs-container' : mapView}">
+    <h1 *ngIf="!mapView">Services</h1>
+    <div [ngClass]="{'service-inputs-container' : !mapView}">
+      <text-input [placeholder]="'Search'" [type]="'text'" class="map-search" (onKeyEvent)="onKey($event)"
+                  [disableValidation]="true"></text-input>
+      <div [ngClass]="{'map-selector-container' : mapView}" class="input-group">
+        <select-input class="map-select right-padding" [values]="types" (onChange)="onChangeTypeSelect($event)"
+                      [disableValidation]="true"></select-input>
+        <select-input class="map-select" [options]="categories" (onChange)="onChangeCategorySelect($event)"
+                      [disableValidation]="true"></select-input>
+      </div>
+      <button class="input-button button-light" (click)="showList()">{{!mapView ? 'Map' : 'List'}} View</button>
+    </div>
+  </div>
+  <div id="close-icon" class="close-button" *ngIf="!showSearch && mapView" (click)="onClickSearchPanel()"></div>
+  <div *ngIf="showSearch && mapView" class="search-button" (click)="onClickSearchPanel()">
+    <div id="magnifying-glass" class="map-triangle-container"></div>
+  </div>
+
+  <div class="service-container" *ngIf="!mapView">
+    <div class="service" *ngFor="let item of requests;" (click)="onClickService(false, item.rid)"
+         routerLinkActive="active">
+      <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
+      <div class="service-content">
+        <div class="service-title">{{item.title}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address: </b>{{getAddress(item.location)}}</div>
+        <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
+      </div>
+    </div>
+    <div class="service" *ngFor="let item of offers" (click)="onClickService(true, item.oid)">
+      <div class="service-picture"><img class="service-image" [src]="getPictureUrl(item.image)"></div>
+      <div class="service-content">
+        <div class="service-title">{{item.title}}</div>
+        <div class="service-description">{{item.description}}</div>
+        <div class="service-location"><b>Address: </b>{{getAddress(item.location)}}</div>
+        <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b>Date: </b> {{convertMillisToDate(item.expirydate)}}</div>
+      </div>
+    </div>
+  </div>
+</div>

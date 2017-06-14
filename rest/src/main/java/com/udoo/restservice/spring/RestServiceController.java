@@ -74,6 +74,9 @@ public class RestServiceController implements IRestServiceController {
             if (userRepository.findByEmail(user.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
+                if(user.getLocation() == null) {
+                    user.setLocation("");
+                }
                 User user2 = userRepository.save(user);
                 String token = generateToken();
                 Calendar cal = Calendar.getInstance();
@@ -94,23 +97,10 @@ public class RestServiceController implements IRestServiceController {
 
         if (user2 != null) {
             if (user2.getPassword().equals(user.getPassword())) {
-                List<Token> tokens = tokenRepository.findByUid(user2.getUid());
-                Token token = null;
-                for (Token tok : tokens) {
-                    if (tok.isDisable()) {
-                        token = tok;
-                    }
-                }
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
                 c.add(Calendar.DATE, Integer.parseInt(env.getProperty("token.expiry.date")));
-                if (token == null) {
-                    token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
-                } else {
-                    token.setExpirydate(c.getTime());
-                    token.setDisable(false);
-                    token = tokenRepository.save(token);
-                }
+                Token token = tokenRepository.save(new Token(user2.getUid(), generateToken(), c.getTime(), false));
                 return new ResponseEntity<>(token.getToken(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);

@@ -8,9 +8,9 @@ import 'rxjs/add/operator/do';
 import 'rxjs/Rx';
 
 import {Offer} from "../entity/offer";
-import {TokenService} from "../guard/TokenService";
+import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 
 @Injectable()
 export class OfferService {

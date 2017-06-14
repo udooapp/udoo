@@ -1,4 +1,5 @@
 import {EventEmitter} from "@angular/core";
+
 export class NotifierService {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<String>;
@@ -33,7 +34,6 @@ export class NotifierService {
     let pageListLength = this.pageList.length;
     if((pageListLength > 0 && this.pageList[pageListLength - 1] !== action) || pageListLength === 0){
       this.pageList.push(action);
-      console.log(action);
       this.pageChanged$.emit(action + "New");
     }
   }
@@ -43,7 +43,7 @@ export class NotifierService {
   }
 
   public notifyError(errorMessage: string) {
-    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage == 'Invalid token') {
+    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage === 'Invalid token') {
       this.errorMessage$.emit(errorMessage);
     }
   }

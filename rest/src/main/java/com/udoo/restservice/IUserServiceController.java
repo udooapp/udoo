@@ -20,6 +20,6 @@ public interface IUserServiceController {
 
     User getUser(final String id);
 
-    ResponseEntity<User> getUserData(ServletRequest request);
+    ResponseEntity<?> getUserData(ServletRequest request);
 
 }

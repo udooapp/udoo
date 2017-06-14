@@ -1,0 +1,22 @@
+<div class="input-select-container">
+  <select [id]="id" *ngIf="isOption" class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
+          (change)="onKey($event)" [disabled]="disabled">
+    <option *ngFor="let cat of data;" [value]="cat.cid">{{cat.name}}</option>
+  </select>
+  <select [id]="id" *ngIf="!isOption" class="input-select" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)" (change)="onKey($event)" [disabled]="disabled">
+    <option *ngFor="let cat of data; let i = index" value="{{i}}">{{cat}}</option>
+  </select>
+  <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>
+  <div *ngIf="error && !disableValidation" class="input-border input-border-error"></div>
+  <div *ngIf="(ok || error) && !disableValidation" class="input-validation">
+    <img *ngIf="ok" src="./assets/check_icon.png" class="input-validation input-validation-ok"/>
+    <span [ngClass]="{'show' : show}" class="popuptext " id="myPopup">{{errorMessage}}</span>
+    <div *ngIf="show" class="popup-background" (click)="show = !show"></div>
+    <div *ngIf="error" [ngClass]="{'long-error-message' : errorMessage.length < 19}"
+         class="input-validation input-validation-error">
+      <span *ngIf="errorMessage.length < 19">{{errorMessage}}</span>
+      <img *ngIf="errorMessage.length >= 19" class="input-validation-image" (click)="showInfo()"
+           src="./assets/info-icon.png"/></div>
+  </div>
+</div>
+

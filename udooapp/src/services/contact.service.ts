@@ -5,9 +5,9 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw'
 
-import {TokenService} from "../guard/TokenService";
+import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 import {Router} from "@angular/router";
 import {AppRoutingModule} from "../app/app.routing.module";
 

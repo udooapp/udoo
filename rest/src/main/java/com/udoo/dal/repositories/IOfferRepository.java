@@ -17,8 +17,6 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
     @Query("SELECT o FROM Offer o WHERE o.category = :category AND o.expirydate > CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v)")
     List<Offer> findAllActualByCategory(@Param("category") int category);
 
-    List<Offer> findAll();
-
     @Query("SELECT o FROM Offer o WHERE o.expirydate >= CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v)")
     List<Offer> findAllActual();
 

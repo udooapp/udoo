@@ -4,7 +4,7 @@ import 'rxjs/add/operator/switchMap';
 import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {User} from "../entity/user";
-import {TokenService} from "../guard/TokenService";
+import {TokenService} from "../services/token.service";
 import {NotifierService} from "../services/notify.service";
 import {AppRoutingModule} from "./app.routing.module";
 import {EmailService} from "../services/email.service";
@@ -16,24 +16,24 @@ import {EmailService} from "../services/email.service";
 })
 
 export class AppComponent implements OnInit {
-  visibleMenu:boolean = false;
-  stars: number[] = [0, 0, 0, 0, 0];
+  visibleMenu: boolean = false;
+  login: boolean = false;
   user = new User(null, '', '', '', '', '', 0, 0, '');
-  login:boolean = false;
+  stars: number[] = [0, 0, 0, 0, 0];
   image: string;
   menuButton: boolean = true;
   errorMessage: string = '';
   message: string = '';
-  error :boolean= false;
-  mainError:boolean = false;
-  activated:boolean = true;
-  checkLogin:boolean = false;
+  error: boolean = false;
+  mainError: boolean = false;
+  activated: boolean = true;
+  checkLogin: boolean = false;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService, private emailService: EmailService) {
     let before: string = '';
     router.events.subscribe((event) => {
-      if (event.url === '/map' && (before == '/login' || before == '')) {
-        this.checkLogin = true;
+      if (event.url === '/map' && (before === '/login' || before === '')) {
+        this.checkLogin = event.url === '/map' && before === '/login';
         this.checkUser();
       } else {
         this.checkLogin = false;
@@ -62,6 +62,8 @@ export class AppComponent implements OnInit {
       if (message === 'Invalid token') {
         this.tokenService.clearToken();
         this.router.navigate([AppRoutingModule.LOGIN]);
+        this.user = new User(null, '', '', '', '', '', 0, 0, '');
+        this.login = false;
       } else {
         this.errorMessage = message;
         this.error = true;
@@ -85,10 +87,10 @@ export class AppComponent implements OnInit {
     if (token != null && token.length > 0) {
       this.login = true;
       this.userService.getUserData().subscribe(
-        user => {
-          this.user = user;
-          this.image = this.getPictureUrl(user.picture);
-          let star = user.stars;
+        data => {
+          this.user = data.user;
+          this.image = this.getPictureUrl(data.user.picture);
+          let star = data.user.stars;
           for (let i = 0; i < 5; ++i) {
             if (star >= 1) {
               this.stars[i] = 2;
@@ -98,6 +100,10 @@ export class AppComponent implements OnInit {
               this.stars[i] = 0;
             }
             star -= 1;
+          }
+          this.activated = data.verification === 0;
+          if (!this.activated && this.checkLogin) {
+            this.router.navigate([AppRoutingModule.CREATE]);
           }
         },
         error => {
@@ -111,12 +117,6 @@ export class AppComponent implements OnInit {
             this.router.navigate([AppRoutingModule.LOGIN]);
           }
         });
-      this.emailService.checkUserVerification(this.tokenService.getToken()).subscribe(
-        message => {this.activated = message === 'Ok'; if(!this.activated && this.checkLogin){
-          this.router.navigate([AppRoutingModule.CREATE]);
-        }},
-        error => this.error = error
-      );
     } else {
       this.user = new User(null, '', '', '', '', '', 0, 0, '');
       this.login = false;
@@ -171,7 +171,7 @@ export class AppComponent implements OnInit {
   }
 
   public onClickDialogButton() {
-    if(this.message.length > 0){
+    if (this.message.length > 0) {
       this.message = ''
     } else {
       this.error = false;
@@ -182,10 +182,11 @@ export class AppComponent implements OnInit {
       }
     }
   }
-  public sendNewVerification(){
-    if(this.tokenService.getToken() != null && this.tokenService.getToken().length > 0){
+
+  public sendNewVerification() {
+    if (this.tokenService.getToken() != null && this.tokenService.getToken().length > 0) {
       this.emailService.sendVerification(this.user.email).subscribe(
-        message=>this.message = message,
+        message => this.message = message,
         error => console.log(error)
       )
     }

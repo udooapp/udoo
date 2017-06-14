@@ -29,6 +29,8 @@ public class User {
 
     private String birthdate;
 
+    private String location;
+
     public Integer getUid() {
         return uid;
     }
@@ -101,18 +103,30 @@ public class User {
         this.birthdate = birthdate;
     }
 
+    public void setStars(float stars) {
+        this.stars = stars;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public String toString() {
         return "{" +
-                "uid=" + uid +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", phone='" + phone + '\'' +
-                ", picture='" + picture + '\'' +
-                ", type=" + type +
-                ", stars=" + stars +
-                ", birthdate=" + birthdate +
+                "\"uid\":" + uid +
+                ", \"name\":\"" + name + '\"' +
+                ", \"email\":\"" + email + '\"' +
+                ", \"password\":\"" + password + '\"' +
+                ", \"phone\":\"" + phone + '\"' +
+                ", \"picture\":\"" + picture + '\"' +
+                ", \"type\":" + type +
+                ", \"stars\":" + stars +
+                ", \"birthdate\":" + (birthdate == null ? null : ("\"" + birthdate + "\"")) +
                 '}';
     }
 }

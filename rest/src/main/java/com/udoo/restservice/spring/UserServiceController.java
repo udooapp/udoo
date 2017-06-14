@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.entities.Token;
 import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.ITokenRepository;
 import com.udoo.dal.repositories.IUserRepository;
+import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.restservice.IUserServiceController;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,9 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private ITokenRepository tokenRepository;
 
+    @Resource
+    private IVerificationRepository verificationRepository;
+
 
     @Override
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +59,10 @@ public class UserServiceController implements IUserServiceController {
                 if (users.size() > 0 && !users.get(0).getUid().equals(user.getUid())) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
+                    if(user.getLocation() == null){
+                        user.setLocation("");
+                        user.setLocation("");
+                    }
                     userRepository.save(user);
                     return new ResponseEntity<>("Profile updated", HttpStatus.OK);
                 }
@@ -102,10 +111,10 @@ public class UserServiceController implements IUserServiceController {
 
     @Override
     @RequestMapping(value = "/userdata", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserData(ServletRequest request) {
+    public ResponseEntity<?> getUserData(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
         if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>("{ \"user\":"+ user.toString() + ", \"verification\":" + (verificationRepository.getByUid(user.getUid()) != null ? 1 : 0) + "}", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

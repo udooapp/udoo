@@ -1,0 +1,13 @@
+<div class="input-container">
+  <h1 *ngIf="(error.length == 0 && verification) || !verification">{{verification ? 'Congratulation' : 'Enter your email address'}}</h1>
+  <form #userForm="ngForm" novalidate>
+    <text-input *ngIf="!verification" [type]="'email'" (onKey)="data = $event"
+                [validators]="[emptyValidator, emailValidator]" (onValidationStateChange)="valid=$event"
+                [checkValidate]="validate"
+                [placeholder]="'Email address'"></text-input>
+    <div class="response-message error-message">{{error}}</div>
+    <div class="response-message ok-message">{{message}}</div>
+    <input *ngIf="!verification" type="submit" [value]="'Send'" class="input-button button-dark" (click)="send()"/>
+  </form>
+</div>
+

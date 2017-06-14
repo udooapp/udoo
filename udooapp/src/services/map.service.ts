@@ -10,7 +10,7 @@ import 'rxjs/Rx';
 import {Offer} from "../entity/offer";
 import {Request} from "../entity/request";
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 
 @Injectable()
 export class MapService {

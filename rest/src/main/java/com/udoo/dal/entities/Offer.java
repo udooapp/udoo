@@ -26,6 +26,8 @@ public class Offer {
 
     private String image;
 
+    private boolean realTime;
+
     public Integer getOid() {
         return oid;
     }
@@ -98,18 +100,27 @@ public class Offer {
         this.image = image;
     }
 
+    public boolean isRealTime() {
+        return realTime;
+    }
+
+    public void setRealTime(boolean realTime) {
+        this.realTime = realTime;
+    }
+
     @Override
     public String toString() {
         return "Offer{" +
-                "oid=" + oid +
-                ", uid=" + uid +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", category='" + category + '\'' +
-                ", location='" + location + '\'' +
-                ", availability='" + availability + '\'' +
-                ", expirydate=" + expirydate +
-                ", image='" + image + '\'' +
+                "oid:" + oid +
+                ", uid:" + uid +
+                ", title:'" + title + '\'' +
+                ", description:'" + description + '\'' +
+                ", category:" + category +
+                ", location:'" + location + '\'' +
+                ", availability:'" + availability + '\'' +
+                ", expirydate:" + expirydate +
+                ", image:'" + image + '\'' +
+                ", realTime:" + realTime + +
                 '}';
     }
 }

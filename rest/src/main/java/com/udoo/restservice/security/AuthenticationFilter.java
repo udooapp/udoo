@@ -45,6 +45,7 @@ public class AuthenticationFilter implements Filter {
                     token.setDisable(true);
                     tokenRepository.save(token);
                 }
+                res.addHeader("Access-Control-Allow-Origin","*");
                 res.sendError(498, "Unauthorized access request");
             } else {
                 request.setAttribute(USERID, token.getUid());

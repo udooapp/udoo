@@ -1,0 +1,76 @@
+<div class="input-container">
+  <h1>{{getTitle()}}</h1>
+  <form #userForm="ngForm" novalidate>
+    <div *ngIf="showElements()">
+      <span class="input-label">Type</span><br>
+      <ul>
+        <li>
+          <label class="input-radio-label" for="personal">Personal</label>
+          <input class="input-radio" type="radio" id="personal" name="selector" [value]="user.type === 1"
+                 (change)="user.type = 1">
+          <div class="input-radio-button"></div>
+        </li>
+        <li>
+          <input class="input-radio" type="radio" id="organization" name="selector" [value]="0 === user.type"
+                 (change)="user.type = 0">
+          <label class="input-radio-label" for="organization">Organization</label>
+          <div class="input-radio-button"></div>
+        </li>
+      </ul>
+    </div>
+    <span class="input-label">{{!user.type ? 'Organization' : 'Name'}}</span>
+    <text-input [type]="'text'" [id]="'name-input'" [validators]="[emptyValidator]" [checkValidate]="refresh"
+                [value]="user.name"
+                [placeholder]="'Name'" (onKey)="user.name= $event" (onValidationStateChange)="fieldValidate(0, $event)"></text-input>
+
+    <span class="input-label">Email</span><br>
+    <text-input [type]="'email'" [id]="'email-input'" [validators]="[emptyValidator, emailValidator]"
+                [checkValidate]="refresh" [placeholder]="'Email'"
+                [value]="user.email" (onKey)="user.email = $event" (onValidationStateChange)="fieldValidate(1, $event)"></text-input>
+
+    <span class="input-label">Phone number</span><br>
+    <text-input [type]="'phone'" [id]="'phone-input'" [validators]="[emptyValidator, phoneValidator]"
+                [checkValidate]="refresh" [placeholder]="'Phone'"
+                [value]="user.phone" (onKey)="user.phone= $event" (onValidationStateChange)="fieldValidate(2, $event)"></text-input>
+    <div *ngIf="user.type">
+      <span class="input-label">Birth date</span><br>
+      <text-input [type]="'date'" [id]="'birth-date-input'" [validators]="[emptyValidator, dateValidator]"
+                  [checkValidate]="refresh" [placeholder]="'Date'"
+                  [value]="user.birthdate" (onKey)="user.birthdate = $event"
+                  (onValidationStateChange)="fieldValidate(3, $event)"></text-input>
+    </div>
+    <div *ngIf="showElements()">
+      <span class="input-label">Password</span><br>
+      <text-input [type]="'password'" [id]="'password-input'" [validators]="[emptyValidator, passwordValidator]"
+                  [placeholder]="'Password'" [value]="''" (onKey)="user.password = $event" [checkValidate]="refresh"
+                  (onValidationStateChange)="fieldValidate(4, $event)"></text-input>
+      <span class="input-label">Password verification</span><br>
+      <text-input [type]="'password'" [id]="'password-verification-input'"
+                  [validators]="[emptyValidator, passwordValidator]"
+                  [placeholder]="'Password verification'" [value]="''" (onKey)="onKeyPassword($event)" [checkValidate]="refresh"
+                  (onValidationStateChange)="fieldValidate(5, $event)"></text-input>
+    </div>
+    <span class="input-label">Profile picture</span><br>
+    <div class="input-profile-picture-background">
+      <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
+      <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+      <img
+        [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
+        [src]="getPictureUrl()">
+    </div>
+    <div class="picture-button-container">
+      <file-input [text]="'Browse'" (value)="onClickBrowse($event)"></file-input>
+      <file-input [text]="'Take'" (value)="onClickBrowse($event)"></file-input>
+      <input type="button" class="input-file button-light" value="Clear"
+             (click)="onClickCancel()"/>
+    </div>
+    <input type="submit" value="Save" id="save-button" class="input-button button-dark" (click)="onClickSave()"/>
+    <div *ngIf="!showElements()">
+      <input type="reset" value="Change password" id="password-button" class="input-button button-dark"
+             routerLink="/password"
+             routerLinkActive="active"/>
+    </div>
+  </form>
+  <div id="ok-message" class="ok-message response-message">{{message}}</div>
+  <div id="error-message" class="error-message response-message">{{error}}</div>
+</div>

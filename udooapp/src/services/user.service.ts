@@ -6,9 +6,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw'
 
 import {User} from '../entity/user';
-import {TokenService} from "../guard/TokenService";
+import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 
 @Injectable()
 export class UserService {
@@ -55,7 +55,7 @@ export class UserService {
       .catch(HandlerService.handleText);
   }
 
-  public getUserData(): Observable<User> {
+  public getUserData(): Observable<any> {
     this.refreshHeaderToken();
     return this.http.get(config.server + '/user/userdata', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
@@ -76,7 +76,7 @@ export class UserService {
 
   public changePassword(cpass: string, npass: string): Observable<String> {
     this.refreshHeaderToken()
-    return this.http.post(config.server + '/user/data', JSON.stringify({
+    return this.http.post(config.server + '/user/password', JSON.stringify({
       cpass: cpass,
       npass: npass,
     }), new RequestOptions({headers: this.headers}))

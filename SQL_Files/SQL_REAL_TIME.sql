@@ -1,0 +1,1 @@
+ALTER TABLE `offer` ADD `realtime` BOOLEAN NOT NULL AFTER `image`;

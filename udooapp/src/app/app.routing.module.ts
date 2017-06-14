@@ -1,21 +1,20 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {RegistrationComponent} from '../registration/registration.component';
-import {LoginComponent} from '../login/login.component';
-import {MapComponent} from '../map/map.component';
-import {ProfileComponent} from "../profile/profile.component";
-import {PasswordComponent} from "../password/password.component";
-import {OfferComponent} from "../offer/offer.component";
-import {RequestComponent} from "../request/request.component";
-import {RequestListComponent} from "../requestlist/requestlist.component";
-import {OfferListComponent} from "../offerlist/offerlist.component";
-import {AuthGuard} from "../guard/AuthGuard";
-import {ServiceDetailComponent} from "../servicedetail/servicedetail.component";
-import {ContactsComponent} from "../contacts/contact.component";
-import {puts} from "util";
-import {ReminderComponent} from "../reminder/reminder.component";
-import {VerificationComponent} from "../verification/verification.component";
-import {FirstLoginComponent} from "../firstlogin/firstlogin.component";
+import {RegistrationComponent} from '../screens/registration/registration.component';
+import {LoginComponent} from '../screens/login/login.component';
+import {MapComponent} from '../screens/map/map.component';
+import {ProfileComponent} from "../screens/profile/profile.component";
+import {PasswordComponent} from "../screens/password/password.component";
+import {OfferComponent} from "../screens/offer/offer.component";
+import {RequestComponent} from "../screens/request/request.component";
+import {RequestListComponent} from "../screens/requestlist/requestlist.component";
+import {OfferListComponent} from "../screens/offerlist/offerlist.component";
+import {AuthGuard} from "../guard/auth.guard";
+import {ServiceDetailComponent} from "../screens/servicedetail/servicedetail.component";
+import {ContactsComponent} from "../screens/contacts/contact.component";
+import {ReminderComponent} from "../screens/reminder/reminder.component";
+import {VerificationComponent} from "../screens/verification/verification.component";
+import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},

@@ -8,7 +8,8 @@ export class Offer {
               public location: string,
               public availability: string,
               public expirydate: number,
-              public image: string) {
+              public image: string,
+              public realTime: boolean) {
   }
 
   toString(): string {
@@ -20,6 +21,7 @@ export class Offer {
       '"location" : "' + this.location + '",' +
       '"availability" : "' + this.availability + '",' +
       '"image" : "' + this.image + '",' +
-      '"expirydate" : "' + this.expirydate + '"}';
+      '"expirydate" : "' + this.expirydate + ',' +
+      '"realTime" : ' + this.realTime + '}';
   }
 }

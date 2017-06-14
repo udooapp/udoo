@@ -1,0 +1,82 @@
+.input-select {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 3%;
+  margin-top: 8px;
+  background-color: #f6f6f6;
+  color: #378281;
+  border: none;
+}
+
+.error-message {
+  color: red;
+}
+.checkbox-background{
+  width: 80px;
+  height: 25px;
+  position: relative;
+  float: right;
+}
+.checkbox-label{
+  margin-right: 5%;
+}
+#checkbox{
+  position: absolute;
+  z-index: 2;
+  width: 79px;
+  height: 25px;
+  margin-left: -1px;
+  margin-top: -1px;
+  opacity: 0;
+
+}
+
+.checkbox-background label::before{
+  background-color: #2B6665;
+  width: 25px;
+  border-radius: 5px;
+  content: '';
+  top:3px;
+  left: 3px;
+  display: block;
+  transition: all .2s ease;
+  position: absolute;
+  height: 19px;
+}
+.checkbox-background label:after {
+  content: 'Fixed';
+  position: absolute;
+  top: 6px;
+  font-size: 9pt;
+  left: 40px;
+  height: 10px;
+  color: #2B6665;
+}
+.checkbox-container{
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+
+}
+.checkbox-background input[type=checkbox]:checked + label::after {
+  content: 'Realtime';
+  left:4px;
+}
+.checkbox-background input[type=checkbox]:checked + label::before {
+  left:52px;
+}
+.checkbox-background label {
+  display: block;
+  width: 80px;
+  height: 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  left: 0;
+  background: #378281;
+}

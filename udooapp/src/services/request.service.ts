@@ -6,9 +6,9 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import {Request} from '../entity/request'
-import {TokenService} from "../guard/TokenService";
+import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 @Injectable()
 export class RequestService {
   private headers;

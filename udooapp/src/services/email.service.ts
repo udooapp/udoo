@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw'
 
 import {HandlerService} from "./handler.service";
-import {config} from "../config/url.config";
+import {config} from "../environments/url.config";
 
 @Injectable()
 export class EmailService {

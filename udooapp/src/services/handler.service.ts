@@ -45,7 +45,7 @@ export class HandlerService {
     } else {
       errMsg = 'Something\'s wrong here...\tTry again later';
     }
-    console.log('Error: ' + error.toString() + "\n" + errMsg);
+    console.log('Returned error message: ' + errMsg);
     return Observable.throw(errMsg);
   }
 
@@ -65,6 +65,9 @@ export class HandlerService {
         case 404:
           errMsg = error.text() + '!';
           break;
+        case 498:
+          errMsg = 'Invalid token';
+          break;
         case 500:
           errMsg = 'Server error';
           break;
@@ -81,14 +84,13 @@ export class HandlerService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
+    console.log('Returned error message: ' + errMsg);
     return Observable.throw(errMsg);
   }
   public static handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
     if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
       switch (error.status) {
         case 0:
           errMsg = 'No internet connection';
@@ -121,6 +123,6 @@ export class HandlerService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.log('Error: ' + error.toString());
+    console.log('Returned error message: ' + errMsg);
     return Observable.throw(errMsg);
   }}

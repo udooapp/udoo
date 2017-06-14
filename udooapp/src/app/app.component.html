@@ -1,5 +1,5 @@
 <div class="header">
-  <div class="header-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
+  <div class="header-button" id="menu-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
        (click)="onClickMenu()"></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
@@ -16,7 +16,7 @@
       </div>
       <div class="menu-profile-name" *ngIf="login">{{user.name}}</div>
       <div *ngIf="login" class="menu-profile-stars-container">
-        <img *ngFor="let i of stars" class="menu-profile-stars" [src]="i == 1 ? './assets/star3.png' : i == 2 ? './assets/star1.png' : './assets.star2.png'">
+        <img *ngFor="let i of stars" class="menu-profile-stars" [src]="i == 1 ? './assets/star3.png' : i == 2 ? './assets/star1.png' : './assets/star2.png'">
       </div>
       <a routerLink="/login" routerLinkActive="active" class="login-button button-dark"
          (click)="clickMenuButton()" *ngIf="!login">Login</a>
@@ -34,7 +34,7 @@
                                                           src="./assets/settings.png">Settings</a>
     <a routerLink="/profile" routerLinkActive="active" class="menu-link"
        (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png">Profile</a>
-    <a class="menu-link" *ngIf="login" (click)="logOut()"><img class="menu-link-image" src="./assets/logout.png">Log
+    <a class="menu-link" id="logout-button" *ngIf="login" (click)="logOut()"><img class="menu-link-image" src="./assets/logout.png">Log
       out</a>
   </div>
 

@@ -1,5 +1,5 @@
 export interface IValidator {
   validate(value: any): boolean;
-  getText();
-  
+  getErrorMessage();
+  setErrorMessage(message: string);
 }

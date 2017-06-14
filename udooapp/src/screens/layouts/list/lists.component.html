@@ -1,0 +1,26 @@
+<div class="data-container">
+  <h1>{{getTitle()}}</h1>
+  <input type="button" [value]="getButtonText()"
+         class="input-button button-light" [routerLink]="getButtonRouteText()"
+         routerLinkActive="active">
+  <div class="service-container">
+    <div class="service" *ngFor="let item of data;  let i = index">
+      <img class="service-button-container" src="./assets/trash.png"
+           (click)="onClickDelete(offer ? item.oid : item.rid, i)">
+      <div class="service-all-content"
+           [routerLink]="getServiceRouteText(i)"
+           routerLinkActive="active">
+        <div class="service-picture"><img class="service-image" [src]="item.image"></div>
+        <div class="service-content">
+          <div class="service-title">{{item.title}}</div>
+          <div class="service-description">{{item.description}}</div>
+          <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
+          <div class="service-location"><b>Location: </b>{{getAddress(item.location)}}</div>
+          <div class="service-date" [ngClass]="{'date-expired': isExpired(item.expirydate)}"><b
+            *ngIf="!isExpired(item.expirydate)">Date: </b><b *ngIf="isExpired(item.expirydate)">Expired: </b>{{convertMillisToDate(item.expirydate)}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
