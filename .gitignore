@@ -1,2 +1,3 @@
 /.idea/*
 *.iml
+/udooapp/node_modules/*
