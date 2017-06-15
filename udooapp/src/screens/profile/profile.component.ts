@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit, IFormInput {
   message: String;
   error: string;
   refresh: boolean = false;
-  user = new User(null, '', '', '', '', '', 0, 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en');
   passwordVerification: string;
   loaderVisible = false;
   first = false;

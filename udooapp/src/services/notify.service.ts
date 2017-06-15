@@ -6,17 +6,20 @@ export class NotifierService {
   public errorMessage$: EventEmitter<String>;
   public notificationMessage$: EventEmitter<String>;
   public tryAgain$: EventEmitter<boolean>;
-  public verification$: EventEmitter<boolean>;
+  public userModification$: EventEmitter<number>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
     this.errorMessage$ = new EventEmitter();
     this.tryAgain$ = new EventEmitter();
-    this.verification$ = new EventEmitter();
+    this.userModification$ = new EventEmitter();
     this.notificationMessage$ = new EventEmitter();
   }
   public sendVerification(){
-    this.verification$.emit(true);
+    this.userModification$.emit(-1);
+  }
+  public sendUserModification(modification: number){
+    this.userModification$.emit(modification)
   }
   public back(): string {
     if (this.pageList.length > 0) {

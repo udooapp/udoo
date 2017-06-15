@@ -1,11 +1,11 @@
 <div class="input-container">
-  <h1>{{getTitle()}}</h1>
+  <h1 i18n>{{getTitle()}}</h1>
   <form #userForm="ngForm" novalidate>
     <div *ngIf="showElements()">
-      <span class="input-label">Type</span><br>
+      <span class="input-label" i18n>Type</span><br>
       <ul>
         <li>
-          <label class="input-radio-label" for="personal">Personal</label>
+          <label class="input-radio-label" for="personal" i18n>Personal</label>
           <input class="input-radio" type="radio" id="personal" name="selector" [value]="user.type === 1"
                  (change)="user.type = 1">
           <div class="input-radio-button"></div>
@@ -13,47 +13,47 @@
         <li>
           <input class="input-radio" type="radio" id="organization" name="selector" [value]="0 === user.type"
                  (change)="user.type = 0">
-          <label class="input-radio-label" for="organization">Organization</label>
+          <label class="input-radio-label" for="organization" i18n>Organization</label>
           <div class="input-radio-button"></div>
         </li>
       </ul>
     </div>
-    <span class="input-label">{{!user.type ? 'Organization' : 'Name'}}</span>
+    <span class="input-label" i18n>{{!user.type ? 'Organization' : 'Name'}}</span>
     <text-input [type]="'text'" [id]="'name-input'" [validators]="[emptyValidator]" [checkValidate]="refresh"
                 [value]="user.name"
                 [placeholder]="'Name'" (onKey)="user.name= $event" (onValidationStateChange)="fieldValidate(0, $event)"></text-input>
 
-    <span class="input-label">Email</span><br>
+    <span class="input-label" i18n>Email</span><br>
     <text-input [type]="'email'" [id]="'email-input'" [validators]="[emptyValidator, emailValidator]"
                 [checkValidate]="refresh" [placeholder]="'Email'"
                 [value]="user.email" (onKey)="user.email = $event" (onValidationStateChange)="fieldValidate(1, $event)"></text-input>
 
-    <span class="input-label">Phone number</span><br>
+    <span class="input-label" i18n>Phone number</span><br>
     <text-input [type]="'phone'" [id]="'phone-input'" [validators]="[emptyValidator, phoneValidator]"
                 [checkValidate]="refresh" [placeholder]="'Phone'"
                 [value]="user.phone" (onKey)="user.phone= $event" (onValidationStateChange)="fieldValidate(2, $event)"></text-input>
     <div *ngIf="user.type">
-      <span class="input-label">Birth date</span><br>
+      <span class="input-label" i18n>Birth date</span><br>
       <text-input [type]="'date'" [id]="'birth-date-input'" [validators]="[emptyValidator, dateValidator]"
                   [checkValidate]="refresh" [placeholder]="'Date'"
                   [value]="user.birthdate" (onKey)="user.birthdate = $event"
                   (onValidationStateChange)="fieldValidate(3, $event)"></text-input>
     </div>
     <div *ngIf="showElements()">
-      <span class="input-label">Password</span><br>
+      <span class="input-label" i18n>Password</span><br>
       <text-input [type]="'password'" [id]="'password-input'" [validators]="[emptyValidator, passwordValidator]"
                   [placeholder]="'Password'" [value]="''" (onKey)="user.password = $event" [checkValidate]="refresh"
                   (onValidationStateChange)="fieldValidate(4, $event)"></text-input>
-      <span class="input-label">Password verification</span><br>
+      <span class="input-label" i18n>Password verification</span><br>
       <text-input [type]="'password'" [id]="'password-verification-input'"
                   [validators]="[emptyValidator, passwordValidator]"
                   [placeholder]="'Password verification'" [value]="''" (onKey)="onKeyPassword($event)" [checkValidate]="refresh"
                   (onValidationStateChange)="fieldValidate(5, $event)"></text-input>
     </div>
-    <span class="input-label">Profile picture</span><br>
+    <span class="input-label" i18n>Profile picture</span><br>
     <div class="input-profile-picture-background">
       <div class="upload-picture-loader" *ngIf="loaderVisible"></div>
-      <div class="upload-picture-error" *ngIf="pictureLoadError">Upload error!</div>
+      <div class="upload-picture-error" *ngIf="pictureLoadError" i18n>Upload error!</div>
       <img
         [ngClass]="{'input-profile-picture-image' : (user.picture == null|| user.picture.length == 0 || user.picture === 'null')}"
         [src]="getPictureUrl()">

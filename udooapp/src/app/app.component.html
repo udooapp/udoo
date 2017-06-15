@@ -5,7 +5,7 @@
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
 </div>
-<div *ngIf="!activated" class="account-activation">Activate your account! <a (click)="sendNewVerification()">Send a new email!</a></div>
+<div *ngIf="!activated" class="account-activation"><div i18n>Activate your account!</div> <a (click)="sendNewVerification()" i18n>Send a new email!</a></div>
 <div class="content">
   <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)" (activatedUser)="activated = $event"></side-menu>
   <div class="map-container">

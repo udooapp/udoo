@@ -1,5 +1,5 @@
 <div class="input-container">
-  <h1>{{reminder ? 'New password' : 'Password reminder'}}</h1>
+  <h1 i18h>{{reminder ? 'New password' : 'Password reminder'}}</h1>
   <form #userForm="ngForm" novalidate>
       <text-input [type]="reminder ? 'password' : 'email'" (onKey)="data = $event" [validators]="[emptyValidator, emailValidator]" (onValidationStateChange)="valid=$event" [checkValidate]="validate"
                   [placeholder]="reminder ? 'New Password' : 'Email address'"></text-input>

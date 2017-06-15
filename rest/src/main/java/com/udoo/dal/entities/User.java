@@ -31,6 +31,8 @@ public class User {
 
     private String location;
 
+    private String language;
+
     public Integer getUid() {
         return uid;
     }
@@ -127,6 +129,7 @@ public class User {
                 ", \"type\":" + type +
                 ", \"stars\":" + stars +
                 ", \"birthdate\":" + (birthdate == null ? null : ("\"" + birthdate + "\"")) +
+                ", \"language\":\"" + language + "\"" +
                 '}';
     }
 }

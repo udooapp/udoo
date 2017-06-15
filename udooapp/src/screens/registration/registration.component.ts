@@ -26,7 +26,7 @@ export class RegistrationComponent implements IFormInput {
   error: string;
   refresh = false;
   registration = true;
-  user = new User(null, '', '', '', '', '', 0, 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en');
   passwordVerification: string;
   loaderVisible = false;
   first = false;

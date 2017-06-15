@@ -19,6 +19,7 @@ export class AppComponent {
 
   constructor(private notifier: NotifierService) {
     MAP;
+    document['locale'] = 'en';
     notifier.pageChanged$.subscribe(action => {
       if (action === ' ') {
         this.menuButton = true;

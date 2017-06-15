@@ -9,16 +9,16 @@
     <div class="contact-name">{{user.name}}</div>
     <div class="contact-phone">{{user.phone}}</div>
     <div class="contact-email">{{user.email}}</div>
-    <button class="input-button button-dark" (click)="onClickAddToContact()">Add to contact</button>
+    <button class="input-button button-dark" (click)="onClickAddToContact()" i18h>Add to contact</button>
     <div *ngIf="message.length > 0" class="response-message ok-message">{{message}}</div>
     <div *ngIf="error.length > 0" class="response-message error-message">{{error}}</div>
   </div>
   <div class="service-container">
     <h1>{{data.title}}</h1>
     <div class="detail-description">{{data.description || ''}}</div>
-    <div class="detail-location"><b>Location:</b> {{getLocation(data.location)|| ''}}</div>
-    <div class="detail-date" *ngIf="!type"><b>Job date:</b> {{data.jobdate || ''}}</div>
-    <div class="detail-date"><b>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
+    <div class="detail-location"><b i18h>Location:</b> {{getLocation(data.location)|| ''}}</div>
+    <div class="detail-date" *ngIf="!type"><b i18h>Job date:</b> {{data.jobdate || ''}}</div>
+    <div class="detail-date"><b i18h>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
   </div>
 </div>
 <div *ngIf="!loaded && error.length > 0" class="response-message error-message">{{error}}</div>

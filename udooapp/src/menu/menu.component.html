@@ -11,23 +11,23 @@
            [src]="i == 1 ? './assets/star3.png' : i == 2 ? './assets/star1.png' : './assets/star2.png'">
     </div>
     <a routerLink="/login" routerLinkActive="active" class="login-button button-dark"
-       (click)="clickMenuButton()" *ngIf="!login">Login</a>
+       (click)="clickMenuButton()" *ngIf="!login" i18n>Login</a>
   </div>
   <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/request.png">My service request</a>
+    class="menu-link-image" src="./assets/request.png" i18n>My service request</a>
   <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/offers.png">My service
+    class="menu-link-image" src="./assets/offers.png" i18n>My service
     offer</a>
   <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
-    src="./assets/contacts.png">Contacts</a>
+    src="./assets/contacts.png" i18n>Contacts</a>
   <div class="menu-placeholder">&nbsp;</div>
-  <a class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
-                                                        src="./assets/settings.png">Settings</a>
+  <a routerLink="/settings" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
+                                                        src="./assets/settings.png" i18n>Settings</a>
   <a routerLink="/profile" routerLinkActive="active" class="menu-link"
-     (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png">Profile</a>
+     (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png" i18n>Profile</a>
   <a class="menu-link" id="logout-button" *ngIf="login" (click)="logOut()"><img class="menu-link-image"
-                                                                                src="./assets/logout.png">Log
+                                                                                src="./assets/logout.png" i18n>Log
     out</a>
 </div>
 

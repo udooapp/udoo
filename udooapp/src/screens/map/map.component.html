@@ -2,7 +2,7 @@
 <div [ngClass]="{'hide-map-filter' : (showSearch && mapView), 'map-filter' : mapView}" (focusout)="refresh()">
 
   <div [ngClass]="{'hide-map-inputs' : (showSearch && mapView), 'data-container' : !mapView, 'map-inputs-container' : mapView}">
-    <h1 *ngIf="!mapView">Services</h1>
+    <h1 *ngIf="!mapView" i18n>Services</h1>
     <div [ngClass]="{'service-inputs-container' : !mapView}">
       <text-input [placeholder]="'Search'" [type]="'text'" class="map-search" (onKeyEvent)="onKey($event)"
                   [disableValidation]="true"></text-input>
@@ -27,9 +27,9 @@
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
         <div class="service-description">{{item.description}}</div>
-        <div class="service-location"><b>Address: </b>{{getAddress(item.location)}}</div>
-        <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="service-date"><b>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
+        <div class="service-location"><b i18n>Address: </b>{{getAddress(item.location)}}</div>
+        <div class="service-category"><b i18n>Category: </b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b i18n>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
       </div>
     </div>
     <div class="service" *ngFor="let item of offers" (click)="onClickService(true, item.oid)">
@@ -37,9 +37,9 @@
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
         <div class="service-description">{{item.description}}</div>
-        <div class="service-location"><b>Address: </b>{{getAddress(item.location)}}</div>
-        <div class="service-category"><b>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="service-date"><b>Date: </b> {{convertMillisToDate(item.expirydate)}}</div>
+        <div class="service-location"><b i18n>Address: </b>{{getAddress(item.location)}}</div>
+        <div class="service-category"><b i18n>Category: </b>{{getCategory(item.category)}}</div>
+        <div class="service-date"><b i18n>Date: </b> {{convertMillisToDate(item.expirydate)}}</div>
       </div>
     </div>
   </div>

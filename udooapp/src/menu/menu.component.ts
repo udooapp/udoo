@@ -8,6 +8,7 @@ import {TokenService} from "../services/token.service";
 import {NotifierService} from "../services/notify.service";
 import {CREATE, LOGIN, MAP} from "../app/app.routing.module";
 import {EmailService} from "../services/email.service";
+import {document} from "@angular/platform-browser/src/facade/browser";
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
@@ -21,7 +22,7 @@ export class MenuComponent implements OnInit {
   @Output() menuItemClicked = new EventEmitter<boolean>();
   visibleMenu: boolean = false;
   stars: number[] = [0, 0, 0, 0, 0];
-  user = new User(null, '', '', '', '', '', 0, 0, '');
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en');
   login: boolean = false;
   image: string;
   checkLogin: boolean = false;
@@ -48,22 +49,40 @@ export class MenuComponent implements OnInit {
       if (message === 'Invalid token') {
         this.tokenService.clearToken();
         this.router.navigate([LOGIN]);
-        this.user = new User(null, '', '', '', '', '', 0, 0, '');
+        this.user = new User(null, '', '', '', '', '', 0, 0, '', 'en');
         this.login = false;
       }
     });
-    notifier.verification$.subscribe(verify => {
-      if (this.tokenService.getToken() != null && this.tokenService.getToken().length > 0) {
-        this.emailService.sendVerification(this.user.email).subscribe(
-          message => this.notifier.sendMessage(message),
-          error => console.log(error)
-        )
+    notifier.userModification$.subscribe(verify => {
+      if (verify == -1) {
+        if (this.tokenService.getToken() != null && this.tokenService.getToken().length > 0) {
+          this.emailService.sendVerification(this.user.email).subscribe(
+            message => this.notifier.sendMessage(message),
+            error => console.log(error)
+          )
+        } else if(verify == 0 || verify == 1){
+            this.user.language = verify == 0 ? 'en' : 'de';
+            document['locale']= this.user.language;
+            this.userService.updateUser(this.user).subscribe(
+              message=>{},
+              error=>{
+                if (error === 'Invalid token') {
+                  this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language);
+                  this.login = false;
+                  this.image = this.getPictureUrl('');
+                }
+                this.notifier.notifyError(error);
+              }
+            );
+        }
       }
     });
   }
-  @Input() set showMenu(show: boolean){
+
+  @Input() set showMenu(show: boolean) {
     this.visibleMenu = show;
   }
+
   ngOnInit() {
     this.checkUser();
   }
@@ -75,6 +94,7 @@ export class MenuComponent implements OnInit {
       this.userService.getUserData().subscribe(
         data => {
           this.user = data.user;
+          document['locale']= this.user.language;
           this.image = this.getPictureUrl(data.user.picture);
           let star = data.user.stars;
           for (let i = 0; i < 5; ++i) {
@@ -96,14 +116,14 @@ export class MenuComponent implements OnInit {
         error => {
           console.log(error);
           if (error === 'Invalid token') {
-            this.user = new User(null, '', '', '', '', '', 0, 0, '');
+            this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language);
             this.login = false;
             this.image = this.getPictureUrl('');
           }
           this.notifier.notifyError(error);
         });
     } else {
-      this.user = new User(null, '', '', '', '', '', 0, 0, '');
+      this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language);
       this.login = false;
       this.image = this.getPictureUrl('');
     }
@@ -130,7 +150,7 @@ export class MenuComponent implements OnInit {
     this.userService.logout().subscribe(
       message => {
         this.login = false;
-        this.user = new User(null, '', '', '', '', '', 0, 0, '');
+        this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language);
         this.router.navigate([MAP]);
         this.tokenService.clearToken()
       },

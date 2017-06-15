@@ -28,6 +28,7 @@ import {ReminderComponent} from "../screens/reminder/reminder.component";
 import {VerificationComponent} from "../screens/verification/verification.component";
 import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {MenuComponent} from "../menu/menu.component";
+import {SettingsComponent} from "../screens/settings/settings.component";
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {MenuComponent} from "../menu/menu.component";
     ReminderComponent,
     VerificationComponent,
     FirstLoginComponent,
-    MenuComponent
+    MenuComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

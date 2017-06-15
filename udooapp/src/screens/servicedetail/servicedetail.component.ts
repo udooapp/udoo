@@ -19,7 +19,7 @@ import { MAP} from "../../app/app.routing.module";
 export class ServiceDetailComponent implements OnInit {
   private static NAME: string = 'ServiceDetail';
   message: string = '';
-  user = new User(null, '', '', '', '', '', 0, -1, '');
+  user = new User(null, '', '', '', '', '', 0, -1, '', 'en');
   error: string = '';
   type: boolean = false;
   data: any;
