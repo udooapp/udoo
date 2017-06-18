@@ -13,6 +13,8 @@
     <a routerLink="/login" routerLinkActive="active" class="login-button button-dark"
        (click)="clickMenuButton()" *ngIf="!login" i18n>Login</a>
   </div>
+  <a *ngIf="user.active < 15" routerLink="/activation" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+    class="menu-link-image" src="./assets/activation.png" i18n>Account activation</a>
   <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image" src="./assets/request.png" i18n>My service request</a>
   <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img

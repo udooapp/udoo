@@ -75,7 +75,7 @@ export class UserService {
   }
 
   public changePassword(cpass: string, npass: string): Observable<String> {
-    this.refreshHeaderToken()
+    this.refreshHeaderToken();
     return this.http.post(config.server + '/user/password', JSON.stringify({
       cpass: cpass,
       npass: npass,

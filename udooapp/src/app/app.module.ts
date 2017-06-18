@@ -27,8 +27,9 @@ import {NotifierService} from "../services/notify.service";
 import {ReminderComponent} from "../screens/reminder/reminder.component";
 import {VerificationComponent} from "../screens/verification/verification.component";
 import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
-import {MenuComponent} from "../menu/menu.component";
+import {MenuComponent} from "../components/menu/menu.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
+import {ActivationComponent} from "../screens/activation/activation.component";
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {SettingsComponent} from "../screens/settings/settings.component";
     VerificationComponent,
     FirstLoginComponent,
     MenuComponent,
-    SettingsComponent
+    SettingsComponent,
+    ActivationComponent
   ],
   imports: [
     BrowserModule,

@@ -28,7 +28,6 @@ public class Token {
     private Date expirydate;
 
     private boolean disable;
-
     public Token() {
     }
 
@@ -71,6 +70,7 @@ public class Token {
     public void setDisable(boolean disable) {
         this.disable = disable;
     }
+
 
     @Override
     public String toString() {

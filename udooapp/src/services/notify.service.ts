@@ -1,4 +1,5 @@
 import {EventEmitter} from "@angular/core";
+import {User} from "../entity/user";
 
 export class NotifierService {
   private pageList: string[] = [];
@@ -7,6 +8,7 @@ export class NotifierService {
   public notificationMessage$: EventEmitter<String>;
   public tryAgain$: EventEmitter<boolean>;
   public userModification$: EventEmitter<number>;
+  public userDataPipe$: EventEmitter<User>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
@@ -14,6 +16,7 @@ export class NotifierService {
     this.tryAgain$ = new EventEmitter();
     this.userModification$ = new EventEmitter();
     this.notificationMessage$ = new EventEmitter();
+    this.userDataPipe$ = new EventEmitter();
   }
   public sendVerification(){
     this.userModification$.emit(-1);

@@ -10,7 +10,12 @@ import com.udoo.dal.repositories.ITokenRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.restservice.IUserServiceController;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -36,6 +42,8 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private IUserRepository userRepository;
 
+    @Autowired
+    private Environment env;
 
     @Resource
     private ITokenRepository tokenRepository;
@@ -55,16 +63,45 @@ public class UserServiceController implements IUserServiceController {
             if (cuser == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
-                List<User> users = userRepository.findByEmail(user.getEmail());
-                if (users.size() > 0 && !users.get(0).getUid().equals(user.getUid())) {
+                User user2 = userRepository.getByEmail(user.getEmail());
+                if (!user2.getUid().equals(user.getUid())) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
                     if(user.getLocation() == null){
                         user.setLocation("");
                         user.setLocation("");
                     }
+                    String responseMessage = "Profile updated";
+                    if(!user.getEmail().equals(user2.getEmail())){
+                        responseMessage = "Check your email address ";
+                        int activated = user2.getActive();
+                        verificationRepository.deleteByUid(user.getUid(), false);
+                        Calendar cal = Calendar.getInstance();
+                        cal.add(Calendar.DATE, 1);
+                        verificationRepository.save(new Verification(user2.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
+                                MacProvider.generateKey()).compact()
+                                ,cal.getTime(), false));
+                        activated &= ~0b10;
+                        user.setActive(activated);
+                    }
+                    if(!user.getPhone().equals(user2.getPhone())){
+                        if(responseMessage.equals("Check your email address")){
+                            responseMessage += " and phone";
+                        } else {
+                            responseMessage = "Check your phone";
+                        }
+                        int activated = user2.getActive();
+                        verificationRepository.deleteByUid(user.getUid(), true);
+                        Calendar cal = Calendar.getInstance();
+                        cal.add(Calendar.DATE, 1);
+                        verificationRepository.save(new Verification(user2.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
+                                MacProvider.generateKey()).compact().substring(0,6)
+                                ,cal.getTime(), false));
+                        activated &= ~0b1000;
+                        user.setActive(activated);
+                    }
                     userRepository.save(user);
-                    return new ResponseEntity<>("Profile updated", HttpStatus.OK);
+                    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
                 }
             }
         }
@@ -114,7 +151,7 @@ public class UserServiceController implements IUserServiceController {
     public ResponseEntity<?> getUserData(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
         if (user != null) {
-            return new ResponseEntity<>("{ \"user\":"+ user.toString() + ", \"verification\":" + (verificationRepository.getByUid(user.getUid()) != null ? 1 : 0) + "}", HttpStatus.OK);
+            return new ResponseEntity<>( user, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

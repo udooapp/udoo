@@ -20,6 +20,8 @@ public class Verification {
 
     private String token;
 
+    private boolean type;
+
     public Verification() {
         this.vid = -1;
         this.uid = -1;
@@ -27,10 +29,11 @@ public class Verification {
         this.token = "";
     }
 
-    public Verification(int uid, String token, Date expiryDate) {
+    public Verification(int uid, String token, Date expiryDate, boolean type) {
         this.uid = uid;
         this.token = token;
         this.expiryDate = expiryDate;
+        this.type = type;
     }
 
     public int getVid() {
@@ -63,5 +66,13 @@ public class Verification {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public boolean isType() {
+        return type;
+    }
+
+    public void setType(boolean type) {
+        this.type = type;
     }
 }

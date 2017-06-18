@@ -8,7 +8,8 @@ export class User {
               public stars: number,
               public type: number,
               public birthdate: string,
-              public language: string) {
+              public language: string,
+              public active: number) {
   }
   refresh(user: User){
     this.uid = user.uid;
@@ -21,6 +22,7 @@ export class User {
     this.birthdate = user.birthdate;
     this.stars = user.stars;
     this.language = user.language;
+    this.active = user.active;
   }
 
   toString() {
@@ -33,6 +35,7 @@ export class User {
       '"type" : "' + this.type + '",' +
       '"birthdate" : "' + this.birthdate + '",' +
       '"picture" : "' + this.picture + '",' +
-      '"language": "' + this.language + '"}';
+      '"language": "' + this.language + '",' +
+      '"active": "'+ this.active + '"}';
   }
 }

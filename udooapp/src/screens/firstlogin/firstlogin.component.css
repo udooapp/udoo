@@ -20,7 +20,7 @@
     margin-left: 50px;
     margin-right: 50px;
     border-radius: 5px;
-    border: 1px solid #378281;
+    border-left: 1px solid #378281;
   }
   .button-container{
     -webkit-flex-direction: row;
@@ -33,7 +33,7 @@
     height: 0;
     margin: 5% 30px 5% 20px;
     border-radius: 5px;
-    border: 1px solid #378281;
+    border-bottom: 1px solid #378281;
   }
   .button-container{
     -webkit-flex-direction: column;

@@ -63,6 +63,7 @@ public class EmailServiceController implements IEmailServiceController {
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
 
     }
+
     @Override
     @RequestMapping(value = "/reminder", method = RequestMethod.POST)
     public ResponseEntity<String> sendPasswordReminder(@RequestBody String email) {
@@ -87,39 +88,69 @@ public class EmailServiceController implements IEmailServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/verification", method = RequestMethod.POST)
-    public ResponseEntity<String> sendEmailVerification(@RequestBody String email) {
-        if (email != null && email.startsWith("{\"email\":\"")) {
-            User user = userRepository.getByEmail(email.substring(10, email.length() - 2));
-            if (user != null) {
-                if (verificationRepository.getByUid(user.getUid()) != null) {
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.DATE, 1);
-                    Verification verification =
-                            new Verification(user.getUid(),
-                                    Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact(),
-                                    cal.getTime());
-                    verificationRepository.deleteByUid(user.getUid());
-                    verificationRepository.save(verification);
-                    emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), verification.getToken());
-                    return new ResponseEntity<>("Email sent!\nCheck your email address!", HttpStatus.OK);
-
-                } else {
-                    return new ResponseEntity<>("Your email address is active!", HttpStatus.OK);
-                }
+    @RequestMapping(value = "user/verification/email", method = RequestMethod.GET)
+    public ResponseEntity<String> sendEmailVerification(ServletRequest request) {
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if (user != null) {
+            if (verificationRepository.getByUidAndType(user.getUid(), false) != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, 1);
+                Verification verification =
+                        new Verification(user.getUid(),
+                                Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact(),
+                                cal.getTime(), false);
+                verificationRepository.deleteByUid(user.getUid(), false);
+                verificationRepository.save(verification);
+                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), verification.getToken());
+                int activate = user.getActive();
+                activate |= 0b1;
+                activate &= ~0b10;
+                user.setActive(activate);
+                userRepository.save(user);
+                return new ResponseEntity<>("Email sent!\nCheck your email address!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Your email is active activated!", HttpStatus.OK);
             }
-            return new ResponseEntity<>("Invalid email address", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
-
     }
 
     @Override
-    @RequestMapping(value = "/user/verification")
+    @RequestMapping(value = "user/verification/sms", method = RequestMethod.GET)
+    public ResponseEntity<String> sendSmsVerification(ServletRequest request) {
+        System.out.println("SMS ACTIVATION");
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+        if (user != null) {
+            if (verificationRepository.getByUidAndType(user.getUid(), true) != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, 1);
+                Verification verification =
+                        new Verification(user.getUid(),
+                                Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact().substring(0, 6),
+                                cal.getTime(), true);
+                verificationRepository.deleteByUid(user.getUid(), true);
+                verificationRepository.save(verification);
+                int activate = user.getActive();
+                activate |= 0b100;
+                activate &= ~0b1000;
+                user.setActive(activate);
+                userRepository.save(user);
+                System.out.println("SMS sent");
+                //emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), verification.getToken());
+                return new ResponseEntity<>("SMS sent!\nCheck your phone!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Your phone is activated!", HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    @RequestMapping(value = "/user/verification", method = RequestMethod.GET)
     public ResponseEntity<String> checkUserVerification(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
-        if(user != null){
-            if(verificationRepository.getByUid(user.getUid()) == null){
+        if (user != null) {
+            if (verificationRepository.getByUidAndType(user.getUid(), false) == null) {
                 return new ResponseEntity<>("Ok", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Verify", HttpStatus.OK);
@@ -130,24 +161,49 @@ public class EmailServiceController implements IEmailServiceController {
 
     @Override
     @RequestMapping(value = "/verification/valid", method = RequestMethod.POST)
-    public ResponseEntity<String> checkVerification(@RequestBody String token) {
+    public ResponseEntity<String> checkEmailVerification(@RequestBody String token) {
         if (token != null && token.startsWith("{\"token\":\"")) {
             Verification verification = verificationRepository.getByToken(token.substring(10, token.length() - 2));
             if (verification != null) {
+                User user = userRepository.findByUid(verification.getUid());
+                int active = user.getActive();
+                active |= 0b10;
+                user.setActive(active);
+                userRepository.save(user);
                 verificationRepository.deleteByToken(verification.getToken());
                 if (0 > new Date().compareTo(verification.getExpiryDate())) {
-                    return new ResponseEntity<>("Your account is active!", HttpStatus.OK);
+                    return new ResponseEntity<>("Your email is active!", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
                 }
-
             }
             return new ResponseEntity<>("Invalid token", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
-
     }
 
+    @Override
+    @RequestMapping(value = "user/verification/valid", method = RequestMethod.POST)
+    public ResponseEntity<String> checkSmsVerification(@RequestBody String token) {
+        if (token != null && token.startsWith("{\"key\":\"")) {
+            Verification verification = verificationRepository.getByToken(token.substring(8, token.length() - 2));
+            if (verification != null) {
+                User user = userRepository.findByUid(verification.getUid());
+                int active = user.getActive();
+                active |= 0b1000;
+                user.setActive(active);
+                userRepository.save(user);
+                verificationRepository.deleteByToken(verification.getToken());
+                if (0 > new Date().compareTo(verification.getExpiryDate())) {
+                    return new ResponseEntity<>("Your phone number is active!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
+                }
+            }
+            return new ResponseEntity<>("Invalid token", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+    }
     @Override
     @RequestMapping(value = "/reminder/password", method = RequestMethod.POST)
     public ResponseEntity<String> changePassword(@RequestBody String data) {
@@ -157,7 +213,7 @@ public class EmailServiceController implements IEmailServiceController {
                 Reminder reminder = reminderRepository.getByToken(object.getString("token"));
                 System.out.println("Token: " + reminder.getToken());
                 String password = object.getString("password");
-                if (reminder != null && password != null) {
+                if (password != null) {
                     if (0 > new Date().compareTo(reminder.getExpiryDate())) {
                         reminderRepository.deleteByRid(reminder.getRid());
                         User user = userRepository.findByUid(reminder.getUid());

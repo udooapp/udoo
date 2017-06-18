@@ -13,14 +13,14 @@ public interface IVerificationRepository extends Repository<Verification, Intege
 
     Verification getByToken(String token);
 
-    Verification getByUid(int uid);
+    Verification getByUidAndType(int uid, boolean type);
 
     Verification save(Verification reminder);
 
     @Modifying
     @Transactional
-    @Query("delete from Verification v where v.uid= ?1")
-    int deleteByUid(int uid);
+    @Query("delete from Verification v where v.uid= ?1 and v.type = type")
+    int deleteByUid(int uid, boolean type);
 
     @Modifying
     @Transactional

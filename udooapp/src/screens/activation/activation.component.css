@@ -1,0 +1,52 @@
+.input-container{
+  margin-top: 5%;
+}
+.activation-active{
+  background-color: #378281;
+}
+.activation-pending{
+  background-color: gold;
+}
+.email-label{
+  margin-right: 15px;
+}
+.activation-status{
+  color:white;
+  position: absolute;
+  left: 0;
+  margin-left: 30%;
+  padding:3px 8px 3px 8px;
+  border-radius: 5px;
+  font-size: 8pt;
+}
+.verification-input{
+  margin-top: 10px;
+  width: 50%;
+}
+.input-button{
+  position: absolute;
+  margin-top: 0;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.activate-button{
+  width: 40%;
+  top: 34px;
+  margin-left: 57.5%;
+}
+.send-button{
+  width: 150px;
+  height: 20px;
+  margin-right: 10px;
+  right: 0;
+}
+.input-label{
+  width: 100px;
+  margin-top: 15px;
+  margin-right: 20%;
+}
+.activation-container{
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}

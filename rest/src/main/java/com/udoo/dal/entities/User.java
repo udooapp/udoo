@@ -33,6 +33,8 @@ public class User {
 
     private String language;
 
+    private int active;
+
     public Integer getUid() {
         return uid;
     }
@@ -113,8 +115,24 @@ public class User {
         return location;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 
     @Override
@@ -130,6 +148,7 @@ public class User {
                 ", \"stars\":" + stars +
                 ", \"birthdate\":" + (birthdate == null ? null : ("\"" + birthdate + "\"")) +
                 ", \"language\":\"" + language + "\"" +
+                ", \"active\":" + active +
                 '}';
     }
 }

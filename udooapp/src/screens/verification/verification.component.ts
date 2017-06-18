@@ -19,14 +19,6 @@ export class VerificationComponent implements OnInit {
   private static NAME: string = 'Verification';
   message: string = '';
   error = '';
-  data: string = '';
-  valid: boolean = false;
-  validate: boolean = false;
-  emailValidator: IValidator = new EmailValidator();
-  emptyValidator: IValidator = new EmptyValidator();
-  token: string = '';
-  verification: boolean = false;
-  invalid: boolean = false;
 
   constructor(private reminderService: EmailService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
     notifier.notify(VerificationComponent.NAME);
@@ -40,10 +32,9 @@ export class VerificationComponent implements OnInit {
   ngOnInit(): void {
     this.route.params
       .subscribe((params: Params) => {
-        this.token = params['token'];
-        if (this.token != null && this.token.length > 0) {
-          this.verification = true;
-          this.reminderService.checkVerification(this.token).subscribe(
+        let token: string = params['token'];
+        if (token != null && token.length > 0) {
+          this.reminderService.checkVerification(token).subscribe(
             message =>{
               this.message="Your account is active!";
               this.notifier.refreshMainData();
@@ -52,35 +43,11 @@ export class VerificationComponent implements OnInit {
               this.notifier.notifyError(error);
               this.error = error;
               this.message = '';
-              this.invalid = true
             }
           );
         } else {
-          this.token = '';
+          token = '';
         }
       });
-  }
-
-
-  public send() {
-    if (!this.invalid) {
-      if (this.valid) {
-        if (this.token.length === 0) {
-          this.reminderService.sendVerification(this.data).subscribe(
-            message => {
-              this.message = message;
-              this.error = '';
-            },
-            error => {
-              this.error = error;
-              this.message = '';
-            }
-          );
-        }
-      } else {
-        this.validate = !this.validate;
-        this.message = '';
-      }
-    }
   }
 }

@@ -16,6 +16,7 @@ import {ReminderComponent} from "../screens/reminder/reminder.component";
 import {VerificationComponent} from "../screens/verification/verification.component";
 import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
+import {ActivationComponent} from "../screens/activation/activation.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -39,6 +40,7 @@ const routes: Routes = [
   {path: 'detail/:id/:type', component: ServiceDetailComponent},
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
+  {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo:'/map'}
 ];
 @NgModule({

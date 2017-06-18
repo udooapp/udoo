@@ -77,11 +77,16 @@ public class RestServiceController implements IRestServiceController {
                 if(user.getLocation() == null) {
                     user.setLocation("");
                 }
+                if(user.getLanguage() == null){
+                    user.setLanguage("en");
+                }
+                user.setActive(0b0101);
                 User user2 = userRepository.save(user);
                 String token = generateToken();
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE, 1);
-                verificationRepository.save(new Verification(user2.getUid(), token, cal.getTime()));
+                verificationRepository.save(new Verification(user2.getUid(), token, cal.getTime(), false));
+                verificationRepository.save(new Verification(user2.getUid(), generateToken().substring(0, 6), cal.getTime(), true));
                 emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), token);
                 return new ResponseEntity<>("Registration complete", HttpStatus.OK);
             }

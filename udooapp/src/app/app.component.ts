@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Inject, LOCALE_ID} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierService} from "../services/notify.service";
 import {MAP} from "./app.routing.module";
@@ -17,7 +17,7 @@ export class AppComponent {
   mainError: boolean = false;
   activated: boolean = true;
 
-  constructor(private notifier: NotifierService) {
+  constructor(private notifier: NotifierService ) {
     MAP;
     document['locale'] = 'en';
     notifier.pageChanged$.subscribe(action => {

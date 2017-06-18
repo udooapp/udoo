@@ -19,7 +19,7 @@ import {MAP} from "../../app/app.routing.module";
 })
 export class LoginComponent {
   message: String;
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en');
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
   error: string;
   emptyValidator: IValidator = new EmptyValidator();
   emailValidator: IValidator = new EmailValidator();
