@@ -8,7 +8,7 @@ import {DateValidator} from "../../validator/date.validator";
 import {EmailValidator} from "../../validator/email.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {Router} from "@angular/router";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {LOGIN} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
@@ -38,7 +38,7 @@ export class RegistrationComponent implements IFormInput {
   passwordValidator: IValidator = new PasswordValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
+  constructor(private router: Router, private userService: UserService, private notifier: NotifierController) {
     this.passwordVerification = '';
     notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {

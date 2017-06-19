@@ -3,7 +3,7 @@ import {Component, OnInit} from '@angular/core';
 
 import {IValidator} from "../../validator/validator.interface";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {LOGIN, MAP} from "../../app/app.routing.module";
 import {EmailValidator} from "../../validator/email.validator";
@@ -20,7 +20,7 @@ export class VerificationComponent implements OnInit {
   message: string = '';
   error = '';
 
-  constructor(private reminderService: EmailService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
+  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {

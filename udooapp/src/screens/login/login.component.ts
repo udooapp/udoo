@@ -9,7 +9,7 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmailValidator} from "../../validator/email.validator";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 
 @Component({
@@ -26,7 +26,7 @@ export class LoginComponent {
   passwordValidator: IValidator = new PasswordValidator();
   valid = [false, false];
 
-  constructor(private router: Router, private userService: UserService, private notifier: NotifierService) {
+  constructor(private router: Router, private userService: UserService, private notifier: NotifierController) {
 
   }
 

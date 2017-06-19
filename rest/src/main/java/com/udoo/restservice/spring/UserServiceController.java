@@ -91,7 +91,7 @@ public class UserServiceController implements IUserServiceController {
                             responseMessage = "Check your phone";
                         }
                         int activated = user2.getActive();
-                        verificationRepository.deleteByUid(user.getUid(), true);
+                        verificationRepository.deleteByUid(user.getUid(), false);
                         Calendar cal = Calendar.getInstance();
                         cal.add(Calendar.DATE, 1);
                         verificationRepository.save(new Verification(user2.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,

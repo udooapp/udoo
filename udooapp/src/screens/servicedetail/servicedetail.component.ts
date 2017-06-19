@@ -8,7 +8,7 @@ import {OfferService} from "../../services/offer.service";
 import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import { MAP} from "../../app/app.routing.module";
 
 @Component({
@@ -28,7 +28,7 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierService, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {

@@ -1,7 +1,7 @@
 import {EventEmitter} from "@angular/core";
 import {User} from "../entity/user";
 
-export class NotifierService {
+export class NotifierController {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<String>;
   public errorMessage$: EventEmitter<String>;

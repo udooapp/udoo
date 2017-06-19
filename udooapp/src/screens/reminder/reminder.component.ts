@@ -4,7 +4,7 @@ import {Component, OnInit} from '@angular/core';
 import {IValidator} from "../../validator/validator.interface";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {LOGIN} from "../../app/app.routing.module";
 import {EmailValidator} from "../../validator/email.validator";
@@ -28,7 +28,7 @@ export class ReminderComponent implements OnInit {
   reminder: boolean = false;
   invalid: boolean = false;
 
-  constructor(private reminderService: EmailService, private notifier: NotifierService, private router: Router, private route: ActivatedRoute) {
+  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute) {
     notifier.notify(ReminderComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == ReminderComponent.NAME) {

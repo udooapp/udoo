@@ -7,7 +7,7 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import { OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 
@@ -35,7 +35,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   valid: boolean[] = [false, false, false, false, false, false];
   lastImage: string = '';
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierService) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController) {
     notifier.pageChanged$.subscribe(action => {
       if (action == OfferComponent.NAME) {
         console.log("Action:" + action);

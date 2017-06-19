@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ContactService} from "../../services/contact.service";
 import {User} from "../../entity/user";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 
 @Component({
   templateUrl: './contact.component.html',
@@ -13,7 +13,7 @@ export class ContactsComponent implements OnInit {
   error: string;
   message: string = '';
 
-  constructor(private contactService: ContactService, private notifier: NotifierService) {
+  constructor(private contactService: ContactService, private notifier: NotifierController) {
     notifier.tryAgain$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();

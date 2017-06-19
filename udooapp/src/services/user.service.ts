@@ -13,6 +13,7 @@ import {config} from "../environments/url.config";
 @Injectable()
 export class UserService {
   private headers: Headers;
+  private user: User;
 
   constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});

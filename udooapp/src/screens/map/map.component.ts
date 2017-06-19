@@ -3,7 +3,7 @@ import {MapService} from "../../services/map.service";
 import {Offer} from "../../entity/offer";
 import {Request} from "../../entity/request";
 import {Router} from "@angular/router";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {TokenService} from "../../services/token.service";
 import {DETAIL} from "../../app/app.routing.module";
 // import {Observable} from "rxjs/Observable";
@@ -40,7 +40,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
 //  private stompClient: any;
  // messages: Array<string> = new Array<string>();
 
-  constructor(private mapService: MapService, private router: Router, private notifier: NotifierService, private tokenService: TokenService) {
+  constructor(private mapService: MapService, private router: Router, private notifier: NotifierController, private tokenService: TokenService) {
     super();
     notifier.tryAgain$.subscribe(again => {
       if (this.error.length > 0) {

@@ -5,7 +5,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {TokenService} from "../../services/token.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {CREATE, LOGIN, MAP} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
@@ -28,7 +28,7 @@ export class MenuComponent implements OnInit {
   image: string;
   checkLogin: boolean = false;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierService) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController) {
     let before: string = '';
     notifier.pageChanged$.subscribe(action => {
       if (action === 'refresh') {
@@ -73,11 +73,7 @@ export class MenuComponent implements OnInit {
           }
         );
       } else if(verify == 4){
-        if(this.user.email.length == 0){
           this.checkUser(true);
-        } else {
-          this.notifier.userDataPipe$.emit(this.user);
-        }
       }
     });
   }

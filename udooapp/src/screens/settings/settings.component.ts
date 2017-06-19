@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 
 import {UserService} from "../../services/user.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
 import {MAP} from "../../app/app.routing.module";
 
@@ -16,7 +16,7 @@ export class SettingsComponent {
   message: String;
   error = '';
   public languages: string[] = ['English', 'German'];
-  constructor(private notifier: NotifierService, private router: Router) {
+  constructor(private notifier: NotifierController, private router: Router) {
     notifier.notify(SettingsComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == SettingsComponent.NAME) {

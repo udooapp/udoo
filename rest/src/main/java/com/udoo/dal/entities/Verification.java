@@ -27,6 +27,7 @@ public class Verification {
         this.uid = -1;
         this.expiryDate = null;
         this.token = "";
+        this.type = false;
     }
 
     public Verification(int uid, String token, Date expiryDate, boolean type) {

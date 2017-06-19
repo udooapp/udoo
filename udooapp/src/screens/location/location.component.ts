@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 
 declare let google: any;
 
@@ -15,7 +15,7 @@ export class LocationComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
 
-  constructor(private notifier: NotifierService) {
+  constructor(private notifier: NotifierController) {
     notifier.pageChanged$.subscribe(action => {
       if (action == LocationComponent.NAME) {
         this.onSaved.emit('');

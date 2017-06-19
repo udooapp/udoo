@@ -5,7 +5,7 @@ import {UserService} from "../../services/user.service";
 import {IValidator} from "../../validator/validator.interface";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
 import {PROFILE} from "../../app/app.routing.module";
 
@@ -24,7 +24,7 @@ export class PasswordComponent {
   passwordValidator: IValidator = new PasswordValidator();
   emptyValidator: IValidator = new EmptyValidator();
 
-  constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
+  constructor(private userService: UserService, private notifier: NotifierController, private router: Router) {
     notifier.notify(PasswordComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == PasswordComponent.NAME) {

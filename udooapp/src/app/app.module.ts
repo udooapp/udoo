@@ -23,13 +23,14 @@ import {SelectInputComponent} from "../fields/selectinput/selectinput.component"
 import {FileInputComponent} from "../fields/fileInput/fileinput.component";
 import {ServiceDetailComponent} from "../screens/servicedetail/servicedetail.component";
 import {ContactsComponent} from "../screens/contacts/contact.component";
-import {NotifierService} from "../services/notify.service";
+import {NotifierController} from "../controllers/notify.controller";
 import {ReminderComponent} from "../screens/reminder/reminder.component";
 import {VerificationComponent} from "../screens/verification/verification.component";
 import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {MenuComponent} from "../components/menu/menu.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
+import {UserService} from "../services/user.service";
 
 @NgModule({
   declarations: [
@@ -63,7 +64,7 @@ import {ActivationComponent} from "../screens/activation/activation.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierService],
+  providers: [AuthGuard, TokenService, NotifierController, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

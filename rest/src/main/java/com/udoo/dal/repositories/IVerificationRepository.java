@@ -19,7 +19,7 @@ public interface IVerificationRepository extends Repository<Verification, Intege
 
     @Modifying
     @Transactional
-    @Query("delete from Verification v where v.uid= ?1 and v.type = type")
+    @Query("delete from Verification v where v.uid= ?1 and v.type = ?2")
     int deleteByUid(int uid, boolean type);
 
     @Modifying

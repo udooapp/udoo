@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 
 
 import {UserService} from "../../services/user.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
 import {MAP} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
@@ -26,24 +26,7 @@ export class ActivationComponent implements OnInit {
   type: boolean[] = [false, false];
   activation: number = 0;
 
-  constructor(private notifier: NotifierService, private router: Router, private emailService: EmailService) {
-    notifier.notify(ActivationComponent.NAME);
-    notifier.pageChanged$.subscribe(action => {
-      if (action == ActivationComponent.NAME) {
-        router.navigate([MAP]);
-      }
-    });
-    notifier.userDataPipe$.subscribe(user => {
-      this.activation = user.active;
-      if(this.activation>= 15){
-        this.router.navigate([MAP]);
-      } else {
-        for(let i = 0; i < 2; ++i){
-            this.type[i] = ((this.activation >>(i * 2 + 1))&1) != 0;
-        }
-      }
-    });
-    notifier.sendUserModification(4);
+  constructor(private notifier: NotifierController, private router: Router, private emailService: EmailService) {
     this.emptyValidator = new EmptyValidator();
   }
 
@@ -79,8 +62,9 @@ export class ActivationComponent implements OnInit {
     if (!this.empty) {
       this.emailService.sendKey(this.verificationCode).subscribe(
         message => {
-          this.type[0] = true;
+          this.type[1] = true;
           this.okMessage = message;
+          this.notifier.refreshMainData();
         },
         error => this.errorMessage = error
       );
@@ -92,5 +76,22 @@ export class ActivationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.notifier.notify(ActivationComponent.NAME);
+    this.notifier.pageChanged$.subscribe(action => {
+      if (action == ActivationComponent.NAME) {
+        this.router.navigate([MAP]);
+      }
+    });
+    this.notifier.userDataPipe$.subscribe(user => {
+      this.activation = user.active;
+      if(this.activation>= 15){
+        this.router.navigate([MAP]);
+      } else {
+        for(let i = 0; i < 2; ++i){
+          this.type[i] = ((this.activation >>(i * 2 + 1))&1) != 0;
+        }
+      }
+    });
+    this.notifier.sendUserModification(4);
   }
 }

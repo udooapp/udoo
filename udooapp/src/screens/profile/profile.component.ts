@@ -11,7 +11,7 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {PhoneValidator} from "../../validator/phone.validator";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
 
@@ -40,35 +40,31 @@ export class ProfileComponent implements OnInit, IFormInput {
   valid = [false, false, false];
   lastPicture: string = '';
 
-  constructor(private userService: UserService, private notifier: NotifierService, private router: Router) {
+  constructor(private userService: UserService, private notifier: NotifierController, private router: Router) {
     this.passwordVerification = '';
     notifier.pageChanged$.subscribe(action => {
       if (action == ProfileComponent.NAME) {
         router.navigate([MAP])
       }
     });
+
     notifier.tryAgain$.subscribe(tryAgain => {
       this.ngOnInit()
-    })
+    });
     this.notifier.notify(ProfileComponent.NAME);
   }
 
   ngOnInit() {
-
-    this.userService.getUserData().subscribe(
-      data => {
-        if (data.user.picture.length > 4) {
-          this.first = false;
-        }
-        this.user = data.user;
-        this.lastPicture = this.user.picture;
-        this.error = '';
-      },
-      error => {
-        this.message = '';
-        this.error = 'Please try again later';
-        this.notifier.notifyError(error.toString());
-      });
+    this.notifier.userDataPipe$.subscribe(user => {
+      this.user = user;
+      if (user.picture.length > 4) {
+        this.first = false;
+      }
+      this.user = user;
+      this.lastPicture = this.user.picture;
+      this.error = '';
+    });
+    this.notifier.sendUserModification(4);
   }
 
   public getPictureUrl() {

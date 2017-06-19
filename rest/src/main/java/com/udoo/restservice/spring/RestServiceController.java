@@ -99,7 +99,6 @@ public class RestServiceController implements IRestServiceController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         User user2 = userRepository.getByEmail(user.getEmail());
-
         if (user2 != null) {
             if (user2.getPassword().equals(user.getPassword())) {
                 Calendar c = Calendar.getInstance();

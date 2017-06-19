@@ -3,7 +3,7 @@ import {Offer} from "../../entity/offer";
 import {OfferService} from "../../services/offer.service";
 import {Router} from "@angular/router";
 import {MapService} from "../../services/map.service";
-import {NotifierService} from "../../services/notify.service";
+import {NotifierController} from "../../controllers/notify.controller";
 import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 
@@ -19,7 +19,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
   message: string = '';
   categories = [];
 
-  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private notifier: NotifierService) {
+  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private notifier: NotifierController) {
     super();
     notifier.tryAgain$.subscribe(tryAgain => {
       if (this.error.length > 0) {
