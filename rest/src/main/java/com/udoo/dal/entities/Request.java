@@ -96,16 +96,16 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{" +
-                "rid=" + rid +
-                ", uid=" + uid +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", location='" + location + '\'' +
-                ", jobdate='" + jobdate + '\'' +
-                ", expirydate=" + expirydate +
-                ", category='" + category + '\'' +
-                ", image='" + image + '\'' +
+        return "{" +
+                "\"rid\":" + rid +
+                ", \"uid\":" + uid +
+                ", \"title\":\"" + title + '\"' +
+                ", \"description\":\"" + description + '\"' +
+                ", \"location\":\"" + location.replaceAll("[\"]", "'") + '\"' +
+                ", \"jobdate\":\"" + jobdate + '\"' +
+                ", \"expirydate\":\"" + expirydate + '\"' +
+                ", \"category\":" + category +
+                ", \"image\":\"" + image + '\"' +
                 '}';
     }
 }

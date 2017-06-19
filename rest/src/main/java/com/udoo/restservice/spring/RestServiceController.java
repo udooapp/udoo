@@ -1,6 +1,7 @@
 package com.udoo.restservice.spring;
 
 
+import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
@@ -11,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -49,6 +51,7 @@ public class RestServiceController implements IRestServiceController {
     @Autowired
     private Environment env;
 
+
     @Autowired
     private EmailServiceImp emailServiceImp;
 
@@ -64,6 +67,15 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private IVerificationRepository verificationRepository;
 
+    @Resource
+    private IRequestRepository requestRepository;
+
+    @Resource
+    private IOfferRepository offerRepository;
+
+    @Autowired
+    private ICategoryResult categoryResultRepository;
+
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveUser(@RequestBody final User user) {
@@ -74,10 +86,10 @@ public class RestServiceController implements IRestServiceController {
             if (userRepository.findByEmail(user.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
-                if(user.getLocation() == null) {
+                if (user.getLocation() == null) {
                     user.setLocation("");
                 }
-                if(user.getLanguage() == null){
+                if (user.getLanguage() == null) {
                     user.setLanguage("en");
                 }
                 user.setActive(0b0101);
@@ -195,5 +207,81 @@ public class RestServiceController implements IRestServiceController {
 
     private String generateToken() {
         return Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact();
+    }
+
+    @Override
+    @RequestMapping(value = "/search/{category}/{searchText}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllService(@PathVariable("category") int category, @PathVariable("searchText") String searchText, @PathVariable("type") int type) throws JSONException {
+        SearchResult result = new SearchResult();
+        if (type == 0 || type == 2) {
+            List<Request> requests = category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+            result.setRequest(changeRequestImage(requests));
+        }
+        if (type == 0 || type == 1) {
+            List<Offer> offers = category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+            result.setOffer(changeOfferImage(offers));
+        }
+        return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
+    @Override
+    @RequestMapping(value = "/search/{category}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllServiceWithoutText(@PathVariable("category") int category, @PathVariable("type") int type) throws JSONException {
+        SearchResult result = new SearchResult();
+        if (type == 0 || type == 2) {
+            List<Request> requests = category > 0 ?
+                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual();
+            result.setRequest(changeRequestImage(requests));
+        }
+        if (type == 0 || type == 1) {
+            List<Offer> offers = category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual();
+            result.setOffer(changeOfferImage(offers));
+        }
+        return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
+    private List<Offer> changeOfferImage(List<Offer> offers) {
+        User usr;
+        for (Offer offer : offers) {
+            usr = userRepository.findByUid(offer.getUid());
+            offer.setImage(usr != null && usr.getPicture() != null ? usr.getPicture() : "");
+        }
+        return offers;
+    }
+
+    private List<Request> changeRequestImage(List<Request> requests) {
+        User usr;
+        for (Request request : requests) {
+            usr = userRepository.findByUid(request.getUid());
+            request.setImage(usr != null && usr.getPicture() != null ? usr.getPicture() : "");
+        }
+        return requests;
+    }
+
+    @Override
+    @RequestMapping(value = "/result/{searchText}/{type}", method = RequestMethod.GET)
+    public ResponseEntity<?> getResults(@PathVariable("searchText") String searchText, @PathVariable("type") int type) throws JSONException {
+        switch (type){
+            case 0:
+                List<CategoryResult> listOffers = categoryResultRepository.getAllOffer(searchText);
+                List<CategoryResult> listRequest = categoryResultRepository.getAllRequest(searchText);
+                for(CategoryResult res : listOffers){
+                    for(int i = 0; i < listRequest.size(); ++i){
+                        if(res.getId() == listRequest.get(i).getId()){
+                            res.setResult(res.getResult() + listRequest.get(i).getResult());
+                            listRequest.remove(i);
+                            break;
+                        }
+                    }
+                }
+                return new ResponseEntity<Object>(listOffers, HttpStatus.OK);
+            case 1:
+                return new ResponseEntity<Object>(categoryResultRepository.getAllOffer(searchText), HttpStatus.OK);
+            case 2:
+                return new ResponseEntity<Object>(categoryResultRepository.getAllRequest(searchText), HttpStatus.OK);
+        }
+            List<CategoryResult> list = categoryResultRepository.getAllOffer(searchText);
+
+         return new ResponseEntity<Object>(list, HttpStatus.OK);
     }
 }

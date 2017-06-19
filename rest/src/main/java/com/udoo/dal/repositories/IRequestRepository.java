@@ -1,6 +1,5 @@
 package com.udoo.dal.repositories;
 
-
 import com.udoo.dal.entities.Request;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +26,7 @@ public interface IRequestRepository extends Repository<Request, Integer> {
 
     @Query("SELECT r FROM Request r WHERE (LOWER(r.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(r.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v)")
     List<Request> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText);
+
 
 
     List<Request> findByUid(int uid);

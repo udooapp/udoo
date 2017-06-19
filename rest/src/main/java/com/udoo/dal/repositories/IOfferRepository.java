@@ -22,6 +22,7 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
 
     List<Offer> findByUid(int uid);
 
+
     @Query("SELECT o FROM Offer o WHERE  o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR LOWER(o.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND o.expirydate >= CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v)")
     List<Offer> findAllMatches(@Param("category") int category, @Param("searchText") String searchText);
 

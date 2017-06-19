@@ -94,44 +94,4 @@ public class OfferServiceController implements IOfferServiceController {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
         }
     }
-
-    @Override
-    @RequestMapping(value = "/offers/{category}/{searchText}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffers(@PathVariable("category") int category,
-                                          @PathVariable("searchText") String searchText) {
-        List<Offer> offers;
-        if (category >= 0) {
-            offers = offerRepository.findAllMatches(category, searchText);
-        } else {
-            offers = offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-        }
-        for (Offer offer : offers) {
-            User usr = userRepository.findByUid(offer.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                offer.setImage(usr.getPicture());
-            } else {
-                offer.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(offers, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/offers/{category}/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllOffersWithoutText(@PathVariable("category") int category) {
-        List<Offer> offers;
-        if (category >= 0) {
-            offers = offerRepository.findAllActualByCategory(category);
-        } else {
-            offers = offerRepository.findAllActual();
-        }
-        for (Offer offer : offers) {
-            User usr = userRepository.findByUid(offer.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                offer.setImage(usr.getPicture());
-            } else {
-                offer.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(offers, HttpStatus.OK);
-    }
 }

@@ -16,8 +16,4 @@ public interface IRequestServiceController {
     ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request);
 
     ResponseEntity<Request> getRequest(int uid);
-
-    ResponseEntity<?> getAllRequests(int category, String searchText);
-
-    ResponseEntity<?> getAllRequestsWithoutText(int category);
 }

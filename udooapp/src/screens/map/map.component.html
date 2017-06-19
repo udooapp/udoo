@@ -1,11 +1,13 @@
 <div id="map" [ngClass]="{'hide-map': !mapView, 'show-map': mapView}"></div>
-<div [ngClass]="{'hide-map-filter' : (showSearch && mapView), 'map-filter' : mapView}" (focusout)="refresh()">
+<div [ngClass]="{'hide-map-filter' : (showSearch && mapView), 'map-filter' : mapView}" (focusout)="loadAvailableServices()">
 
-  <div [ngClass]="{'hide-map-inputs' : (showSearch && mapView), 'data-container' : !mapView, 'map-inputs-container' : mapView}">
+  <div
+    [ngClass]="{'hide-map-inputs' : (showSearch && mapView), 'data-container' : !mapView, 'map-inputs-container' : mapView}">
     <h1 *ngIf="!mapView" i18n>Services</h1>
     <div [ngClass]="{'service-inputs-container' : !mapView}">
-      <text-input [placeholder]="'Search'" [type]="'text'" class="map-search" (onKeyEvent)="onKey($event)"
-                  [disableValidation]="true"></text-input>
+      <text-input-select [placeholder]="'Search'" [data]="result" (selectedResult)="onClickResultDropDown($event)"
+                         (onKeyEvent)="onKey($event)" class="map-search"></text-input-select>
+
       <div [ngClass]="{'map-selector-container' : mapView}" class="input-group">
         <select-input class="map-select right-padding" [values]="types" (onChange)="onChangeTypeSelect($event)"
                       [disableValidation]="true"></select-input>

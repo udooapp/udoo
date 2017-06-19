@@ -37,8 +37,9 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private icon = {};
   private offers: Offer[] = [];
   private offersRealTime: Offer[] = [];
+  private result: any[] = [];
 //  private stompClient: any;
- // messages: Array<string> = new Array<string>();
+  // messages: Array<string> = new Array<string>();
 
   constructor(private mapService: MapService, private router: Router, private notifier: NotifierController, private tokenService: TokenService) {
     super();
@@ -61,24 +62,24 @@ export class MapComponent extends ConversionMethods implements OnInit {
     // }
   }
 
-   connect() {
-  //   let that = this;
-  //   let socket = new SockJS(config.server + '/coordinates');
-  //   this.stompClient = Stomp.over(socket);
-  //   this.stompClient.connect({}, function (frame) {
-  //     console.log('Connected: ' + frame);
-  //     that.stompClient.subscribe('/location/messages', function (greeting) {
-  //       //let coordianate = JSON.parse(greeting);
-  //       console.log("Socket response: " + greeting.toString());
-  //
-  //     });
-  //   }, function (err) {
-  //     console.log('err', err);
-  //   });
+  connect() {
+    //   let that = this;
+    //   let socket = new SockJS(config.server + '/coordinates');
+    //   this.stompClient = Stomp.over(socket);
+    //   this.stompClient.connect({}, function (frame) {
+    //     console.log('Connected: ' + frame);
+    //     that.stompClient.subscribe('/location/messages', function (greeting) {
+    //       //let coordianate = JSON.parse(greeting);
+    //       console.log("Socket response: " + greeting.toString());
+    //
+    //     });
+    //   }, function (err) {
+    //     console.log('err', err);
+    //   });
   }
 
   ngOnInit() {
- //   this.connect();
+    //   this.connect();
 
     this.mapView = !this.tokenService.getMapState();
     this.error = '';
@@ -108,8 +109,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
         origin: new google.maps.Point(0, 0), // origin
         anchor: new google.maps.Point(0, 0) // anchor
       };
-      this.loadRequests();
-      this.loadOffers();
+      this.loadAvailableServices();
     }).catch((error) => {
       console.log("ERROR: " + error.toString());
     });
@@ -144,135 +144,126 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   private loadRequests() {
-    this.mapService.getRequestLocations(this.category, this.searchString).subscribe(
-      requests => {
-        this.requests = requests;
-        let click: boolean[] = [];
-        let rout = this.router;
-        let map = this.map;
-        for (let i = 0; i < requests.length; ++i) {
-          let coordinate = this.getCoordinates(requests[i].location);
-          if (coordinate != null) {
-            click.push(false);
-            let marker = new google.maps.Marker({
-              position: coordinate,
-              map: this.map,
-              title: requests[i].title,
-              icon: this.icon
+    let click: boolean[] = [];
+    let rout = this.router;
+    let map = this.map;
+    for (let i = 0; i < this.requests.length; ++i) {
+      let request: Request = this.requests[i];
+      let coordinate = this.getCoordinates(request.location);
+      if (coordinate != null) {
+        click.push(false);
+        let marker = new google.maps.Marker({
+          position: coordinate,
+          map: this.map,
+          title: request.title,
+          icon: this.icon
 
-            });
-            let infowindow = new google.maps.InfoWindow({
-              content: '<div>' +
-              '<h1>' + requests[i].title + '</h1>' +
-              '<div>' +
-              '<p>' + requests[i].description + '</p>' +
-              '<p><a  id="infoWindow-linkr' + requests[i].rid + '"><b>More...</b></a></p>' +
-              '<p><b>Category: </b>' + this.findCatName(requests[i].category) + '</p>' +
-              '</div>' +
-              '</div>',
-              maxWidth: 300
-            });
-            infowindow.addListener('closeclick', function () {
-              click[i] = !click[i];
-              infowindow.close(map, marker);
-            });
+        });
+        let infowindow = new google.maps.InfoWindow({
+          content: '<div>' +
+          '<h1>' + request.title + '</h1>' +
+          '<div>' +
+          '<p>' + request.description + '</p>' +
+          '<p><a  id="infoWindow-linkr' + request.rid + '"><b>More...</b></a></p>' +
+          '<p><b>Category: </b>' + this.findCatName(request.category) + '</p>' +
+          '</div>' +
+          '</div>',
+          maxWidth: 300
+        });
+        infowindow.addListener('closeclick', function () {
+          click[i] = !click[i];
+          infowindow.close(map, marker);
+        });
 
-            google.maps.event.addListener(infowindow, 'domready', function () {
-              document.getElementById('infoWindow-linkr' + requests[i].rid).addEventListener("click", function () {
-                rout.navigate([DETAIL + requests[i].rid + '/0']);
-              });
-            });
-            marker.addListener('mouseover', function () {
-              infowindow.open(map, marker);
-            });
-            marker.addListener('click', function () {
-              click[i] = !click[i];
-              infowindow.open(map, marker);
-            });
+        google.maps.event.addListener(infowindow, 'domready', function () {
+          document.getElementById('infoWindow-linkr' + request.rid).addEventListener("click", function () {
+            rout.navigate([DETAIL + request.rid + '/0']);
+          });
+        });
+        marker.addListener('mouseover', function () {
+          infowindow.open(map, marker);
+        });
+        marker.addListener('click', function () {
+          click[i] = !click[i];
+          infowindow.open(map, marker);
+        });
 
-            marker.addListener('mouseout', function () {
-              if (!click[i]) {
-                infowindow.close(map, marker);
-              }
-            });
-            this.markers.push(marker);
+        marker.addListener('mouseout', function () {
+          if (!click[i]) {
+            infowindow.close(map, marker);
           }
-        }
-      },
-      error => {
-        this.error = <any>error;
-        this.checkError();
-      });
+        });
+        this.markers.push(marker);
+      }
+    }
+
   }
 
   private loadOffers() {
-    this.mapService.getOfferLocations(this.category, this.searchString).subscribe(
-      offers => {
-        this.offersRealTime = [];
-        this.offers = [];
-        for (let i = 0; i < offers.length; ++i) {
-          if (offers[i].realTime) {
-            this.offersRealTime.push(offers[i])
-          } else {
-            this.offers.push(offers[i])
+    // this.offersRealTime = [];
+    // for (let i = 0; i < this.offers.length; ++i) {
+    //   if (this.offers[i].realTime) {
+    //     this.offersRealTime.push(this.offers[i])
+    //   } else {
+    //     this.offers.push(this.offers[i])
+    //   }
+    // }
+    let map = this.map;
+    let rout = this.router;
+    let click: boolean[] = [];
+
+    for (let i = 0; i < this.offers.length; ++i) {
+      let offer: Offer = this.offers[i];
+      let coordinate = this.getCoordinates(offer.location);
+      if (coordinate != null) {
+
+        click.push(false);
+        let marker = new google.maps.Marker({
+          position: coordinate,
+          map: this.map,
+          title: offer.title,
+          icon: this.icon
+        });
+        let infowindow = new google.maps.InfoWindow({
+          content: '<div >' +
+          '<h1>' + offer.title + '</h1>' +
+          '<div>' +
+          '<p>' + offer.description + '</p>' +
+          '<p><a class="link" id="infoWindow-linko' + offer.oid + '"><b>More...</b></a></p>' +
+          '<p><b>Category: </b>' + this.findCatName(offer.category) + '</p>' +
+          '</div>' +
+          '</div>',
+          maxWidth: 300
+        });
+
+        google.maps.event.addListener(infowindow, 'domready', function () {
+
+          document.getElementById('infoWindow-linko' + offer.oid).addEventListener("click", function () {
+            rout.navigate([DETAIL + offer.oid + '/1']);
+          });
+        });
+        infowindow.addListener('closeclick', function () {
+          click[i] = !click[i];
+          infowindow.close(map, marker);
+        });
+        marker.addListener('mouseover', function () {
+          infowindow.open(map, marker);
+        });
+        marker.addListener('click', function () {
+          click[i] = !click[i];
+          infowindow.open(map, marker);
+        });
+
+        marker.addListener('mouseout', function () {
+          if (!click[i]) {
+            infowindow.close(map, marker);
           }
-        }
-        let map = this.map;
-        let rout = this.router;
-        let click: boolean[] = [];
-        for (let i = 0; i < offers.length; ++i) {
-          let coordinate = this.getCoordinates(offers[i].location);
-          if (coordinate != null) {
+        });
+        this.markers.push(marker);
+      }
+    }
 
-            click.push(false);
-            let marker = new google.maps.Marker({
-              position: coordinate,
-              map: this.map,
-              title: offers[i].title,
-              icon: this.icon
-            });
-            let infowindow = new google.maps.InfoWindow({
-              content: '<div >' +
-              '<h1>' + offers[i].title + '</h1>' +
-              '<div>' +
-              '<p>' + offers[i].description + '</p>' +
-              '<p><a class="link" id="infoWindow-linko' + offers[i].oid + '"><b>More...</b></a></p>' +
-              '<p><b>Category: </b>' + this.findCatName(offers[i].category) + '</p>' +
-              '</div>' +
-              '</div>',
-              maxWidth: 300
-            });
 
-            google.maps.event.addListener(infowindow, 'domready', function () {
-              document.getElementById('infoWindow-linko' + offers[i].oid).addEventListener("click", function () {
-                rout.navigate([DETAIL + offers[i].oid + '/1']);
-              });
-            });
-            infowindow.addListener('closeclick', function () {
-              click[i] = !click[i];
-              infowindow.close(map, marker);
-            });
-            marker.addListener('mouseover', function () {
-              infowindow.open(map, marker);
-            });
-            marker.addListener('click', function () {
-              click[i] = !click[i];
-              infowindow.open(map, marker);
-            });
-
-            marker.addListener('mouseout', function () {
-              if (!click[i]) {
-                infowindow.close(map, marker);
-              }
-            });
-            this.markers.push(marker);
-          }
-        }
-      },
-      error => {
-        this.error = <any>error;
-        this.checkError()
-      });
   }
 
   public findCatName(catID: number): string {
@@ -286,25 +277,33 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public getCoordinates(location: string) {
     if (!location.match('address') && !location.match('coordinate')) {
-      return null
+      return null;
     }
     return JSON.parse(location).coordinate;
   }
 
-
-  public refresh() {
+  private loadAvailableServices() {
     this.deleteMarkers();
-    if (this.type == 0) {
-      this.loadRequests();
-      this.loadOffers();
-
-    } else if (this.type == 1) {
-      this.loadOffers();
-      this.requests = [];
-    } else if (this.type == 2) {
-      this.loadRequests();
-      this.offers = [];
-    }
+    this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
+      result => {
+        if (result.request) {
+          this.requests = result.request;
+          this.loadRequests();
+        } else {
+          this.requests = [];
+        }
+        if (result.offer) {
+          this.offers = result.offer;
+          this.loadOffers();
+        } else {
+          this.offers = [];
+        }
+      },
+      error => {
+        this.error = error;
+        this.checkError();
+      }
+    );
   }
 
   private checkError() {
@@ -341,9 +340,24 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onKey(event: any): void {
     if (event.which === 13) {
-      this.refresh();
+      this.loadAvailableServices();
     } else {
       this.searchString = event.target.value;
+      if (this.searchString.length > 0) {
+        this.mapService.getAvailableResults(this.searchString, this.type).subscribe(
+          result => {
+            this.result = [];
+            for (let i = 0; i < result.length; ++i) {
+              this.result.push({
+                category: this.findCatName(result[i].id),
+                result: result[i].result,
+                id: result[i].id
+              })
+            }
+          },
+          error => console.log(error)
+        );
+      }
     }
   }
 
@@ -354,14 +368,14 @@ export class MapComponent extends ConversionMethods implements OnInit {
   public onChangeTypeSelect(event: any) {
     if (this.type != event) {
       this.type = event;
-      this.refresh();
+      this.loadAvailableServices();
     }
   }
 
   public onChangeCategorySelect(event: any) {
     if (this.category != event) {
       this.category = event;
-      this.refresh()
+      this.loadAvailableServices();
     }
   }
 
@@ -379,4 +393,8 @@ export class MapComponent extends ConversionMethods implements OnInit {
     this.router.navigate([DETAIL + id + '/' + (type ? 1 : 0)]);
   }
 
+  public onClickResultDropDown(index: number) {
+    this.category = index;
+    this.loadAvailableServices();
+  }
 }

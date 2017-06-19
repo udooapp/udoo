@@ -31,6 +31,7 @@ import {MenuComponent} from "../components/menu/menu.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
 import {UserService} from "../services/user.service";
+import {TextInputSelectComponent} from "../fields/textinputselect/textinputselect.component";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import {UserService} from "../services/user.service";
     LocationComponent,
     TextInputComponent,
     TextAreaComponent,
+    TextInputSelectComponent,
     SelectInputComponent,
     FileInputComponent,
     ServiceDetailComponent,

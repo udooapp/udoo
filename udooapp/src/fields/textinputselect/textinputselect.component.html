@@ -1,0 +1,9 @@
+<div class="input-text-select-container">
+  <text-input [placeholder]="placeholder" [type]="'text'" (onKeyEvent)="onKey($event)"
+              [disableValidation]="true" (onClickInput)="onClickTextBox()"></text-input>
+  <div class="result-container" *ngIf="visible && data.length > 0 && text.length > 0">
+    <div class="result-element" *ngFor="let element of data" (click)="onClickResult(element.id)"><b>{{element.category}}</b>
+      ({{element.result}} results)
+    </div>
+  </div>
+</div>

@@ -11,4 +11,5 @@ import java.util.List;
 public interface ICategoryRepository extends Repository<Category, Integer> {
 
     List<Category> findAll();
+
 }

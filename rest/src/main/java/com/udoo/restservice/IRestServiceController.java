@@ -3,6 +3,7 @@ package com.udoo.restservice;
 
 import com.udoo.dal.entities.Category;
 import com.udoo.dal.entities.User;
+import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,4 +28,10 @@ public interface IRestServiceController {
     ResponseEntity<?> multiFileUpload(MultipartFile[] files);
 
     ResponseEntity<List<Category>> getCategories();
+
+    ResponseEntity<?> getAllService(int category, String searchText, int type) throws JSONException;
+
+    ResponseEntity<?> getAllServiceWithoutText(int category, int type) throws JSONException;
+
+    ResponseEntity<?> getResults(String searchText, int type) throws JSONException;
 }

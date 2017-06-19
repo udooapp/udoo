@@ -17,7 +17,4 @@ public interface IOfferServiceController {
 
     ResponseEntity<Offer> getOffer(int uid);
 
-    ResponseEntity<?> getAllOffers(int category, String searchText);
-
-    ResponseEntity<?> getAllOffersWithoutText(int category);
 }

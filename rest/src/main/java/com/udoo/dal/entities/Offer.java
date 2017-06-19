@@ -110,17 +110,17 @@ public class Offer {
 
     @Override
     public String toString() {
-        return "Offer{" +
-                "oid:" + oid +
-                ", uid:" + uid +
-                ", title:'" + title + '\'' +
-                ", description:'" + description + '\'' +
-                ", category:" + category +
-                ", location:'" + location + '\'' +
-                ", availability:'" + availability + '\'' +
-                ", expirydate:" + expirydate +
-                ", image:'" + image + '\'' +
-                ", realTime:" + realTime + +
+        return "{" +
+                "\"oid\":" + oid +
+                ", \"uid\":" + uid +
+                ", \"title\":\"" + title + '\"' +
+                ", \"description\":\"" + description + '\"' +
+                ", \"category\":" + category +
+                ", \"location\":\"" + location.replaceAll("[\"]", "'") + '\"' +
+                ", \"availability:\"" + availability + '\"' +
+                ", \"expirydate\":\"" + expirydate + '\"' +
+                ", \"image\":\"" + image + '\"' +
+                ", \"realTime\":" + realTime + +
                 '}';
     }
 }

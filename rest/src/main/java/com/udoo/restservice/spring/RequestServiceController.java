@@ -100,45 +100,4 @@ public class RequestServiceController implements IRequestServiceController {
         return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
     }
 
-    @Override
-    @RequestMapping(value = "/requests/{category}/{searchText}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequests(@PathVariable("category") int category,
-                                            @PathVariable("searchText") String searchText) {
-        List<Request> requests;
-        if (category > 0) {
-            requests = requestRepository.findAllMatches(category, searchText);
-        } else {
-            requests = requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-        }
-        for (Request request : requests) {
-            User usr = userRepository.findByUid(request.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                request.setImage(usr.getPicture());
-            } else {
-                request.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(requests, HttpStatus.OK);
-    }
-
-
-    @Override
-    @RequestMapping(value = "/requests/{category}/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllRequestsWithoutText(@PathVariable("category") int category) {
-        List<Request> requests;
-        if (category > 0) {
-            requests = requestRepository.findAllActualByCategory(category);
-        } else {
-            requests = requestRepository.findAllActual();
-        }
-        for (Request request : requests) {
-            User usr = userRepository.findByUid(request.getUid());
-            if (usr != null && usr.getPicture() != null) {
-                request.setImage(usr.getPicture());
-            } else {
-                request.setImage("");
-            }
-        }
-        return new ResponseEntity<Object>(requests, HttpStatus.OK);
-    }
 }
