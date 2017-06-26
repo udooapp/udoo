@@ -10,6 +10,8 @@ import com.udoo.dal.repositories.ITokenRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.restservice.IUserServiceController;
+import com.udoo.restservice.email.EmailService;
+import com.udoo.restservice.sms.SmsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -35,15 +37,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  */
 @RestController
 @CrossOrigin
-@PropertySource("classpath:app.properties")
 @RequestMapping("/user")
 public class UserServiceController implements IUserServiceController {
 
     @Resource
     private IUserRepository userRepository;
 
-    @Autowired
-    private Environment env;
+
 
     @Resource
     private ITokenRepository tokenRepository;
@@ -51,6 +51,11 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private IVerificationRepository verificationRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private SmsService smsService;
 
     @Override
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,10 +82,7 @@ public class UserServiceController implements IUserServiceController {
                         int activated = user2.getActive();
                         verificationRepository.deleteByUid(user.getUid(), false);
                         Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.DATE, 1);
-                        verificationRepository.save(new Verification(user2.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
-                                MacProvider.generateKey()).compact()
-                                ,cal.getTime(), false));
+                        emailService.sendEmailVerification(user);
                         activated &= ~0b10;
                         user.setActive(activated);
                     }
@@ -92,11 +94,7 @@ public class UserServiceController implements IUserServiceController {
                         }
                         int activated = user2.getActive();
                         verificationRepository.deleteByUid(user.getUid(), false);
-                        Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.DATE, 1);
-                        verificationRepository.save(new Verification(user2.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
-                                MacProvider.generateKey()).compact().substring(0,6)
-                                ,cal.getTime(), false));
+                        smsService.sendVerificationMessage(user);
                         activated &= ~0b1000;
                         user.setActive(activated);
                     }

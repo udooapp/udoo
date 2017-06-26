@@ -6,8 +6,10 @@ import com.udoo.dal.entities.User;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IEmailServiceController;
+import com.udoo.restservice.email.EmailService;
 import com.udoo.restservice.email.EmailServiceImp;
 
+import com.udoo.restservice.sms.SmsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -35,13 +37,17 @@ import static com.udoo.restservice.spring.RestServiceController.USERID;
 public class EmailServiceController implements IEmailServiceController {
 
     @Autowired
-    private EmailServiceImp emailServiceImp;
+    private EmailService emailService;
+
+    @Autowired
+    private SmsService smsService;
 
     @Resource
     private IUserRepository userRepository;
 
     @Resource
     private IVerificationRepository verificationRepository;
+
     @Resource
     private IReminderRepository reminderRepository;
 
@@ -70,16 +76,11 @@ public class EmailServiceController implements IEmailServiceController {
         if (email != null && email.startsWith("{\"email\":\"")) {
             User user = userRepository.getByEmail(email.substring(10, email.length() - 2));
             if (user != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 1);
-                Reminder reminder =
-                        new Reminder(user.getUid(),
-                                Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact(),
-                                cal.getTime());
-                reminderRepository.deleteByUid(user.getUid());
-                reminderRepository.save(reminder);
-                emailServiceImp.sendEmailPasswordReminder(user.getEmail(), user.getName(), reminder.getToken());
-                return new ResponseEntity<>("Email sent!", HttpStatus.OK);
+                if(emailService.sendEmailPasswordReminder(user)) {
+                    return new ResponseEntity<>("Email sent!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Please, try again later!", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
             return new ResponseEntity<>("Invalid email address", HttpStatus.NOT_FOUND);
         }
@@ -93,21 +94,17 @@ public class EmailServiceController implements IEmailServiceController {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             if (verificationRepository.getByUidAndType(user.getUid(), false) != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 1);
-                Verification verification =
-                        new Verification(user.getUid(),
-                                Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact(),
-                                cal.getTime(), false);
-                verificationRepository.deleteByUid(user.getUid(), false);
-                verificationRepository.save(verification);
-                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), verification.getToken());
-                int activate = user.getActive();
-                activate |= 0b1;
-                activate &= ~0b10;
-                user.setActive(activate);
-                userRepository.save(user);
-                return new ResponseEntity<>("Email sent!\nCheck your email address!", HttpStatus.OK);
+
+                if(emailService.sendEmailVerification(user)) {
+                    int activate = user.getActive();
+                    activate |= 0b1;
+                    activate &= ~0b10;
+                    user.setActive(activate);
+                    userRepository.save(user);
+                    return new ResponseEntity<>("Email sent!\nCheck your email address!", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Please, try again later!", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             } else {
                 return new ResponseEntity<>("Your email is active activated!", HttpStatus.OK);
             }
@@ -118,26 +115,16 @@ public class EmailServiceController implements IEmailServiceController {
     @Override
     @RequestMapping(value = "user/verification/sms", method = RequestMethod.GET)
     public ResponseEntity<String> sendSmsVerification(ServletRequest request) {
-        System.out.println("SMS ACTIVATION");
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             if (verificationRepository.getByUidAndType(user.getUid(), true) != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 1);
-                Verification verification =
-                        new Verification(user.getUid(),
-                                Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact().substring(0, 6),
-                                cal.getTime(), true);
-                verificationRepository.deleteByUid(user.getUid(), true);
-                verificationRepository.save(verification);
                 int activate = user.getActive();
                 activate |= 0b100;
                 activate &= ~0b1000;
                 user.setActive(activate);
                 userRepository.save(user);
-                System.out.println("SMS sent");
-                //emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), verification.getToken());
-                return new ResponseEntity<>("SMS sent!\nCheck your phone!", HttpStatus.OK);
+                smsService.sendVerificationMessage(user);
+                return new ResponseEntity<>("SMS sent!\nCheck your phone! " +  smsService.sendVerificationMessage(user), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Your phone is activated!", HttpStatus.OK);
             }

@@ -1,13 +1,15 @@
 package com.udoo.restservice.email;
 
+import com.udoo.dal.entities.User;
+
 /**
  *
  */
 public interface EmailService {
 
-    void sendEmailVerification(String to, String name, String urlToken);
+    boolean sendEmailVerification(User user);
 
-    void sendEmailPasswordReminder(String to, String name, String urlTOken);
+    boolean sendEmailPasswordReminder(User user);
 
     void sendEmailPasswordChangeMessage(String to, String name, String ipAddress);
 

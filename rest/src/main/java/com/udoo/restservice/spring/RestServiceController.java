@@ -6,7 +6,8 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
-import com.udoo.restservice.email.EmailServiceImp;
+import com.udoo.restservice.email.EmailService;
+import com.udoo.restservice.sms.SmsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -53,7 +54,10 @@ public class RestServiceController implements IRestServiceController {
 
 
     @Autowired
-    private EmailServiceImp emailServiceImp;
+    private EmailService emailService;
+
+    @Autowired
+    private SmsService smsService;
 
     @Resource
     private IUserRepository userRepository;
@@ -92,15 +96,21 @@ public class RestServiceController implements IRestServiceController {
                 if (user.getLanguage() == null) {
                     user.setLanguage("en");
                 }
-                user.setActive(0b0101);
-                User user2 = userRepository.save(user);
-                String token = generateToken();
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 1);
-                verificationRepository.save(new Verification(user2.getUid(), token, cal.getTime(), false));
-                verificationRepository.save(new Verification(user2.getUid(), generateToken().substring(0, 6), cal.getTime(), true));
-                emailServiceImp.sendEmailVerification(user.getEmail(), user.getName(), token);
-                return new ResponseEntity<>("Registration complete", HttpStatus.OK);
+
+                userRepository.save(user);
+                if(emailService.sendEmailVerification(user)) {
+                    user.setActive(0b0001);
+                    userRepository.save(user);
+                    if(!smsService.sendVerificationMessage(user).isEmpty()){
+                        user.setActive(0b0101);
+                        userRepository.save(user);
+                        return new ResponseEntity<>("Registration complete", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Registration complete,  but please send a new sms verification!", HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity<>("Registration complete, but please send a new email verification !", HttpStatus.OK);
+                }
             }
         }
         return new ResponseEntity<>("Invalid data", HttpStatus.BAD_REQUEST);
