@@ -13,11 +13,12 @@ import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: '../layouts/service/serviceform.component.html',
   styleUrls: ['../layouts/service/serviceform.component.css', '../layouts/forminput/forminput.component.css'],
-  providers: [RequestService, UserService, MapService]
+  providers: [RequestService, MapService]
 })
 export class RequestComponent implements OnInit, IServiceForm {
   private static NAME : string = 'Request';
@@ -39,16 +40,30 @@ export class RequestComponent implements OnInit, IServiceForm {
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
   lastImage: string = '';
-
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController) {
+  delete: boolean = false;
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController,  private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
         router.navigate([REQUEST_LIST]);
       }
     });
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();
+      }
+    });
+    dialog.questionResponse$.subscribe(response=>{
+      if(response && this.delete){
+        this.requestService.deleteUserRequest(this.data.rid).subscribe(
+          ok => {
+            this.notifier.pageChanged$.emit(' ');
+            this.router.navigate([REQUEST_LIST]);
+          },
+          error => {
+            this.error = error
+          }
+        );
+        this.delete = false;
       }
     });
     this.notifier.notify(RequestComponent.NAME);
@@ -76,7 +91,7 @@ export class RequestComponent implements OnInit, IServiceForm {
                 this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
-              error => {this.error = <any>error; this.notifier.notifyError(error.toString());}
+              error => {this.error = <any>error; this.dialog.notifyError(error.toString());}
             )
           }
         }
@@ -172,15 +187,8 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   public onClickDelete() {
-    this.requestService.deleteUserRequest(this.data.rid).subscribe(
-      ok => {
-        this.notifier.pageChanged$.emit(' ');
-        this.router.navigate([REQUEST_LIST]);
-      },
-      error => {
-        this.error = error
-      }
-    );
+    this.delete = true;
+    this.dialog.sendQuestion("Are you sure?");
   }
 
   getTitle(): string {

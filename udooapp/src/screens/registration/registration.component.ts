@@ -12,6 +12,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {LOGIN} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
+import {DialogController} from "../../controllers/dialog.controller";
 
 
 @Component({
@@ -38,7 +39,7 @@ export class RegistrationComponent implements IFormInput {
   passwordValidator: IValidator = new PasswordValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router: Router, private userService: UserService, private notifier: NotifierController) {
+  constructor(private router: Router, private userService: UserService, private notifier: NotifierController,  private dialog: DialogController) {
     this.passwordVerification = '';
     notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
@@ -82,7 +83,7 @@ export class RegistrationComponent implements IFormInput {
           error => {
             this.pictureLoadError = true;
             this.loaderVisible = false;
-            this.notifier.notifyError(error.toString());
+            this.dialog.notifyError(error.toString());
           }
         );
       } else {
@@ -131,7 +132,7 @@ export class RegistrationComponent implements IFormInput {
             },
             error => {
               this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;
-              this.notifier.notifyError(error.toString());
+              this.dialog.notifyError(error.toString());
             });
 
       } else {

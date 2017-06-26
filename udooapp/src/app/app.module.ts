@@ -32,6 +32,8 @@ import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
 import {UserService} from "../services/user.service";
 import {TextInputSelectComponent} from "../fields/textinputselect/textinputselect.component";
+import {DialogController} from "../controllers/dialog.controller";
+import {DialogWindowComponent} from "../components/dialog/dialog.component";
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import {TextInputSelectComponent} from "../fields/textinputselect/textinputselec
     VerificationComponent,
     FirstLoginComponent,
     MenuComponent,
+    DialogWindowComponent,
     SettingsComponent,
     ActivationComponent
   ],
@@ -66,7 +69,7 @@ import {TextInputSelectComponent} from "../fields/textinputselect/textinputselec
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, UserService],
+  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

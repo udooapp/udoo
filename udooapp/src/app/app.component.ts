@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID} from '@angular/core';
+import {Component} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {MAP} from "./app.routing.module";
@@ -12,12 +12,10 @@ export class AppComponent {
   visibleMenu: boolean = false;
   menuButton: boolean = true;
   errorMessage: string = '';
-  message: string = '';
   error: boolean = false;
-  mainError: boolean = false;
   activated: boolean = true;
 
-  constructor(private notifier: NotifierController ) {
+  constructor(private notifier: NotifierController) {
     MAP;
     document['locale'] = 'en';
     notifier.pageChanged$.subscribe(action => {
@@ -28,17 +26,7 @@ export class AppComponent {
       }
 
     });
-    notifier.notificationMessage$.subscribe(message => {
-      this.message = message;
-    });
-    notifier.errorMessage$.subscribe(message => {
-      if(message === 'Invalid token') {
-        this.message = 'Your token expired';
-      }else{
-        this.errorMessage = message;
-        this.error = true;
-      }
-    });
+
   }
 
   public changeButton() {
@@ -63,18 +51,7 @@ export class AppComponent {
     this.visibleMenu = false;
     this.menuButton = true;
   }
-  public onClickDialogButton() {
-    if (this.message.length > 0) {
-      this.message = ''
-    } else {
-      this.error = false;
-      this.notifier.tryAgain();
-      if (this.mainError) {
-        this.mainError = false;
-        this.notifier.refreshMainData();
-      }
-    }
-  }
+
 
   public sendNewVerification() {
     this.notifier.sendVerification();

@@ -9,6 +9,7 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {LOGIN} from "../../app/app.routing.module";
 import {EmailValidator} from "../../validator/email.validator";
 import {EmailService} from "../../services/email.service";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './reminder.component.html',
@@ -28,7 +29,7 @@ export class ReminderComponent implements OnInit {
   reminder: boolean = false;
   invalid: boolean = false;
 
-  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute) {
+  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute,  private dialog: DialogController) {
     notifier.notify(ReminderComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == ReminderComponent.NAME) {
@@ -47,7 +48,7 @@ export class ReminderComponent implements OnInit {
           this.reminderService.checkToken(this.token).subscribe(
             message => this.message = '',
             error => {
-              this.notifier.notifyError(error);
+              this.dialog.notifyError(error);
               this.error = 'This link is expired!';
               this.invalid = true
             }
@@ -80,7 +81,7 @@ export class ReminderComponent implements OnInit {
               this.error = '';
             },
             error => {
-              this.notifier.notifyError(error);
+              this.dialog.notifyError(error);
               this.error = error;
               this.message = '';
             }

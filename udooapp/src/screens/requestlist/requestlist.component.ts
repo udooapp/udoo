@@ -6,6 +6,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {IList} from "../layouts/list/lists.interface";
 import { REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -18,12 +19,26 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   error: string;
   message: string = '';
   categories = [];
-
-  constructor(private requestService: RequestService, private mapService: MapService, private notifier: NotifierController) {
+  delete: boolean = false;
+  index: number = 0;
+  id: number = 0;
+  constructor(private requestService: RequestService, private mapService: MapService, private dialog: DialogController) {
     super();
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();
+      }
+    });
+    dialog.questionResponse$.subscribe(response => {
+      if(response && this.delete){
+        this.requestService.deleteUserRequest(this.id).subscribe(
+          result => {
+            this.message = result;
+            this.data.splice(this.index, 1)
+          },
+          error => this.error = <any>error
+        );
+        this.delete = false;
       }
     });
   }
@@ -36,19 +51,16 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
       data => this.categories = data,
       error => {
         this.error = <any> error;
-        this.notifier.notifyError(this.error);
+        this.dialog.notifyError(this.error);
       }
     );
   }
 
   public onClickDelete(id: number, index: number) {
-    this.requestService.deleteUserRequest(id).subscribe(
-      result => {
-        this.message = result;
-        this.data.splice(index, 1)
-      },
-      error => this.error = <any>error
-    );
+    this.delete = true;
+    this.id = id;
+    this.index = index;
+    this.dialog.sendQuestion("Are you sure?");
   }
 
   public getCategory(cat: number) {

@@ -9,6 +9,7 @@ import {DETAIL} from "../../app/app.routing.module";
 // import {Observable} from "rxjs/Observable";
 // import {config} from "../../environments/url.config";
 import {ConversionMethods} from "../layouts/conversion.methods";
+import {DialogController} from "../../controllers/dialog.controller";
 
 declare let google: any;
 //var SockJS = require('sockjs-client');
@@ -41,9 +42,9 @@ export class MapComponent extends ConversionMethods implements OnInit {
 //  private stompClient: any;
   // messages: Array<string> = new Array<string>();
 
-  constructor(private mapService: MapService, private router: Router, private notifier: NotifierController, private tokenService: TokenService) {
+  constructor(private mapService: MapService, private router: Router, private dialog: DialogController, private tokenService: TokenService) {
     super();
-    notifier.tryAgain$.subscribe(again => {
+    dialog.errorResponse$.subscribe(again => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
@@ -307,7 +308,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   private checkError() {
-    this.notifier.notifyError(this.error);
+    this.dialog.notifyError(this.error);
   }
 
   private load(): Promise<void> {

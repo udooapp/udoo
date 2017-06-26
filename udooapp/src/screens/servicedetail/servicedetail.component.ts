@@ -10,6 +10,7 @@ import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import { MAP} from "../../app/app.routing.module";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -28,7 +29,7 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService) {
+  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService,  private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
@@ -36,7 +37,7 @@ export class ServiceDetailComponent implements OnInit {
       }
     })
     this.notifier.notify(ServiceDetailComponent.NAME);
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
@@ -102,7 +103,7 @@ export class ServiceDetailComponent implements OnInit {
       },
       error => {
         this.error = <any>error;
-        this.notifier.notifyError(this.error);
+        this.dialog.notifyError(this.error);
       }
     );
   }

@@ -8,6 +8,7 @@ import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
 import {PROFILE} from "../../app/app.routing.module";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './password.component.html',
@@ -24,7 +25,7 @@ export class PasswordComponent {
   passwordValidator: IValidator = new PasswordValidator();
   emptyValidator: IValidator = new EmptyValidator();
 
-  constructor(private userService: UserService, private notifier: NotifierController, private router: Router) {
+  constructor(private userService: UserService, private notifier: NotifierController, private router: Router, private dialog: DialogController) {
     notifier.notify(PasswordComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == PasswordComponent.NAME) {
@@ -49,7 +50,7 @@ export class PasswordComponent {
         error => {
           this.message = '';
           this.error = (<any>error).toString().match(/[0-9]{3}/) ? (<any>error).toString().match('401') ? 'Incorrect password' : 'Please try again later' : <any>error;
-          this.notifier.notifyError(error.toString());
+          this.dialog.notifyError(error.toString());
         });
     } else {
       this.error = 'Incorrect or empty value';

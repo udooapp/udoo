@@ -10,11 +10,12 @@ import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import { OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: '../layouts/service/serviceform.component.html',
   styleUrls: ['../layouts/service/serviceform.component.css', '../layouts/forminput/forminput.component.css'],
-  providers: [OfferService, UserService, MapService]
+  providers: [OfferService, MapService]
 })
 export class OfferComponent implements OnInit, IServiceForm {
   private static NAME: string = 'Offer';
@@ -34,8 +35,9 @@ export class OfferComponent implements OnInit, IServiceForm {
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
   lastImage: string = '';
+  delete: boolean = false;
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController) {
+  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action == OfferComponent.NAME) {
         console.log("Action:" + action);
@@ -43,8 +45,22 @@ export class OfferComponent implements OnInit, IServiceForm {
       }
     });
     this.notifier.notify(OfferComponent.NAME);
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit();
+    });
+    this.dialog.questionResponse$.subscribe(response=>{
+      if(response && this.delete){
+        this.offerService.deleteUserOffer(this.data.oid).subscribe(
+          ok => {
+            this.notifier.pageChanged$.emit(' ');
+            this.router.navigate([OFFER_LIST])
+          },
+          error => {
+            this.error = error
+          }
+        );
+        this.delete = false;
+      }
     });
   }
 
@@ -72,7 +88,7 @@ export class OfferComponent implements OnInit, IServiceForm {
               },
               error => {
                 this.error = <any>error;
-                this.notifier.notifyError(this.error)
+                this.dialog.notifyError(this.error)
               }
             )
           }
@@ -173,15 +189,8 @@ export class OfferComponent implements OnInit, IServiceForm {
   }
 
   public onClickDelete() {
-    this.offerService.deleteUserOffer(this.data.oid).subscribe(
-      ok => {
-        this.notifier.pageChanged$.emit(' ');
-        this.router.navigate([OFFER_LIST])
-      },
-      error => {
-        this.error = error
-      }
-    );
+    this.delete = true;
+    this.dialog.sendQuestion("Are you sure?");
   }
 
   getTitle(): string {

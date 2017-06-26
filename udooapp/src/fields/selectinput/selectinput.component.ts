@@ -18,6 +18,7 @@ export class SelectInputComponent {
   isOption: boolean = false;
   @Input() disabled = false;
   @Input() id = '';
+  @Input() selected : number = 0;
   @Input() disableValidation = false;
   @Output() onChange = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
@@ -63,6 +64,7 @@ export class SelectInputComponent {
   onKey(event: any) {
     this.notChange = true;
     this.valueText = event.target.value;
+    console.log(this.valueText);
     this.onChange.emit(event.target.value);
     if (!this.disableValidation) {
       this.valid();

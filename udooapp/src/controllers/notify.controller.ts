@@ -4,18 +4,12 @@ import {User} from "../entity/user";
 export class NotifierController {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<String>;
-  public errorMessage$: EventEmitter<String>;
-  public notificationMessage$: EventEmitter<String>;
-  public tryAgain$: EventEmitter<boolean>;
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
-    this.errorMessage$ = new EventEmitter();
-    this.tryAgain$ = new EventEmitter();
     this.userModification$ = new EventEmitter();
-    this.notificationMessage$ = new EventEmitter();
     this.userDataPipe$ = new EventEmitter();
   }
   public sendVerification(){
@@ -52,19 +46,5 @@ export class NotifierController {
 
   public clear() {
     this.pageList = [];
-  }
-
-  public notifyError(errorMessage: string) {
-    if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage === 'Invalid token') {
-      this.errorMessage$.emit(errorMessage);
-    }
-  }
-  public sendMessage(message: string) {
-    this.notificationMessage$.emit(message);
-
-  }
-
-  public tryAgain() {
-    this.tryAgain$.emit(true);
   }
 }

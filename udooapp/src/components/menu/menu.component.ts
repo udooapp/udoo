@@ -10,6 +10,7 @@ import {CREATE, LOGIN, MAP} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
+import {DialogController} from "../../controllers/dialog.controller";
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
@@ -28,7 +29,7 @@ export class MenuComponent implements OnInit {
   image: string;
   checkLogin: boolean = false;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
     let before: string = '';
     notifier.pageChanged$.subscribe(action => {
       if (action === 'refresh') {
@@ -46,21 +47,23 @@ export class MenuComponent implements OnInit {
         before = event.url;
       }
     });
-    notifier.errorMessage$.subscribe(message => {
-      if (message === 'Invalid token') {
+    dialog.mainRefresh$.subscribe(token=> {
+      if (token) {
         this.tokenService.clearToken();
         this.router.navigate([LOGIN]);
         this.user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
         this.login = false;
+      } else {
+        this.checkUser(false);
       }
     });
     notifier.userModification$.subscribe(verify => {
   if (verify == 0 || verify == 1) {
         this.user.language = verify === 0 ? 'en' : 'de';
-        document['locale'] = this.user.language;
-        getTranslationProviders().then(value => {
-        }).catch(err => {
-        });
+        // document['locale'] = this.user.language;
+        // getTranslationProviders().then(value => {
+        // }).catch(err => {
+        // });
         this.userService.updateUser(this.user).subscribe(
           message => {},
           error => {
@@ -69,7 +72,7 @@ export class MenuComponent implements OnInit {
               this.login = false;
               this.image = this.getPictureUrl('');
             }
-            this.notifier.notifyError(error);
+            this.dialog.notifyError(error);
           }
         );
       } else if(verify == 4){
@@ -125,7 +128,7 @@ export class MenuComponent implements OnInit {
             this.login = false;
             this.image = this.getPictureUrl('');
           }
-          this.notifier.notifyError(error);
+          this.dialog.notifyError(error);
         });
     } else {
       this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0);

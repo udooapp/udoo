@@ -61,6 +61,10 @@
   flex-direction: row;
 
 }
+.checkbox-background{
+  display: flex;
+
+}
 .checkbox-background input[type=checkbox]:checked + label::after {
   content: 'Realtime';
   left:4px;

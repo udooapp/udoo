@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NotifierController} from "../../controllers/notify.controller";
+import {DialogController} from "../../controllers/dialog.controller";
 
 declare let google: any;
 
@@ -15,14 +16,14 @@ export class LocationComponent implements OnInit {
   private scriptLoadingPromise: Promise<void>;
   @Output() onSaved = new EventEmitter<Object>();
 
-  constructor(private notifier: NotifierController) {
+  constructor(private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action == LocationComponent.NAME) {
         this.onSaved.emit('');
       }
     });
     notifier.notify(LocationComponent.NAME);
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit();
     });
   }
@@ -98,7 +99,7 @@ export class LocationComponent implements OnInit {
       });
     }).catch(error => {
       console.log("LocationComponentError: "+ error);
-      this.notifier.notifyError('No internet connection');
+      this.dialog.notifyError('No internet connection');
     });
   }
 

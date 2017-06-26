@@ -1,14 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 
 
-import {IValidator} from "../../validator/validator.interface";
-import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {LOGIN, MAP} from "../../app/app.routing.module";
-import {EmailValidator} from "../../validator/email.validator";
 import {EmailService} from "../../services/email.service";
 import {TokenService} from "../../services/token.service";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './verification.component.html',
@@ -20,7 +18,7 @@ export class VerificationComponent implements OnInit {
   message: string = '';
   error = '';
 
-  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
+  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute, private tokenService: TokenService, private dialog: DialogController) {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {
@@ -40,7 +38,7 @@ export class VerificationComponent implements OnInit {
               this.notifier.refreshMainData();
             },
             error => {
-              this.notifier.notifyError(error);
+              this.dialog.notifyError(error);
               this.error = error;
               this.message = '';
             }

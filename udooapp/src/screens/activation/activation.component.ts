@@ -8,6 +8,7 @@ import {MAP} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {IValidator} from "../../validator/validator.interface";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './activation.component.html',
@@ -26,7 +27,7 @@ export class ActivationComponent implements OnInit {
   type: boolean[] = [false, false];
   activation: number = 0;
 
-  constructor(private notifier: NotifierController, private router: Router, private emailService: EmailService) {
+  constructor(private dialog: DialogController,private notifier: NotifierController, private router: Router, private emailService: EmailService) {
     this.emptyValidator = new EmptyValidator();
   }
 
@@ -34,14 +35,14 @@ export class ActivationComponent implements OnInit {
     if(type == 0){
       this.emailService.sendVerificationEmail().subscribe(
         message => {
-          this.notifier.sendMessage("Email sent");
+          this.dialog.sendMessage("Email sent");
         },
         error => this.errorMessage = error
       );
     } else {
       this.emailService.sendVerificationSms().subscribe(
         message => {
-          this.notifier.sendMessage("SMS sent");
+          this.dialog.sendMessage(message);
         },
         error => this.errorMessage = error
       );
@@ -64,7 +65,7 @@ export class ActivationComponent implements OnInit {
         message => {
           this.type[1] = true;
           this.okMessage = message;
-          this.notifier.refreshMainData();
+          this.dialog.sendRefreshRequest();
         },
         error => this.errorMessage = error
       );
@@ -83,6 +84,7 @@ export class ActivationComponent implements OnInit {
       }
     });
     this.notifier.userDataPipe$.subscribe(user => {
+
       this.activation = user.active;
       if(this.activation>= 15){
         this.router.navigate([MAP]);
@@ -92,6 +94,6 @@ export class ActivationComponent implements OnInit {
         }
       }
     });
-    this.notifier.sendUserModification(4);
+    this.notifier.userModification$.emit(4);
   }
 }

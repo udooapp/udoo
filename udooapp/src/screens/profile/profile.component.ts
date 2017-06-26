@@ -14,6 +14,7 @@ import {PhoneValidator} from "../../validator/phone.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
+import {DialogController} from "../../controllers/dialog.controller";
 
 
 @Component({
@@ -40,7 +41,7 @@ export class ProfileComponent implements OnInit, IFormInput {
   valid = [false, false, false];
   lastPicture: string = '';
 
-  constructor(private userService: UserService, private notifier: NotifierController, private router: Router) {
+  constructor(private userService: UserService, private notifier: NotifierController, private router: Router,  private dialog: DialogController) {
     this.passwordVerification = '';
     notifier.pageChanged$.subscribe(action => {
       if (action == ProfileComponent.NAME) {
@@ -48,7 +49,7 @@ export class ProfileComponent implements OnInit, IFormInput {
       }
     });
 
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit()
     });
     this.notifier.notify(ProfileComponent.NAME);

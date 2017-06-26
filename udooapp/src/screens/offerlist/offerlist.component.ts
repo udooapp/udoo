@@ -6,6 +6,7 @@ import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -18,12 +19,27 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
   error: string;
   message: string = '';
   categories = [];
+  delete: boolean = false;
+  index: number = 0;
+  id: number = 0;
 
-  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private notifier: NotifierController) {
+  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private dialog: DialogController) {
     super();
-    notifier.tryAgain$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();
+      }
+    });
+    dialog.questionResponse$.subscribe(response => {
+      if(response && this.delete){
+        this.offerService.deleteUserOffer(this.id).subscribe(
+          result => {
+            this.message = result;
+            this.data.splice(this.index, 1)
+          },
+          error => this.error = <any>error
+        );
+        this.delete = false;
       }
     });
   }
@@ -33,28 +49,22 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
       data => this.data = data,
       error => {
         this.error = <any>error;
-        this.notifier.notifyError(error.toString());
+        this.dialog.notifyError(error.toString());
       });
     this.mapService.getCategories().subscribe(
       data => this.categories = data,
       error => {
         this.error = <any>error;
-          this.notifier.notifyError(error.toString());
+          this.dialog.notifyError(error.toString());
       }
     );
   }
 
   public onClickDelete(id: number, index: number) {
-    this.offerService.deleteUserOffer(id).subscribe(
-      result => {
-        this.message = result;
-        this.data.splice(index, 1)
-      },
-      error => {
-        this.error = <any>error;
-        this.notifier.notifyError(error.toString());
-      }
-    );
+    this.id = id;
+    this.index = index;
+    this.delete = true;
+    this.dialog.sendQuestion("Are you sure?");
   }
 
   public getCategory(cat: number) {

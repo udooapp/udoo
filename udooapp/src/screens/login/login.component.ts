@@ -9,8 +9,8 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmailValidator} from "../../validator/email.validator";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
+import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
   templateUrl: './login.component.html',
@@ -26,7 +26,7 @@ export class LoginComponent {
   passwordValidator: IValidator = new PasswordValidator();
   valid = [false, false];
 
-  constructor(private router: Router, private userService: UserService, private notifier: NotifierController) {
+  constructor(private router: Router, private userService: UserService, private dialog: DialogController) {
 
   }
 
@@ -47,7 +47,7 @@ export class LoginComponent {
           message =>
             this.router.navigate([MAP]),
           error => {
-            this.notifier.notifyError(error);
+            this.dialog.notifyError(error);
             this.error = error;
           }
         );
