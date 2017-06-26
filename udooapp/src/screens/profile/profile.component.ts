@@ -43,16 +43,17 @@ export class ProfileComponent implements OnInit, IFormInput {
 
   constructor(private userService: UserService, private notifier: NotifierController, private router: Router,  private dialog: DialogController) {
     this.passwordVerification = '';
-    notifier.pageChanged$.subscribe(action => {
-      if (action == ProfileComponent.NAME) {
-        router.navigate([MAP])
-      }
-    });
+
 
     dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit()
     });
     this.notifier.notify(ProfileComponent.NAME);
+    notifier.pageChanged$.subscribe(action => {
+      if (action == ProfileComponent.NAME) {
+        router.navigate([MAP])
+      }
+    });
   }
 
   ngOnInit() {

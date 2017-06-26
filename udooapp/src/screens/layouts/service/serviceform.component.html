@@ -7,14 +7,14 @@
                 (onKey)="data.title=$event" [validators]="[emptyValidator]"
                 (onValidationStateChange)="fieldValidate(0, $event)" [checkValidate]="refresh"></text-input>
     <span class="input-label" i18n>Category</span><br>
-    <select-input [id]="'category-select'" [options]="category" (onChange)="onSelectChange($event)"
+    <select-input [id]="'category-select'" [options]="category" [selected]="data.category" (onChange)="onSelectChange($event)"
                   (onValidationStateChange)="fieldValidate(1, $event)" [checkValidate]="refresh"></select-input>
     <span class="input-label" i18n>Description</span><br>
     <text-area [id]="'description-area'" [row]="4" [validators]="[emptyValidator]"
                (onValidationStateChange)="fieldValidate(2, $event)" [column]="50"
                [placeholder]="'Description'" (onKey)="data.description=$event" [value]="data.description"
                [checkValidate]="refresh"></text-area>
-    <span class="input-label" i18n>Profile picture</span><br>
+    <span class="input-label" i18n>Service picture</span><br>
 
     <div class="input-profile-picture-background">
       <div [ngClass]="{'upload-picture-loader' : loaderVisible, 'upload-picture-error' : pictureLoadError}"></div>

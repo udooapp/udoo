@@ -9,7 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import { MAP} from "../../app/app.routing.module";
+import {MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 
 @Component({
@@ -29,7 +29,7 @@ export class ServiceDetailComponent implements OnInit {
   image: string;
   added: boolean = false;
 
-  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService,  private dialog: DialogController) {
+  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
@@ -90,15 +90,19 @@ export class ServiceDetailComponent implements OnInit {
         this.user = data;
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
-        for (let i = 0; i < 5; ++i) {
-          if (star >= 1) {
-            this.stars[i] = 2;
-          } else if (star > 0) {
-            this.stars[i] = 1;
-          } else {
-            this.stars[i] = 0;
+        if (star == 0) {
+          this.stars = [2, 2, 2, 2, 2];
+        } else {
+          for (let i = 0; i < 5; ++i) {
+            if (star >= 1) {
+              this.stars[i] = 2;
+            } else if (star > 0) {
+              this.stars[i] = 1;
+            } else {
+              this.stars[i] = 0;
+            }
+            star -= 1;
           }
-          star -= 1;
         }
       },
       error => {

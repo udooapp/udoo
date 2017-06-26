@@ -102,15 +102,19 @@ export class MenuComponent implements OnInit {
           }).catch(err => {});
           this.image = this.getPictureUrl(user.picture);
           let star = user.stars;
-          for (let i = 0; i < 5; ++i) {
-            if (star >= 1) {
-              this.stars[i] = 2;
-            } else if (star > 0) {
-              this.stars[i] = 1;
-            } else {
-              this.stars[i] = 0;
+          if(star == 0){
+            this.stars = [2, 2, 2, 2, 2];
+          } else {
+            for (let i = 0; i < 5; ++i) {
+              if (star >= 1) {
+                this.stars[i] = 2;
+              } else if (star > 0) {
+                this.stars[i] = 1;
+              } else {
+                this.stars[i] = 0;
+              }
+              --star;
             }
-            star -= 1;
           }
           if(send){
             this.notifier.userDataPipe$.emit(this.user);

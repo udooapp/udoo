@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Offer} from "../../entity/offer";
 import {OfferService} from "../../services/offer.service";
-import {Router} from "@angular/router";
 import {MapService} from "../../services/map.service";
-import {NotifierController} from "../../controllers/notify.controller";
 import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
@@ -23,7 +21,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
   index: number = 0;
   id: number = 0;
 
-  constructor(private offerService: OfferService, private mapService: MapService, private router: Router, private dialog: DialogController) {
+  constructor(private offerService: OfferService, private mapService: MapService, private dialog: DialogController) {
     super();
     dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {

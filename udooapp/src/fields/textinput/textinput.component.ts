@@ -87,7 +87,7 @@ export class TextInputComponent {
   onKeyInput(event: any) {
     this.notChange = true;
     this.inputText = event.target.value;
-    this.onKey.emit(event.target.value);
+    this.onKey.emit(this.type === 'phone' ?  event.target.value.replace( /[-\s\. ]/gi, '') : event.target.value);
     this.onKeyEvent.emit(event);
     if (this.error && !this.disableValidation) {
       this.valid();

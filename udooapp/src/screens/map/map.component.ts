@@ -34,10 +34,11 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private searchString = '';
   private category = -1;
   private markers = [];
+  private infoWindows = [];
   private requests: Request[] = [];
   private icon = {};
   private offers: Offer[] = [];
-  private offersRealTime: Offer[] = [];
+//  private offersRealTime: Offer[] = [];
   private result: any[] = [];
 //  private stompClient: any;
   // messages: Array<string> = new Array<string>();
@@ -142,12 +143,14 @@ export class MapComponent extends ConversionMethods implements OnInit {
       this.markers[i].setMap(null);
     }
     this.markers = [];
+    this.infoWindows = [];
   }
 
   private loadRequests() {
     let click: boolean[] = [];
     let rout = this.router;
     let map = this.map;
+    let mk = this;
     for (let i = 0; i < this.requests.length; ++i) {
       let request: Request = this.requests[i];
       let coordinate = this.getCoordinates(request.location);
@@ -172,6 +175,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
           maxWidth: 300
         });
         infowindow.addListener('closeclick', function () {
+
           click[i] = !click[i];
           infowindow.close(map, marker);
         });
@@ -185,6 +189,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
           infowindow.open(map, marker);
         });
         marker.addListener('click', function () {
+          mk.closeAllInfoWindows();
           click[i] = !click[i];
           infowindow.open(map, marker);
         });
@@ -195,6 +200,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
           }
         });
         this.markers.push(marker);
+        this.infoWindows.push(infowindow);
       }
     }
 
@@ -212,7 +218,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let map = this.map;
     let rout = this.router;
     let click: boolean[] = [];
-
+    let mk = this;
     for (let i = 0; i < this.offers.length; ++i) {
       let offer: Offer = this.offers[i];
       let coordinate = this.getCoordinates(offer.location);
@@ -250,7 +256,9 @@ export class MapComponent extends ConversionMethods implements OnInit {
         marker.addListener('mouseover', function () {
           infowindow.open(map, marker);
         });
+
         marker.addListener('click', function () {
+          mk.closeAllInfoWindows();
           click[i] = !click[i];
           infowindow.open(map, marker);
         });
@@ -261,10 +269,17 @@ export class MapComponent extends ConversionMethods implements OnInit {
           }
         });
         this.markers.push(marker);
+        this.infoWindows.push(infowindow);
       }
     }
 
 
+  }
+
+  private closeAllInfoWindows() {
+    for (let i = 0; i < this.infoWindows.length; i++) {
+      this.infoWindows[i].close();
+    }
   }
 
   public findCatName(catID: number): string {
