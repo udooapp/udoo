@@ -1,8 +1,14 @@
 <div class="input-text-container">
-  <input [type]="type" [placeholder]="placeholder" [value]="valueText"
+
+  <input *ngIf="!difficult" [type]="inputType" [placeholder]="placeholder" [value]="valueText"
          class="input-area" (keyup)="onKeyInput($event)" (change)="onKeyInput($event)"
-         [ngClass]="{'date-input' : (type == 'date' || type == 'time' || type == 'number') && (ok || error)}"
          (focusout)="focusChange()" [id]="id" (click)="onClickInputBox()" [disabled]="disabled">
+  <div *ngIf="difficult" class="input-difficult">
+    <input [type]="inputType" [placeholder]="placeholder" [value]="valueText"
+           class="input-area" (keyup)="onKeyInput($event)" (change)="onKeyInput($event)"
+           [ngClass]="{'input-date' : (ok || (error && errorMessage.length >= 19)), 'input-error-date': (error && errorMessage.length < 19)}"
+           (focusout)="focusChange()" [id]="id" (click)="onClickInputBox()" [disabled]="disabled">
+  </div>
   <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>
   <div *ngIf="error && !disableValidation" class="input-border input-border-error"></div>
   <div *ngIf="(ok || error) && !disableValidation" class="input-validation">

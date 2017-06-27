@@ -16,9 +16,10 @@ export class TextInputComponent {
   errorMessage = '';
   valueText = '';
   inputText = '';
+  inputType: string;
+  difficult: boolean = false;
   @Input() disableValidation = false;
   @Input() id: string = '';
-  @Input() type: string;
   @Input() disabled = false;
   @Input() placeholder: string;
   @Input() validators: IValidator[];
@@ -29,7 +30,7 @@ export class TextInputComponent {
 
 
   constructor() {
-    this.type = 'onKey';
+    this.inputType= 'onKey';
     this.placeholder = 'value';
   }
 
@@ -37,6 +38,11 @@ export class TextInputComponent {
     this.valid();
   }
 
+  @Input() set type(value: string){
+    this.inputType = value;
+      this.difficult = value === 'number' || value === 'date' || value === 'time';
+
+  }
   @Input() set value(value: string) {
     if (!this.notChange) {
       if (value == null) {
@@ -87,7 +93,7 @@ export class TextInputComponent {
   onKeyInput(event: any) {
     this.notChange = true;
     this.inputText = event.target.value;
-    this.onKey.emit(this.type === 'phone' ?  event.target.value.replace( /[-\s\. ]/gi, '') : event.target.value);
+    this.onKey.emit(this.inputType === 'phone' ?  event.target.value.replace( /[-\s\. ]/gi, '') : event.target.value);
     this.onKeyEvent.emit(event);
     if (this.error && !this.disableValidation) {
       this.valid();

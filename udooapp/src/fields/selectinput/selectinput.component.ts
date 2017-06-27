@@ -28,11 +28,13 @@ export class SelectInputComponent {
   }
 
   focusChange() {
-    this.valid();
+    if(!this.disableValidation) {
+      this.valid();
+    }
   }
 
   @Input() set checkValidate(value: boolean) {
-    if (value != this.refresh) {
+    if (value != this.refresh && !this.disableValidation) {
       this.refresh = value;
       this.valid()
     }

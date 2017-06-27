@@ -1,11 +1,19 @@
 <div class="input-select-container">
-  <select [id]="id" *ngIf="isOption" class="input-select" [ngClass]="{'input-select-padding': ok || error}" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
-          (change)="onKey($event)" [disabled]="disabled">
-    <option *ngFor="let cat of data;" [value]="cat.cid">{{cat.name}}</option>
-  </select>
-  <select [id]="id" *ngIf="!isOption" class="input-select" (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)" (change)="onKey($event)" [disabled]="disabled">
-    <option *ngFor="let cat of data; let i = index" [ngValue]="i" [selected]="i == 2" >{{cat}}</option>
-  </select>
+  <div class="input-background">
+    <select *ngIf="isOption" [id]="id" class="input-select"
+            [ngClass]="{'input-select-ok': ok, 'input-select-error': error}"
+            (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
+            (change)="onKey($event)" [disabled]="disabled">
+      <option *ngFor="let cat of data; let i = index" [value]="cat.cid" [selected]="i == selected">{{cat.name}}</option>
+    </select>
+
+    <select [id]="id" *ngIf="!isOption" class="input-select"
+            [ngClass]="{'input-select-ok': ok, 'input-select-error': error}"
+            (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)" (change)="onKey($event)"
+            [disabled]="disabled">
+      <option *ngFor="let cat of data; let i = index" [value]="i" [selected]="i === selected">{{cat}}</option>
+    </select>
+  </div>
   <div *ngIf="!error || disableValidation" class="input-border input-border-ok"></div>
   <div *ngIf="error && !disableValidation" class="input-border input-border-error"></div>
   <div *ngIf="(ok || error) && !disableValidation" class="input-validation">

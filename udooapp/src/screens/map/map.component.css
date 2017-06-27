@@ -57,7 +57,7 @@
 
 @media (max-width: 641px) {
   .map-filter {
-    width: 98%;
+    width: calc(100% - 30px);
   }
 
   .map-triangle-container {
