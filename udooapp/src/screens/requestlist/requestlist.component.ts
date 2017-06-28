@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {RequestService} from "../../services/request.service";
 import {Request} from "../../entity/request";
 import {MapService} from "../../services/map.service";
-import {NotifierController} from "../../controllers/notify.controller";
 import {IList} from "../layouts/list/lists.interface";
 import { REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
@@ -31,7 +30,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
     });
     dialog.questionResponse$.subscribe(response => {
       if(response && this.delete){
-        this.requestService.deleteUserRequest(this.id).subscribe(
+        this.requestService.deleteUserRequest(this.id, -1).subscribe(
           result => {
             this.message = result;
             this.data.splice(this.index, 1)

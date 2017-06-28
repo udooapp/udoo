@@ -48,7 +48,7 @@ public class ContactServiceController implements IContactServiceController {
                 if (user.getUid() > -1) {
                     User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
                     if (currentUser != null && currentUser.getUid() > 0) {
-                        if (!currentUser.getUid().equals(user.getUid())) {
+                        if (currentUser.getUid() == user.getUid()) {
                             contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
                             return new ResponseEntity<>("Success", HttpStatus.OK);
                         } else {

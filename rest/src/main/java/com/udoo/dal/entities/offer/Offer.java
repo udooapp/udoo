@@ -1,7 +1,16 @@
-package com.udoo.dal.entities;
+package com.udoo.dal.entities.offer;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 @Entity
 @Table(name = "offer")
@@ -12,20 +21,24 @@ public class Offer {
 
     private Integer uid;
 
-    private String title;
+    private String title = "";
 
-    private String description;
+    private String description = "";
 
-    private int category;
+    private int category = -1;
 
-    private String location;
+    private String location = "";
 
-    private String availability;
+    private String availability = "";
 
-    private Date expirydate;
+    private Date expirydate = new Date();
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "offer")
+    private List<PicturesOffer> picturesOffer = new ArrayList<>();
 
     private String image;
-
     private boolean realTime;
 
     public Integer getOid() {
@@ -36,7 +49,7 @@ public class Offer {
         this.oid = oid;
     }
 
-    public Integer getUid() {
+    public int getUid() {
         return uid;
     }
 
@@ -88,16 +101,24 @@ public class Offer {
         return category;
     }
 
-    public void setCategory(int category) {
-        this.category = category;
-    }
-
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public List<PicturesOffer> getPicturesOffer() {
+        return picturesOffer;
+    }
+
+    public void setPicturesOffer(List<PicturesOffer> images) {
+        this.picturesOffer = images;
     }
 
     public boolean isRealTime() {
@@ -108,19 +129,4 @@ public class Offer {
         this.realTime = realTime;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"oid\":" + oid +
-                ", \"uid\":" + uid +
-                ", \"title\":\"" + title + '\"' +
-                ", \"description\":\"" + description + '\"' +
-                ", \"category\":" + category +
-                ", \"location\":\"" + location.replaceAll("[\"]", "'") + '\"' +
-                ", \"availability:\"" + availability + '\"' +
-                ", \"expirydate\":\"" + expirydate + '\"' +
-                ", \"image\":\"" + image + '\"' +
-                ", \"realTime\":" + realTime + +
-                '}';
-    }
 }

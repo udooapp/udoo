@@ -1,10 +1,14 @@
 package com.udoo.restservice.spring;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.udoo.dal.entities.Offer;
+
+import com.udoo.dal.entities.DeleteService;
+import com.udoo.dal.entities.offer.Offer;
+import com.udoo.dal.entities.offer.OfferPictures;
+import com.udoo.dal.entities.offer.OfferSave;
 import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.offer.PicturesOffer;
+import com.udoo.dal.repositories.IOfferPictureRepository;
 import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IOfferServiceController;
@@ -16,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.udoo.restservice.spring.RestServiceController.USERID;
@@ -35,39 +39,52 @@ public class OfferServiceController implements IOfferServiceController {
     @Resource
     private IUserRepository userRepository;
 
+    @Resource
+    private IOfferPictureRepository offerPictureRepository;
 
     @Override
-    @RequestMapping(value = "/user/offer", method = RequestMethod.GET)
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            return new ResponseEntity<>(offerRepository.findByUid(user.getUid()), HttpStatus.OK);
+            List<Offer> offers = offerRepository.findByUid(user.getUid());
+            if (offers != null) {
+                for (Offer offer : offers) {
+                    if (offer.getPicturesOffer().size() > 1) {
+                        offer.setPicturesOffer(offer.getPicturesOffer().subList(0, 1));
+                    }
+                }
+            }
+            return new ResponseEntity<>(offers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    @RequestMapping(value = "/user/deleteoffer", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteUserOffer(ServletRequest req, @RequestBody String request) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(request);
-            Integer id = mapper.convertValue(node.get("id"), Integer.class);
-            if (id > 0) {
-                if (offerRepository.findByOid(id).getUid() == Integer.parseInt(req.getAttribute(USERID).toString())) {
-                    int succes = offerRepository.deleteByOid(id);
-                    if (succes > -1) {
-                        return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                } else {
-                    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteUserOffer(ServletRequest req, @RequestBody DeleteService service) {
+        int id = service.getId();
+        int delete = service.getDelete();
+        int uid = Integer.parseInt(req.getAttribute(USERID).toString());
+        if (id > 0) {
+            if (delete > 0) {
+                if (offerRepository.findByOid(delete).getUid() == uid) {
+                    offerRepository.deleteByOid(delete);
+                    offerPictureRepository.deleteAllByOid(delete);
                 }
             }
-        } catch (IOException e) {
-            System.out.println(e.toString());
+            if (offerRepository.findByOid(id).getUid() == uid) {
+                int success = offerRepository.deleteByOid(id);
+                offerPictureRepository.deleteAllByOid(id);
+                if (success > -1) {
+                    return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
@@ -79,14 +96,100 @@ public class OfferServiceController implements IOfferServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/user/saveoffer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody Offer offer) {
-        if (offer != null) {
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createOffer(ServletRequest request, @RequestBody String image) {
+        if (image!= null) {
             User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
             if (user != null) {
+                Offer offer = new Offer();
                 offer.setUid(user.getUid());
-                offerRepository.save(offer);
-                return new ResponseEntity<>("Saved", HttpStatus.OK);
+                offer = offerRepository.save(offer);
+                OfferPictures pic = offerPictureRepository.save(new OfferPictures(image, offer.getOid()));
+                if (pic != null) {
+                    return new ResponseEntity<>(new DeleteService(pic.getPoid(), offer.getOid()), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Something wrong! Try again", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadImage(ServletRequest req, PicturesOffer image) {
+        if(image != null){
+            OfferPictures pic = offerPictureRepository.save(new OfferPictures(image.getSrc(), image.getPoid()));
+            if (pic!= null) {
+                return new ResponseEntity<>(pic.getPoid(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Something wrong! Try again", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
+    }
+
+    @Override
+    @RequestMapping(value = "/user/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody OfferSave save) {
+
+        if (save != null) {
+
+            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+            if (user != null && save.getOffer().getUid() == user.getUid()) {
+                Offer offer = save.getOffer();
+                int delete = save.getDelete();
+                if(delete <= -1){
+                    offerRepository.save(offer);
+                    List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
+                    List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
+                    for(OfferPictures pic :pictures){
+                        int i = 0;
+                        while(i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()){
+                            ++i;
+                        }
+                        if(i>=currentPictures.size()){
+                            offerPictureRepository.deleteByPoid(pic.getPoid());
+                        }
+                    }
+                    return new ResponseEntity<>("Saved", HttpStatus.OK);
+                } else {
+                    int d = offer.getOid();
+                    offer.setOid(delete);
+                    offer.setUid(user.getUid());
+                    Offer offer2 = offerRepository.findByOid(d);
+                    offerRepository.save(offer);
+
+                    List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
+                    List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
+                    for(OfferPictures pic :pictures){
+                        int i = 0;
+                        while(i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()){
+                            ++i;
+                        }
+                        if(i>=currentPictures.size()){
+                            offerPictureRepository.deleteByPoid(pic.getPoid());
+                        }else {
+                            currentPictures.remove(i);
+                        }
+                    }
+
+                    for(PicturesOffer pic : currentPictures){
+                        OfferPictures pic2 = new OfferPictures(pic.getSrc(), offer.getOid());
+                        pic2.setPoid(pic.getPoid());
+                        offerPictureRepository.save(pic2);
+                    }
+                    System.out.println("Size:" + offer.getPicturesOffer().size());
+                    if (offer2 != null & offer2.getUid() == user.getUid()) {
+                        offerRepository.deleteByOid(d);
+                        return new ResponseEntity<>("Saved", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
+                    }
+                }
             } else {
                 return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
             }

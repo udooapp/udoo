@@ -3,7 +3,7 @@ export interface IServiceForm extends IFormInterface{
 
   locationSelected(event);
   onClickSelectLocation();
-  onClickDelete();
+  onClickDeleteService();
   onSelectChange(event);
   isUpdate(): boolean;
 }

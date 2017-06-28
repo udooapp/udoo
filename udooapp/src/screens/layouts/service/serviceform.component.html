@@ -7,7 +7,8 @@
                 (onKey)="data.title=$event" [validators]="[emptyValidator]"
                 (onValidationStateChange)="fieldValidate(0, $event)" [checkValidate]="refresh"></text-input>
     <span class="input-label" i18n>Category</span><br>
-    <select-input [id]="'category-select'" [options]="category" [selected]="data.category" (onChange)="onSelectChange($event)"
+    <select-input [id]="'category-select'" [options]="category" [selected]="data.category"
+                  (onChange)="onSelectChange($event)"
                   (onValidationStateChange)="fieldValidate(1, $event)" [checkValidate]="refresh"></select-input>
     <span class="input-label" i18n>Description</span><br>
     <text-area [id]="'description-area'" [row]="4" [validators]="[emptyValidator]"
@@ -15,19 +16,13 @@
                [placeholder]="'Description'" (onKey)="data.description=$event" [value]="data.description"
                [checkValidate]="refresh"></text-area>
     <span class="input-label" i18n>Service picture</span><br>
+    <scrollable-gallery
+      [images]="getPictures()"
+      [editable]="true" (onClickImage)="onClickImage($event)" (onClickNewImage)="onClickNewImage($event)"
+      (onClickRemove)="onClickRemove($event)"
+    [close]="clickedImage"
+    [loading]="imageLoading" [error]="imageError"></scrollable-gallery>
 
-    <div class="input-profile-picture-background">
-      <div [ngClass]="{'upload-picture-loader' : loaderVisible, 'upload-picture-error' : pictureLoadError}"></div>
-      <img
-        [ngClass]="{'input-profile-picture-image' : (data.image == null|| data.image.length == 0 || data.image === 'null')}"
-        [src]="getPictureUrl()">
-    </div>
-    <div class="picture-button-container">
-      <file-input [text]="'Browse'" (value)="onClickBrowse($event)"></file-input>
-      <file-input [text]="'Take'" (value)="onClickBrowse($event)"></file-input>
-      <input type="button" class="input-file input-button button-light" value="Clear"
-             (click)="onClickCancel()"/>
-    </div>
     <span class="input-label" i18n>Location</span><br>
     <text-input [id]="'location-input'" [type]="'text'" [placeholder]="'Choose service location'"
                 [value]="location"
@@ -65,7 +60,7 @@
 
     <input id="save-button" type="button" [value]="(isUpdate() ? 'Update' : 'Save')" class="input-button button-dark"
            (click)="onClickSave()"/>
-    <input *ngIf="isUpdate()" type="button" value="Delete" class="input-button button-dark" (click)="onClickDelete()"/>
+    <input *ngIf="isUpdate()" type="button" value="Delete" class="input-button button-dark" (click)="onClickDeleteService()"/>
   </form>
   <div id="ok-message" class="ok-message response-message">{{message}}</div>
   <div id="error-message" class="error-message response-message">{{error}}</div>

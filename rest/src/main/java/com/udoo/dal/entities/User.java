@@ -35,7 +35,7 @@ public class User {
 
     private int active;
 
-    public Integer getUid() {
+    public int getUid() {
         return uid;
     }
 

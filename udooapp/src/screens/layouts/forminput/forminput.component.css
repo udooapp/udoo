@@ -103,14 +103,15 @@
   animation: spin 1s linear infinite;
 }
 .upload-picture-error {
-  content: 'Upload error!';
   position: absolute;
-  width: 90%;
-  color: red;
-  font-size: 15pt;
-  font-weight: 500;
-  text-align: center;
-  margin: 45% 5%;
+  width: 30px;
+  margin-top: 40%;
+  margin-left: 35%;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid red;
+  border-radius: 50%;
+  height: 30px;
+  animation: spin 1s linear infinite;
 }
 @keyframes spin {
   0% {

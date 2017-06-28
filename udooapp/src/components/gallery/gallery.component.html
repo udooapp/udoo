@@ -1,0 +1,15 @@
+<div class="scrollable-gallery-container">
+  <div class="image-item" *ngFor="let img of images; let i = index">
+    <div [ngClass]="{'gallery-image-loader' : isLoading(i), 'gallery-image-error' : isError(i)}"></div>
+    <img (click)="onClickDelete(i)" *ngIf="editable" class="image-trash" src="../../assets/trash.png">
+    <img class="image-content" [src]="getPictureUrl(img.src)">
+    <div class="image-hover" (click)="onClickPicture(i)"></div>
+  </div>
+  <div *ngIf="editable" class="image-item new-image"><input type="file" accept="image/*" (change)="onClickNew($event)">
+  </div>
+</div>
+<div *ngIf="gallery" class="fullscreen-gallery">
+  <img class="gallery-image" [src]="images[index].src">
+  <div *ngIf="index > 0" class="gallery-left-arrow" (click)="onClickPrevious()"></div>
+  <div *ngIf="index < images.length - 1" class="gallery-right-arrow" (click)="onClickNext()"></div>
+</div>

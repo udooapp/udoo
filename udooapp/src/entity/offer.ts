@@ -9,7 +9,8 @@ export class Offer {
               public availability: string,
               public expirydate: number,
               public image: string,
-              public realTime: boolean) {
+              public realTime: boolean,
+              public picturesOffer: any[]) {
   }
 
   toString(): string {

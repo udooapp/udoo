@@ -14,6 +14,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ScrollableGalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
   templateUrl: '../layouts/service/serviceform.component.html',
@@ -21,52 +22,78 @@ import {DialogController} from "../../controllers/dialog.controller";
   providers: [RequestService, MapService]
 })
 export class RequestComponent implements OnInit, IServiceForm {
-  private static NAME : string = 'Request';
+  private static NAME: string = 'Request';
   registration = true;
   category = [];
   message: string;
-  load:boolean = false;
+  load: boolean = false;
   error: string = '';
   refresh: boolean = false;
   location: string = '';
-  data = new Request(null, '', '', -1, 1, '', '', 0, '');
-  loaderVisible: boolean = false;
-  first:boolean = false;
-  pictureLoadError:boolean = false;
+  data = new Request(null, '', '', -1, 1, '', '', 0, '', []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   timeValidator: IValidator = new TimeValidator();
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
-  lastImage: string = '';
-  delete: boolean = false;
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController,  private dialog: DialogController) {
+
+  //Gallery
+  insertedId = -1;
+  imageLoading: number[] = [];
+  imageError: number[] = [];
+  serviceDelete: boolean = false;
+  clickedImage = -1;
+
+  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+    this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
-        router.navigate([REQUEST_LIST]);
+        if (this.insertedId == -1) {
+          router.navigate([REQUEST_LIST]);
+        } else {
+          this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
+          this.notifier.notify(RequestComponent.NAME);
+        }
+      } else if (action == ScrollableGalleryComponent.IMAGE) {
+        ++this.clickedImage;
       }
     });
     dialog.errorResponse$.subscribe(tryAgain => {
-      if (this.error.length > 0) {
-        this.ngOnInit();
+      this.ngOnInit();
+    });
+    this.dialog.questionResponse$.subscribe(response => {
+      if (response) { //Clicked --> Yes
+        if (this.serviceDelete) {     //onClickServiceDelete
+
+          this.requestService.deleteUserRequest(this.data.rid, this.insertedId).subscribe(
+            ok => {
+              this.notifier.pageChanged$.emit(' ');
+              this.router.navigate([REQUEST_LIST]);
+            },
+            error => {
+              this.error = error;
+              this.dialog.notifyError(error);
+            }
+          );
+          this.serviceDelete = false;
+        } else if (this.insertedId > -1) {
+          //if the user inserted a new picture and navigate back without saving/updating
+          this.requestService.deleteUserRequest(this.data.rid, -1).subscribe(
+            message => {
+              this.insertedId = -1;
+              this.notifier.back();
+              router.navigate([REQUEST_LIST]);
+            },
+            error => {
+              //  this.dialog.notifyError(error);
+            }
+          );
+        }
+      } else {  //on clikc dilaog --> NO
+        this.notifier.notify(RequestComponent.NAME);
       }
     });
-    dialog.questionResponse$.subscribe(response=>{
-      if(response && this.delete){
-        this.requestService.deleteUserRequest(this.data.rid).subscribe(
-          ok => {
-            this.notifier.pageChanged$.emit(' ');
-            this.router.navigate([REQUEST_LIST]);
-          },
-          error => {
-            this.error = error
-          }
-        );
-        this.delete = false;
-      }
-    });
-    this.notifier.notify(RequestComponent.NAME);
   }
 
   ngOnInit() {
@@ -88,10 +115,12 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.requestService.getRequest(id).subscribe(
               data => {
                 this.data = data;
-                this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
-              error => {this.error = <any>error; this.dialog.notifyError(error.toString());}
+              error => {
+                this.error = <any>error;
+                this.dialog.notifyError(error.toString());
+              }
             )
           }
         }
@@ -99,18 +128,23 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   public onClickSave() {
-    if (this.checkValidation()) {
-      this.requestService.saveRequest(this.data).subscribe(
-        message => {
-          this.notifier.pageChanged$.emit(' ');
-          this.router.navigate([REQUEST_LIST]);
-        },
-        error => {
-          this.error = <any>error;
-          this.message = '';
-        });
+    if (this.imageLoading.length == 0) {
+      if (this.checkValidation()){
+
+        this.requestService.saveRequest(this.data, this.insertedId).subscribe(
+          message => {
+            this.notifier.pageChanged$.emit(' ');
+            this.router.navigate([REQUEST_LIST]);
+          },
+          error => {
+            this.error = <any>error;
+            this.message = '';
+          });
+      } else {
+        this.error = 'Incorrect or empty value';
+      }
     } else {
-      this.error = 'Incorrect or empty value';
+      this.dialog.sendMessage("Please, wait until the end of the image uploading!")
     }
   }
 
@@ -124,41 +158,6 @@ export class RequestComponent implements OnInit, IServiceForm {
     return true;
   }
 
-  public getPictureUrl() {
-    if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
-      return '';
-    }
-    return this.data.image;
-  }
-
-  public onClickBrowse(event) {
-    if (!this.first) {
-      this.loaderVisible = true;
-      let fileList: FileList = event.target.files;
-      if (fileList.length > 0) {
-        this.userService.uploadPicture(fileList[0]).subscribe(
-          message => {
-            this.data.image = message.toString();
-            this.loaderVisible = false;
-            this.pictureLoadError = false;
-          },
-          error => {
-            this.pictureLoadError = true;
-            this.loaderVisible = false;
-          }
-        );
-      }
-    } else {
-      this.first = false;
-    }
-  }
-
-  public onClickCancel() {
-    if (this.data.image.length > 0) {
-      this.data.image = this.lastImage;
-    }
-  }
-
   public onSelectChange(event) {
     this.data.category = event;
   }
@@ -169,7 +168,7 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   public locationSelected(location) {
     let data: String = JSON.stringify(location);
-    if((data.length < 10 && this.location.length > 0)){
+    if ((data.length < 10 && this.location.length > 0)) {
       this.onClickSelectLocation();
     } else {
       this.data.location = data.replace(/"/g, '\"');
@@ -186,8 +185,8 @@ export class RequestComponent implements OnInit, IServiceForm {
     return '';
   }
 
-  public onClickDelete() {
-    this.delete = true;
+  public onClickDeleteService() {
+    this.serviceDelete = true;
     this.dialog.sendQuestion("Are you sure?");
   }
 
@@ -196,9 +195,9 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   fieldValidate(index: number, value: boolean) {
-      if(index >= 0 && index < this.valid.length){
-        this.valid[index] = value;
-      }
+    if (index >= 0 && index < this.valid.length) {
+      this.valid[index] = value;
+    }
   }
 
   showElements(): boolean {
@@ -207,5 +206,83 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   isUpdate(): boolean {
     return this.type;
+  }
+
+  onClickNewImage(event) {
+    let first: boolean = false;
+    if (this.insertedId == -1) {
+      first = true;
+      this.insertedId = this.data.rid;
+      this.data.rid = null;
+    }
+    let input = event.target;
+    let data = this.data;
+    let imageLoading = this.imageLoading;
+    let imageError = this.imageError;
+    let reader = new FileReader();
+    let offerService = this.requestService;
+    reader.onload = function () {
+      let dataURL = reader.result;
+      let pos: number = data.picturesRequest.push({src: dataURL}) - 1;
+      let pos2: number = imageLoading.push(pos) - 1;
+      if (first) {
+        offerService.createRequest(dataURL).subscribe(
+          message => {
+
+            data.rid = JSON.parse(message).delete;
+            data.picturesRequest[data.picturesRequest.length - 1] = {src: dataURL, prid: JSON.parse(message).id};
+            imageLoading.splice(pos2, 1);
+          },
+          error => {
+            imageLoading.splice(pos2, 1);
+            imageError.push(pos)
+          }
+        );
+      } else {
+        offerService.uploadPicture(data.rid, dataURL).subscribe(
+          message => {
+            data.picturesRequest[data.picturesRequest.length - 1] = {src: dataURL, prid: message};
+            imageLoading.splice(pos2, 1);
+          },
+          error => {
+            imageLoading.splice(pos2, 1);
+            imageError.push(pos)
+          }
+        );
+      }
+    };
+
+    reader.readAsDataURL(input.files[0]);
+
+  }
+
+  onClickImage(index: number) {
+    this.notifier.notify(ScrollableGalleryComponent.IMAGE);
+  }
+
+  onClickRemove(index: number) {
+    if (index > -1 && index < this.data.picturesRequest.length) { //onClickPictureDelete (trash button)
+
+      this.data.picturesRequest.splice(index, 1);
+      let i = 0;
+      for (i; i < this.imageError.length; ++i) {
+        if (this.imageError[i] == index) {
+          break;
+        }
+      }
+      this.imageError.splice(i, 1);
+      i = 0;
+      for (i; i < this.imageLoading.length; ++i) {
+        if (this.imageLoading[i] == index) {
+          break;
+        }
+      }
+      this.imageLoading.splice(i, 1);
+      index = -1;
+
+    }
+  }
+  getPictures(): any[] {
+    return this.data.picturesRequest;
   }
 }

@@ -2,15 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {Offer} from "../../entity/offer";
 import {OfferService} from "../../services/offer.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
 import {IValidator} from "../../validator/validator.interface";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import { OFFER_LIST} from "../../app/app.routing.module";
+import {OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ScrollableGalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
   templateUrl: '../layouts/service/serviceform.component.html',
@@ -25,47 +25,75 @@ export class OfferComponent implements OnInit, IServiceForm {
   error: string = '';
   refresh: boolean = false;
   location: string = '';
-  load:boolean = false;
-  data = new Offer(null, '', '', -1, 1, '', '', 0, '', false);
-  loaderVisible:boolean = false;
-  first:boolean = false;
-  type:boolean = false;
-  pictureLoadError = false;
+  load: boolean = false;
+
+  data = new Offer(null, '', '', -1, 1, '', '', 0, '', false, []);
+  type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
-  lastImage: string = '';
-  delete: boolean = false;
 
-  constructor(private offerService: OfferService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  //Gallery
+  insertedId = -1;
+  imageLoading: number[] = [];
+  imageError: number[] = [];
+  serviceDelete: boolean = false;
+  clickedImage = 0;
+
+  constructor(private offerService: OfferService, private router: Router,private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+    this.notifier.notify(OfferComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == OfferComponent.NAME) {
-        console.log("Action:" + action);
-        router.navigate([OFFER_LIST]);
+        if (this.insertedId == -1) {
+          router.navigate([OFFER_LIST]);
+        } else {
+          this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
+          this.notifier.notify(OfferComponent.NAME);
+        }
+      } else if (action == ScrollableGalleryComponent.IMAGE) {
+        ++this.clickedImage;
       }
     });
-    this.notifier.notify(OfferComponent.NAME);
     dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit();
     });
-    this.dialog.questionResponse$.subscribe(response=>{
-      if(response && this.delete){
-        this.offerService.deleteUserOffer(this.data.oid).subscribe(
-          ok => {
-            this.notifier.pageChanged$.emit(' ');
-            this.router.navigate([OFFER_LIST])
-          },
-          error => {
-            this.error = error
-          }
-        );
-        this.delete = false;
+    this.dialog.questionResponse$.subscribe(response => {
+       if (response) { //Clicked --> Yes
+        if (this.serviceDelete) {     //onClickServiceDelete
+
+          this.offerService.deleteUserOffer(this.data.oid, this.insertedId).subscribe(
+            ok => {
+              this.notifier.pageChanged$.emit(' ');
+              this.router.navigate([OFFER_LIST]);
+            },
+            error => {
+              this.error = error;
+              this.dialog.notifyError(error);
+            }
+          );
+          this.serviceDelete = false;
+        } else if (this.insertedId > -1) {
+          //if the user inserted a new picture and navigate back without saving/updating
+          this.offerService.deleteUserOffer(this.data.oid, -1).subscribe(
+            message => {
+              this.insertedId = -1;
+              this.notifier.back();
+              router.navigate([OFFER_LIST]);
+            },
+            error => {
+              //  this.dialog.notifyError(error);
+            }
+          );
+        }
+      } else {  //on clikc dilaog --> NO
+        this.notifier.notify(OfferComponent.NAME);
       }
     });
   }
 
   ngOnInit() {
-
+    this.insertedId = -1;
+    this.serviceDelete = false;
     this.mapService.getCategories().subscribe(
       data => {
         this.category = data;
@@ -83,7 +111,6 @@ export class OfferComponent implements OnInit, IServiceForm {
             this.offerService.getOffer(id).subscribe(
               data => {
                 this.data = data;
-                this.lastImage = this.data.image;
                 this.location = JSON.parse(data.location).address;
               },
               error => {
@@ -97,18 +124,22 @@ export class OfferComponent implements OnInit, IServiceForm {
   }
 
   public  onClickSave() {
-    if (this.checkValidation()) {
-      this.offerService.saveOffer(this.data).subscribe(
-        message => {
-          this.notifier.pageChanged$.emit(' ');
-          this.router.navigate([OFFER_LIST]);
-        },
-        error => {
-          this.error = <any>error;
-          this.message = ''
-        });
+    if (this.imageLoading.length == 0) {
+      if (this.checkValidation()) {
+        this.offerService.saveOffer(this.data, this.insertedId).subscribe(
+          message => {
+            this.notifier.pageChanged$.emit(' ');
+            this.router.navigate([OFFER_LIST]);
+          },
+          error => {
+            this.error = <any>error;
+            this.message = ''
+          });
+      } else {
+        this.error = 'Incorrect or empty value';
+      }
     } else {
-      this.error = 'Incorrect or empty value';
+      this.dialog.sendMessage("Please, wait until the end of the image uploading!")
     }
   }
 
@@ -122,40 +153,6 @@ export class OfferComponent implements OnInit, IServiceForm {
     return true;
   }
 
-  public getPictureUrl() {
-    if (this.data.image == null || this.data.image.length == 0 || this.data.image === 'null') {
-      return '';
-    }
-    return this.data.image;
-  }
-
-  public onClickBrowse(event) {
-    if (!this.first) {
-      this.loaderVisible = true;
-      let fileList: FileList = event.target.files;
-      if (fileList.length > 0) {
-        this.userService.uploadPicture(fileList[0]).subscribe(
-          message => {
-            this.data.image = message.toString();
-            this.loaderVisible = false;
-            this.pictureLoadError = false;
-          },
-          error => {
-            this.pictureLoadError = true;
-            this.loaderVisible = false;
-          }
-        );
-      }
-    } else {
-      this.first = false;
-    }
-  }
-
-  public onClickCancel() {
-    if (this.data.image.length > 0) {
-      this.data.image = this.lastImage;
-    }
-  }
 
   showElements(): boolean {
     return true;
@@ -188,8 +185,8 @@ export class OfferComponent implements OnInit, IServiceForm {
     return '';
   }
 
-  public onClickDelete() {
-    this.delete = true;
+  public onClickDeleteService() {
+    this.serviceDelete = true;
     this.dialog.sendQuestion("Are you sure?");
   }
 
@@ -198,12 +195,91 @@ export class OfferComponent implements OnInit, IServiceForm {
   }
 
   fieldValidate(index: number, value: boolean) {
-    if(index >= 0 && index < this.valid.length){
+    if (index >= 0 && index < this.valid.length) {
       this.valid[index] = value;
     }
   }
 
   isUpdate(): boolean {
     return this.type;
+  }
+
+  onClickNewImage(event) {
+    let first: boolean = false;
+    if (this.insertedId == -1) {
+      first = true;
+      this.insertedId = this.data.oid;
+      this.data.oid = null;
+    }
+    let input = event.target;
+    let data = this.data;
+    let imageLoading = this.imageLoading;
+    let imageError = this.imageError;
+    let reader = new FileReader();
+    let offerService = this.offerService;
+    reader.onload = function () {
+      let dataURL = reader.result;
+      let pos: number = data.picturesOffer.push({src: dataURL}) - 1;
+      let pos2: number = imageLoading.push(pos) - 1;
+      if (first) {
+        offerService.createOffer(dataURL).subscribe(
+          message => {
+
+            data.oid = JSON.parse(message).delete;
+            data.picturesOffer[data.picturesOffer.length - 1] = {src: dataURL, poid: JSON.parse(message).id};
+            imageLoading.splice(pos2, 1);
+          },
+          error => {
+            imageLoading.splice(pos2, 1);
+            imageError.push(pos)
+          }
+        );
+      } else {
+        offerService.uploadPicture(data.oid, dataURL).subscribe(
+          message => {
+            data.picturesOffer[data.picturesOffer.length - 1] = {src: dataURL, poid: message};
+            imageLoading.splice(pos2, 1);
+          },
+          error => {
+            imageLoading.splice(pos2, 1);
+            imageError.push(pos)
+          }
+        );
+      }
+    };
+
+    reader.readAsDataURL(input.files[0]);
+
+  }
+
+  onClickImage(index: number) {
+    this.notifier.notify(ScrollableGalleryComponent.IMAGE);
+  }
+
+  onClickRemove(index: number) {
+    if (index > -1 && index < this.data.picturesOffer.length) { //onClickPictureDelete (trash button)
+
+      this.data.picturesOffer.splice(index, 1);
+      let i = 0;
+      for (i; i < this.imageError.length; ++i) {
+        if (this.imageError[i] == index) {
+          break;
+        }
+      }
+      this.imageError.splice(i, 1);
+      i = 0;
+      for (i; i < this.imageLoading.length; ++i) {
+        if (this.imageLoading[i] == index) {
+          break;
+        }
+      }
+      this.imageLoading.splice(i, 1);
+      index = -1;
+
+    }
+  }
+
+  getPictures(): any[] {
+    return this.data.picturesOffer;
   }
 }

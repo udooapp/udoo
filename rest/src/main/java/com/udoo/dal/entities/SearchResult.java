@@ -1,5 +1,8 @@
 package com.udoo.dal.entities;
 
+import com.udoo.dal.entities.offer.Offer;
+import com.udoo.dal.entities.request.Request;
+
 import java.util.List;
 
 public class SearchResult {

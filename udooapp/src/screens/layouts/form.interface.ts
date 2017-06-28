@@ -3,6 +3,4 @@ export interface IFormInterface{
   showElements():boolean;
   fieldValidate(index: number, value: boolean);
   onClickSave();
-  onClickBrowse(event);
-  onClickCancel();
 }

@@ -1,7 +1,13 @@
-package com.udoo.dal.entities;
+package com.udoo.dal.entities.request;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "request")
@@ -12,19 +18,24 @@ public class Request {
 
     private Integer uid;
 
-    private String title;
+    private String title = "";
 
-    private String description;
+    private String description = "";
 
-    private String location;
+    private String location = "";
 
-    private String jobdate;
+    private String jobdate = "";
 
-    private Date expirydate;
+    private Date expirydate = new Date();
 
-    private int category;
+    private int category = -1;
 
-    private String image;
+    private String image = "";
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "request",cascade = CascadeType.PERSIST)
+    private Set<PicturesRequest> picturesRequest;
 
     public Integer getUid() {
         return uid;
@@ -94,18 +105,15 @@ public class Request {
         this.image = image;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"rid\":" + rid +
-                ", \"uid\":" + uid +
-                ", \"title\":\"" + title + '\"' +
-                ", \"description\":\"" + description + '\"' +
-                ", \"location\":\"" + location.replaceAll("[\"]", "'") + '\"' +
-                ", \"jobdate\":\"" + jobdate + '\"' +
-                ", \"expirydate\":\"" + expirydate + '\"' +
-                ", \"category\":" + category +
-                ", \"image\":\"" + image + '\"' +
-                '}';
+    public Set<PicturesRequest> getPicturesRequest() {
+        return picturesRequest;
+    }
+
+    public void setPicturesRequest(Set<PicturesRequest> picturesRequest) {
+        this.picturesRequest = picturesRequest;
+    }
+
+    public void setRid(Integer rid) {
+        this.rid = rid;
     }
 }

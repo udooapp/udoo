@@ -26,31 +26,51 @@ export class RequestService {
       this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
     }
   }
-  public saveRequest(request: Request): Observable<String> {
+
+  public createRequest(src: String): Observable<any> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/request/user/saverequest', JSON.stringify(request), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/request/user/create', src, new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
+  }
+  public uploadPicture(rid: number, src: string): Observable<number> {
+    this.refreshHeaderToken();
+    return this.http.post(config.server + '/request/user/upload', JSON.stringify({
+      prid: rid,
+      src: src
+    }), new RequestOptions({headers: this.headers}))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleText);
+  }
+  public saveRequest(request: Request, deleted: number): Observable<String> {
+    this.refreshHeaderToken();
+    return this.http.post(config.server + '/request/user/save', JSON.stringify({
+      request: request,
+      delete: deleted
+    }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   public getUserRequest(): Observable<Request[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/request/user/request', new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/request/user', new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
 
-  public deleteUserRequest(id: number): Observable<string> {
+  public deleteUserRequest(id: number, deleted: number): Observable<string> {
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/request/user/deleterequest', JSON.stringify({
-      id: id
+    return this.http.post(config.server + '/request/user/delete', JSON.stringify({
+      id: id,
+      delete: deleted
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   public getRequest(rid: number): Observable<Request> {
-    return this.http.get(config.server + '/request/' + rid, new RequestOptions({headers: this.headers}))
+    return this.http.get(config.server + '/request/' + rid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }

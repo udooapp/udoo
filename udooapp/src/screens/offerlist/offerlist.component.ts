@@ -30,7 +30,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
     });
     dialog.questionResponse$.subscribe(response => {
       if(response && this.delete){
-        this.offerService.deleteUserOffer(this.id).subscribe(
+        this.offerService.deleteUserOffer(this.id, -1).subscribe(
           result => {
             this.message = result;
             this.data.splice(this.index, 1)

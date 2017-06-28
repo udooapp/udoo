@@ -8,7 +8,8 @@ export class Request {
               public location: string,
               public jobdate: string,
               public expirydate: number,
-              public image: string) {
+              public image: string,
+              public picturesRequest: any[]) {
   }
 
   toString(): string {

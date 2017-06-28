@@ -3,6 +3,8 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.offer.Offer;
+import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
@@ -31,10 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -254,6 +253,8 @@ public class RestServiceController implements IRestServiceController {
         User usr;
         for (Offer offer : offers) {
             usr = userRepository.findByUid(offer.getUid());
+//            Set<PicturesOffer> pic = new HashSet<>();
+//            pic.add(new PicturesOffer(usr != null && usr.getPicture() != null ? usr.getPicture() : ""));
             offer.setImage(usr != null && usr.getPicture() != null ? usr.getPicture() : "");
         }
         return offers;

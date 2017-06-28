@@ -1,6 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.Request;
+import com.udoo.dal.entities.request.Request;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
