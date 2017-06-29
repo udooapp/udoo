@@ -30,7 +30,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   error: string = '';
   refresh: boolean = false;
   location: string = '';
-  data = new Request(null, '', '', -1, 1, '', '', 0, '', []);
+  data = new Request(null, '', '', -1, -1, '', '', 0, []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
@@ -39,24 +39,26 @@ export class RequestComponent implements OnInit, IServiceForm {
   valid: boolean[] = [false, false, false, false, false, false, false];
 
   //Gallery
-  insertedId = -1;
-  imageLoading: number[] = [];
+
+  modification: number[] = [-1, 0, -1];
   imageError: number[] = [];
-  serviceDelete: boolean = false;
-  clickedImage = -1;
+  imageLoading: number[] = [];
 
   constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
-        if (this.insertedId == -1) {
+        if (this.modification[0] <= 0) {
+          this.modification[0] = -1;
+          this.modification[1] = 0;
+          this.modification[2] = -1;
           router.navigate([REQUEST_LIST]);
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
           this.notifier.notify(RequestComponent.NAME);
         }
       } else if (action == ScrollableGalleryComponent.IMAGE) {
-        ++this.clickedImage;
+        ++this.modification[2];
       }
     });
     dialog.errorResponse$.subscribe(tryAgain => {
@@ -64,26 +66,31 @@ export class RequestComponent implements OnInit, IServiceForm {
     });
     this.dialog.questionResponse$.subscribe(response => {
       if (response) { //Clicked --> Yes
-        if (this.serviceDelete) {     //onClickServiceDelete
+        if (this.modification[1] === 1) {     //onClickmodification[1]
 
-          this.requestService.deleteUserRequest(this.data.rid, this.insertedId).subscribe(
+          this.requestService.deleteUserRequest(this.data.rid, this.modification[0]).subscribe(
             ok => {
+              this.modification[0] = -1;
+              this.modification[1] = 0;
+              this.modification[2] = -1;
+              this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
-              this.router.navigate([REQUEST_LIST]);
             },
             error => {
               this.error = error;
               this.dialog.notifyError(error);
             }
           );
-          this.serviceDelete = false;
-        } else if (this.insertedId > -1) {
+          this.modification[1] = 0;
+        } else if (this.modification[0] > -1) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.requestService.deleteUserRequest(this.data.rid, -1).subscribe(
             message => {
-              this.insertedId = -1;
+              this.modification[0] = -1;
+              this.modification[1] = 0;
+              this.modification[2] = -1;
               this.notifier.back();
-              router.navigate([REQUEST_LIST]);
+              this.notifier.pageChanged$.emit(' ');
             },
             error => {
               //  this.dialog.notifyError(error);
@@ -91,7 +98,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           );
         }
       } else {  //on clikc dilaog --> NO
-        this.notifier.notify(RequestComponent.NAME);
+        //this.notifier.notify(RequestComponent.NAME);
       }
     });
   }
@@ -129,12 +136,15 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   public onClickSave() {
     if (this.imageLoading.length == 0) {
-      if (this.checkValidation()){
+      if (this.checkValidation()) {
 
-        this.requestService.saveRequest(this.data, this.insertedId).subscribe(
+        this.requestService.saveRequest(this.data, this.modification[0]).subscribe(
           message => {
+            this.modification[0] = -1;
+            this.modification[1] = 0;
+            this.modification[2] = -1;
+            this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
-            this.router.navigate([REQUEST_LIST]);
           },
           error => {
             this.error = <any>error;
@@ -186,7 +196,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   public onClickDeleteService() {
-    this.serviceDelete = true;
+    this.modification[1] = 1;
     this.dialog.sendQuestion("Are you sure?");
   }
 
@@ -210,9 +220,9 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   onClickNewImage(event) {
     let first: boolean = false;
-    if (this.insertedId == -1) {
+    if (this.modification[0] <= 0) {
       first = true;
-      this.insertedId = this.data.rid;
+      this.modification[0] = this.data.rid;
       this.data.rid = null;
     }
     let input = event.target;
@@ -278,10 +288,9 @@ export class RequestComponent implements OnInit, IServiceForm {
         }
       }
       this.imageLoading.splice(i, 1);
-      index = -1;
-
     }
   }
+
   getPictures(): any[] {
     return this.data.picturesRequest;
   }

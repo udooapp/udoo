@@ -93,5 +93,11 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
     }
     return '';
   }
+  public getImage(index:number){
+    if(index >= 0 && index < this.data.length && this.data[index].picturesOffer.length > 0){
+      return this.data[index].picturesOffer[0].src;
+    }
+    return '';
+  }
 }
 

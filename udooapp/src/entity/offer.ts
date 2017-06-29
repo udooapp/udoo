@@ -8,7 +8,6 @@ export class Offer {
               public location: string,
               public availability: string,
               public expirydate: number,
-              public image: string,
               public realTime: boolean,
               public picturesOffer: any[]) {
   }
@@ -21,7 +20,6 @@ export class Offer {
       '"uid" : "' + this.uid + '",' +
       '"location" : "' + this.location + '",' +
       '"availability" : "' + this.availability + '",' +
-      '"image" : "' + this.image + '",' +
       '"expirydate" : "' + this.expirydate + ',' +
       '"realTime" : ' + this.realTime + '}';
   }

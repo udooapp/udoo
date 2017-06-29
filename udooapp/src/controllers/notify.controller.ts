@@ -3,7 +3,7 @@ import {User} from "../entity/user";
 
 export class NotifierController {
   private pageList: string[] = [];
-  public pageChanged$: EventEmitter<String>;
+  public pageChanged$: EventEmitter<string>;
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
 
@@ -37,6 +37,7 @@ export class NotifierController {
   }
 
   public notify(action: string) {
+    console.log("Notify: " + action +" " + (this.pageList.length > 0 ?this.pageList[this.pageList.length - 1] : "" ) );
     let pageListLength = this.pageList.length;
     if((pageListLength > 0 && this.pageList[pageListLength - 1] !== action) || pageListLength === 0){
       this.pageList.push(action);

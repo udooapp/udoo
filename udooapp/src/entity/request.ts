@@ -8,7 +8,6 @@ export class Request {
               public location: string,
               public jobdate: string,
               public expirydate: number,
-              public image: string,
               public picturesRequest: any[]) {
   }
 
@@ -19,7 +18,6 @@ export class Request {
       '"uid" : "' + this.uid + '",' +
       '"location" : "' + this.location + '",' +
       '"title" : "' + this.title + '",' +
-      '"image" : "' + this.image + '",' +
       '"jobdate" : "' + this.jobdate + '",' +
       '"expirydate" : "' + this.expirydate + '"}';
 

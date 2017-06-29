@@ -89,4 +89,10 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
     }
     return '';
   }
+  public getImage(index:number){
+    if(index >= 0 && index < this.data.length && this.data[index].picturesRequest.length > 0){
+      return this.data[index].picturesRequest[0].src;
+    }
+    return '';
+  }
 }

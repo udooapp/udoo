@@ -10,7 +10,7 @@ export class SelectInputComponent {
   error = false;
   ok = false;
   show = false;
-  refresh : boolean = false;
+  refresh: boolean = false;
   notChange = false;
   errorMessage = 'Invalid value';
   valueText: number = -1;
@@ -18,7 +18,7 @@ export class SelectInputComponent {
   isOption: boolean = false;
   @Input() disabled = false;
   @Input() id = '';
-  @Input() selectd : number = 0;
+  @Input() selectd: number = -1;
   @Input() disableValidation = false;
   @Output() onChange = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
@@ -26,13 +26,15 @@ export class SelectInputComponent {
 
   constructor() {
   }
-  @Input() set selected(value: number){
+
+  @Input() set selected(value: number) {
     this.selectd = value;
     this.valueText = value;
     this.focusChange();
   }
+
   focusChange() {
-    if(!this.disableValidation) {
+    if (!this.disableValidation) {
       this.valid();
     }
   }
@@ -56,18 +58,21 @@ export class SelectInputComponent {
 
 
   valid() {
-    if (this.valueText < 0 || this.valueText > this.data.length) {
-      this.error = true;
-      this.ok = false;
-    } else {
-      this.error = false;
-      this.ok = true;
-      this.show = false;
+    if (this.data.length > 0 && this.selectd > -1) {
+      if (this.valueText < 0 || this.valueText > this.data.length) {
+        this.error = true;
+        this.ok = false;
+      } else {
+        this.error = false;
+        this.ok = true;
+        this.show = false;
+      }
+      this.onValidationStateChange.emit(this.ok);
     }
-    this.onValidationStateChange.emit(this.ok);
   }
 
   onKey(event: any) {
+    this.selectd = event.target.value;
     this.notChange = true;
     this.valueText = event.target.value;
     this.onChange.emit(event.target.value);

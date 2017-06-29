@@ -137,10 +137,10 @@ public class OfferServiceController implements IOfferServiceController {
     public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody OfferSave save) {
 
         if (save != null) {
-
-            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
+            int uid = Integer.parseInt(request.getAttribute(USERID).toString());
+            User user = userRepository.findByUid(uid);
+            Offer offer = save.getOffer();
             if (user != null && save.getOffer().getUid() == user.getUid()) {
-                Offer offer = save.getOffer();
                 int delete = save.getDelete();
                 if(delete <= -1){
                     offerRepository.save(offer);
@@ -191,7 +191,13 @@ public class OfferServiceController implements IOfferServiceController {
                     }
                 }
             } else {
-                return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
+                if(offer.getUid() < 0 && save.getDelete() <= 0){
+                    offer.setUid(uid);
+                    offerRepository.save(offer);
+                    return new ResponseEntity<>("Saved", HttpStatus.OK);
+                }else {
+                    return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
+                }
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);

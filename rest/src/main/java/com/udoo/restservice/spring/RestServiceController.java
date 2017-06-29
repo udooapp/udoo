@@ -4,6 +4,8 @@ package com.udoo.restservice.spring;
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.Offer;
+import com.udoo.dal.entities.offer.PicturesOffer;
+import com.udoo.dal.entities.request.PicturesRequest;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
@@ -67,8 +69,6 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private ITokenRepository tokenRepository;
 
-    @Resource
-    private IVerificationRepository verificationRepository;
 
     @Resource
     private IRequestRepository requestRepository;
@@ -253,9 +253,11 @@ public class RestServiceController implements IRestServiceController {
         User usr;
         for (Offer offer : offers) {
             usr = userRepository.findByUid(offer.getUid());
-//            Set<PicturesOffer> pic = new HashSet<>();
-//            pic.add(new PicturesOffer(usr != null && usr.getPicture() != null ? usr.getPicture() : ""));
-            offer.setImage(usr != null && usr.getPicture() != null ? usr.getPicture() : "");
+            if(usr != null && usr.getPicture() != null) {
+                List<PicturesOffer> off = new ArrayList<>();
+                off.add(new PicturesOffer(usr.getPicture()));
+                offer.setPicturesOffer(off);
+            }
         }
         return offers;
     }
@@ -264,7 +266,11 @@ public class RestServiceController implements IRestServiceController {
         User usr;
         for (Request request : requests) {
             usr = userRepository.findByUid(request.getUid());
-            request.setImage(usr != null && usr.getPicture() != null ? usr.getPicture() : "");
+            if(usr != null && usr.getPicture() != null){
+                List<PicturesRequest> req = new ArrayList<>();
+                req.add(new PicturesRequest(usr.getPicture()));
+                request.setPicturesRequest(req);
+            }
         }
         return requests;
     }

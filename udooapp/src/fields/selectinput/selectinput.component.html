@@ -4,7 +4,7 @@
             [ngClass]="{'input-select-ok': ok, 'input-select-error': error}"
             (focusout)="focusChange()" (click)="onClickInputBox()" (keyup)="onKey($event)"
             (change)="onKey($event)" [disabled]="disabled">
-      <option *ngFor="let cat of data; let i = index" [value]="cat.cid" [selected]="i == selectd">{{cat.name}}</option>
+      <option *ngFor="let cat of data; let i = index" [value]="cat.cid" [selected]="cat.cid == selectd">{{cat.name}}</option>
     </select>
 
     <select [id]="id" *ngIf="!isOption" class="input-select"

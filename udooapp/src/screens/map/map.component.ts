@@ -146,6 +146,19 @@ export class MapComponent extends ConversionMethods implements OnInit {
     this.infoWindows = [];
   }
 
+
+  public getPicture(index: number, type: boolean) {
+    if (type) {
+      if(this.requests.length >= 0 && index < this.requests.length && this.requests[index].picturesRequest.length > 0){
+        return this.requests[index].picturesRequest[0].src;
+      }
+    }
+    else if (this.offers.length >= 0 && index < this.offers.length && this.offers[index].picturesOffer.length > 0) {
+        return this.offers[index].picturesOffer[0].src;
+    }
+    return '';
+  }
+
   private loadRequests() {
     let click: boolean[] = [];
     let rout = this.router;

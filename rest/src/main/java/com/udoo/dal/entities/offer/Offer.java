@@ -33,13 +33,12 @@ public class Offer {
 
     private Date expirydate = new Date();
 
+    private boolean realTime;
+
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "offer")
     private List<PicturesOffer> picturesOffer = new ArrayList<>();
-
-    private String image;
-    private boolean realTime;
 
     public Integer getOid() {
         return oid;
@@ -101,14 +100,6 @@ public class Offer {
         return category;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public void setCategory(int category) {
         this.category = category;
     }
@@ -129,4 +120,19 @@ public class Offer {
         this.realTime = realTime;
     }
 
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "oid=" + oid +
+                ", uid=" + uid +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", category=" + category +
+                ", location='" + location + '\'' +
+                ", availability='" + availability + '\'' +
+                ", expirydate=" + expirydate +
+                ", picturesOffer=" + picturesOffer +
+                ", realTime=" + realTime +
+                '}';
+    }
 }

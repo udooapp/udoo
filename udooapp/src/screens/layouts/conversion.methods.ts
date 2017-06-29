@@ -8,6 +8,7 @@ export class ConversionMethods{
     return JSON.parse(location).address;
   }
 
+
   public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '';

@@ -58,9 +58,10 @@ public class RequestServiceController implements IRequestServiceController {
     @RequestMapping(value = "/user/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveRequest(ServletRequest req, @RequestBody RequestSave save) {
         if (save != null) {
-            User user = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
+            int uid = Integer.parseInt(req.getAttribute(USERID).toString());
+            User user = userRepository.findByUid(uid);
+            Request request = save.getRequest();
             if (user != null && save.getRequest().getUid() == user.getUid()) {
-                Request request = save.getRequest();
                 int delete = save.getDelete();
                 if(delete <= -1){
                     requestRepository.save(request);
@@ -109,8 +110,14 @@ public class RequestServiceController implements IRequestServiceController {
                         return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
                     }
                 }
-            } else {
-                return new ResponseEntity<>("Email not found", HttpStatus.UNAUTHORIZED);
+            }else {
+                if(request.getUid() < 0 && save.getDelete() <= 0){
+                    request.setUid(uid);
+                    requestRepository.save(request);
+                    return new ResponseEntity<>("Request Saved", HttpStatus.OK);
+                }else {
+                    return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
+                }
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
@@ -174,7 +181,13 @@ public class RequestServiceController implements IRequestServiceController {
     ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            return new ResponseEntity<>(requestRepository.findByUid(user.getUid()), HttpStatus.OK);
+            List<Request> requests = requestRepository.findByUid(user.getUid());
+            for(Request req : requests){
+                if(req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1){
+                    req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
+                }
+            }
+            return new ResponseEntity<>(requests, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

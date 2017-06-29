@@ -7,6 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,12 +31,10 @@ public class Request {
 
     private int category = -1;
 
-    private String image = "";
-
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "request",cascade = CascadeType.PERSIST)
-    private Set<PicturesRequest> picturesRequest;
+    private List<PicturesRequest> picturesRequest;
 
     public Integer getUid() {
         return uid;
@@ -97,19 +96,11 @@ public class Request {
         this.category = category;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Set<PicturesRequest> getPicturesRequest() {
+    public List<PicturesRequest> getPicturesRequest() {
         return picturesRequest;
     }
 
-    public void setPicturesRequest(Set<PicturesRequest> picturesRequest) {
+    public void setPicturesRequest(List<PicturesRequest> picturesRequest) {
         this.picturesRequest = picturesRequest;
     }
 

@@ -27,73 +27,77 @@ export class OfferComponent implements OnInit, IServiceForm {
   location: string = '';
   load: boolean = false;
 
-  data = new Offer(null, '', '', -1, 1, '', '', 0, '', false, []);
+  data = new Offer(null, '', '', -1, -1, '', '', 0, false, []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
   //Gallery
-  insertedId = -1;
+  modification: number[] = [-1, 0, -1];
   imageLoading: number[] = [];
   imageError: number[] = [];
-  serviceDelete: boolean = false;
-  clickedImage = 0;
 
-  constructor(private offerService: OfferService, private router: Router,private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
-    this.notifier.notify(OfferComponent.NAME);
+  constructor(private offerService: OfferService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
-      if (action == OfferComponent.NAME) {
-        if (this.insertedId == -1) {
+      if (action === OfferComponent.NAME) {
+        if (this.modification[0] <= 0) {
+          this.modification[0] = -1;
+          this.modification[1] = 0;
+          this.modification[2] = -1;
           router.navigate([OFFER_LIST]);
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
           this.notifier.notify(OfferComponent.NAME);
         }
       } else if (action == ScrollableGalleryComponent.IMAGE) {
-        ++this.clickedImage;
+        ++this.modification[2];
       }
     });
     dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit();
     });
     this.dialog.questionResponse$.subscribe(response => {
-       if (response) { //Clicked --> Yes
-        if (this.serviceDelete) {     //onClickServiceDelete
+      if (response) { //Clicked --> Yes
+        if (this.modification[1] === 1) {     //onClickNewImage
 
-          this.offerService.deleteUserOffer(this.data.oid, this.insertedId).subscribe(
+          this.offerService.deleteUserOffer(this.data.oid, this.modification[0]).subscribe(
             ok => {
+              this.modification[0] = -1;
+              this.modification[1] = 0;
+              this.modification[2] = -1;
+              this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
-              this.router.navigate([OFFER_LIST]);
             },
             error => {
               this.error = error;
               this.dialog.notifyError(error);
             }
           );
-          this.serviceDelete = false;
-        } else if (this.insertedId > -1) {
+          this.modification[1] = 0;
+        } else if (this.modification[0] > -1) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.offerService.deleteUserOffer(this.data.oid, -1).subscribe(
             message => {
-              this.insertedId = -1;
+              this.modification[0] = -1;
+              this.modification[1] = 0;
+              this.modification[2] = -1;
               this.notifier.back();
-              router.navigate([OFFER_LIST]);
+              this.notifier.pageChanged$.emit(' ');
             },
             error => {
               //  this.dialog.notifyError(error);
             }
           );
         }
-      } else {  //on clikc dilaog --> NO
-        this.notifier.notify(OfferComponent.NAME);
       }
     });
   }
 
   ngOnInit() {
-    this.insertedId = -1;
-    this.serviceDelete = false;
+    this.notifier.notify(OfferComponent.NAME);
+    this.modification[0] = -1;
+    this.modification[1] = 0;
     this.mapService.getCategories().subscribe(
       data => {
         this.category = data;
@@ -126,10 +130,13 @@ export class OfferComponent implements OnInit, IServiceForm {
   public  onClickSave() {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
-        this.offerService.saveOffer(this.data, this.insertedId).subscribe(
+        this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
           message => {
+            this.modification[0] = -1;
+            this.modification[1] = 0;
+            this.modification[2] = -1;
+            this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
-            this.router.navigate([OFFER_LIST]);
           },
           error => {
             this.error = <any>error;
@@ -186,7 +193,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   }
 
   public onClickDeleteService() {
-    this.serviceDelete = true;
+    this.modification[1] = 1;
     this.dialog.sendQuestion("Are you sure?");
   }
 
@@ -206,9 +213,9 @@ export class OfferComponent implements OnInit, IServiceForm {
 
   onClickNewImage(event) {
     let first: boolean = false;
-    if (this.insertedId == -1) {
+    if (this.modification[0] <= 0) {
       first = true;
-      this.insertedId = this.data.oid;
+      this.modification[0] = this.data.oid;
       this.data.oid = null;
     }
     let input = event.target;
@@ -274,8 +281,6 @@ export class OfferComponent implements OnInit, IServiceForm {
         }
       }
       this.imageLoading.splice(i, 1);
-      index = -1;
-
     }
   }
 
