@@ -11,6 +11,7 @@ import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ScrollableGalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -28,14 +29,19 @@ export class ServiceDetailComponent implements OnInit {
   stars: number[] = [0, 0, 0, 0, 0];
   image: string;
   added: boolean = false;
-
+  pictures: any[] = [];
+  open: number = -1;
+  imageClose:number = 0;
   constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
         this.router.navigate([MAP]);
+      } else if(action == ScrollableGalleryComponent.IMAGE){
+        ++this.imageClose;
+        this.open = -1;
       }
-    })
+    });
     this.notifier.notify(ServiceDetailComponent.NAME);
     dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
@@ -51,6 +57,7 @@ export class ServiceDetailComponent implements OnInit {
           data => {
             this.data = data;
             this.loaded = true;
+            this.pictures = this.data.picturesOffer;
             this.loadUser();
           },
           error => this.error = <any>error
@@ -59,6 +66,7 @@ export class ServiceDetailComponent implements OnInit {
         this.requestService.getRequest(id).subscribe(
           data => {
             this.data = data;
+            this.pictures = this.data.picturesRequest;
             this.loaded = true;
             this.loadUser();
           },
@@ -111,7 +119,9 @@ export class ServiceDetailComponent implements OnInit {
       }
     );
   }
-
+  public getPictures() : any[]{
+    return this.pictures;
+  }
   public getPictureUrl(src: string) {
     if (src == null || src.length == 0 || src === 'null') {
       return './assets/profile_picture.png';
@@ -145,5 +155,13 @@ export class ServiceDetailComponent implements OnInit {
         }
       )
     }
+  }
+  public imageOpen(event){
+    this.open = event;
+    console.log(event);
+    this.notifier.notify(ScrollableGalleryComponent.IMAGE)
+  }
+  public isClose(): number{
+    return this.imageClose;
   }
 }
