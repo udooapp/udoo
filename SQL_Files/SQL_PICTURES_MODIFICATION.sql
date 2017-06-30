@@ -9,3 +9,6 @@ ALTER TABLE `picturesoffer` CHANGE `scr` `src` LONGTEXT CHARACTER SET latin1 COL
 ALTER TABLE `offer` DROP ` image `;
 
 ALTER TABLE `request` DROP ` image `;
+
+ALTER TABLE `users` ADD `facebookid` BIGINT(11) NOT NULL AFTER `active`;
+ALTER TABLE `users` ADD `googleid` VARCHAR(32) NOT NULL AFTER `facebookid`;

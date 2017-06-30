@@ -34,6 +34,7 @@
 }
 
 .social-button {
+  cursor: pointer;
   padding: 1%;
   margin-left: 15%;
   margin-right: 15%;
@@ -58,10 +59,11 @@
 }
 
 .button-facebook {
-  background-color: #607cb7;
+  background-color: #4267b2;
 }
 
 .button-google {
   background-color: #dd4b39;
 }
+
 

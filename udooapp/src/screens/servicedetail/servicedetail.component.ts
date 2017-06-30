@@ -11,7 +11,7 @@ import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
-import {ScrollableGalleryComponent} from "../../components/gallery/gallery.component";
+import {GalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -21,7 +21,7 @@ import {ScrollableGalleryComponent} from "../../components/gallery/gallery.compo
 export class ServiceDetailComponent implements OnInit {
   private static NAME: string = 'ServiceDetail';
   message: string = '';
-  user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0);
+  user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0, 0);
   error: string = '';
   type: boolean = false;
   data: any;
@@ -37,7 +37,7 @@ export class ServiceDetailComponent implements OnInit {
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
         this.router.navigate([MAP]);
-      } else if(action == ScrollableGalleryComponent.IMAGE){
+      } else if(action == GalleryComponent.IMAGE){
         ++this.imageClose;
         this.open = -1;
       }
@@ -159,7 +159,7 @@ export class ServiceDetailComponent implements OnInit {
   public imageOpen(event){
     this.open = event;
     console.log(event);
-    this.notifier.notify(ScrollableGalleryComponent.IMAGE)
+    this.notifier.notify(GalleryComponent.IMAGE)
   }
   public isClose(): number{
     return this.imageClose;

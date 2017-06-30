@@ -1,7 +1,6 @@
 package com.udoo.dal.entities;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  */
@@ -11,29 +10,32 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer uid;
+    private Integer uid = -1;
 
-    private String name;
+    private String name = "";
 
-    private String email;
+    private String email = "";
 
-    private String password;
+    private String password = "";
 
-    private String phone;
+    private String phone = "";
 
-    private String picture;
+    private String picture = "";
 
-    private Integer type;
+    private Integer type = 0;
 
-    private float stars;
+    private float stars = 0;
 
-    private String birthdate;
+    private String birthdate = "";
 
-    private String location;
+    private String location = "";
 
-    private String language;
+    private String language = "";
 
-    private int active;
+    private int active = 0;
+
+    private long facebookid = 0;
+    private String googleid = "";
 
     public int getUid() {
         return uid;
@@ -133,6 +135,22 @@ public class User {
 
     public void setActive(int active) {
         this.active = active;
+    }
+
+    public long getFacebookid() {
+        return facebookid;
+    }
+
+    public void setFacebookid(long socialId) {
+        this.facebookid = socialId;
+    }
+
+    public String getGoogleid() {
+        return googleid;
+    }
+
+    public void setGoogleid(String googleid) {
+        this.googleid = googleid;
     }
 
     @Override

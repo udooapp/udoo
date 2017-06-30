@@ -9,7 +9,8 @@ export class User {
               public type: number,
               public birthdate: string,
               public language: string,
-              public active: number) {
+              public active: number,
+              public socialID: number) {
   }
   refresh(user: User){
     this.uid = user.uid;

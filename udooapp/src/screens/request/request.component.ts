@@ -14,7 +14,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/service/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
-import {ScrollableGalleryComponent} from "../../components/gallery/gallery.component";
+import {GalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
   templateUrl: '../layouts/service/serviceform.component.html',
@@ -44,7 +44,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   imageError: number[] = [];
   imageLoading: number[] = [];
 
-  constructor(private requestService: RequestService, private router: Router, private userService: UserService, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private requestService: RequestService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
@@ -57,7 +57,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
           this.notifier.notify(RequestComponent.NAME);
         }
-      } else if (action == ScrollableGalleryComponent.IMAGE) {
+      } else if (action == GalleryComponent.IMAGE) {
         ++this.modification[2];
       }
     });
@@ -267,7 +267,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   onClickImage(index: number) {
-    this.notifier.notify(ScrollableGalleryComponent.IMAGE);
+    this.notifier.notify(GalleryComponent.IMAGE);
   }
 
   onClickRemove(index: number) {

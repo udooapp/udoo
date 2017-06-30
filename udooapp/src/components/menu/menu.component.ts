@@ -11,6 +11,8 @@ import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
 import {DialogController} from "../../controllers/dialog.controller";
+
+declare let FB;
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
@@ -24,7 +26,7 @@ export class MenuComponent implements OnInit {
   @Output() menuItemClicked = new EventEmitter<boolean>();
   visibleMenu: boolean = false;
   stars: number[] = [0, 0, 0, 0, 0];
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
   image: string;
   checkLogin: boolean = false;
@@ -51,7 +53,7 @@ export class MenuComponent implements OnInit {
       if (token) {
         this.tokenService.clearToken();
         this.router.navigate([LOGIN]);
-        this.user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
+        this.user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
         this.login = false;
       } else {
         this.checkUser(false);
@@ -68,7 +70,7 @@ export class MenuComponent implements OnInit {
           message => {},
           error => {
             if (error === 'Invalid token') {
-              this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0);
+              this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
               this.login = false;
               this.image = this.getPictureUrl('');
             }
@@ -128,14 +130,14 @@ export class MenuComponent implements OnInit {
         error => {
           console.log(error);
           if (error === 'Invalid token') {
-            this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0);
+            this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
             this.login = false;
             this.image = this.getPictureUrl('');
           }
           this.dialog.notifyError(error);
         });
     } else {
-      this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0);
+      this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
       this.login = false;
       this.image = this.getPictureUrl('');
     }
@@ -164,9 +166,15 @@ export class MenuComponent implements OnInit {
     this.userService.logout().subscribe(
       message => {
         this.login = false;
-        this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0);
+        if(this.user.socialID){
+          FB.logout(function(response) {
+          });
+        }
+        this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
         this.router.navigate([MAP]);
-        this.tokenService.clearToken()
+        this.tokenService.clearToken();
+
+
       },
       error => {
         console.log("Error:" + error);

@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit, IFormInput {
   message: String;
   error: string;
   refresh: boolean = false;
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   passwordVerification: string;
   loaderVisible = false;
   first = false;
@@ -114,6 +114,11 @@ export class ProfileComponent implements OnInit, IFormInput {
       }
     }
   }
+
+  disableEmailInput(): boolean {
+    return false;
+  }
+
   showElements(): boolean {
     return false;
   }

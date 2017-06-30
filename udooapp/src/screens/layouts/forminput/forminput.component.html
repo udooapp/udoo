@@ -26,7 +26,7 @@
     <span class="input-label" i18n>Email</span><br>
     <text-input [type]="'email'" [id]="'email-input'" [validators]="[emptyValidator, emailValidator]"
                 [checkValidate]="refresh" [placeholder]="'Email'"
-                [value]="user.email" (onKey)="user.email = $event" (onValidationStateChange)="fieldValidate(1, $event)"></text-input>
+                [value]="user.email" (onKey)="user.email = $event" (onValidationStateChange)="fieldValidate(1, $event)" [disabled]="disableEmailInput()"></text-input>
 
     <span class="input-label" i18n>Phone number</span><br>
     <text-input [type]="'phone'" [id]="'phone-input'" [validators]="[emptyValidator, phoneValidator]"

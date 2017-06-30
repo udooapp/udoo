@@ -3,12 +3,12 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {DialogController} from "../../controllers/dialog.controller";
 @Component({
-  selector: 'scrollable-gallery',
+  selector: 'gallery',
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.css']
 })
 
-export class ScrollableGalleryComponent{
+export class GalleryComponent{
 
   public static IMAGE:string = "GALLERY_IMAGE";
 

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {IValidator} from "../../validator/validator.interface";
@@ -7,9 +7,9 @@ import {PhoneValidator} from "../../validator/phone.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {EmailValidator} from "../../validator/email.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NotifierController} from "../../controllers/notify.controller";
-import {LOGIN} from "../../app/app.routing.module";
+import {LOGIN, MAP} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/forminput/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
@@ -27,10 +27,11 @@ export class RegistrationComponent implements IFormInput {
   error: string;
   refresh = false;
   registration = true;
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0);
+  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   passwordVerification: string;
   loaderVisible = false;
   first = false;
+  facebookRegistration = false;
   pictureLoadError = false;
   emptyValidator: IValidator = new EmptyValidator();
   emailValidator: IValidator = new EmailValidator();
@@ -39,14 +40,34 @@ export class RegistrationComponent implements IFormInput {
   passwordValidator: IValidator = new PasswordValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
-  constructor(private router: Router, private userService: UserService, private notifier: NotifierController,  private dialog: DialogController) {
+  constructor(private router: Router, private userService: UserService, private route: ActivatedRoute, private notifier: NotifierController, private dialog: DialogController) {
     this.passwordVerification = '';
-    notifier.notify(RegistrationComponent.NAME);
+    this.notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RegistrationComponent.NAME) {
         router.navigate([LOGIN]);
       }
     })
+  }
+
+  ngOnInit(): void {
+    this.route.params
+      .subscribe((params: Params) => {
+        if (params['facebook']) {
+          let user: User = JSON.parse(localStorage.getItem("registration"));
+          if (user != null) {
+            localStorage.removeItem("registration");
+            this.user = user;
+            this.facebookRegistration = true;
+          } else {
+            this.notifier.back();
+          }
+        }
+      });
+  }
+
+  disableEmailInput(): boolean {
+    return this.facebookRegistration;
   }
 
   public getPictureUrl(): SafeResourceUrl {
@@ -55,6 +76,7 @@ export class RegistrationComponent implements IFormInput {
     }
     return this.user.picture;
   }
+
   public getTitle(): string {
     return 'Registration';
   }
@@ -64,7 +86,7 @@ export class RegistrationComponent implements IFormInput {
   }
 
   fieldValidate(index: number, value: boolean) {
-    if(index >= 0 && index < this.valid.length) {
+    if (index >= 0 && index < this.valid.length) {
       this.valid[index] = value;
     }
   }
@@ -124,17 +146,29 @@ export class RegistrationComponent implements IFormInput {
   public onClickSave() {
     if (this.checkValidation()) {
       if (this.user.password === this.passwordVerification) {
-        this.userService.registrateUser(this.user)
-          .subscribe(
-            message => {
-              this.notifier.pageChanged$.emit(' ');
-              this.router.navigate([LOGIN]);
-            },
-            error => {
-              this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;
-              this.dialog.notifyError(error.toString());
-            });
-
+        if (this.facebookRegistration) {
+          this.userService.registrateFacebookUser(this.user)
+            .subscribe(
+              message => {
+                this.notifier.pageChanged$.emit(' ');
+                this.router.navigate([MAP]);
+              },
+              error => {
+                this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;
+                this.dialog.notifyError(error.toString());
+              });
+        } else {
+          this.userService.registrateUser(this.user)
+            .subscribe(
+              message => {
+                this.notifier.pageChanged$.emit(' ');
+                this.router.navigate([LOGIN]);
+              },
+              error => {
+                this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;
+                this.dialog.notifyError(error.toString());
+              });
+        }
       } else {
         this.error = 'Different passwords';
       }

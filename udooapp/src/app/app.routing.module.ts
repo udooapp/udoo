@@ -21,6 +21,7 @@ import {ActivationComponent} from "../screens/activation/activation.component";
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
   {path: 'registration', component: RegistrationComponent},
+  {path: 'registration/:facebook', component: RegistrationComponent},
   {path: 'login', component: LoginComponent},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'profile/1', component: ProfileComponent, canActivate: [AuthGuard]},
@@ -51,6 +52,7 @@ export class AppRoutingModule {
 }
 export const LOGIN: string = '/login';
 export const REGISTRATION: string = '/registration';
+export const FACEBOOKREGISTRATION: string = '/registration/facebook';
 export const PROFILE: string = '/profile';
 export const PASSWORD: string = '/password';
 export const OFFER: string = '/offer';

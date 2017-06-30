@@ -2,6 +2,7 @@ package com.udoo.restservice;
 
 
 import com.udoo.dal.entities.Category;
+import com.udoo.dal.entities.Social;
 import com.udoo.dal.entities.User;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,11 @@ public interface IRestServiceController {
 
     ResponseEntity<String> saveUser(User user);
 
+
+    ResponseEntity<String> saveFacebookUser(User user);
+
     ResponseEntity<?> loginUser(User data);
+    ResponseEntity<?> loginFacebook(Social facebook);
 
     ResponseEntity<?> getUser(int uid) throws IOException;
 

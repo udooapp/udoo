@@ -21,5 +21,5 @@
     <div class="detail-date"><b i18h>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
   </div>
 </div>
-<scrollable-gallery [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)" [close]="isClose()"></scrollable-gallery>
+<gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)" [close]="isClose()"></gallery>
 <div *ngIf="!loaded && error.length > 0" class="response-message error-message">{{error}}</div>

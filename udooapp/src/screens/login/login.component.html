@@ -1,17 +1,21 @@
 <div class="input-container">
   <h1 i18n>Sign in</h1>
   <form novalidate>
-    <text-input [type]="'email'" [id]="'email-input'" [placeholder]="'Email'" [validators]="[emptyValidator, emailValidator]" (onValidationStateChange)="valid[0]=$event"
+    <text-input [type]="'email'" [id]="'email-input'" [placeholder]="'Email'"
+                [validators]="[emptyValidator, emailValidator]" (onValidationStateChange)="valid[0]=$event"
                 (onKey)="user.email = $event"></text-input>
-    <text-input [type]="'password'" [id]="'password-input'" [validators]="[emptyValidator, passwordValidator]" (onValidationStateChange)="valid[1]=$event"
+    <text-input [type]="'password'" [id]="'password-input'" [validators]="[emptyValidator, passwordValidator]"
+                (onValidationStateChange)="valid[1]=$event"
                 [placeholder]="'Password'" (onKey)="user.password = $event"></text-input>
     <input type="submit" value="Login" class="input-button button-dark" id="login-button" (click)="login()"/>
     <div class="error-message response-message">{{error}}</div>
   </form>
   <p class="input-link" routerLink="/reminder" routerLinkActive="active">Forgot password?</p>
-  <div class="social-container">
-    <input type="submit" value="Login with Facebook" class="social-button button-facebook"/>
-    <input type="submit" value="Login with Google" class="social-button button-google"/>
+
+  <div class="social-container" id="gSignInWrapper">
+    <input type="submit" value="Login with Facebook" class="social-button button-facebook" (click)="facebookLogin()"/>
+    <input id="customBtn" type="submit" value="Login with Google" class="customGPlusSignIn social-button button-google"/>
+
   </div>
 </div>
 <div class="registration-container">

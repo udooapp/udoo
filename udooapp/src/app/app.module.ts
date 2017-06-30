@@ -34,7 +34,7 @@ import {UserService} from "../services/user.service";
 import {TextInputSelectComponent} from "../fields/textinputselect/textinputselect.component";
 import {DialogController} from "../controllers/dialog.controller";
 import {DialogWindowComponent} from "../components/dialog/dialog.component";
-import {ScrollableGalleryComponent} from "../components/gallery/gallery.component";
+import {GalleryComponent} from "../components/gallery/gallery.component";
 
 @NgModule({
   declarations: [
@@ -63,7 +63,7 @@ import {ScrollableGalleryComponent} from "../components/gallery/gallery.componen
     DialogWindowComponent,
     SettingsComponent,
     ActivationComponent,
-    ScrollableGalleryComponent
+    GalleryComponent
   ],
   imports: [
     BrowserModule,

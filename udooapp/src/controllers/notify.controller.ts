@@ -2,6 +2,7 @@ import {EventEmitter} from "@angular/core";
 import {User} from "../entity/user";
 
 export class NotifierController {
+  private user: User;
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<string>;
   public userModification$: EventEmitter<number>;
@@ -32,12 +33,21 @@ export class NotifierController {
     return this.pageList.length == 0;
   }
 
+  public setUser(user: User){
+    this.user = user;
+  }
+
+  public getUser():User{
+    let us: User = this.user;
+    this.user = null;
+    return us;
+  }
+
   public refreshMainData() {
     this.pageChanged$.emit('refresh');
   }
 
   public notify(action: string) {
-    console.log("Notify: " + action +" " + (this.pageList.length > 0 ?this.pageList[this.pageList.length - 1] : "" ) );
     let pageListLength = this.pageList.length;
     if((pageListLength > 0 && this.pageList[pageListLength - 1] !== action) || pageListLength === 0){
       this.pageList.push(action);

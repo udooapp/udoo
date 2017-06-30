@@ -13,7 +13,6 @@ import {config} from "../environments/url.config";
 @Injectable()
 export class UserService {
   private headers: Headers;
-  private user: User;
 
   constructor(private http: Http, private tokenService: TokenService) {
     this.headers = new Headers({'Content-Type': 'application/json'});
@@ -31,9 +30,25 @@ export class UserService {
       .catch(HandlerService.handleText);
   }
 
+  public loginFacebook(socialData: any): Observable<any> {
+    return this.http.post(config.server + '/social', JSON.stringify(socialData), new RequestOptions({headers: this.headers}))
+      .map((response: Response)=>{
+        if(response.text().startsWith("{")){
+          return response.json();
+        } else {
+          let token = response.text();
+          if (token) {
+            this.tokenService.saveToken(token);
+            return null;
+          }
+        }
+      })
+      .catch(HandlerService.handleText);
+  }
+
   public loginUser(user: User): Observable<string> {
 
-    return this.http.post(config.server + '/login', user.toString(), new RequestOptions({headers: this.headers}))
+    return this.http.post(config.server + '/login', JSON.stringify(user), new RequestOptions({headers: this.headers}))
       .map((response: Response) => {
         let token = response.text();
         if (token) {
@@ -73,6 +88,18 @@ export class UserService {
     return this.http.post(config.server + '/registration', user.toString(), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
+  }
+  public registrateFacebookUser(user: User): Observable<String> {
+    return this.http.post(config.server + '/social/registration', user.toString(), new RequestOptions({headers: this.headers}))
+      .map((response: Response) => {
+        let token = response.text();
+        if (token) {
+          this.tokenService.saveToken(token);
+          return '';
+        }
+      }).catch((response: Response) => {
+        return HandlerService.handleErrorText(response)
+      });
   }
 
   public changePassword(cpass: string, npass: string): Observable<String> {

@@ -16,12 +16,12 @@
                [placeholder]="'Description'" (onKey)="data.description=$event" [value]="data.description"
                [checkValidate]="refresh"></text-area>
     <span class="input-label" i18n>Service picture</span><br>
-    <scrollable-gallery
+    <gallery
       [images]="getPictures()"
       [editable]="true" (onClickImage)="onClickImage($event)" (onClickNewImage)="onClickNewImage($event)"
       (onClickRemove)="onClickRemove($event)"
     [close]="clickedImage"
-    [loading]="imageLoading" [error]="imageError"></scrollable-gallery>
+    [loading]="imageLoading" [error]="imageError"></gallery>
 
     <span class="input-label" i18n>Location</span><br>
     <text-input [id]="'location-input'" [type]="'text'" [placeholder]="'Choose service location'"

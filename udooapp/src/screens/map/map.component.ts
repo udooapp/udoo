@@ -348,7 +348,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
     script.type = 'text/javascript';
     script.async = true;
     script.defer = true;
-
     const callbackName = 'initMap';
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
 
