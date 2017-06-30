@@ -32,14 +32,14 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private map;
   private error: string;
   private searchString = '';
-  private category = -1;
+  public category = -1;
   private markers = [];
   private infoWindows = [];
   private requests: Request[] = [];
   private icon = {};
   private offers: Offer[] = [];
 //  private offersRealTime: Offer[] = [];
-  private result: any[] = [];
+  public result: any[] = [];
 //  private stompClient: any;
   // messages: Array<string> = new Array<string>();
 
@@ -311,7 +311,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     return JSON.parse(location).coordinate;
   }
 
-  private loadAvailableServices() {
+  public loadAvailableServices() {
     this.deleteMarkers();
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {

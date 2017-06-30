@@ -20,7 +20,7 @@
       [images]="getPictures()"
       [editable]="true" (onClickImage)="onClickImage($event)" (onClickNewImage)="onClickNewImage($event)"
       (onClickRemove)="onClickRemove($event)"
-    [close]="clickedImage"
+    [close]="modification[2]"
     [loading]="imageLoading" [error]="imageError"></gallery>
 
     <span class="input-label" i18n>Location</span><br>
