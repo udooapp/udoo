@@ -143,8 +143,10 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.modification[0] = -1;
             this.modification[1] = 0;
             this.modification[2] = -1;
-            this.notifier.back();
+            this.data = new Request(null, '', '', -1, -1, '', '', 0, []);
             this.notifier.pageChanged$.emit(' ');
+            this.notifier.back();
+            this.router.navigate([REQUEST_LIST]);
           },
           error => {
             this.error = <any>error;

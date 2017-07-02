@@ -15,6 +15,7 @@ export class TextAreaComponent {
   notChange = false;
   errorMessage = '';
   valueText = '';
+  remove: boolean = false;
   inputText = '';
   refresh: boolean = false;
   @Input() id = '';
@@ -22,11 +23,13 @@ export class TextAreaComponent {
   @Input() column: number;
   @Input() type: string;
   @Input() disabled = false;
+  @Input() disableValidation = false;
   @Input() placeholder: string;
   @Input() validators: IValidator[];
   @Output() onKey = new EventEmitter<String>();
   @Output() onClickInput = new EventEmitter<boolean>();
   @Output() onValidationStateChange = new EventEmitter<boolean>();
+  @Output() onEnterPressed = new EventEmitter<boolean>();
 
   constructor() {
     this.type = 'onKey';
@@ -45,41 +48,51 @@ export class TextAreaComponent {
       this.valid()
     }
   }
-
+  @Input() set clear(clear: boolean){
+    console.log('clearArea: ' + clear);
+    this.remove = clear;
+      this.valueText = null;
+      this.inputText = null;
+    console.log('input: ' + this.valueText);
+  }
   @Input() set value(value: string) {
-    if (!this.notChange) {
-      this.valueText = value;
-      this.inputText = value;
-      if (value.length > 0) {
-        this.valid();
+    if(value != null) {
+      if (!this.notChange) {
+        this.valueText = value;
+        this.inputText = value;
+        if (value.length > 0) {
+          this.valid();
+        }
+      } else {
+        this.notChange = false;
       }
-    } else {
-      this.notChange = false;
     }
   }
 
   valid() {
-    if (this.validators == null || this.validators.length == 0) {
-      this.error = false;
-      this.show = false;
-      this.ok = true;
-    } else {
-      this.error = false;
-      for (let i = 0; i < this.validators.length; ++i) {
-        if (!this.validators[i].validate(this.inputText)) {
-          this.error = true;
-          this.errorMessage = this.validators[i].getErrorMessage();
-          break;
-        }
-      }
-      if (!this.error) {
+    if(!this.disableValidation) {
+      if (this.validators == null || this.validators.length == 0) {
+        this.error = false;
         this.show = false;
         this.ok = true;
       } else {
-        this.ok = false;
+        this.error = false;
+        for (let i = 0; i < this.validators.length; ++i) {
+          if (!this.validators[i].validate(this.inputText)) {
+            this.error = true;
+            this.errorMessage = this.validators[i].getErrorMessage();
+            break;
+          }
+        }
+        if (!this.error) {
+          this.show = false;
+          this.ok = true;
+        } else {
+          this.ok = false;
+        }
       }
+      this.onValidationStateChange.emit(this.ok);
     }
-    this.onValidationStateChange.emit(this.ok);
   }
 
   onKeyInput(event: any) {
@@ -89,8 +102,10 @@ export class TextAreaComponent {
     if (this.error) {
       this.valid();
     }
+    if(event.which == 13){
+      this.onEnterPressed.emit(true);
+    }
   }
-
   onClickInputBox() {
     this.onClickInput.emit(true);
   }

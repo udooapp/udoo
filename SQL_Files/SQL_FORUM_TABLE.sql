@@ -1,0 +1,12 @@
+CREATE TABLE Comments(
+  cid INT AUTO_INCREMENT,
+  uid INT NOT NULL,
+  sid INT NOT NULL,
+  type BOOLEAN NOT NULL,
+  creatingdate DATETIME NOT NULL,
+  comment text NOT NULL,
+  PRIMARY KEY(cid),
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
+  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
+  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+);

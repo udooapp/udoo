@@ -4,12 +4,13 @@
       <img class="contact-picture-image" [src]="image">
     </div>
     <div class="contact-stars">
-      <img class="contact-profile-stars"  *ngFor="let i of stars" [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
+      <img class="contact-profile-stars" *ngFor="let i of stars"
+           [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
     </div>
     <div class="contact-name">{{user.name}}</div>
     <div class="contact-phone">{{user.phone}}</div>
     <div class="contact-email">{{user.email}}</div>
-    <button class="input-button button-dark" (click)="onClickAddToContact()" i18h>Add to contact</button>
+    <button class="input-button button-contact button-dark" (click)="onClickAddToContact()" i18h>Add to contact</button>
     <div *ngIf="message.length > 0" class="response-message ok-message">{{message}}</div>
     <div *ngIf="error.length > 0" class="response-message error-message">{{error}}</div>
   </div>
@@ -21,5 +22,24 @@
     <div class="detail-date"><b i18h>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
   </div>
 </div>
-<gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)" [close]="isClose()"></gallery>
+<div class="gallery-container">
+  <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
+           [close]="isClose()"></gallery>
+</div>
+<div class="comments" *ngIf="loaded && type">
+  <div class="comment-container" *ngFor="let item of comments">
+    <img class="comment-user" [src]="item.picture"/>
+    <div class="comment-content">
+      <div class="comment-name">{{item.name}}</div>
+      <div class="comment-text">{{item.commentMessage}}</div>
+      <div class="comment-date">{{convertNumberToDateTime(item.date)}}</div>
+    </div>
+  </div>
+  <div class="more-comment"  *ngIf="hasMore" (click)="showMoreComments()">Show more comment...</div>
+  <div class="new-comment">
+    <text-area [placeholder]="'Write a comment...'" [value]="commentMessage" (onKey)="commentMessage= $event"
+               [disableValidation]="true" (onEnterPressed)="sendComment()" [clear]="clearArea" [row]="3"></text-area>
+    <button class="input-button input-send button-dark" (click)="sendComment()">Send</button>
+  </div>
+</div>
 <div *ngIf="!loaded && error.length > 0" class="response-message error-message">{{error}}</div>

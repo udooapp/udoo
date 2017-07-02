@@ -1,16 +1,18 @@
 package com.udoo.restservice.spring;
 
 
+import com.udoo.dal.entities.Comment;
+import com.udoo.dal.entities.CommentResponse;
 import com.udoo.dal.entities.DeleteService;
-import com.udoo.dal.entities.request.PicturesRequest;
-import com.udoo.dal.entities.request.Request;
+import com.udoo.dal.entities.request.*;
 import com.udoo.dal.entities.User;
-import com.udoo.dal.entities.request.RequestPictures;
-import com.udoo.dal.entities.request.RequestSave;
+import com.udoo.dal.repositories.ICommentRepository;
 import com.udoo.dal.repositories.IRequestPictureRepository;
 import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRequestServiceController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +37,12 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Resource
     private IRequestRepository requestRepository;
+
     @Resource
     private IUserRepository userRepository;
+
+    @Resource
+    private ICommentRepository commentRepository;
 
     @Resource
     private IRequestPictureRepository requestPictureRepository;
@@ -44,9 +51,9 @@ public class RequestServiceController implements IRequestServiceController {
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadImage(ServletRequest req, PicturesRequest image) {
-        if(image != null){
+        if (image != null) {
             RequestPictures pic = requestPictureRepository.save(new RequestPictures(image.getSrc(), image.getPrid()));
-            if (pic!= null) {
+            if (pic != null) {
                 return new ResponseEntity<>(pic.getPrid(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Something wrong! Try again", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,6 +61,7 @@ public class RequestServiceController implements IRequestServiceController {
         }
         return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
     }
+
     @Override
     @RequestMapping(value = "/user/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveRequest(ServletRequest req, @RequestBody RequestSave save) {
@@ -63,16 +71,16 @@ public class RequestServiceController implements IRequestServiceController {
             Request request = save.getRequest();
             if (user != null && save.getRequest().getUid() == user.getUid()) {
                 int delete = save.getDelete();
-                if(delete <= -1){
+                if (delete <= -1) {
                     requestRepository.save(request);
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
-                    for(RequestPictures pic :pictures){
+                    for (RequestPictures pic : pictures) {
                         int i = 0;
-                        while(i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()){
+                        while (i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()) {
                             ++i;
                         }
-                        if(i>=currentPictures.size()){
+                        if (i >= currentPictures.size()) {
                             requestPictureRepository.deleteByPrid(pic.getPrid());
                         }
                     }
@@ -85,19 +93,19 @@ public class RequestServiceController implements IRequestServiceController {
                     requestRepository.save(request);
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
-                    for(RequestPictures pic :pictures){
+                    for (RequestPictures pic : pictures) {
                         int i = 0;
-                        while(i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()){
+                        while (i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()) {
                             ++i;
                         }
-                        if(i>=currentPictures.size()){
+                        if (i >= currentPictures.size()) {
                             requestPictureRepository.deleteByPrid(pic.getPrid());
-                        }else {
+                        } else {
                             currentPictures.remove(i);
                         }
                     }
 
-                    for(PicturesRequest pic : currentPictures){
+                    for (PicturesRequest pic : currentPictures) {
                         RequestPictures pic2 = new RequestPictures(pic.getSrc(), request.getRid());
                         pic2.setPrid(pic.getPrid());
                         requestPictureRepository.save(pic2);
@@ -110,12 +118,12 @@ public class RequestServiceController implements IRequestServiceController {
                         return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
                     }
                 }
-            }else {
-                if(request.getUid() < 0 && save.getDelete() <= 0){
+            } else {
+                if (request.getUid() < 0 && save.getDelete() <= 0) {
                     request.setUid(uid);
                     requestRepository.save(request);
                     return new ResponseEntity<>("Request Saved", HttpStatus.OK);
-                }else {
+                } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
                 }
             }
@@ -155,7 +163,7 @@ public class RequestServiceController implements IRequestServiceController {
     @Override
     @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRequest(ServletRequest req, @RequestBody String image) {
-        if (image!= null) {
+        if (image != null) {
             User user = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
             if (user != null) {
                 Request request = new Request();
@@ -182,8 +190,8 @@ public class RequestServiceController implements IRequestServiceController {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             List<Request> requests = requestRepository.findByUid(user.getUid());
-            for(Request req : requests){
-                if(req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1){
+            for (Request req : requests) {
+                if (req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1) {
                     req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
                 }
             }
@@ -194,11 +202,45 @@ public class RequestServiceController implements IRequestServiceController {
 
     }
 
+    @Override
+    @RequestMapping(value = "/data/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<?> getRequestData(@PathVariable("id") int rid) {
+        Request request = requestRepository.findByRid(rid);
+        if (request == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            RequestResponse response = new RequestResponse();
+            response.setRequest(request);
+            response.setUser(userRepository.findByUid(request.getUid()));;
+            List<Comment> comments = commentRepository.findAllBySidAndType(rid, false, new PageRequest(0, 5, Sort.Direction.ASC, "creatingdate"));
+            List<CommentResponse> list = new ArrayList<>();
+            if(comments != null && !comments.isEmpty()){
+                User usr;
+                for(Comment comment : comments){
+                    usr = userRepository.findByUid((int)comment.getUid());
+                    if(usr != null){
+                        CommentResponse resp = new CommentResponse();
+                        resp.setCommentMessage(comment.getComment());
+                        resp.setName(usr.getName());
+                        resp.setPicture(usr.getPicture());
+                        resp.setUid((int)comment.getUid());
+                        resp.setDate(comment.getDate());
+                        list.add(resp);
+                    } else {
+                        comments.remove(comment);
+                    }
+                }
+            }
+            response.setComments(list);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+    @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<Request> getRequest(@PathVariable("id") int uid) {
-
-        return new ResponseEntity<>(requestRepository.findByRid(uid), HttpStatus.OK);
+    ResponseEntity<?> getRequest(@PathVariable("id") int rid) {
+        return new ResponseEntity<>(requestRepository.findByRid(rid), HttpStatus.OK);
     }
 
 }

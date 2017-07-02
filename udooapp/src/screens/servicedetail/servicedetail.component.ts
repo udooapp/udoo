@@ -12,16 +12,18 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
+import {CommentService} from "../../services/comment.service";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
   styleUrls: ['./servicedetail.component.css'],
-  providers: [OfferService, RequestService, UserService, ContactService]
+  providers: [OfferService, RequestService, UserService, ContactService, CommentService]
 })
 export class ServiceDetailComponent implements OnInit {
   private static NAME: string = 'ServiceDetail';
   message: string = '';
   user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0, 0);
+  commentMessage = '';
   error: string = '';
   type: boolean = false;
   data: any;
@@ -31,13 +33,17 @@ export class ServiceDetailComponent implements OnInit {
   added: boolean = false;
   pictures: any[] = [];
   open: number = -1;
-  imageClose:number = 0;
-  constructor(private zone: NgZone, private offerService: OfferService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
+  imageClose: number = 0;
+  comments: any[];
+  clearArea: boolean = false;
+  hasMore: boolean = true;
+
+  constructor(private zone: NgZone, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
         this.router.navigate([MAP]);
-      } else if(action == GalleryComponent.IMAGE){
+      } else if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
         this.open = -1;
       }
@@ -53,22 +59,24 @@ export class ServiceDetailComponent implements OnInit {
   private processOutsideOfAngularZone(id: number) {
     this.zone.run(() => {
       if (this.type) {
-        this.offerService.getOffer(id).subscribe(
+        this.offerService.getOfferData(id).subscribe(
           data => {
-            this.data = data;
+            this.data = data.offer;
             this.loaded = true;
             this.pictures = this.data.picturesOffer;
-            this.loadUser();
+            this.comments = data.comments;
+            this.hasMore = this.comments.length % 5 == 0 && this.comments.length > 0;
+            this.loadUser(data.user);
           },
           error => this.error = <any>error
         );
       } else {
-        this.requestService.getRequest(id).subscribe(
+        this.requestService.getRequestData(id).subscribe(
           data => {
-            this.data = data;
+            this.data = data.request;
             this.pictures = this.data.picturesRequest;
             this.loaded = true;
-            this.loadUser();
+            this.loadUser(data.user);
           },
           error => this.error = <any>error
         );
@@ -91,37 +99,32 @@ export class ServiceDetailComponent implements OnInit {
       });
   }
 
-  private loadUser() {
-    this.userService.getUserInfo(this.data.uid).subscribe(
-      data => {
-        this.loaded = true;
-        this.user = data;
-        this.image = this.getPictureUrl(this.user.picture);
-        let star = this.user.stars;
-        if (star == 0) {
-          this.stars = [2, 2, 2, 2, 2];
+  private loadUser(user: User) {
+
+    this.loaded = true;
+    this.user = user;
+    this.image = this.getPictureUrl(this.user.picture);
+    let star = this.user.stars;
+    if (star == 0) {
+      this.stars = [2, 2, 2, 2, 2];
+    } else {
+      for (let i = 0; i < 5; ++i) {
+        if (star >= 1) {
+          this.stars[i] = 2;
+        } else if (star > 0) {
+          this.stars[i] = 1;
         } else {
-          for (let i = 0; i < 5; ++i) {
-            if (star >= 1) {
-              this.stars[i] = 2;
-            } else if (star > 0) {
-              this.stars[i] = 1;
-            } else {
-              this.stars[i] = 0;
-            }
-            star -= 1;
-          }
+          this.stars[i] = 0;
         }
-      },
-      error => {
-        this.error = <any>error;
-        this.dialog.notifyError(this.error);
+        star -= 1;
       }
-    );
+    }
   }
-  public getPictures() : any[]{
+
+  public getPictures(): any[] {
     return this.pictures;
   }
+
   public getPictureUrl(src: string) {
     if (src == null || src.length == 0 || src === 'null') {
       return './assets/profile_picture.png';
@@ -136,9 +139,15 @@ export class ServiceDetailComponent implements OnInit {
     return JSON.parse(location).address;
   }
 
+  public convertNumberToDateTime(millis: number): string {
+    let date: Date = new Date(millis);
+    let t: string[] = date.toDateString().split(" ");
+    return date.getFullYear() + ' ' + t[1]+ ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  }
+
   public convertNumberToDate(millis: number): string {
     let date: Date = new Date(millis);
-    return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
+    return date.getFullYear() + '.' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '.' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
 
   public onClickAddToContact() {
@@ -156,12 +165,49 @@ export class ServiceDetailComponent implements OnInit {
       )
     }
   }
-  public imageOpen(event){
+
+  public imageOpen(event) {
     this.open = event;
-    console.log(event);
     this.notifier.notify(GalleryComponent.IMAGE)
   }
-  public isClose(): number{
+
+  public isClose(): number {
     return this.imageClose;
+  }
+
+  public sendComment() {
+    this.commentService.saveComment({
+      uid: this.user.uid,
+      type: this.type,
+      sid: this.type ? this.data.oid : this.data.rid,
+      comment: this.commentMessage
+    }).subscribe(
+      data => {
+        this.commentMessage = '';
+        if(this.comments.length % 5 > 0 || this.comments.length == 0) {
+          this.comments.push(data);
+          this.clearArea = !this.clearArea;
+        } else {
+          this.hasMore =  true;
+        }
+      },
+      error => {
+        this.dialog.notifyError(error);
+      }
+    );
+  }
+
+  public showMoreComments() {
+    this.commentService.getComments(this.type ? this.data.oid : this.data.rid, this.comments.length, this.type).subscribe(
+      result => {
+          this.hasMore = result.length % 5 == 0;
+          for(let t in result){
+            this.comments.push(result[t]);
+          }
+      },
+      error => {
+        this.dialog.notifyError(error)
+      }
+    );
   }
 }

@@ -18,7 +18,8 @@ public interface IRequestServiceController {
 
     ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request);
 
-    ResponseEntity<Request> getRequest(int uid);
+    ResponseEntity<?> getRequest(int id);
+    ResponseEntity<?> getRequestData(int id);
 
     ResponseEntity<?> createRequest(ServletRequest req, String src);
 

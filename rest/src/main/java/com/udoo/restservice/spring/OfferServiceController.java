@@ -2,16 +2,18 @@ package com.udoo.restservice.spring;
 
 
 
+import com.udoo.dal.entities.Comment;
+import com.udoo.dal.entities.CommentResponse;
 import com.udoo.dal.entities.DeleteService;
-import com.udoo.dal.entities.offer.Offer;
-import com.udoo.dal.entities.offer.OfferPictures;
-import com.udoo.dal.entities.offer.OfferSave;
+import com.udoo.dal.entities.offer.*;
 import com.udoo.dal.entities.User;
-import com.udoo.dal.entities.offer.PicturesOffer;
+import com.udoo.dal.repositories.ICommentRepository;
 import com.udoo.dal.repositories.IOfferPictureRepository;
 import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IOfferServiceController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,9 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Resource
     private IOfferPictureRepository offerPictureRepository;
+
+    @Resource
+    private ICommentRepository commentRepository;
 
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -91,8 +96,42 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Offer> getOffer(@PathVariable("id") int id) {
+    public ResponseEntity<?> getOffer(@PathVariable("id") int id) {
         return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
+    }
+
+    @Override
+    @RequestMapping(value = "/data/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getOfferData(@PathVariable("id") int id) {
+        Offer offer = offerRepository.findByOid(id);
+        if (offer == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            OfferResponse response = new OfferResponse();
+            response.setOffer(offer);
+            response.setUser(userRepository.findByUid(offer.getUid()));
+            List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.ASC, "creatingdate"));
+            List<CommentResponse> list = new ArrayList<>();
+            if(comments != null && !comments.isEmpty()){
+                User usr;
+                for(Comment comment : comments){
+                    usr = userRepository.findByUid((int)comment.getUid());
+                    if(usr != null){
+                        CommentResponse resp = new CommentResponse();
+                        resp.setCommentMessage(comment.getComment());
+                        resp.setName(usr.getName());
+                        resp.setDate(comment.getDate());
+                        resp.setPicture(usr.getPicture());
+                        resp.setUid((int)comment.getUid());
+                        list.add(resp);
+                    } else {
+                        comments.remove(comment);
+                    }
+                }
+            }
+            response.setComments(list);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     @Override
@@ -183,7 +222,7 @@ public class OfferServiceController implements IOfferServiceController {
                         offerPictureRepository.save(pic2);
                     }
                     System.out.println("Size:" + offer.getPicturesOffer().size());
-                    if (offer2 != null & offer2.getUid() == user.getUid()) {
+                    if (offer2 != null && offer2.getUid() == user.getUid()) {
                         offerRepository.deleteByOid(d);
                         return new ResponseEntity<>("Saved", HttpStatus.OK);
                     } else {

@@ -15,7 +15,10 @@
     <context:component-scan base-package="com.udoo.dal.spring" />
 
     <context:component-scan base-package="com.udoo.restservice.security" />
+
     <context:component-scan base-package="com.udoo.restservice.email" />
+
+    <context:component-scan base-package="com.udoo.restservice.sms" />
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
 

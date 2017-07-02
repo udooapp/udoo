@@ -132,11 +132,13 @@ export class OfferComponent implements OnInit, IServiceForm {
       if (this.checkValidation()) {
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
           message => {
+            this.data=new Offer(null, '', '', -1, -1, '', '', 0, false, []);
             this.modification[0] = -1;
             this.modification[1] = 0;
             this.modification[2] = -1;
             this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
+            this.router.navigate([OFFER_LIST]);
           },
           error => {
             this.error = <any>error;

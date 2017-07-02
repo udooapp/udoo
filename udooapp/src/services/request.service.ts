@@ -69,8 +69,13 @@ export class RequestService {
       .catch(HandlerService.handleText);
   }
 
-  public getRequest(rid: number): Observable<Request> {
+  public getRequest(rid: number): Observable<any> {
     return this.http.get(config.server + '/request/' + rid)
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleText);
+  }
+  public getRequestData(rid: number): Observable<any> {
+    return this.http.get(config.server + '/request/data/' + rid)
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }

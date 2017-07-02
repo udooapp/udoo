@@ -1,5 +1,5 @@
 <div class="input-area-container">
-  <textarea [id]="id" [rows]="row" [cols]="column" [placeholder]="placeholder" [value]="valueText"
+  <textarea [id]="id" [rows]="row" [cols]="column" [placeholder]="placeholder" [value]="remove? valueText : ''"
             class="input-textarea"
             (keyup)="onKeyInput($event)" (change)="onKeyInput($event)" (focusout)="focusChange()" (click)="onClickInputBox()"
             [disabled]="disabled"></textarea>

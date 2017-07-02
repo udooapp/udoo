@@ -54,7 +54,7 @@ INSERT INTO `categories` (`CID`, `name`) VALUES
 --
 
 CREATE TABLE `offer` (
-  `oid` int(11) NOT NULL,
+  `sid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text,
@@ -69,7 +69,7 @@ CREATE TABLE `offer` (
 -- Salvarea datelor din tabel `offer`
 --
 
-INSERT INTO `offer` (`oid`, `uid`, `title`, `description`, `location`, `availability`, `expirydate`, `category`, `image`) VALUES
+INSERT INTO `offer` (`sid`, `uid`, `title`, `description`, `location`, `availability`, `expirydate`, `category`, `image`) VALUES
 (1, 1, 'Washing Centre', 'Wash everything...', '{"coordinate":{"lat":48.2203445, "lng": 16.0998799}, "address":"adsadasfa"}', '8:00-20:00', '2017-04-26', 1, NULL),
 (2, 1, 'Valami', 'dsasdsada', '{"coordinate":{"lat":48.2203445, "lng": 16.0998699}, "address":"asdasdasdasd"}', 'asdsda', NULL, 5, NULL),
 (3, 5, 'Udoo offer', 'Udoo bvest service...', '{"coordinate":{"lat":48.20870810801371,"lng":16.37498064468673},"address":"Strobelgasse 1, 1010 Wien, Austria"}', 'asdasdasdas', NULL, 0, NULL),
@@ -84,7 +84,7 @@ INSERT INTO `offer` (`oid`, `uid`, `title`, `description`, `location`, `availabi
 
 CREATE TABLE `picturesoffer` (
   `poid` int(11) NOT NULL,
-  `oid` int(11) NOT NULL,
+  `sid` int(11) NOT NULL,
   `scr` varchar(400) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -178,7 +178,7 @@ ALTER TABLE `categories`
 -- Indexes for table `offer`
 --
 ALTER TABLE `offer`
-  ADD PRIMARY KEY (`oid`),
+  ADD PRIMARY KEY (`sid`),
   ADD KEY `uid` (`uid`);
 
 --
@@ -186,7 +186,7 @@ ALTER TABLE `offer`
 --
 ALTER TABLE `picturesoffer`
   ADD PRIMARY KEY (`poid`),
-  ADD KEY `oid` (`oid`);
+  ADD KEY `sid` (`sid`);
 
 --
 -- Indexes for table `picturesrequest`
@@ -221,7 +221,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `offer`
 --
 ALTER TABLE `offer`
-  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `picturesoffer`
 --

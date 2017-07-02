@@ -18,6 +18,8 @@ public interface IContactRepository extends Repository<Contact, Integer> {
 
     Contact save(Contact contact);
 
+    Contact getAllByUidAndCid(long uid, long cid);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Contact r WHERE r.uid= :uid  AND r.cid = :cid")
