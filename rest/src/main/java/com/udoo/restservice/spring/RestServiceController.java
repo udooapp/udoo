@@ -4,9 +4,11 @@ package com.udoo.restservice.spring;
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.Offer;
+import com.udoo.dal.entities.offer.OfferLite;
 import com.udoo.dal.entities.offer.PicturesOffer;
 import com.udoo.dal.entities.request.PicturesRequest;
 import com.udoo.dal.entities.request.Request;
+import com.udoo.dal.entities.request.RequestLite;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
@@ -22,6 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -173,7 +178,7 @@ public class RestServiceController implements IRestServiceController {
                     usr2.setPicture(social.getPicture());
                     if (!type && usr == null && usr2.getFacebookid() == 0) {
                         usr2.setFacebookid(Long.parseLong(social.getId()));
-                    } else if (type && usr == null && usr2.getGoogleid() == null  || usr2.getGoogleid().isEmpty()) {
+                    } else if (type && usr == null && usr2.getGoogleid() == null || usr2.getGoogleid().isEmpty()) {
                         usr2.setGoogleid(social.getId());
                     } else {
                         return new ResponseEntity<Object>("Unauthorized", HttpStatus.UNAUTHORIZED);
@@ -233,14 +238,7 @@ public class RestServiceController implements IRestServiceController {
         if (uid > 0) {
             User user = userRepository.findByUid(uid);
             if (user != null && user.getUid() >= 0) {
-                user.setPassword("");
-                user.setActive(0);
-                user.setBirthdate("");
-                user.setLanguage("");
-                user.setLocation("");
-                user.setFacebookid(0);
-                user.setGoogleid("");
-                return new ResponseEntity<>(user, HttpStatus.OK);
+                return new ResponseEntity<>(user.toUserLite(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>("Not found", HttpStatus.BAD_REQUEST);
@@ -299,33 +297,98 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/search/{category}/{searchText}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllService(@PathVariable("category") int category, @PathVariable("searchText") String searchText, @PathVariable("type") int type) throws JSONException {
+    public ResponseEntity<?> getAllService(@PathVariable("category") int category, @PathVariable("searchText") String searchText, @PathVariable("type") int type){
         SearchResult result = new SearchResult();
         if (type == 0 || type == 2) {
             List<Request> requests = category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-            result.setRequest(changeRequestImage(requests));
+            result.setRequestLite(getRequestLiteList(requests));
+            int size = requests.size();
+            result.setRequest(changeRequestImage(requests.subList(0, size > 5 ? 5 : size)));
         }
         if (type == 0 || type == 1) {
             List<Offer> offers = category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
-            result.setOffer(changeOfferImage(offers));
+            result.setOfferLite(getOfferLiteList(offers));
+            int size = offers.size();
+            result.setOffer(changeOfferImage(offers.subList(0, size > 5 ? 5 : size)));
         }
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
 
     @Override
     @RequestMapping(value = "/search/{category}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllServiceWithoutText(@PathVariable("category") int category, @PathVariable("type") int type) throws JSONException {
+    public ResponseEntity<?> getAllServiceWithoutText(@PathVariable("category") int category, @PathVariable("type") int type){
         SearchResult result = new SearchResult();
         if (type == 0 || type == 2) {
             List<Request> requests = category > 0 ?
                     requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual();
-            result.setRequest(changeRequestImage(requests));
+            result.setRequestLite(getRequestLiteList(requests));
+            int size = requests.size();
+            result.setRequest(changeRequestImage(requests.subList(0, size >5 ? 5 : size)));
         }
         if (type == 0 || type == 1) {
             List<Offer> offers = category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual();
-            result.setOffer(changeOfferImage(offers));
+            result.setOfferLite(getOfferLiteList(offers));
+            int size = offers.size();
+            result.setOffer(changeOfferImage(offers.subList(0, size > 5 ? 5 : size)));
         }
         return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
+    @Override
+    @RequestMapping(value = "/more", method = RequestMethod.GET)
+    public ResponseEntity<?> getMoreService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type, @RequestParam("oCount") int oCount, @RequestParam("rCount") int rCount){
+        MoreService more = new MoreService();
+        if(searchText == null || searchText.isEmpty()){
+            if (type == 0 || type == 2) {
+                if(rCount >= 5) {
+                    Pageable page = new PageRequest(rCount / 5, 5);
+                    List<Request> requests = category > 0 ?
+                            requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page);
+                    more.setRequests(changeRequestImage(requests));
+                }
+            }
+            if (type == 0 || type == 1) {
+                if(oCount >= 5) {
+                    Pageable page = new PageRequest(oCount / 5, 5);
+                    List<Offer> offers = category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page);
+                    more.setOffers(changeOfferImage(offers));
+                }
+            }
+        }else {
+            if (type == 0 || type == 2) {
+                if(rCount >= 5) {
+                    Pageable page = new PageRequest(rCount / 5, 5);
+                    List<Request> requests = category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page);
+                    more.setRequests(changeRequestImage(requests));
+                }
+            }
+            if (type == 0 || type == 1) {
+                if(oCount >= 5) {
+                    Pageable page = new PageRequest(oCount / 5, 5);
+                    List<Offer> offers = category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page);
+                    more.setOffers(changeOfferImage(offers));
+                }
+            }
+        }
+        return new ResponseEntity<Object>(more, HttpStatus.OK);
+    }
+
+    private List<RequestLite> getRequestLiteList(List<Request> list) {
+        List<RequestLite> requestLites = new ArrayList<>();
+        for (Request req : list) {
+            requestLites.add(new RequestLite(req));
+        }
+
+        return requestLites;
+    }
+
+    private List<OfferLite> getOfferLiteList(List<Offer> list) {
+        List<OfferLite> offerLites = new ArrayList<>();
+        for (Offer off : list) {
+            offerLites.add(new OfferLite(off));
+        }
+
+        return offerLites;
     }
 
     private List<Offer> changeOfferImage(List<Offer> offers) {

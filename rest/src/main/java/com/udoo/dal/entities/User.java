@@ -169,4 +169,15 @@ public class User {
                 ", \"active\":" + active +
                 '}';
     }
+    public User toUserLite(){
+        User newUser = new User();
+        newUser.setUid(uid);
+        newUser.setName(name);
+        newUser.setEmail(email);
+        newUser.setPhone(phone);
+        newUser.setPicture(picture);
+        newUser.setType(type);
+        newUser.setStars(stars);
+        return newUser;
+    }
 }

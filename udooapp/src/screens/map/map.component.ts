@@ -9,6 +9,7 @@ import {DETAIL} from "../../app/app.routing.module";
 // import {config} from "../../environments/url.config";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
+import {NotifierController} from "../../controllers/notify.controller";
 
 declare let google: any;
 //var SockJS = require('sockjs-client');
@@ -34,21 +35,27 @@ export class MapComponent extends ConversionMethods implements OnInit {
   public category = -1;
   private markers = [];
   private infoWindows = [];
-  private requests: Request[] = [];
+  private requestsWindow: any[] = [];
+  private services: any[] = [];
   private icon = {};
-
-  private offers: Offer[] = [];
+  private scrolledDown;
+  private offersWindow: any[] = [];
+  private offerSize: number = 0;
+  private requestSize: number = 0;
 //  private offersRealTime: Offer[] = [];
   public result: any[] = [];
 //  private stompClient: any;
   // messages: Array<string> = new Array<string>();
 
-  constructor(private mapService: MapService, private router: Router, private dialog: DialogController, private tokenService: TokenService) {
+  constructor(private mapService: MapService, private router: Router, private dialog: DialogController, private tokenService: TokenService, private notifier: NotifierController) {
     super();
     dialog.errorResponse$.subscribe(again => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
+    });
+    notifier.userScrolledToTheBottom$.subscribe(value => {
+      this.loadMoreElements();
     });
   }
 
@@ -148,13 +155,8 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
 
   public getPicture(index: number, type: boolean) {
-    if (type) {
-      if (this.requests.length >= 0 && index < this.requests.length && this.requests[index].picturesRequest.length > 0) {
-        return this.requests[index].picturesRequest[0].src;
-      }
-    }
-    else if (this.offers.length >= 0 && index < this.offers.length && this.offers[index].picturesOffer.length > 0) {
-      return this.offers[index].picturesOffer[0].src;
+    if (this.services.length >= 0 && index < this.services.length && (type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
+      return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
     }
     return '';
   }
@@ -164,8 +166,8 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let rout = this.router;
     let map = this.map;
     let mk = this;
-    for (let i = 0; i < this.requests.length; ++i) {
-      let request: Request = this.requests[i];
+    for (let i = 0; i < this.requestsWindow.length; ++i) {
+      let request: any = this.requestsWindow[i];
       let coordinate = this.getCoordinates(request.location);
       if (coordinate != null) {
         click.push(false);
@@ -232,8 +234,8 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let rout = this.router;
     let click: boolean[] = [];
     let mk = this;
-    for (let i = 0; i < this.offers.length; ++i) {
-      let offer: Offer = this.offers[i];
+    for (let i = 0; i < this.offersWindow.length; ++i) {
+      let offer: any = this.offersWindow[i];
       let coordinate = this.getCoordinates(offer.location);
       if (coordinate != null) {
 
@@ -315,17 +317,25 @@ export class MapComponent extends ConversionMethods implements OnInit {
     this.deleteMarkers();
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {
+        this.services = [];
         if (result.request) {
-          this.requests = result.request;
+          this.requestsWindow = result.requestLite;
+          this.services = result.request;
+          this.requestSize = result.request.length;
           this.loadRequests();
         } else {
-          this.requests = [];
+          this.requestsWindow = [];
         }
         if (result.offer) {
-          this.offers = result.offer;
+
+          this.offerSize = result.offer.length;
+          this.offersWindow = result.offerLite;
+          for (let i = 0; i < result.offer.length; ++i) {
+            this.services.push(result.offer[i]);
+          }
           this.loadOffers();
         } else {
-          this.offers = [];
+          this.offersWindow = [];
         }
       },
       error => {
@@ -424,5 +434,45 @@ export class MapComponent extends ConversionMethods implements OnInit {
   public onClickResultDropDown(index: number) {
     this.category = index;
     this.loadAvailableServices();
+  }
+
+  private loadMoreElements() {
+    if (!this.scrolledDown && (this.requestSize > -1 || this.offerSize > -1)) {
+      this.scrolledDown = true;
+      this.mapService.getMoreAvailableServices(this.category, this.searchString, this.type, this.offerSize, this.requestSize).subscribe(
+        result => {
+          this.scrolledDown = false;
+          if (this.requestSize > -1 && result.requests) {
+            let rlength: number = result.requests.length;
+            for (let i = 0; i < rlength; ++i) {
+              this.services.push(result.requests[i]);
+            }
+            if (rlength >= 5) {
+              this.requestSize += rlength;
+            } else {
+              this.requestSize = -1;
+            }
+          }
+          if (this.offerSize > -1 && result.offers) {
+            let olength: number = result.offers.length;
+            console.log(olength);
+            for (let i = 0; i < olength; ++i) {
+              this.services.push(result.offers[i]);
+            }
+            if (olength >= 5) {
+              this.offerSize += olength;
+            } else {
+              this.offerSize = -1;
+            }
+          }
+
+
+        },
+        error => {
+          this.scrolledDown = false;
+          this.dialog.notifyError(error);
+        }
+      );
+    }
   }
 }

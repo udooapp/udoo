@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {MAP} from "./app.routing.module";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -55,5 +56,11 @@ export class AppComponent {
 
   public sendNewVerification() {
     this.notifier.sendVerification();
+  }
+  public onScroll(){
+    let e: HTMLElement = document.getElementById("content-container");
+    if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
+        this.notifier.userScrolledToTheBottom$.emit(true);
+    }
   }
 }

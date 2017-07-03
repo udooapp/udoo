@@ -23,9 +23,9 @@
   </div>
 
   <div class="service-container" *ngIf="!mapView" >
-    <div class="service" *ngFor="let item of requests; let i = index" (click)="onClickService(false, item.rid)"
+    <div class="service" *ngFor="let item of services; let i = index" (click)="onClickService(false, item.rid ? item.rid : item.oid)"
          routerLinkActive="active">
-      <div class="service-picture"><img class="service-image" [src]="getPicture(i, true)"></div>
+      <div class="service-picture"><img class="service-image" [src]="getPicture(i, item.rid? true : false)"></div>
       <div class="service-content">
         <div class="service-title">{{item.title}}</div>
         <div class="service-description">{{item.description}}</div>
@@ -34,15 +34,6 @@
         <div class="service-date"><b i18n>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
       </div>
     </div>
-    <div class="service" *ngFor="let item of offers" (click)="onClickService(true, item.oid)">
-      <div class="service-picture"><img class="service-image" [src]="getPicture(i, false)"></div>
-      <div class="service-content">
-        <div class="service-title">{{item.title}}</div>
-        <div class="service-description">{{item.description}}</div>
-        <div class="service-location"><b i18n>Address: </b>{{getAddress(item.location)}}</div>
-        <div class="service-category"><b i18n>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="service-date"><b i18n>Date: </b> {{convertMillisToDate(item.expirydate)}}</div>
-      </div>
-    </div>
+    <div *ngIf="scrolledDown" class="loader">Loading....</div>
   </div>
 </div>

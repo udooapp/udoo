@@ -23,7 +23,9 @@ public class OfferResponse {
     }
 
     public void setUser(User user) {
-        this.user = user;
+        if(user != null) {
+            this.user = user.toUserLite();
+        }
     }
 
     public List<CommentResponse> getComments() {

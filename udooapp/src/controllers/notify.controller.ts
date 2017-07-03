@@ -7,11 +7,13 @@ export class NotifierController {
   public pageChanged$: EventEmitter<string>;
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
+  public userScrolledToTheBottom$: EventEmitter<boolean>;
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
     this.userModification$ = new EventEmitter();
     this.userDataPipe$ = new EventEmitter();
+    this.userScrolledToTheBottom$ = new EventEmitter();
   }
   public sendVerification(){
     this.userModification$.emit(-1);
