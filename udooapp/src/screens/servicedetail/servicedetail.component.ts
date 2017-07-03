@@ -64,7 +64,14 @@ export class ServiceDetailComponent implements OnInit {
             this.data = data.offer;
             this.loaded = true;
             this.pictures = this.data.picturesOffer;
-            this.comments = data.comments;
+            console.log(data.comments);
+            let t: any[]= data.comments;
+            let i: number = t.length - 1;
+            this.comments = [];
+            for(; i >= 0; --i){
+              this.comments.push(t[i])
+            }
+
             this.hasMore = this.comments.length % 5 == 0 && this.comments.length > 0;
             this.loadUser(data.user);
           },
@@ -183,10 +190,10 @@ export class ServiceDetailComponent implements OnInit {
       comment: this.commentMessage
     }).subscribe(
       data => {
-        this.commentMessage = '';
+        this.clearArea = !this.clearArea;
         if(this.comments.length % 5 > 0 || this.comments.length == 0) {
           this.comments.push(data);
-          this.clearArea = !this.clearArea;
+
         } else {
           this.hasMore =  true;
         }
@@ -200,10 +207,16 @@ export class ServiceDetailComponent implements OnInit {
   public showMoreComments() {
     this.commentService.getComments(this.type ? this.data.oid : this.data.rid, this.comments.length, this.type).subscribe(
       result => {
-          this.hasMore = result.length % 5 == 0;
-          for(let t in result){
-            this.comments.push(result[t]);
+          this.hasMore = result.length % 5 == 0 && result.length > 0;
+          let i: number = result.length - 1;
+          let res: any[] =[];
+          for(; i >= 0; --i){
+            res.push(result[i]);
           }
+          for(i = 0; i < this.comments.length; ++i){
+            res.push(this.comments[i]);
+          }
+          this.comments = res;
       },
       error => {
         this.dialog.notifyError(error)

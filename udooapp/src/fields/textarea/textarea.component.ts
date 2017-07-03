@@ -49,11 +49,9 @@ export class TextAreaComponent {
     }
   }
   @Input() set clear(clear: boolean){
-    console.log('clearArea: ' + clear);
     this.remove = clear;
       this.valueText = null;
       this.inputText = null;
-    console.log('input: ' + this.valueText);
   }
   @Input() set value(value: string) {
     if(value != null) {

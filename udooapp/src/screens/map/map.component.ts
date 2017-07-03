@@ -3,7 +3,6 @@ import {MapService} from "../../services/map.service";
 import {Offer} from "../../entity/offer";
 import {Request} from "../../entity/request";
 import {Router} from "@angular/router";
-import {NotifierController} from "../../controllers/notify.controller";
 import {TokenService} from "../../services/token.service";
 import {DETAIL} from "../../app/app.routing.module";
 // import {Observable} from "rxjs/Observable";
@@ -37,6 +36,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private infoWindows = [];
   private requests: Request[] = [];
   private icon = {};
+
   private offers: Offer[] = [];
 //  private offersRealTime: Offer[] = [];
   public result: any[] = [];
@@ -149,12 +149,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public getPicture(index: number, type: boolean) {
     if (type) {
-      if(this.requests.length >= 0 && index < this.requests.length && this.requests[index].picturesRequest.length > 0){
+      if (this.requests.length >= 0 && index < this.requests.length && this.requests[index].picturesRequest.length > 0) {
         return this.requests[index].picturesRequest[0].src;
       }
     }
     else if (this.offers.length >= 0 && index < this.offers.length && this.offers[index].picturesOffer.length > 0) {
-        return this.offers[index].picturesOffer[0].src;
+      return this.offers[index].picturesOffer[0].src;
     }
     return '';
   }

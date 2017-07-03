@@ -7,7 +7,7 @@
 </div>
 <div class="content">
   <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)" (activatedUser)="activated = $event"></side-menu>
-  <div class="map-container">
+  <div class="map-container" id="content-container">
     <router-outlet></router-outlet>
   </div>
 </div>

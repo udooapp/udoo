@@ -22,7 +22,7 @@
     <div id="magnifying-glass" class="map-triangle-container"></div>
   </div>
 
-  <div class="service-container" *ngIf="!mapView">
+  <div class="service-container" *ngIf="!mapView" >
     <div class="service" *ngFor="let item of requests; let i = index" (click)="onClickService(false, item.rid)"
          routerLinkActive="active">
       <div class="service-picture"><img class="service-image" [src]="getPicture(i, true)"></div>

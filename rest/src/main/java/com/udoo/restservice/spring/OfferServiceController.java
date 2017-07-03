@@ -110,7 +110,7 @@ public class OfferServiceController implements IOfferServiceController {
             OfferResponse response = new OfferResponse();
             response.setOffer(offer);
             response.setUser(userRepository.findByUid(offer.getUid()));
-            List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.ASC, "creatingdate"));
+            List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.DESC, "creatingdate"));
             List<CommentResponse> list = new ArrayList<>();
             if(comments != null && !comments.isEmpty()){
                 User usr;

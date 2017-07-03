@@ -26,7 +26,7 @@
   <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
            [close]="isClose()"></gallery>
 </div>
-<div class="comments" *ngIf="loaded && type">
+<div class="comments" *ngIf="loaded && type" onC>
   <div class="comment-container" *ngFor="let item of comments">
     <img class="comment-user" [src]="item.picture"/>
     <div class="comment-content">
@@ -35,7 +35,7 @@
       <div class="comment-date">{{convertNumberToDateTime(item.date)}}</div>
     </div>
   </div>
-  <div class="more-comment"  *ngIf="hasMore" (click)="showMoreComments()">Show more comment...</div>
+  <div class="more-comment"  *ngIf="hasMore" (click)="showMoreComments()">Show previous comments...</div>
   <div class="new-comment">
     <text-area [placeholder]="'Write a comment...'" [value]="commentMessage" (onKey)="commentMessage= $event"
                [disableValidation]="true" (onEnterPressed)="sendComment()" [clear]="clearArea" [row]="3"></text-area>

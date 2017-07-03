@@ -87,7 +87,7 @@ public class CommentServiceController implements ICommentServiceController{
     @Override
     @RequestMapping(value="/", method = RequestMethod.GET)
     public ResponseEntity<?> getServiceComment(@RequestParam("sid") int oid, @RequestParam("pos")int pos, @RequestParam("type") boolean type) {
-        Pageable page = new PageRequest(pos / 5, 5, Sort.Direction.ASC, "creatingdate");
+        Pageable page = new PageRequest(pos / 5, 5, Sort.Direction.DESC, "creatingdate");
         List<Comment> comments = commentRepository.findAllBySidAndType(oid, type, page);
         List<CommentResponse> list = new ArrayList<>();
         if(comments != null && !comments.isEmpty()){
