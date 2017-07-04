@@ -44,6 +44,7 @@ public interface IRequestRepository extends Repository<Request, Integer> {
 
 
     List<Request> findByUid(int uid);
+    List<Request> findByUid(int uid, Pageable page);
 
     Request findByRid(int id);
 

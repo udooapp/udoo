@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {RequestService} from "../../services/request.service";
-import {Request} from "../../entity/request";
 import {MapService} from "../../services/map.service";
 import {IList} from "../layouts/list/lists.interface";
-import { REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
+import {REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
+import {NotifierController} from "../../controllers/notify.controller";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -13,23 +13,29 @@ import {DialogController} from "../../controllers/dialog.controller";
   providers: [RequestService, MapService]
 })
 export class RequestListComponent extends ConversionMethods implements OnInit, IList {
-  data: Request[];
+  data: any[];
   offer = false;
   error: string;
   message: string = '';
   categories = [];
+  loading: boolean = false;
   delete: boolean = false;
   index: number = 0;
   id: number = 0;
-  constructor(private requestService: RequestService, private mapService: MapService, private dialog: DialogController) {
+  noMore = false;
+
+  constructor(private requestService: RequestService, private mapService: MapService, private dialog: DialogController, private notifier: NotifierController) {
     super();
     dialog.errorResponse$.subscribe(tryAgain => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
+    notifier.userScrolledToTheBottom$.subscribe(scroll => {
+      this.userScrollDown();
+    });
     dialog.questionResponse$.subscribe(response => {
-      if(response && this.delete){
+      if (response && this.delete) {
         this.requestService.deleteUserRequest(this.id, -1).subscribe(
           result => {
             this.message = result;
@@ -43,7 +49,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   }
 
   ngOnInit() {
-    this.requestService.getUserRequest().subscribe(
+    this.requestService.getUserRequest(0, -1).subscribe(
       data => this.data = data,
       error => this.error = <any>error);
     this.mapService.getCategories().subscribe(
@@ -53,6 +59,26 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
         this.dialog.notifyError(this.error);
       }
     );
+  }
+
+  private userScrollDown() {
+    if (!this.loading && !this.noMore && this.data.length > 0) {
+      this.loading = true;
+      let lenght = this.data.length;
+      let lastId = length > 0 ? this.data[lenght - 1].rid : -1;
+      this.requestService.getUserRequest(length, lastId).subscribe(
+        data => {
+          if (data.length == 0) {
+            this.noMore = true;
+          } else {
+            for (let i = 0; i < data.length; ++i) {
+              this.data.push(data[i]);
+            }
+          }
+          this.loading = false;
+        },
+        error => this.error = <any>error);
+    }
   }
 
   public onClickDelete(id: number, index: number) {
@@ -89,8 +115,9 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
     }
     return '';
   }
-  public getImage(index:number){
-    if(index >= 0 && index < this.data.length && this.data[index].picturesRequest.length > 0){
+
+  public getImage(index: number) {
+    if (index >= 0 && index < this.data.length && this.data[index].picturesRequest.length > 0) {
       return this.data[index].picturesRequest[0].src;
     }
     return '';

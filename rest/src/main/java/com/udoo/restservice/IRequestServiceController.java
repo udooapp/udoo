@@ -16,7 +16,7 @@ public interface IRequestServiceController {
 
     ResponseEntity<String> deleteUserRequest(ServletRequest req, DeleteService service);
 
-    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request);
+    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, int cound, int last);
 
     ResponseEntity<?> getRequest(int id);
     ResponseEntity<?> getRequestData(int id);

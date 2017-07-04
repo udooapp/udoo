@@ -12,6 +12,7 @@ import com.udoo.dal.repositories.IRequestRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRequestServiceController;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -186,14 +186,19 @@ public class RequestServiceController implements IRequestServiceController {
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request) {
+    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            List<Request> requests = requestRepository.findByUid(user.getUid());
-            for (Request req : requests) {
-                if (req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1) {
-                    req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
+            Pageable page = new PageRequest(last == -1 ? 1 :count / 5, 5);
+            List<Request> requests = requestRepository.findByUid(user.getUid(), page);
+            if(last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
+                for (Request req : requests) {
+                    if (req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1) {
+                        req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
+                    }
                 }
+            } else {
+                requests.clear();
             }
             return new ResponseEntity<>(requests, HttpStatus.OK);
         } else {

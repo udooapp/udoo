@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Http, Headers, RequestOptions, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -52,9 +52,12 @@ export class RequestService {
       .catch(HandlerService.handleText);
   }
 
-  public getUserRequest(): Observable<Request[]> {
+  public getUserRequest(count: number, lastid: number): Observable<any[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/request/user', new RequestOptions({headers: this.headers}))
+    let param: URLSearchParams = new URLSearchParams();
+    param.append("count", count.toString());
+    param.append("last", lastid.toString());
+    return this.http.get(config.server + '/request/user', new RequestOptions({headers: this.headers, search: param}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
