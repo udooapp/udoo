@@ -53,10 +53,6 @@ export class AppComponent {
     this.menuButton = true;
   }
 
-
-  public sendNewVerification() {
-    this.notifier.sendVerification();
-  }
   public onScroll(){
     let e: HTMLElement = document.getElementById("content-container");
     if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {

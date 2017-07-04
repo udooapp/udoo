@@ -49,12 +49,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   constructor(private mapService: MapService, private router: Router, private dialog: DialogController, private tokenService: TokenService, private notifier: NotifierController) {
     super();
-    dialog.errorResponse$.subscribe(again => {
+    dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
-    notifier.userScrolledToTheBottom$.subscribe(value => {
+    notifier.userScrolledToTheBottom$.subscribe(() => {
       this.loadMoreElements();
     });
   }
@@ -317,9 +317,11 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   public loadAvailableServices() {
+    this.scrolledDown = true;
     this.deleteMarkers();
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {
+        this.scrolledDown = false;
         this.services = [];
         if (result.request) {
           this.requestsWindow = result.requestLite;
@@ -342,6 +344,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
         }
       },
       error => {
+        this.scrolledDown = false;
         this.error = error;
         this.checkError();
       }

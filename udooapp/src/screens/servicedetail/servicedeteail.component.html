@@ -17,7 +17,7 @@
   <div class="service-container">
     <h1>{{data.title}}</h1>
     <div class="detail-description"><b i18h>Description: </b>{{data.description || ''}}</div>
-    <div class="detail-location"><b i18h>Location:</b> {{getLocation(data.location)|| ''}}</div>
+    <div class="detail-location"><b i18h>Location:</b> {{getServiceLocation(data.location)|| ''}}</div>
     <div class="detail-date" *ngIf="!type"><b i18h>Job date:</b> {{data.jobdate || ''}}</div>
     <div class="detail-date"><b i18h>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
   </div>

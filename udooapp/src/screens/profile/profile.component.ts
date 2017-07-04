@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit, IFormInput {
     this.passwordVerification = '';
 
 
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       this.ngOnInit()
     });
     this.notifier.notify(ProfileComponent.NAME);
@@ -87,7 +87,7 @@ export class ProfileComponent implements OnInit, IFormInput {
             this.loaderVisible = false;
             this.pictureLoadError = false;
           },
-          error => {
+          () => {
             this.pictureLoadError = true;
             this.loaderVisible = false;
           }

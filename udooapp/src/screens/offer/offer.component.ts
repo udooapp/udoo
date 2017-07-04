@@ -54,7 +54,7 @@ export class OfferComponent implements OnInit, IServiceForm {
         ++this.modification[2];
       }
     });
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       this.ngOnInit();
     });
     this.dialog.questionResponse$.subscribe(response => {
@@ -62,7 +62,7 @@ export class OfferComponent implements OnInit, IServiceForm {
         if (this.modification[1] === 1) {     //onClickNewImage
 
           this.offerService.deleteUserOffer(this.data.oid, this.modification[0]).subscribe(
-            ok => {
+            () => {
               this.modification[0] = -1;
               this.modification[1] = 0;
               this.modification[2] = -1;
@@ -78,14 +78,14 @@ export class OfferComponent implements OnInit, IServiceForm {
         } else if (this.modification[0] > -1) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.offerService.deleteUserOffer(this.data.oid, -1).subscribe(
-            message => {
+            () => {
               this.modification[0] = -1;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
             },
-            error => {
+            () => {
               //  this.dialog.notifyError(error);
             }
           );
@@ -131,7 +131,7 @@ export class OfferComponent implements OnInit, IServiceForm {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
-          message => {
+          () => {
             this.data=new Offer(null, '', '', -1, -1, '', '', 0, false, []);
             this.modification[0] = -1;
             this.modification[1] = 0;
@@ -238,7 +238,7 @@ export class OfferComponent implements OnInit, IServiceForm {
             data.picturesOffer[data.picturesOffer.length - 1] = {src: dataURL, poid: JSON.parse(message).id};
             imageLoading.splice(pos2, 1);
           },
-          error => {
+          () => {
             imageLoading.splice(pos2, 1);
             imageError.push(pos)
           }
@@ -249,7 +249,7 @@ export class OfferComponent implements OnInit, IServiceForm {
             data.picturesOffer[data.picturesOffer.length - 1] = {src: dataURL, poid: message};
             imageLoading.splice(pos2, 1);
           },
-          error => {
+          () => {
             imageLoading.splice(pos2, 1);
             imageError.push(pos)
           }

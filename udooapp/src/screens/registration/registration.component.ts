@@ -1,4 +1,4 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {IValidator} from "../../validator/validator.interface";
@@ -20,7 +20,7 @@ import {DialogController} from "../../controllers/dialog.controller";
   styleUrls: ['../layouts/forminput/forminput.component.css'],
   providers: [UserService]
 })
-export class RegistrationComponent implements IFormInput {
+export class RegistrationComponent implements OnInit, IFormInput {
 
   static NAME: string = 'Registration';
   message: String;
@@ -149,7 +149,7 @@ export class RegistrationComponent implements IFormInput {
         if (this.facebookRegistration) {
           this.userService.registrateFacebookUser(this.user)
             .subscribe(
-              message => {
+              () => {
                 this.notifier.pageChanged$.emit(' ');
                 this.router.navigate([MAP]);
               },
@@ -160,7 +160,7 @@ export class RegistrationComponent implements IFormInput {
         } else {
           this.userService.registrateUser(this.user)
             .subscribe(
-              message => {
+              ()=> {
                 this.notifier.pageChanged$.emit(' ');
                 this.router.navigate([LOGIN]);
               },

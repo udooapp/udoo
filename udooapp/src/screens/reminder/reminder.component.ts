@@ -76,7 +76,7 @@ export class ReminderComponent implements OnInit {
           );
         } else {
           this.reminderService.sendNewPassword(this.data, this.token).subscribe(
-            message => {
+            () => {
               this.router.navigate([LOGIN]);
               this.error = '';
             },

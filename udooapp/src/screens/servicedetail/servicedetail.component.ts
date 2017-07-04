@@ -49,7 +49,7 @@ export class ServiceDetailComponent implements OnInit {
       }
     });
     this.notifier.notify(ServiceDetailComponent.NAME);
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
@@ -139,7 +139,7 @@ export class ServiceDetailComponent implements OnInit {
     return this.user.picture;
   }
 
-  public getLocation(location: string): string {
+  public getServiceLocation(location: string): string {
     if (location.length == 0) {
       return ''
     }

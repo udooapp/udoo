@@ -3,7 +3,6 @@ import {Component, OnInit} from '@angular/core';
 import {Request} from '../../entity/request'
 import {RequestService} from "../../services/request.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {IValidator} from "../../validator/validator.interface";
 import {TimeValidator} from "../../validator/time.validator";
@@ -61,7 +60,7 @@ export class RequestComponent implements OnInit, IServiceForm {
         ++this.modification[2];
       }
     });
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       this.ngOnInit();
     });
     this.dialog.questionResponse$.subscribe(response => {
@@ -69,7 +68,7 @@ export class RequestComponent implements OnInit, IServiceForm {
         if (this.modification[1] === 1) {     //onClickmodification[1]
 
           this.requestService.deleteUserRequest(this.data.rid, this.modification[0]).subscribe(
-            ok => {
+            () => {
               this.modification[0] = -1;
               this.modification[1] = 0;
               this.modification[2] = -1;
@@ -85,14 +84,14 @@ export class RequestComponent implements OnInit, IServiceForm {
         } else if (this.modification[0] > -1) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.requestService.deleteUserRequest(this.data.rid, -1).subscribe(
-            message => {
+            () => {
               this.modification[0] = -1;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
               this.notifier.pageChanged$.emit(' ');
             },
-            error => {
+            () => {
               //  this.dialog.notifyError(error);
             }
           );
@@ -139,7 +138,7 @@ export class RequestComponent implements OnInit, IServiceForm {
       if (this.checkValidation()) {
 
         this.requestService.saveRequest(this.data, this.modification[0]).subscribe(
-          message => {
+          () => {
             this.modification[0] = -1;
             this.modification[1] = 0;
             this.modification[2] = -1;
@@ -245,7 +244,7 @@ export class RequestComponent implements OnInit, IServiceForm {
             data.picturesRequest[data.picturesRequest.length - 1] = {src: dataURL, prid: JSON.parse(message).id};
             imageLoading.splice(pos2, 1);
           },
-          error => {
+          () => {
             imageLoading.splice(pos2, 1);
             imageError.push(pos)
           }
@@ -256,7 +255,7 @@ export class RequestComponent implements OnInit, IServiceForm {
             data.picturesRequest[data.picturesRequest.length - 1] = {src: dataURL, prid: message};
             imageLoading.splice(pos2, 1);
           },
-          error => {
+          () => {
             imageLoading.splice(pos2, 1);
             imageError.push(pos)
           }

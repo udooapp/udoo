@@ -22,7 +22,6 @@ export class TextInputSelectComponent {
   }
 
   public onClickResult(id) {
-    console.log(id);
     this.visible = false;
     this.selectedResult.emit(id)
   }

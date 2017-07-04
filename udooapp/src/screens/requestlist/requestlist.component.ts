@@ -26,12 +26,12 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
 
   constructor(private requestService: RequestService, private mapService: MapService, private dialog: DialogController, private notifier: NotifierController) {
     super();
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
-    notifier.userScrolledToTheBottom$.subscribe(scroll => {
+    notifier.userScrolledToTheBottom$.subscribe(() => {
       this.userScrollDown();
     });
     dialog.questionResponse$.subscribe(response => {

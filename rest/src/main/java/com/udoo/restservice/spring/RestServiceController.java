@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -296,78 +295,45 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/search/{category}/{searchText}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllService(@PathVariable("category") int category, @PathVariable("searchText") String searchText, @PathVariable("type") int type){
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type) {
         SearchResult result = new SearchResult();
+        boolean empty = searchText != null && !searchText.isEmpty();
         if (type == 0 || type == 2) {
-            List<Request> requests = category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+            List<Request> requests = empty ? (category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
+                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual());
             result.setRequestLite(getRequestLiteList(requests));
             int size = requests.size();
-            result.setRequest(changeRequestImage(requests.subList(0, size > 5 ? 5 : size)));
+            result.setRequest(changeRequestImage(requests.subList(0 ,size > 5 ? 5 : size)));
         }
         if (type == 0 || type == 1) {
-            List<Offer> offers = category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText);
+            List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual());
             result.setOfferLite(getOfferLiteList(offers));
             int size = offers.size();
-            result.setOffer(changeOfferImage(offers.subList(0, size > 5 ? 5 : size)));
+            result.setOffer(changeOfferImage(offers).subList(0 ,size > 5 ? 5 : size));
         }
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
 
-    @Override
-    @RequestMapping(value = "/search/{category}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllServiceWithoutText(@PathVariable("category") int category, @PathVariable("type") int type){
-        SearchResult result = new SearchResult();
-        if (type == 0 || type == 2) {
-            List<Request> requests = category > 0 ?
-                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual();
-            result.setRequestLite(getRequestLiteList(requests));
-            int size = requests.size();
-            result.setRequest(changeRequestImage(requests.subList(0, size >5 ? 5 : size)));
-        }
-        if (type == 0 || type == 1) {
-            List<Offer> offers = category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual();
-            result.setOfferLite(getOfferLiteList(offers));
-            int size = offers.size();
-            result.setOffer(changeOfferImage(offers.subList(0, size > 5 ? 5 : size)));
-        }
-        return new ResponseEntity<Object>(result, HttpStatus.OK);
-    }
 
     @Override
     @RequestMapping(value = "/more", method = RequestMethod.GET)
-    public ResponseEntity<?> getMoreService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type, @RequestParam("oCount") int oCount, @RequestParam("rCount") int rCount){
+    public ResponseEntity<?> getMoreService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type, @RequestParam("oCount") int oCount, @RequestParam("rCount") int rCount) {
         MoreService more = new MoreService();
-        if(searchText == null || searchText.isEmpty()){
-            if (type == 0 || type == 2) {
-                if(rCount >= 5) {
-                    Pageable page = new PageRequest(rCount / 5, 5);
-                    List<Request> requests = category > 0 ?
-                            requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page);
-                    more.setRequests(changeRequestImage(requests));
-                }
+        boolean empty = searchText == null || searchText.isEmpty();
+        if (type == 0 || type == 2) {
+            if (rCount >= 5) {
+                Pageable page = new PageRequest(rCount / 5, 5);
+                List<Request> requests = empty ? (category > 0 ?
+                        requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page)) : (category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+                more.setRequests(changeRequestImage(requests));
             }
-            if (type == 0 || type == 1) {
-                if(oCount >= 5) {
-                    Pageable page = new PageRequest(oCount / 5, 5);
-                    List<Offer> offers = category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page);
-                    more.setOffers(changeOfferImage(offers));
-                }
-            }
-        }else {
-            if (type == 0 || type == 2) {
-                if(rCount >= 5) {
-                    Pageable page = new PageRequest(rCount / 5, 5);
-                    List<Request> requests = category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page);
-                    more.setRequests(changeRequestImage(requests));
-                }
-            }
-            if (type == 0 || type == 1) {
-                if(oCount >= 5) {
-                    Pageable page = new PageRequest(oCount / 5, 5);
-                    List<Offer> offers = category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page);
-                    more.setOffers(changeOfferImage(offers));
-                }
+        }
+        if (type == 0 || type == 1) {
+            if (oCount >= 5) {
+                Pageable page = new PageRequest(oCount / 5, 5);
+                List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page)) : (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+                more.setOffers(changeOfferImage(offers));
             }
         }
         return new ResponseEntity<Object>(more, HttpStatus.OK);
@@ -418,8 +384,8 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/result/{searchText}/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getResults(@PathVariable("searchText") String searchText, @PathVariable("type") int type) throws JSONException {
+    @RequestMapping(value = "/result", method = RequestMethod.GET)
+    public ResponseEntity<?> getResults(@RequestParam("search") String searchText, @RequestParam("type") int type) throws JSONException {
         switch (type) {
             case 0:
                 List<CategoryResult> listOffers = categoryResultRepository.getAllOffer(searchText);
@@ -432,6 +398,9 @@ public class RestServiceController implements IRestServiceController {
                             break;
                         }
                     }
+                }
+                if(!listRequest.isEmpty()){
+                    listOffers.addAll(listRequest);
                 }
                 return new ResponseEntity<Object>(listOffers, HttpStatus.OK);
             case 1:

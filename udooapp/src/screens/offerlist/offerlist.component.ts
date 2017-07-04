@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Offer} from "../../entity/offer";
 import {OfferService} from "../../services/offer.service";
 import {MapService} from "../../services/map.service";
 import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
@@ -26,12 +25,12 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
 
   constructor(private offerService: OfferService, private mapService: MapService, private dialog: DialogController, private notifier: NotifierController) {
     super();
-    dialog.errorResponse$.subscribe(tryAgain => {
+    dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
-    notifier.userScrolledToTheBottom$.subscribe(scroll => {
+    notifier.userScrolledToTheBottom$.subscribe(() => {
       this.userScrollDown();
     });
     dialog.questionResponse$.subscribe(response => {
@@ -53,7 +52,6 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
     this.offerService.getUserOffer(0, -1).subscribe(
       data => {
         this.data = data;
-        console.log(data.length);
         if (data.length < 5) {
           this.noMore = true;
         }
