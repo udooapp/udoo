@@ -9,6 +9,8 @@ import com.udoo.dal.repositories.IContactRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IContactServiceController;
 import org.json.JSONException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,7 +39,7 @@ public class ContactServiceController implements IContactServiceController {
     private IUserRepository userRepository;
 
     @Override
-    @RequestMapping(value = "/addcontact", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<String> addContact(ServletRequest request, @RequestBody String req) throws JSONException {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -48,7 +50,7 @@ public class ContactServiceController implements IContactServiceController {
                 if (user.getUid() > -1) {
                     User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
                     if (currentUser != null && currentUser.getUid() > 0) {
-                        if (currentUser.getUid() == user.getUid()) {
+                        if (currentUser.getUid() != user.getUid()) {
                             contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
                             return new ResponseEntity<>("Success", HttpStatus.OK);
                         } else {
@@ -66,15 +68,19 @@ public class ContactServiceController implements IContactServiceController {
 
     @Override
     @RequestMapping(value = "/contacts", method = RequestMethod.GET)
-    public ResponseEntity<?> getContacts(ServletRequest request) throws JSONException {
+    public ResponseEntity<?> getContacts(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) throws JSONException {
         User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (currentUser != null && currentUser.getUid() > 0) {
-            List<Contact> contact = contactRepository.findByUid(currentUser.getUid());
+            Pageable page = new PageRequest(count / 5, 5);
+
+            List<Contact> contact = contactRepository.findByUid(currentUser.getUid(), page);
             List<User> users = new ArrayList<>();
-            for (Contact cont : contact) {
-                User usr = userRepository.findByUid(cont.getCid());
-                if (usr != null) {
-                    users.add(usr);
+            if(last == -1 || (contact.size() > 0 && contact.get(contact.size() - 1).getCid() != last)) {
+                for (Contact cont : contact) {
+                    User usr = userRepository.findByUid(cont.getCid());
+                    if (usr != null) {
+                        users.add(usr.toUserLite());
+                    }
                 }
             }
             return new ResponseEntity<>(users, HttpStatus.OK);

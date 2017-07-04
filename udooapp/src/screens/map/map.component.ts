@@ -154,9 +154,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
 
-  public getPicture(index: number, type: boolean) {
-    if (this.services.length >= 0 && index < this.services.length && (type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
-      return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
+  public getPicture(index: number) {
+    if (this.services.length >= 0 && index < this.services.length) {
+      let type: boolean = this.services[index].rid;
+      if((type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
+        return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
+      }
     }
     return '';
   }
@@ -427,8 +430,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
     return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
 
-  public onClickService(type: boolean, id: number) {
-    this.router.navigate([DETAIL + id + '/' + (type ? 1 : 0)]);
+  public onClickService(index: number) {
+    if(index >= 0 && index < this.services.length) {
+
+      let type:boolean = this.services[index].rid;
+      this.router.navigate([DETAIL + (type ? this.services[index].rid : this.services[index].oid)+ '/' + (type ? 0 : 1)]);
+    }
   }
 
   public onClickResultDropDown(index: number) {
@@ -455,7 +462,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
           }
           if (this.offerSize > -1 && result.offers) {
             let olength: number = result.offers.length;
-            console.log(olength);
             for (let i = 0; i < olength; ++i) {
               this.services.push(result.offers[i]);
             }

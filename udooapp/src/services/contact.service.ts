@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Http, Headers, RequestOptions, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -34,16 +34,19 @@ export class ContactService {
       return Observable.throw('First, login');
     }
     this.refreshHeaderToken();
-    return this.http.post(config.server + '/contact/addcontact', JSON.stringify({
+    return this.http.post(config.server + '/contact/add', JSON.stringify({
       id: uid,
     }), new RequestOptions({headers: this.headers}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
-  public getContacts(): Observable<any[]> {
+  public getContacts(count: number, last: number): Observable<any[]> {
     this.refreshHeaderToken();
-    return this.http.get(config.server + '/contact/contacts', new RequestOptions({headers: this.headers}))
+    let param: URLSearchParams = new URLSearchParams();
+    param.append('count', count.toString());
+    param.append('last', last.toString());
+    return this.http.get(config.server + '/contact/contacts', new RequestOptions({headers: this.headers, search: param}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

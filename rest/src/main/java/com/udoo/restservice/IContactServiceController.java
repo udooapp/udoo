@@ -10,7 +10,7 @@ public interface IContactServiceController {
 
     ResponseEntity<String> addContact(ServletRequest request, String req) throws JSONException;
 
-    ResponseEntity<?> getContacts(ServletRequest request) throws JSONException;
+    ResponseEntity<?> getContacts(ServletRequest request, int count, int last) throws JSONException;
 
     ResponseEntity<?> deleteContacts(ServletRequest request, String req) throws JSONException;
 }
