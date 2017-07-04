@@ -36,8 +36,6 @@ public interface IRestServiceController {
 
     ResponseEntity<?> getAllService(int category, String searchText, int type);
 
-    ResponseEntity<?> getAllServiceWithoutText(int category, int type);
-
     ResponseEntity<?> getMoreService(int category, String searchText, int type, int oCount, int rCount);
 
     ResponseEntity<?> getResults(String searchText, int type) throws JSONException;

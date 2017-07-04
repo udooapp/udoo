@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
-import {DialogController} from "../../controllers/dialog.controller";
 @Component({
   selector: 'gallery',
   templateUrl: './gallery.component.html',
