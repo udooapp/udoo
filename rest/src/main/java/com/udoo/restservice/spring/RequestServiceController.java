@@ -189,7 +189,7 @@ public class RequestServiceController implements IRequestServiceController {
     ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            Pageable page = new PageRequest(last == -1 ? 1 :count / 5, 5);
+            Pageable page = new PageRequest(count / 5, 5);
             List<Request> requests = requestRepository.findByUid(user.getUid(), page);
             if(last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
                 for (Request req : requests) {

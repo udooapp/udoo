@@ -1,7 +1,6 @@
 package com.udoo.restservice.spring;
 
 
-
 import com.udoo.dal.entities.Comment;
 import com.udoo.dal.entities.CommentResponse;
 import com.udoo.dal.entities.DeleteService;
@@ -13,6 +12,7 @@ import com.udoo.dal.repositories.IOfferRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IOfferServiceController;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,16 +49,19 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request) {
+    public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            List<Offer> offers = offerRepository.findByUid(user.getUid());
-            if (offers != null) {
+            Pageable page = new PageRequest(count / 5, 5);
+            List<Offer> offers = offerRepository.findByUid(user.getUid(), page);
+            if (last == -1 || (offers.size() > 0 && offers.get(offers.size() - 1).getOid() != last)) {
                 for (Offer offer : offers) {
                     if (offer.getPicturesOffer().size() > 1) {
                         offer.setPicturesOffer(offer.getPicturesOffer().subList(0, 1));
                     }
                 }
+            } else {
+                offers.clear();
             }
             return new ResponseEntity<>(offers, HttpStatus.OK);
         } else {
@@ -112,17 +115,17 @@ public class OfferServiceController implements IOfferServiceController {
             response.setUser(userRepository.findByUid(offer.getUid()));
             List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.DESC, "creatingdate"));
             List<CommentResponse> list = new ArrayList<>();
-            if(comments != null && !comments.isEmpty()){
+            if (comments != null && !comments.isEmpty()) {
                 User usr;
-                for(Comment comment : comments){
-                    usr = userRepository.findByUid((int)comment.getUid());
-                    if(usr != null){
+                for (Comment comment : comments) {
+                    usr = userRepository.findByUid((int) comment.getUid());
+                    if (usr != null) {
                         CommentResponse resp = new CommentResponse();
                         resp.setCommentMessage(comment.getComment());
                         resp.setName(usr.getName());
                         resp.setDate(comment.getDate());
                         resp.setPicture(usr.getPicture());
-                        resp.setUid((int)comment.getUid());
+                        resp.setUid((int) comment.getUid());
                         list.add(resp);
                     } else {
                         comments.remove(comment);
@@ -137,7 +140,7 @@ public class OfferServiceController implements IOfferServiceController {
     @Override
     @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createOffer(ServletRequest request, @RequestBody String image) {
-        if (image!= null) {
+        if (image != null) {
             User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
             if (user != null) {
                 Offer offer = new Offer();
@@ -160,9 +163,9 @@ public class OfferServiceController implements IOfferServiceController {
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadImage(ServletRequest req, PicturesOffer image) {
-        if(image != null){
+        if (image != null) {
             OfferPictures pic = offerPictureRepository.save(new OfferPictures(image.getSrc(), image.getPoid()));
-            if (pic!= null) {
+            if (pic != null) {
                 return new ResponseEntity<>(pic.getPoid(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Something wrong! Try again", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -181,16 +184,16 @@ public class OfferServiceController implements IOfferServiceController {
             Offer offer = save.getOffer();
             if (user != null && save.getOffer().getUid() == user.getUid()) {
                 int delete = save.getDelete();
-                if(delete <= -1){
+                if (delete <= -1) {
                     offerRepository.save(offer);
                     List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
                     List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
-                    for(OfferPictures pic :pictures){
+                    for (OfferPictures pic : pictures) {
                         int i = 0;
-                        while(i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()){
+                        while (i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()) {
                             ++i;
                         }
-                        if(i>=currentPictures.size()){
+                        if (i >= currentPictures.size()) {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
                         }
                     }
@@ -204,19 +207,19 @@ public class OfferServiceController implements IOfferServiceController {
 
                     List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
                     List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
-                    for(OfferPictures pic :pictures){
+                    for (OfferPictures pic : pictures) {
                         int i = 0;
-                        while(i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()){
+                        while (i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()) {
                             ++i;
                         }
-                        if(i>=currentPictures.size()){
+                        if (i >= currentPictures.size()) {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
-                        }else {
+                        } else {
                             currentPictures.remove(i);
                         }
                     }
 
-                    for(PicturesOffer pic : currentPictures){
+                    for (PicturesOffer pic : currentPictures) {
                         OfferPictures pic2 = new OfferPictures(pic.getSrc(), offer.getOid());
                         pic2.setPoid(pic.getPoid());
                         offerPictureRepository.save(pic2);
@@ -230,11 +233,11 @@ public class OfferServiceController implements IOfferServiceController {
                     }
                 }
             } else {
-                if(offer.getUid() < 0 && save.getDelete() <= 0){
+                if (offer.getUid() < 0 && save.getDelete() <= 0) {
                     offer.setUid(uid);
                     offerRepository.save(offer);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
-                }else {
+                } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
                 }
             }

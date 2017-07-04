@@ -20,7 +20,7 @@ public interface IOfferServiceController {
 
     ResponseEntity<String> deleteUserOffer(ServletRequest req, DeleteService service);
 
-    ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request);
+    ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request, int count, int last);
 
     ResponseEntity<?> getOffer(int id);
     ResponseEntity<?> getOfferData(int id);

@@ -49,9 +49,19 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   }
 
   ngOnInit() {
+    this.loading = true;
     this.requestService.getUserRequest(0, -1).subscribe(
-      data => this.data = data,
-      error => this.error = <any>error);
+      data => {
+        this.data = data;
+        if (data.length < 5) {
+          this.noMore = true;
+        }
+        this.loading = false;
+      },
+      error => {
+        this.error = <any>error;
+        this.loading = false;
+      });
     this.mapService.getCategories().subscribe(
       data => this.categories = data,
       error => {
@@ -62,22 +72,24 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   }
 
   private userScrollDown() {
-    if (!this.loading && !this.noMore && this.data.length > 0) {
+    if (!this.loading && !this.noMore) {
       this.loading = true;
-      let lenght = this.data.length;
-      let lastId = length > 0 ? this.data[lenght - 1].rid : -1;
+      let length = this.data.length;
+      let lastId = length > 0 ? this.data[length - 1].rid : -1;
       this.requestService.getUserRequest(length, lastId).subscribe(
         data => {
-          if (data.length == 0) {
+          for (let i = 0; i < data.length; ++i) {
+            this.data.push(data[i]);
+          }
+          if (data.length < 5) {
             this.noMore = true;
-          } else {
-            for (let i = 0; i < data.length; ++i) {
-              this.data.push(data[i]);
-            }
           }
           this.loading = false;
         },
-        error => this.error = <any>error);
+        error => {
+          this.error = <any>error;
+          this.loading = false;
+        });
     }
   }
 

@@ -2,6 +2,7 @@ package com.udoo.dal.repositories;
 
 
 import com.udoo.dal.entities.offer.Offer;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,7 @@ public interface IOfferRepository extends Repository<Offer, Integer> {
     List<Offer> findAllActual();
 
     List<Offer> findByUid(int uid);
+    List<Offer> findByUid(int uid, Page page);
 
 
     @Query("SELECT o FROM Offer o WHERE  o.category = :category AND (LOWER(o.description) LIKE CONCAT('%',lower(:searchText),'%') OR LOWER(o.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND o.expirydate >= CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
