@@ -48,7 +48,7 @@ export class AppComponent {
       this.menuButton = !this.menuButton;
     }
   }
-  public menuItemClicked($event){
+  public menuItemClicked(){
     this.visibleMenu = false;
     this.menuButton = true;
   }

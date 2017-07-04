@@ -64,7 +64,6 @@ export class ServiceDetailComponent implements OnInit {
             this.data = data.offer;
             this.loaded = true;
             this.pictures = this.data.picturesOffer;
-            console.log(data.comments);
             let t: any[]= data.comments;
             let i: number = t.length - 1;
             this.comments = [];
