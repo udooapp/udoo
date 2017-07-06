@@ -70,7 +70,6 @@ export class ServiceDetailComponent implements OnInit {
             for(; i >= 0; --i){
               this.comments.push(t[i])
             }
-
             this.hasMore = this.comments.length % 5 == 0 && this.comments.length > 0;
             this.loadUser(data.user);
           },
@@ -106,7 +105,6 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   private loadUser(user: User) {
-
     this.loaded = true;
     this.user = user;
     this.image = this.getPictureUrl(this.user.picture);

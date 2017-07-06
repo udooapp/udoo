@@ -84,7 +84,7 @@ public class RestServiceController implements IRestServiceController {
     private ICategoryResult categoryResultRepository;
 
     @Override
-    @RequestMapping(value = "social/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "social/registration", method = RequestMethod.POST)
     public ResponseEntity<String> saveFacebookUser(User user) {
         if (user != null) {
             if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
@@ -115,7 +115,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/registration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ResponseEntity<String> saveUser(@RequestBody User user) {
         if (user != null) {
             if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
@@ -191,7 +191,7 @@ public class RestServiceController implements IRestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         User user2 = userRepository.getByEmail(user.getEmail());
         if (user2 != null) {

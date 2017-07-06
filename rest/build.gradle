@@ -14,11 +14,11 @@ repositories {
 }
 
 dependencies {
+    compile group: "org.springframework", name: "spring-aop", version: "$springVersion"
+    compile group: "org.springframework", name: "spring-web", version: "$springVersion"
     compile group: "org.springframework", name: "spring-core", version: "$springVersion"
     compile group: "org.springframework", name: "spring-beans", version: "$springVersion"
     compile group: "org.springframework", name: "spring-context", version: "$springVersion"
-    compile group: "org.springframework", name: "spring-aop", version: "$springVersion"
-    compile group: "org.springframework", name: "spring-web", version: "$springVersion"
     compile group: "org.springframework", name: "spring-webmvc", version: "$springVersion"
     compile group: "org.springframework", name: "spring-messaging", version: "$springVersion"
     compile group: "org.springframework", name: "spring-websocket", version: "$springVersion"

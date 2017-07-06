@@ -2,7 +2,7 @@
 <div class="menu-container" *ngIf="visibleMenu">
   <div class="menu-profile">
     <div class="menu-profile-picture">
-      <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture.length > 3)}"
+      <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture != undefined && user.picture.length > 3)}"
            [src]="image">
     </div>
     <div class="menu-profile-name" *ngIf="login">{{user.name}}</div>
@@ -10,7 +10,7 @@
       <img *ngFor="let i of stars" class="menu-profile-stars"
            [src]="i == 1 ? './assets/star3.png' : i == 2 ? './assets/star1.png' : './assets/star2.png'">
     </div>
-    <a routerLink="/login" routerLinkActive="active" class="login-button button-dark"
+    <a routerLink="/login" routerLinkActive="active" id="login-menu-button" class="login-button button-dark"
        (click)="clickMenuButton()" *ngIf="!login" i18n>Login</a>
   </div>
   <a *ngIf="user.active < 15 && login" routerLink="/activation" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img

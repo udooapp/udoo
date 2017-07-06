@@ -86,7 +86,7 @@ public class PersistenceConfig {
     }
 
     @Bean
-    public ICategoryResult iCategoryResult(DataSource dataSource){
+    public ICategoryResult iCategoryResult(DataSource dataSource) {
         CategoryResultDao result = new CategoryResultDao();
         result.setDataSource(dataSource);
         return result;

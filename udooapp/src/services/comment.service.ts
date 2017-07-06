@@ -10,33 +10,20 @@ import {HandlerService} from "./handler.service";
 import {config} from "../environments/url.config";
 import {Router} from "@angular/router";
 import {LOGIN} from "../app/app.routing.module";
+import {HeaderService} from "./header.service";
 
 @Injectable()
-export class CommentService {
-  private headers;
+export class CommentService extends HeaderService{
 
   constructor(private http: Http, private tokenService: TokenService, private router: Router) {
-    this.headers = new Headers({'Content-Type': 'application/json'});
-    this.headers.append('Access-Control-Allow-Origin', config.client);
-    this.headers.append('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
-    this.headers.append('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
+    super();
   }
-
-  private refreshHeaderToken() {
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + `${this.tokenService.getToken()}`);
-    }
-  }
-
   public saveComment(comment): Observable<any> {
     if (!this.tokenService.getToken()) {
       this.router.navigate([LOGIN]);
       return Observable.throw('First, login');
     } else {
-      this.refreshHeaderToken();
-      return this.http.post(config.server + '/comment/save', comment, new RequestOptions({headers: this.headers}))
+      return this.http.post(config.server + '/comment/save', comment, new RequestOptions({headers:  this.getTokenHeaders(this.tokenService.getToken())}))
         .map(HandlerService.extractData)
         .catch(HandlerService.handleText);
     }
@@ -48,7 +35,6 @@ export class CommentService {
     param.append('pos', pos.toString());
     param.append('type', type + '');
     return this.http.get(config.server + '/comment/', new RequestOptions({
-      headers: this.headers,
       search: param
     }))
       .map(HandlerService.extractData)

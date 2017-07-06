@@ -11,13 +11,13 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NotifierController} from "../../controllers/notify.controller";
 import {LOGIN, MAP} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
-import {IFormInput} from "../layouts/forminput/forminput.interface";
+import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 
 
 @Component({
-  templateUrl: '../layouts/forminput/forminput.component.html',
-  styleUrls: ['../layouts/forminput/forminput.component.css'],
+  templateUrl: '../layouts/userform/forminput.component.html',
+  styleUrls: ['../layouts/userform/forminput.component.css'],
   providers: [UserService]
 })
 export class RegistrationComponent implements OnInit, IFormInput {

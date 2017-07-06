@@ -16,10 +16,10 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:email.properties")
 public class EmailConfig {
-    private final String SPRING_MAIL_PROTOCOL="mail.transport.protocol";
-    private final String SPRING_MAIL_SMTP_AUTH="mail.smtp.auth";
-    private final String SPRING_MAIL_SMTP_STARTTLS ="mail.smtp.starttls.enable";
-    private final String SPRING_MAIL_DEBUG="mail.debug";
+    private final String SPRING_MAIL_PROTOCOL = "mail.transport.protocol";
+    private final String SPRING_MAIL_SMTP_AUTH = "mail.smtp.auth";
+    private final String SPRING_MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
+    private final String SPRING_MAIL_DEBUG = "mail.debug";
 
     @Autowired
     private Environment env;

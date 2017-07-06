@@ -24,8 +24,9 @@ public class SmsConfig {
     public SmsProvider smsProvider() {
         return new SmsProviderImpl();
     }
+
     @Bean
-    public SmsService smsService(){
+    public SmsService smsService() {
         return new SmsServiceImp();
     }
 }

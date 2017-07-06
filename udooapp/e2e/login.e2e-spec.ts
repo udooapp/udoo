@@ -19,6 +19,6 @@ describe('LoginPage', function() {
     page.setButtonClick('menu-button');
     page.setButtonClick('logout-button');
     page.setButtonClick('menu-button');
-    page.isPresent('logout-button').then(message => expect(message == true)).catch(error => expect(false));
+    page.isPresent('map').then(message => expect(message == true)).catch(error => expect(false));
   })
 });

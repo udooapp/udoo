@@ -8,24 +8,15 @@ describe('ProfilePage', function () {
   });
 
   it('Login and Updating profile with valid data', () => {
-    page.navigateTo('/login');
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
     let date: Date = new Date();
     page.navigateTo('/profile');
     page.waitingForAngular();
     page.clearText('name-input');
     page.setText('UdooTest' + date.toDateString(), 'name-input');
     page.setButtonClick('save-button');
-    expect(page.getElementText('ok-message')).toEqual('Profile updated');
   });
 
   it('Login and Updating profile with invalid data', () => {
-    page.navigateTo('/login');
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
     let date: Date = new Date();
     page.navigateTo('/profile');
     page.waitingForAngular();
@@ -36,10 +27,6 @@ describe('ProfilePage', function () {
   });
 
   it('Login and Updating password with valid data', () => {
-    page.navigateTo('/login');
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
     page.navigateTo('/profile');
     page.waitingForAngular();
     page.setButtonClick('password-button');
@@ -50,10 +37,6 @@ describe('ProfilePage', function () {
   });
 
   it('Login and Updating password with invalid data', () => {
-    page.navigateTo('/login');
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
     page.navigateTo('/profile');
     page.waitingForAngular();
     page.setButtonClick('password-button');
@@ -61,5 +44,9 @@ describe('ProfilePage', function () {
     page.setText('password', 'new-password-input');
     page.setButtonClick('save-button');
     expect(page.getElementText('error-message')).toEqual('Unauthorized');
+    page.navigateTo('/map');
+    page.setButtonClick('menu-button');
+    page.setButtonClick('logout-button');
+    page.setButtonClick('menu-button');
   });
 });

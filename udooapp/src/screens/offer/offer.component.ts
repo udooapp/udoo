@@ -8,13 +8,13 @@ import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {OFFER_LIST} from "../../app/app.routing.module";
-import {IServiceForm} from "../layouts/service/serviceform.interface";
+import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 
 @Component({
-  templateUrl: '../layouts/service/serviceform.component.html',
-  styleUrls: ['../layouts/service/serviceform.component.css', '../layouts/forminput/forminput.component.css'],
+  templateUrl: '../layouts/serviceform/serviceform.component.html',
+  styleUrls: ['../layouts/serviceform/serviceform.component.css', '../layouts/userform/forminput.component.css'],
   providers: [OfferService, MapService]
 })
 export class OfferComponent implements OnInit, IServiceForm {

@@ -13,13 +13,13 @@ import {DateValidator} from "../../validator/date.validator";
 import {PhoneValidator} from "../../validator/phone.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
-import {IFormInput} from "../layouts/forminput/forminput.interface";
+import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 
 
 @Component({
-  templateUrl: '../layouts/forminput/forminput.component.html',
-  styleUrls: ['../layouts/forminput/forminput.component.css'],
+  templateUrl: '../layouts/userform/forminput.component.html',
+  styleUrls: ['../layouts/userform/forminput.component.css'],
   providers: [UserService, TokenService]
 })
 

@@ -30,11 +30,6 @@ describe('RequestPage', function () {
   });
 
   it('Login and create Request with empty input', () => {
-    page.navigateTo('/login');
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
-    page.isPresent('map').then(message => {
       let date: Date = new Date();
       page.navigateTo('/request');
       page.waitingForAngular();
@@ -47,6 +42,5 @@ describe('RequestPage', function () {
       page.setText('12-12-1993', 'expirydate-input');
       page.setButtonClick('save-button');
       expect(page.getElementText('error-message')).toEqual('Incorrect or empty value');
-    }).catch(error => expect(false));
   });
 });
