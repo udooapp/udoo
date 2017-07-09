@@ -52,7 +52,7 @@ export class AppRoutingModule {
 }
 export const LOGIN: string = '/login';
 export const REGISTRATION: string = '/registration';
-export const FACEBOOKREGISTRATION: string = '/registration/facebook';
+export const SOCIALREGISTRATION: string = '/registration/facebook';
 export const PROFILE: string = '/profile';
 export const PASSWORD: string = '/password';
 export const OFFER: string = '/offer';

@@ -35,6 +35,8 @@ import {TextInputSelectComponent} from "../fields/textinputselect/textinputselec
 import {DialogController} from "../controllers/dialog.controller";
 import {DialogWindowComponent} from "../components/dialog/dialog.component";
 import {GalleryComponent} from "../components/gallery/gallery.component";
+import {ServiceDialogComponent} from "../components/service/service.window.component";
+import {ServiceDialogController} from "../components/service/service.window.controller";
 
 @NgModule({
   declarations: [
@@ -63,7 +65,8 @@ import {GalleryComponent} from "../components/gallery/gallery.component";
     DialogWindowComponent,
     SettingsComponent,
     ActivationComponent,
-    GalleryComponent
+    GalleryComponent,
+    ServiceDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +74,7 @@ import {GalleryComponent} from "../components/gallery/gallery.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService],
+  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService, ServiceDialogController],
   bootstrap: [AppComponent]
 })
 export class AppModule {

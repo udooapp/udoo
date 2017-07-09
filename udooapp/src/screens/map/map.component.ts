@@ -1,25 +1,26 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {MapService} from "../../services/map.service";
 import {Offer} from "../../entity/offer";
 import {Request} from "../../entity/request";
 import {Router} from "@angular/router";
 import {TokenService} from "../../services/token.service";
 import {DETAIL} from "../../app/app.routing.module";
-// import {Observable} from "rxjs/Observable";
-// import {config} from "../../environments/url.config";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
+import {OfferService} from "../../services/offer.service";
+import {RequestService} from "../../services/request.service";
+import {ServiceDialogController} from "../../components/service/service.window.controller";
 
 declare let google: any;
-//var SockJS = require('sockjs-client');
-//var Stomp = require('stompjs');
+// let SockJS = require('sockjs-client');
+// let Stomp = require('stompjs');
 
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
-  providers: [MapService]
+  providers: [MapService, OfferService, RequestService]
 })
 export class MapComponent extends ConversionMethods implements OnInit {
 
@@ -34,7 +35,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private searchString = '';
   public category = -1;
   private markers = [];
-  private infoWindows = [];
   private requestsWindow: any[] = [];
   private services: any[] = [];
   private icon = {};
@@ -42,12 +42,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private offersWindow: any[] = [];
   private offerSize: number = 0;
   private requestSize: number = 0;
-//  private offersRealTime: Offer[] = [];
   public result: any[] = [];
-//  private stompClient: any;
-  // messages: Array<string> = new Array<string>();
+  // private stompClient: any;
+  private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
 
-  constructor(private mapService: MapService, private router: Router, private dialog: DialogController, private tokenService: TokenService, private notifier: NotifierController) {
+
+  constructor(private serviceController: ServiceDialogController, private zone: NgZone, private mapService: MapService, private requestService: RequestService, private offerService: OfferService, private router: Router, private dialog: DialogController, private tokenService: TokenService, private notifier: NotifierController) {
     super();
     dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
@@ -59,36 +59,31 @@ export class MapComponent extends ConversionMethods implements OnInit {
     });
   }
 
-  send() {
-    // let uids: number[] = [];
-    // for (let i = 0; i < this.offersRealTime.length; ++i) {
-    //   if (uids.indexOf(this.offersRealTime[i].uid) == -1) {
-    //     uids.push(this.offersRealTime[i].uid);
-    //   }
-    // }
-    // if(uids.length > 0) {
-    //   this.stompClient.send('/coordinates/', {}, JSON.stringify(uids));
-    // }
-  }
-
-  connect() {
-    //   let that = this;
-    //   let socket = new SockJS(config.server + '/coordinates');
-    //   this.stompClient = Stomp.over(socket);
-    //   this.stompClient.connect({}, function (frame) {
-    //     console.log('Connected: ' + frame);
-    //     that.stompClient.subscribe('/location/messages', function (greeting) {
-    //       //let coordianate = JSON.parse(greeting);
-    //       console.log("Socket response: " + greeting.toString());
-    //
-    //     });
-    //   }, function (err) {
-    //     console.log('err', err);
-    //   });
-  }
+  // connect() {
+  //   let socket = new SockJS(config.server + '/socket');
+  //   this.stompClient = Stomp.over(socket);
+  //   this.stompClient.connect({}, function (frame) {
+  //     this.setConnected(true);
+  //     console.log('Connected: ' + frame);
+  //     this.stompClient.subscribe('/coordinate/message', function (greeting) {
+  //       console.log(greeting);
+  //     });
+  //   });
+  // }
+  //
+  // disconnect() {
+  //   if (this.stompClient != null) {
+  //     this.stompClient.disconnect();
+  //   }
+  //   console.log("Disconnected");
+  // }
+  //
+  // sendName() {
+  //   this.stompClient.send("/rest/hello", {}, 'Hello');
+  // }
 
   ngOnInit() {
-    //   this.connect();
+    // this.connect();
 
     this.mapView = !this.tokenService.getMapState();
     this.error = '';
@@ -150,14 +145,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
       this.markers[i].setMap(null);
     }
     this.markers = [];
-    this.infoWindows = [];
   }
-
 
   public getPicture(index: number) {
     if (this.services.length >= 0 && index < this.services.length) {
       let type: boolean = this.services[index].rid;
-      if((type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
+      if ((type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
         return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
       }
     }
@@ -165,60 +158,43 @@ export class MapComponent extends ConversionMethods implements OnInit {
   }
 
   private loadRequests() {
-    let click: boolean[] = [];
-    let rout = this.router;
     let map = this.map;
     let mk = this;
     for (let i = 0; i < this.requestsWindow.length; ++i) {
       let request: any = this.requestsWindow[i];
       let coordinate = this.getCoordinates(request.location);
       if (coordinate != null) {
-        click.push(false);
         let marker = new google.maps.Marker({
           position: coordinate,
           map: this.map,
           title: request.title,
           icon: this.icon
-
         });
         let infowindow = new google.maps.InfoWindow({
           content: '<div>' +
           '<h1>' + request.title + '</h1>' +
           '<div>' +
           '<p>' + request.description + '</p>' +
-          '<p><a  id="infoWindow-linkr' + request.rid + '"><b>More...</b></a></p>' +
           '<p><b>Category: </b>' + this.findCatName(request.category) + '</p>' +
           '</div>' +
           '</div>',
           maxWidth: 300
         });
-        infowindow.addListener('closeclick', function () {
-
-          click[i] = !click[i];
-          infowindow.close(map, marker);
-        });
-
-        google.maps.event.addListener(infowindow, 'domready', function () {
-          document.getElementById('infoWindow-linkr' + request.rid).addEventListener("click", function () {
-            rout.navigate([DETAIL + request.rid + '/0']);
-          });
-        });
         marker.addListener('mouseover', function () {
           infowindow.open(map, marker);
         });
         marker.addListener('click', function () {
-          mk.closeAllInfoWindows();
-          click[i] = !click[i];
-          infowindow.open(map, marker);
+          mk.elementCoordinates.lat = coordinate.lat;
+          mk.elementCoordinates.lng = coordinate.lng;
+          mk.zone.run(() => {
+            mk.loadDialog(false, request.rid);
+          });
         });
 
         marker.addListener('mouseout', function () {
-          if (!click[i]) {
-            infowindow.close(map, marker);
-          }
+          infowindow.close(map, marker);
         });
         this.markers.push(marker);
-        this.infoWindows.push(infowindow);
       }
     }
 
@@ -233,19 +209,14 @@ export class MapComponent extends ConversionMethods implements OnInit {
     //     this.offers.push(this.offers[i])
     //   }
     // }
-    let map = this.map;
-    let rout = this.router;
-    let click: boolean[] = [];
     let mk = this;
     for (let i = 0; i < this.offersWindow.length; ++i) {
       let offer: any = this.offersWindow[i];
       let coordinate = this.getCoordinates(offer.location);
       if (coordinate != null) {
-
-        click.push(false);
         let marker = new google.maps.Marker({
           position: coordinate,
-          map: this.map,
+          map: mk.map,
           title: offer.title,
           icon: this.icon
         });
@@ -254,50 +225,78 @@ export class MapComponent extends ConversionMethods implements OnInit {
           '<h1>' + offer.title + '</h1>' +
           '<div>' +
           '<p>' + offer.description + '</p>' +
-          '<p><a class="link" id="infoWindow-linko' + offer.oid + '"><b>More...</b></a></p>' +
           '<p><b>Category: </b>' + this.findCatName(offer.category) + '</p>' +
           '</div>' +
           '</div>',
           maxWidth: 300
         });
-
-        google.maps.event.addListener(infowindow, 'domready', function () {
-
-          document.getElementById('infoWindow-linko' + offer.oid).addEventListener("click", function () {
-            rout.navigate([DETAIL + offer.oid + '/1']);
-          });
-        });
-        infowindow.addListener('closeclick', function () {
-          click[i] = !click[i];
-          infowindow.close(map, marker);
-        });
         marker.addListener('mouseover', function () {
-          infowindow.open(map, marker);
+          infowindow.open(mk.map, marker);
         });
 
         marker.addListener('click', function () {
-          mk.closeAllInfoWindows();
-          click[i] = !click[i];
-          infowindow.open(map, marker);
+          mk.zone.run(() => {
+            mk.loadDialog(true, offer.oid);
+          });
         });
 
         marker.addListener('mouseout', function () {
-          if (!click[i]) {
-            infowindow.close(map, marker);
-          }
+          infowindow.close(mk.map, marker);
         });
         this.markers.push(marker);
-        this.infoWindows.push(infowindow);
       }
     }
-
-
   }
 
-  private closeAllInfoWindows() {
-    for (let i = 0; i < this.infoWindows.length; i++) {
-      this.infoWindows[i].close();
+  private loadDialog(type: boolean, id: number) {
+    this.serviceController.loading$.emit(true);
+    if (type) {
+      this.offerService.getOffer(id).subscribe(
+        value => {
+          this.serviceController.setData$.emit(value);
+        },
+        error => {
+          this.serviceController.setData$.emit(null);
+          this.dialog.notifyError(error)
+        }
+      );
+    } else {
+      this.requestService.getRequest(id).subscribe(
+        value => {
+          this.serviceController.setData$.emit(value);
+        },
+        error => {
+          this.serviceController.setData$.emit(null);
+          this.dialog.notifyError(error)
+        }
+      );
     }
+  }
+
+  public onClickNext(value: any) {
+    let t = this.searchElement(true);
+    let type: boolean = value.oid;
+    let id = !type ? value.rid : value.oid;
+    console.log("current id: " + id);
+    if ((type != t.type || id != t.id) && t.id > 0) {
+      this.elementCoordinates.dist = t.dist;
+      this.loadDialog(t.type, t.id);
+    }
+  }
+
+  public onClickPrevious(value: any) {
+    let t = this.searchElement(false);
+    let type: boolean = value.oid;
+    let id = !type ? value.rid : value.oid;
+    if (type != t.type || id != t.id) {
+      this.elementCoordinates.dist = t.dist;
+      this.loadDialog(t.type, t.id);
+    }
+  }
+
+  public onClickOpen(element: any) {
+    let type: boolean = element.rid;
+    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1)]);
   }
 
   public findCatName(catID: number): string {
@@ -433,14 +432,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
     return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
 
-  public onClickService(index: number) {
-    if(index >= 0 && index < this.services.length) {
-
-      let type:boolean = this.services[index].rid;
-      this.router.navigate([DETAIL + (type ? this.services[index].rid : this.services[index].oid)+ '/' + (type ? 0 : 1)]);
-    }
-  }
-
   public onClickResultDropDown(index: number) {
     this.category = index;
     this.loadAvailableServices();
@@ -474,8 +465,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
               this.offerSize = -1;
             }
           }
-
-
         },
         error => {
           this.scrolledDown = false;
@@ -483,5 +472,62 @@ export class MapComponent extends ConversionMethods implements OnInit {
         }
       );
     }
+  }
+
+  private searchElement(direction: boolean): any {
+    let req = this.calculateMinDistance(this.requestsWindow, direction);
+    let off = this.calculateMinDistance(this.offersWindow, direction);
+    console.log(req);
+    console.log(off);
+    if(req == null){
+      return  {id: off[0], type: true, dist:off[1]}
+    }
+    if(off == null){
+      return  {id: req[0], type: false, dist:req[1]}
+    }
+    if (direction) {
+      let type:boolean = req[1] > off[1];
+      return {id: type ? off[0] : req[0], type: type, dist: !type ? req[1] : off[1]}
+    } else {
+      let type = req[1] < off[1];
+      return {id: type ? off[0] : req[0], type: type, dist: !type ? req[1] : off[1]}
+    }
+  }
+
+  private calculateMinDistance(list: any[], direction: boolean): any {
+    let closest = -1;
+    let R = 6371; // radius of earth in km
+
+    let distance: number = 0;
+    for (let i = 0; i < list.length; i++) {
+      let coordinate = this.getCoordinates(list[i].location);
+      if (coordinate != null) {
+        let dLat = this.rad(coordinate.lat - this.elementCoordinates.lat);
+        let dLong = this.rad(coordinate.lng - this.elementCoordinates.lng);
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(this.rad(this.elementCoordinates.lat)) * Math.cos(this.rad(this.elementCoordinates.lat)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c;
+        if (direction) {
+          if (closest == -1 || (d < distance && d > this.elementCoordinates.dist && d != 0)) {
+            closest = i;
+            distance = d;
+          }
+        } else {
+          if (closest == -1 || (d > distance && d < this.elementCoordinates.dist && d != 0)) {
+            closest = i;
+            distance = d;
+          }
+        }
+      }
+    }
+    if(distance == this.elementCoordinates.dist){
+      return null;
+    }
+    return [list[closest].oid ? list[closest].oid : list[closest].rid, distance];
+  }
+
+  private rad(x) {
+    return x * Math.PI / 180;
   }
 }
