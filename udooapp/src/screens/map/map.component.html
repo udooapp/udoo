@@ -21,7 +21,9 @@
       <button class="input-button button-light" (click)="showList()">{{!mapView ? 'Map' : 'List'}} View</button>
     </div>
   </div>
-  <div id="close-icon" class="close-button" *ngIf="!showSearch && mapView" (click)="onClickSearchPanel()"></div>
+  <div id="close-container" *ngIf="!showSearch && mapView" (click)="onClickSearchPanel()">
+    <div id="close-icon" class="close-button"></div>
+  </div>
   <div *ngIf="showSearch && mapView" class="search-button" (click)="onClickSearchPanel()">
     <div id="magnifying-glass" class="map-triangle-container"></div>
   </div>

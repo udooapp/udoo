@@ -121,19 +121,24 @@
   width: 49%;
   border-radius: 3px;
 }
-.close-button{
+#close-container{
+  width: 20px;
+  height: 20px;
+  margin: 1% auto;
   cursor: pointer;
-  margin: 2% auto;
-  float:right;
+  border-radius: 20px;
 }
-
+#close-container:hover{
+  background-color: #EAEAEA;
+}
 #close-icon {
   background: #378281;
   height: 12px;
-  position: relative;
   width: 2px;
   border-radius: 1px;
   transform: rotate(45deg);
+  margin-left: 9px;
+  margin-top: 4px;
 }
 
 #close-icon:after {

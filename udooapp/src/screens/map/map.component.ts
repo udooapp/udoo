@@ -237,6 +237,9 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
         marker.addListener('click', function () {
           mk.zone.run(() => {
+            mk.elementCoordinates.lat = coordinate.lat;
+            mk.elementCoordinates.lng = coordinate.lng;
+            mk.elementCoordinates.dist = 0;
             mk.loadDialog(true, offer.oid);
           });
         });
@@ -276,10 +279,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onClickNext(value: any) {
     let t = this.searchElement(true);
-    if(t!= null) {
+    if (t != null) {
       let type: boolean = value.oid;
       let id = !type ? value.rid : value.oid;
-      if ((type != t.type || id != t.id) && t.id > 0 && t.dist >= this.elementCoordinates.dist) {
+      if ((type != t.type || id != t.id) && t.dist >= this.elementCoordinates.dist) {
         this.elementCoordinates.dist = t.dist;
         this.loadDialog(t.type, t.id);
       }
@@ -288,10 +291,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onClickPrevious(value: any) {
     let t = this.searchElement(false);
-    if(t!= null) {
+    if (t != null) {
       let type: boolean = value.oid;
       let id = !type ? value.rid : value.oid;
-      if (type != t.type || id != t.id && t.dist <= this.elementCoordinates.dist) {
+      if ((type != t.type || id != t.id) && t.dist <= this.elementCoordinates.dist) {
         this.elementCoordinates.dist = t.dist;
         this.loadDialog(t.type, t.id);
       }
@@ -302,6 +305,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let type: boolean = element.rid;
     this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1)]);
   }
+
   public findCatName(catID: number): string {
     for (let i = 0; i < this.categories.length; ++i) {
       if (catID == this.categories[i].cid) {
@@ -517,19 +521,19 @@ export class MapComponent extends ConversionMethods implements OnInit {
         let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         let d = R * c;
         if (direction) {
-          if (d < distance && d >= this.elementCoordinates.dist && d != 0) {
+          if (d < distance && d > this.elementCoordinates.dist && d != 0) {
             closest = i;
             distance = d;
           }
         } else {
-          if (d > distance && d <= this.elementCoordinates.dist && d != 0) {
+          if (d > distance && d < this.elementCoordinates.dist && d != 0) {
             closest = i;
             distance = d;
           }
         }
       }
     }
-    if (distance == this.elementCoordinates.dist || closest == -1) {
+    if (closest == -1) {
       return null;
     }
     return [list[closest].oid ? list[closest].oid : list[closest].rid, distance];

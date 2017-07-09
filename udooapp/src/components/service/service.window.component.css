@@ -58,6 +58,7 @@ dialog {
   margin-left: 50%;
   margin-top: 15%;
 }
+
 .service-dialog-close {
   background: #378281;
   height: 25px;
@@ -81,7 +82,7 @@ dialog {
   width: 25px;
 }
 
-.service-dialog-close-background{
+.service-dialog-close-background {
   float: right;
   width: 36px;
   height: 36px;
@@ -89,7 +90,7 @@ dialog {
   cursor: pointer;
 }
 
-.service-dialog-close-background:hover{
+.service-dialog-close-background:hover {
   background-color: #E5E5E5;
 }
 
@@ -112,9 +113,10 @@ dialog {
   top: 44px;
   width: 46px;
 }
-.service-dialog-direction-left{
+
+.service-dialog-direction-left {
   position: absolute;
-  margin-top:120px;
+  margin-top: 120px;
   cursor: pointer;
   width: 45px;
   height: 80px;
@@ -122,10 +124,12 @@ dialog {
   border-radius: 10px;
 
 }
+
 .service-dialog-direction-left:hover {
   background-color: #EAEAEA;
 }
-.service-dialog-direction-right{
+
+.service-dialog-direction-right {
   position: absolute;
   cursor: pointer;
   right: 28px;
@@ -136,10 +140,12 @@ dialog {
   margin-right: 5px;
   border-radius: 10px;
 }
+
 .service-dialog-direction-right:hover {
   background-color: #EAEAEA;
 }
-.service-dialog-next{
+
+.service-dialog-next {
   background: #378281;
   height: 50px;
   margin-top: 30px;
@@ -148,13 +154,16 @@ dialog {
   border-radius: 1px;
   transform: rotate(225deg);
 }
-.service-dialog-more{
-  color:#4A9594;
+
+.service-dialog-more {
+  color: #4A9594;
   cursor: pointer;
 }
-.service-dialog-more:hover{
-  color:#2B6665;
+
+.service-dialog-more:hover {
+  color: #2B6665;
 }
+
 .service-dialog-next:after {
   background: #378281;
   content: "";
@@ -165,29 +174,34 @@ dialog {
   top: 44px;
   width: 46px;
 }
-.service-dialog-title{
+
+.service-dialog-title {
   text-align: center;
   padding-bottom: 20px;
   font-size: 18pt;
-  color:#2B6665;
+  color: #2B6665;
 }
-.service-dialog-description{
+
+.service-dialog-description {
   text-align: left;
   font-size: 14pt;
 }
-.service-dialog-content{
+
+.service-dialog-content {
   display: -webkit-flex;
   display: flex;
   flex-direction: column;
   -webkit-flex-direction: column;
   margin: 10px 60px;
 }
-.service-dialog-location{
+
+.service-dialog-location {
   padding-top: 15px;
   font-size: 15pt;
   float: left;
 }
-.service-dialog-date{
+
+.service-dialog-date {
   padding-top: 10px;
   font-size: 15pt;
   float: left;
