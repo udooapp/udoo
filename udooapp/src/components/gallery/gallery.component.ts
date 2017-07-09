@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 @Component({
@@ -23,6 +23,19 @@ export class GalleryComponent{
   @Output() onClickNewImage: EventEmitter<any> = new EventEmitter();
   constructor() {
   }
+
+  @HostListener('document:keydown', ['$event'])
+  keypress(e: KeyboardEvent) {
+    switch (e.keyCode){
+      case 37:
+        this.onClickPrevious();
+        break;
+      case 39:
+        this.onClickNext();
+        break;
+    }
+  }
+
   @Input() set close(value: number){
       this.gallery = false;
   }

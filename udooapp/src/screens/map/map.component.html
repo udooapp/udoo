@@ -27,7 +27,7 @@
   </div>
 
   <div class="service-container" *ngIf="!mapView">
-    <div class="service" *ngFor="let item of services; let i = index" (click)="onClickService(i)"
+    <div class="service" *ngFor="let item of services; let i = index" (click)="onClickOpen(item)"
          routerLinkActive="active">
       <div class="service-picture"><img class="service-image" [src]="getPicture(i)"></div>
       <div class="service-content">

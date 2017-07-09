@@ -276,22 +276,25 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onClickNext(value: any) {
     let t = this.searchElement(true);
-    let type: boolean = value.oid;
-    let id = !type ? value.rid : value.oid;
-    console.log("current id: " + id);
-    if ((type != t.type || id != t.id) && t.id > 0 && t.dist >= this.elementCoordinates.dist) {
-      this.elementCoordinates.dist = t.dist;
-      this.loadDialog(t.type, t.id);
+    if(t!= null) {
+      let type: boolean = value.oid;
+      let id = !type ? value.rid : value.oid;
+      if ((type != t.type || id != t.id) && t.id > 0 && t.dist >= this.elementCoordinates.dist) {
+        this.elementCoordinates.dist = t.dist;
+        this.loadDialog(t.type, t.id);
+      }
     }
   }
 
   public onClickPrevious(value: any) {
     let t = this.searchElement(false);
-    let type: boolean = value.oid;
-    let id = !type ? value.rid : value.oid;
-    if (type != t.type || id != t.id && t.dist <= this.elementCoordinates.dist) {
-      this.elementCoordinates.dist = t.dist;
-      this.loadDialog(t.type, t.id);
+    if(t!= null) {
+      let type: boolean = value.oid;
+      let id = !type ? value.rid : value.oid;
+      if (type != t.type || id != t.id && t.dist <= this.elementCoordinates.dist) {
+        this.elementCoordinates.dist = t.dist;
+        this.loadDialog(t.type, t.id);
+      }
     }
   }
 
@@ -299,7 +302,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let type: boolean = element.rid;
     this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1)]);
   }
-
   public findCatName(catID: number): string {
     for (let i = 0; i < this.categories.length; ++i) {
       if (catID == this.categories[i].cid) {
@@ -478,17 +480,21 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private searchElement(direction: boolean): any {
     let req = this.calculateMinDistance(this.requestsWindow, direction);
     let off = this.calculateMinDistance(this.offersWindow, direction);
-    console.log(req);
-    console.log(off);
-    console.log('CUrrent dist: ' + this.elementCoordinates.dist);
-    if(req == null){
-      return  {id: off[0], type: true, dist:off[1]}
+
+    if (req == null) {
+      if (off == null) {
+        return null;
+      }
+      return {id: off[0], type: true, dist: off[1]}
     }
-    if(off == null){
-      return  {id: req[0], type: false, dist:req[1]}
+    if (off == null) {
+      if (req == null) {
+        return null;
+      }
+      return {id: req[0], type: false, dist: req[1]}
     }
     if (direction) {
-      let type:boolean = req[1] > off[1];
+      let type: boolean = req[1] > off[1];
       return {id: type ? off[0] : req[0], type: type, dist: !type ? req[1] : off[1]}
     } else {
       let type = req[1] < off[1];
@@ -500,7 +506,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let closest = -1;
     let R = 6371; // radius of earth in km
 
-    let distance: number = 0;
+    let distance: number = direction ? Number.MAX_VALUE : 0;
     for (let i = 0; i < list.length; i++) {
       let coordinate = this.getCoordinates(list[i].location);
       if (coordinate != null) {
@@ -511,19 +517,19 @@ export class MapComponent extends ConversionMethods implements OnInit {
         let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         let d = R * c;
         if (direction) {
-          if (closest == -1 || (d < distance && d >= this.elementCoordinates.dist && d != 0)) {
+          if (d < distance && d >= this.elementCoordinates.dist && d != 0) {
             closest = i;
             distance = d;
           }
         } else {
-          if (closest == -1 || (d > distance && d <= this.elementCoordinates.dist && d != 0)) {
+          if (d > distance && d <= this.elementCoordinates.dist && d != 0) {
             closest = i;
             distance = d;
           }
         }
       }
     }
-    if(distance == this.elementCoordinates.dist){
+    if (distance == this.elementCoordinates.dist || closest == -1) {
       return null;
     }
     return [list[closest].oid ? list[closest].oid : list[closest].rid, distance];
