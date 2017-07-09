@@ -186,6 +186,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
         marker.addListener('click', function () {
           mk.elementCoordinates.lat = coordinate.lat;
           mk.elementCoordinates.lng = coordinate.lng;
+          mk.elementCoordinates.dist = 0;
           mk.zone.run(() => {
             mk.loadDialog(false, request.rid);
           });
@@ -278,7 +279,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let type: boolean = value.oid;
     let id = !type ? value.rid : value.oid;
     console.log("current id: " + id);
-    if ((type != t.type || id != t.id) && t.id > 0) {
+    if ((type != t.type || id != t.id) && t.id > 0 && t.dist >= this.elementCoordinates.dist) {
       this.elementCoordinates.dist = t.dist;
       this.loadDialog(t.type, t.id);
     }
@@ -288,7 +289,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let t = this.searchElement(false);
     let type: boolean = value.oid;
     let id = !type ? value.rid : value.oid;
-    if (type != t.type || id != t.id) {
+    if (type != t.type || id != t.id && t.dist <= this.elementCoordinates.dist) {
       this.elementCoordinates.dist = t.dist;
       this.loadDialog(t.type, t.id);
     }
@@ -479,6 +480,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     let off = this.calculateMinDistance(this.offersWindow, direction);
     console.log(req);
     console.log(off);
+    console.log('CUrrent dist: ' + this.elementCoordinates.dist);
     if(req == null){
       return  {id: off[0], type: true, dist:off[1]}
     }
@@ -509,12 +511,12 @@ export class MapComponent extends ConversionMethods implements OnInit {
         let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         let d = R * c;
         if (direction) {
-          if (closest == -1 || (d < distance && d > this.elementCoordinates.dist && d != 0)) {
+          if (closest == -1 || (d < distance && d >= this.elementCoordinates.dist && d != 0)) {
             closest = i;
             distance = d;
           }
         } else {
-          if (closest == -1 || (d > distance && d < this.elementCoordinates.dist && d != 0)) {
+          if (closest == -1 || (d > distance && d <= this.elementCoordinates.dist && d != 0)) {
             closest = i;
             distance = d;
           }

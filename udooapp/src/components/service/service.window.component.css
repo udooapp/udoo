@@ -133,6 +133,7 @@ dialog {
   width: 45px;
   height: 80px;
   padding-left: 5px;
+  margin-right: 5px;
   border-radius: 10px;
 }
 .service-dialog-direction-right:hover {
@@ -143,7 +144,7 @@ dialog {
   height: 50px;
   margin-top: 30px;
   width: 6px;
-  margin-left: 15px;
+  margin-left: 20px;
   border-radius: 1px;
   transform: rotate(225deg);
 }

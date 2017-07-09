@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 import {ServiceDialogController} from "./service.window.controller";
@@ -37,8 +37,23 @@ export class ServiceDialogComponent {
         this.loading = false;
       }
     });
+
   }
 
+  @HostListener('document:keydown', ['$event'])
+  keypress(e: KeyboardEvent) {
+    switch (e.keyCode){
+      case 27:
+        this.onClickClose();
+        break;
+      case 37:
+        this.onClickPrevious();
+        break;
+      case 39:
+        this.onClickNext();
+        break;
+    }
+  }
   @Input() set data(value: any) {
     if (value != null) {
       this.loading = false;
@@ -82,6 +97,7 @@ export class ServiceDialogComponent {
   onClickClose() {
     this.visible = false;
   }
+
   public convertMillisToDate(millis: number): string {
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
