@@ -25,7 +25,7 @@ export class MenuComponent implements OnInit {
   activated: boolean = false;
   @Output() activatedUser = new EventEmitter<boolean>();
   @Output() menuItemClicked = new EventEmitter<boolean>();
-  visibleMenu: boolean = false;
+  visibleMenu: number = -1;
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
@@ -86,7 +86,7 @@ export class MenuComponent implements OnInit {
   }
 
   @Input() set showMenu(show: boolean) {
-    this.visibleMenu = show;
+    this.visibleMenu = show ? 1 : this.visibleMenu == -1 ? -1 : 0;
   }
 
   ngOnInit() {
@@ -94,11 +94,12 @@ export class MenuComponent implements OnInit {
     $("#swipe-area").swipe({
       swipeStatus: function (event, phase, direction, distance, duration, fingers) {
         if (phase == "move" && direction == "right") {
-          t.visibleMenu = true;
+          t.visibleMenu = 1;
+          t.menuItemClicked.emit(true);
           return false;
         }
         if (phase == "move" && direction == "left") {
-          t.visibleMenu = false;
+          t.clickMenuButton();
           return false;
         }
       }
@@ -170,13 +171,13 @@ export class MenuComponent implements OnInit {
   }
 
   public clickMenuButton() {
-    this.visibleMenu = false;
+    this.visibleMenu = 0;
     this.menuItemClicked.emit(false);
   }
 
   public logOut() {
-    this.visibleMenu = !this.visibleMenu;
-    this.menuItemClicked.emit(this.visibleMenu);
+    this.visibleMenu = 0;
+    this.menuItemClicked.emit(false);
     this.image = this.getPictureUrl('');
     this.activated = false;
     this.activatedUser.emit(true);

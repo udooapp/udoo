@@ -49,8 +49,8 @@ export class AppComponent {
     }
   }
   public menuItemClicked(){
-    this.visibleMenu = false;
-    this.menuButton = true;
+    this.visibleMenu = !this.visibleMenu;
+    this.menuButton = !this.menuButton;
   }
 
   public onScroll(){
