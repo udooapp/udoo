@@ -12,6 +12,7 @@ import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
 import {DialogController} from "../../controllers/dialog.controller";
 
+declare let $: any;
 declare let FB;
 @Component({
   selector: 'side-menu',
@@ -49,7 +50,7 @@ export class MenuComponent implements OnInit {
         before = event.url;
       }
     });
-    dialog.mainRefresh$.subscribe(token=> {
+    dialog.mainRefresh$.subscribe(token => {
       if (token) {
         this.tokenService.clearToken();
         this.router.navigate([LOGIN]);
@@ -60,14 +61,15 @@ export class MenuComponent implements OnInit {
       }
     });
     notifier.userModification$.subscribe(verify => {
-  if (verify == 0 || verify == 1) {
+      if (verify == 0 || verify == 1) {
         this.user.language = verify === 0 ? 'en' : 'de';
         // document['locale'] = this.user.language;
         // getTranslationProviders().then(value => {
         // }).catch(err => {
         // });
         this.userService.updateUser(this.user).subscribe(
-          message => {},
+          message => {
+          },
           error => {
             if (error === 'Invalid token') {
               this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
@@ -77,8 +79,8 @@ export class MenuComponent implements OnInit {
             this.dialog.notifyError(error);
           }
         );
-      } else if(verify == 4){
-          this.checkUser(true);
+      } else if (verify == 4) {
+        this.checkUser(true);
       }
     });
   }
@@ -88,10 +90,24 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    let t = this;
+    $("#swipe-area").swipe({
+      swipeStatus: function (event, phase, direction, distance, duration, fingers) {
+        if (phase == "move" && direction == "right") {
+          t.visibleMenu = true;
+          return false;
+        }
+        if (phase == "move" && direction == "left") {
+          t.visibleMenu = false;
+          return false;
+        }
+      }
+    });
+
     this.checkUser(false);
   }
 
-  public checkUser(send :boolean ) {
+  public checkUser(send: boolean) {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
       this.login = true;
@@ -101,10 +117,11 @@ export class MenuComponent implements OnInit {
           //   window.document =this.user.language;
           document['locale'] = this.user.language;
           getTranslationProviders().then(value => {
-          }).catch(err => {});
+          }).catch(err => {
+          });
           this.image = this.getPictureUrl(user.picture);
           let star = user.stars;
-          if(star == 0){
+          if (star == 0) {
             this.stars = [2, 2, 2, 2, 2];
           } else {
             for (let i = 0; i < 5; ++i) {
@@ -118,7 +135,7 @@ export class MenuComponent implements OnInit {
               --star;
             }
           }
-          if(send){
+          if (send) {
             this.notifier.userDataPipe$.emit(this.user);
           }
           this.activated = user.active >= 15;
@@ -166,8 +183,8 @@ export class MenuComponent implements OnInit {
     this.userService.logout().subscribe(
       message => {
         this.login = false;
-        if(this.user.socialID){
-          FB.logout(function(response) {
+        if (this.user.socialID) {
+          FB.logout(function (response) {
           });
         }
         this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);

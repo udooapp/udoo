@@ -1,3 +1,17 @@
+#swipe-area{
+  display: block;
+  height: calc(100% - 60px);
+  position: absolute;
+  margin-top: 60px;
+  z-index: 15;
+}
+.swipe-area-left{
+  width: 10px;
+}
+.swipe-area-right{
+  margin-left: 280px;
+  width: 20px;
+}
 .menu-container::-webkit-scrollbar {
   display: none;
 }
@@ -9,8 +23,8 @@
   color: #378281;
   -webkit-flex-direction: column;
   flex-direction: column;
-  width: 300px;
   float: left;
+  width: 300px;
   height: calc(100% - 60px);
   background-color: #FFFFFF;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
@@ -126,3 +140,25 @@
   background-color: #FAFAFA;
 }
 
+@keyframes slide-in {
+  0%   {margin-left: -300px;}
+  100% {margin-left: 0;}
+}
+@keyframes slide-out {
+  0%   {margin-left: 0; visibility: visible}
+  100% {margin-left: -300px; visibility: hidden;}
+}
+.menu-slide-in{
+  visibility: visible;
+  -webkit-animation-name: slide-in; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 0.25s; /* Safari 4.0 - 8.0 */
+  animation-name: slide-in;
+  animation-duration: 0.25s;
+}
+.menu-slide-out{
+  visibility: hidden;
+  -webkit-animation-name: slide-out; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 0.25s; /* Safari 4.0 - 8.0 */
+  animation-name: slide-out;
+  animation-duration: 0.25s;
+}

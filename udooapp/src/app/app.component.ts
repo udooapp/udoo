@@ -1,4 +1,4 @@
-import {Component, ElementRef} from '@angular/core';
+import {Component} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {MAP} from "./app.routing.module";

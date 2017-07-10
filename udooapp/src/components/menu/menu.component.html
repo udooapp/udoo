@@ -1,5 +1,6 @@
 <div class="menu-container-background" *ngIf="visibleMenu" (click)="clickMenuButton()"></div>
-<div class="menu-container" *ngIf="visibleMenu">
+<div id="swipe-area" [ngClass]="{'swipe-area-right' : visibleMenu, 'swipe-area-left' : !visibleMenu}" ></div>
+<div class="menu-container" [ngClass]="{'menu-slide-in' : visibleMenu, 'menu-slide-out' : !visibleMenu}">
   <div class="menu-profile">
     <div class="menu-profile-picture">
       <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture != undefined && user.picture.length > 3)}"

@@ -16,6 +16,7 @@ declare let google: any;
 // let SockJS = require('sockjs-client');
 // let Stomp = require('stompjs');
 
+
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
