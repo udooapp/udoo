@@ -30,6 +30,9 @@ export class MenuComponent implements OnInit {
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
   image: string;
+  menuLoaded:boolean = false;
+  startX: number = 0;
+  currentX: number = 0;
   checkLogin: boolean = false;
 
   constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
@@ -91,20 +94,37 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     let t = this;
-    $("#swipe-area").swipe({
-      swipeStatus: function (event, phase, direction, distance, duration, fingers) {
-        if (phase == "move" && direction == "right") {
-          t.visibleMenu = 1;
-          t.menuItemClicked.emit(false);
-          return false;
-        }
-        if (phase == "move" && direction == "left") {
-          t.clickMenuButton();
-          return false;
-        }
-      }
-    });
+    let el = document.getElementById('swipe-area');
+    if(el != null) {
+      el.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        let touch = e.touches[0];
+        t.startX = touch.pageX;
 
+      }, false);
+      el.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        t.currentX = 0;
+        t.startX = 0;
+        t.menuLoaded = false;
+      }, false);
+      el.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        let touch = e.touches[0];
+        t.currentX = touch.pageX - t.startX;
+        if (Math.abs(t.currentX) >= 10 && !t.menuLoaded) {
+
+          if (t.currentX < 0) {
+            t.menuLoaded = true;
+            t.clickMenuButton();
+          } else if (t.currentX > 0) {
+            t.visibleMenu = 1;
+            t.menuLoaded = true;
+            t.menuItemClicked.emit(false);
+          }
+        }
+      }, false);
+    }
     this.checkUser(false);
   }
 
