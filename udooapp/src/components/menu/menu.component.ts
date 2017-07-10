@@ -95,7 +95,7 @@ export class MenuComponent implements OnInit {
       swipeStatus: function (event, phase, direction, distance, duration, fingers) {
         if (phase == "move" && direction == "right") {
           t.visibleMenu = 1;
-          t.menuItemClicked.emit(true);
+          t.menuItemClicked.emit(false);
           return false;
         }
         if (phase == "move" && direction == "left") {

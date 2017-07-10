@@ -1,6 +1,6 @@
 <div class="service-dialog-background" *ngIf="visible">
-  <div class="service-dialog-window">
-    <div class="service-dialog-close-background" (click)="onClickClose()">
+  <div class="service-dialog-window" id="dialog-window">
+    <div class="service-dialog-close-background" (click)="onClickClose()" (drag)="onMouseMove($event)">
       <div class="service-dialog-close"></div>
     </div>
     <div class="service-dialog-direction-left" (click)="onClickPrevious()">
@@ -9,16 +9,19 @@
     <div class="service-dialog-direction-right" (click)="onClickNext()">
       <div class="service-dialog-next"></div>
     </div>
-    <div class="loader" *ngIf="loading">Loading...</div>
-    <div class="service-dialog-content" *ngIf="!loading">
-      <div class="service-dialog-title">{{service.title}}</div>
-      <div class="service-dialog-description">{{service.description}}<span class="service-dialog-more"
-                                                                           (click)="onClickOpen()"> More...</span></div>
+    <div class="container">
+      <div id="service-container" [style.margin-left.px]="movedCoordX" [style.animation-name]="animation">
+        <div class="loader" *ngIf="loading">Loading...</div>
+        <div class="service-dialog-content" *ngIf="!loading">
+          <div class="service-dialog-title">{{service.title}}</div>
+          <div class="service-dialog-description">{{service.description}}<span class="service-dialog-more"
+                                                                               (click)="onClickOpen()"> More...</span>
+          </div>
 
-      <div class="service-dialog-location">Location: {{getLocation()}}</div>
-      <br>
-      <div class="service-dialog-date">Expiry date: {{convertMillisToDate(service.expirydate)}}</div>
+          <div class="service-dialog-location">Location: {{getLocation()}}</div>
+          <br>
+          <div class="service-dialog-date">Expiry date: {{convertMillisToDate(service.expirydate)}}</div>
+        </div>
+      </div>
     </div>
-
   </div>
-</div>

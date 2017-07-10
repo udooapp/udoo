@@ -1,7 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {
+  AfterViewChecked, AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit,
+  Output
+} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 import {ServiceDialogController} from "./service.window.controller";
+
+declare let $: any;
 
 @Component({
   selector: 'service-dialog',
@@ -9,40 +14,98 @@ import {ServiceDialogController} from "./service.window.controller";
   styleUrls: ['./service.window.component.css']
 })
 
-export class ServiceDialogComponent {
+export class ServiceDialogComponent implements AfterViewChecked{
+  animations: string[] = ['back', 'left', 'right', ''];
   visible: boolean = false;
   service: any;
   loading: boolean = false;
+  direction: string = '';
+  startCoordX = 0;
+  movedCoordX = 0;
+  animation: string = '';
+  slided: boolean = false;
+  added: boolean = false;
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
 
+  ngAfterViewChecked(): void {
+    if(!this.added) {
+      this.added = true;
+      let el = document.getElementById('service-container');
+      let t = this;
+      if (el != null) {
+        let width = document.getElementById('dialog-window').clientWidth * 0.8;
+        el.addEventListener('touchstart', function (e) {
+          e.preventDefault();
+          let touch = e.touches[0];
+          t.startCoordX = touch.pageX;
+
+        }, false);
+        el.addEventListener('touchend', function (e) {
+          e.preventDefault();
+          if (t.movedCoordX > 0) {
+            t.direction = 'right'
+          } else if (t.movedCoordX < 0) {
+            t.direction = 'left';
+          }
+          if (width / 2 > Math.abs(t.movedCoordX)) {
+            t.animation = t.animations[0];
+            t.movedCoordX = 0;
+          } else {
+            if (t.direction == 'right') {
+              t.animation = t.animations[2];
+              if (!t.slided) {
+                t.slided = true;
+                t.onClickPrevious();
+              }
+            } else {
+              t.animation = t.animations[1];
+              if (!t.slided) {
+                t.slided = true;
+                t.onClickNext();
+              }
+            }
+          }
+        }, false);
+        el.addEventListener('touchmove', function (e) {
+          e.preventDefault();
+          let touch = e.touches[0];
+          t.movedCoordX = touch.pageX - t.startCoordX;
+        }, false);
+      }
+    }
+  }
+
   constructor(private controller: ServiceDialogController) {
     controller.setData$.subscribe(value => {
-      if (value != null) {
+      if (value == null) {
+        this.loading = false;
+      } else {
+        this.added = false;
         this.visible = true;
         this.loading = false;
         this.service = value;
-      } else {
-        this.visible = false;
-        this.loading = false;
       }
+      this.movedCoordX = 0;
+      this.startCoordX = 0;
+      this.slided = false;
     });
 
     controller.loading$.subscribe(value => {
       if (value) {
         this.visible = true;
         this.loading = true;
+
       } else {
         this.loading = false;
       }
     });
-
   }
 
   @HostListener('document:keydown', ['$event'])
   keypress(e: KeyboardEvent) {
-    switch (e.keyCode){
+    switch (e.keyCode) {
       case 27:
         this.onClickClose();
         break;
@@ -54,6 +117,7 @@ export class ServiceDialogComponent {
         break;
     }
   }
+
   @Input() set data(value: any) {
     if (value != null) {
       this.loading = false;

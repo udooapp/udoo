@@ -171,19 +171,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
           title: request.title,
           icon: this.icon
         });
-        let infowindow = new google.maps.InfoWindow({
-          content: '<div>' +
-          '<h1>' + request.title + '</h1>' +
-          '<div>' +
-          '<p>' + request.description + '</p>' +
-          '<p><b>Category: </b>' + this.findCatName(request.category) + '</p>' +
-          '</div>' +
-          '</div>',
-          maxWidth: 300
-        });
-        marker.addListener('mouseover', function () {
-          infowindow.open(map, marker);
-        });
+
         marker.addListener('click', function () {
           mk.elementCoordinates.lat = coordinate.lat;
           mk.elementCoordinates.lng = coordinate.lng;
@@ -193,9 +181,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
           });
         });
 
-        marker.addListener('mouseout', function () {
-          infowindow.close(map, marker);
-        });
         this.markers.push(marker);
       }
     }
@@ -222,20 +207,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
           title: offer.title,
           icon: this.icon
         });
-        let infowindow = new google.maps.InfoWindow({
-          content: '<div >' +
-          '<h1>' + offer.title + '</h1>' +
-          '<div>' +
-          '<p>' + offer.description + '</p>' +
-          '<p><b>Category: </b>' + this.findCatName(offer.category) + '</p>' +
-          '</div>' +
-          '</div>',
-          maxWidth: 300
-        });
-        marker.addListener('mouseover', function () {
-          infowindow.open(mk.map, marker);
-        });
-
         marker.addListener('click', function () {
           mk.zone.run(() => {
             mk.elementCoordinates.lat = coordinate.lat;
@@ -245,9 +216,6 @@ export class MapComponent extends ConversionMethods implements OnInit {
           });
         });
 
-        marker.addListener('mouseout', function () {
-          infowindow.close(mk.map, marker);
-        });
         this.markers.push(marker);
       }
     }
@@ -286,7 +254,11 @@ export class MapComponent extends ConversionMethods implements OnInit {
       if ((type != t.type || id != t.id) && t.dist >= this.elementCoordinates.dist) {
         this.elementCoordinates.dist = t.dist;
         this.loadDialog(t.type, t.id);
+      } else{
+        this.serviceController.setData$.emit(null);
       }
+    } else {
+      this.serviceController.setData$.emit(null);
     }
   }
 
@@ -298,7 +270,11 @@ export class MapComponent extends ConversionMethods implements OnInit {
       if ((type != t.type || id != t.id) && t.dist <= this.elementCoordinates.dist) {
         this.elementCoordinates.dist = t.dist;
         this.loadDialog(t.type, t.id);
+      } else {
+        this.serviceController.setData$.emit(null);
       }
+    } else {
+      this.serviceController.setData$.emit(null);
     }
   }
 
