@@ -14,12 +14,11 @@ declare let $: any;
   styleUrls: ['./service.window.component.css']
 })
 
-export class ServiceDialogComponent implements AfterViewChecked{
+export class ServiceDialogComponent implements AfterViewChecked {
   animations: string[] = ['back', 'left', 'right', ''];
   visible: boolean = false;
   service: any;
   loading: boolean = false;
-  direction: string = '';
   startCoordX = 0;
   movedCoordX = 0;
   animation: string = '';
@@ -30,37 +29,37 @@ export class ServiceDialogComponent implements AfterViewChecked{
   @Output() open: EventEmitter<any> = new EventEmitter();
 
   ngAfterViewChecked(): void {
-    if(!this.added) {
+    if (!this.added) {
       this.added = true;
       let el = document.getElementById('service-container');
       let t = this;
       if (el != null) {
-        let width = document.getElementById('dialog-window').clientWidth * 0.8;
+        let width = document.getElementById('dialog-window').clientWidth * 0.7;
+        el.addEventListener(
+          'animationend',
+          function (event) {
+            t.movedCoordX = 0;
+            t.animation = t.animations[3];
+          }, false);
         el.addEventListener('touchstart', function (e) {
           e.preventDefault();
+          t.animation = t.animations[3];
           let touch = e.touches[0];
           t.startCoordX = touch.pageX;
 
         }, false);
         el.addEventListener('touchend', function (e) {
           e.preventDefault();
-          if (t.movedCoordX > 0) {
-            t.direction = 'right'
-          } else if (t.movedCoordX < 0) {
-            t.direction = 'left';
-          }
+
           if (width / 2 > Math.abs(t.movedCoordX)) {
             t.animation = t.animations[0];
-            t.movedCoordX = 0;
           } else {
-            if (t.direction == 'right') {
-              t.animation = t.animations[2];
+            if (t.movedCoordX > 0) {
               if (!t.slided) {
                 t.slided = true;
                 t.onClickPrevious();
               }
             } else {
-              t.animation = t.animations[1];
               if (!t.slided) {
                 t.slided = true;
                 t.onClickNext();
@@ -86,8 +85,8 @@ export class ServiceDialogComponent implements AfterViewChecked{
         this.visible = true;
         this.loading = false;
         this.service = value;
+
       }
-      this.movedCoordX = 0;
       this.startCoordX = 0;
       this.slided = false;
     });
@@ -151,10 +150,12 @@ export class ServiceDialogComponent implements AfterViewChecked{
   }
 
   onClickNext() {
+    this.animation = this.animations[1];
     this.next.emit(this.service);
   }
 
   onClickPrevious() {
+    this.animation = this.animations[2];
     this.previous.emit(this.service);
   }
 

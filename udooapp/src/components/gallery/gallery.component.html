@@ -8,8 +8,13 @@
   <div *ngIf="editable" class="image-item new-image"><input type="file" accept="image/*" (change)="onClickNew($event)">
   </div>
 </div>
-<div *ngIf="gallery" class="fullscreen-gallery">
-  <img class="gallery-image" [src]="images[index].src">
-  <div *ngIf="index > 0" class="gallery-left-arrow" (click)="onClickPrevious()"></div>
-  <div *ngIf="index < images.length - 1" class="gallery-right-arrow" (click)="onClickNext()"></div>
+<div *ngIf="gallery" id="gallery" class="fullscreen-gallery">
+  <img id="gallery-image-bottom" [style.opacity]="opacity" [style.animation-name]="bottomAnimation" class="gallery-image" [src]="images[index2].src">
+  <img id="gallery-image-center" [style.margin-left.px]="margin" [style.animation-name]="animation"  class="gallery-image" [src]="images[index].src">
+   <div *ngIf="index > 0"  class="gallery-left-arrow-container gallery-arrow-container" (click)="onClickPrevious()">
+    <div class="gallery-left-arrow"></div>
+  </div>
+  <div  *ngIf="index < images.length - 1" class="gallery-arrow-container gallery-right-arrow-container" (click)="onClickNext()">
+    <div class="gallery-right-arrow"></div>
+  </div>
 </div>

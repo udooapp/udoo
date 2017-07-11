@@ -167,6 +167,16 @@ dialog {
   transform: rotate(225deg);
 }
 
+.service-dialog-next:after {
+  background: #378281;
+  content: "";
+  height: 6px;
+  position: absolute;
+  border-radius: 1px;
+  top: 44px;
+  width: 46px;
+}
+
 .service-dialog-more {
   color: #4A9594;
   cursor: pointer;
@@ -174,17 +184,6 @@ dialog {
 
 .service-dialog-more:hover {
   color: #2B6665;
-}
-
-.service-dialog-next:after {
-  background: #378281;
-  content: "";
-  height: 6px;
-
-  position: absolute;
-  border-radius: 1px;
-  top: 44px;
-  width: 46px;
 }
 
 .service-dialog-title {
@@ -203,6 +202,7 @@ dialog {
   animation-duration: 250ms;
   position: relative;
   width: 100%;
+  background-color: #FAFAFA;
 }
 
 .service-dialog-content {
@@ -232,4 +232,8 @@ dialog {
 }
 @keyframes left {
   100% {margin-left: -100%;}
+}
+
+.service-place-holder{
+  position: absolute;
 }
