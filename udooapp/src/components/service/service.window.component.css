@@ -20,22 +20,125 @@ dialog {
     width: 60%;
   }
 
+  .service-dialog-direction-left {
+    left: 30px;
+  }
+
+  .service-dialog-direction-right {
+    right: 30px;
+  }
+
+  .service-dialog-direction {
+    margin-top: 300px;
+  }
+
+  #service-container {
+    max-height: 450px;
+  }
+  .service-dialog-user-picture {
+    width: 194px;
+    height: 194px;
+    margin: -37px 0 0 -37px;
+  }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 960px)  and (orientation: portrait) {
   .service-dialog-window {
     width: 70%;
     margin-left: 12%;
   }
+  .service-dialog-direction {
+    margin-top: 250px;
+  }
+  .service-dialog-direction-left {
+    left: 15px;
+  }
 
+  .service-dialog-direction-right {
+    right: 15px;
+  }
+
+  #service-container {
+    max-height: 450px;
+  }
+  .service-dialog-user-picture {
+    width: 170px;
+    height: 170px;
+    margin: -25px 0 0 -25px;
+  }
+}
+
+@media (max-width: 960px) and (orientation: landscape) {
+  .service-dialog-window {
+    width: 70%;
+    margin-left: 12%;
+  }
+  .service-dialog-direction {
+    margin-top: 160px;
+  }
+  .service-dialog-user-picture {
+    width: 180px;
+    height: 180px;
+    margin: -30px 0 0 -30px;
+  }
+  .service-dialog-direction-left {
+    left: 10px;
+  }
+
+  .service-dialog-direction-right {
+    right: 10px;
+  }
+
+  #service-container {
+    max-height: 250px;
+    -webkit-touch-overflow: scroll;
+  }
 }
 
 @media (max-width: 641px) {
   .service-dialog-window {
-    width: 80%;
-    margin-left: 7%;
+    width: 65%;
+    margin-left: 15%;
   }
 
+  .service-dialog-direction-left {
+    left: 5px;
+  }
+
+  .service-dialog-direction-right {
+    right: 5px;
+  }
+
+}
+
+@media (max-width: 641px) and (orientation: landscape) {
+  #service-container {
+    max-height: 170px;
+  }
+
+  .service-dialog-direction {
+    margin-top: 120px;
+  }
+  .service-dialog-user-picture {
+    width: 160px;
+    height: 160px;
+    margin: -20px 0 0 -20px;
+  }
+}
+
+@media (max-width: 641px) and (orientation: portrait) {
+  #service-container {
+    max-height: 450px;
+  }
+
+  .service-dialog-direction {
+    margin-top: 230px;
+  }
+  .service-dialog-user-picture {
+    width: 156px;
+    height: 156px;
+    margin: -18px 0 0 -18px;
+  }
 }
 
 .service-dialog-background {
@@ -54,14 +157,17 @@ dialog {
   background-color: #FAFAFA;
   border-radius: 5px;
   padding: 2% 3%;
-  min-height: 300px;
-  margin-top: 50px;
+  min-height: 180px;
+  margin-top: 30px;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
 }
-
+#service-container::-webkit-scrollbar {
+  display: none;
+}
 .loader {
+  position: absolute;
   margin-left: 50%;
-  margin-top: 15%;
+  margin-top: 80px;
 }
 
 .service-dialog-close {
@@ -89,6 +195,10 @@ dialog {
 
 .service-dialog-close-background {
   float: right;
+  right: 10px;
+  top: 10px;
+  position: absolute;
+  z-index: 2;
   width: 36px;
   height: 36px;
   border-radius: 30px;
@@ -119,42 +229,26 @@ dialog {
   width: 46px;
 }
 
-.service-dialog-direction-left {
+.service-dialog-direction {
   position: absolute;
-  margin-top: 120px;
   cursor: pointer;
   width: 45px;
   height: 80px;
   padding-left: 5px;
   border-radius: 10px;
   z-index: 3;
-
 }
 
-.service-dialog-direction-left:hover {
-  background-color: #EAEAEA;
-}
-
-.service-dialog-direction-right {
-  position: absolute;
-  cursor: pointer;
-  right: 28px;
-  margin-top: 120px;
-  width: 45px;
-  height: 80px;
-  padding-left: 5px;
-  margin-right: 5px;
-  border-radius: 10px;
-  z-index: 3;
-}
-.container{
-  overflow: hidden;
-  margin: 10px 60px;
+.container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 25px 10px 10px 20px;
   position: relative;
   height: auto;
 }
-.service-dialog-direction-right:hover {
-  background-color: #EAEAEA;
+
+.service-dialog-direction:hover {
+  background-color: rgba(79, 79, 79, 0.4);
 }
 
 .service-dialog-next {
@@ -197,11 +291,14 @@ dialog {
   text-align: left;
   font-size: 14pt;
 }
-#service-container{
+
+#service-container {
   display: block;
+  overflow-y: auto;
   animation-duration: 250ms;
   position: relative;
   width: 100%;
+  min-height: 160px;
   background-color: #FAFAFA;
 }
 
@@ -224,16 +321,61 @@ dialog {
   font-size: 15pt;
   float: left;
 }
+
 @keyframes back {
-  100% {margin-left: 0;}
-}
-@keyframes right {
-  100% {margin-left: 100%;}
-}
-@keyframes left {
-  100% {margin-left: -100%;}
+  100% {
+    margin-left: 0;
+  }
 }
 
-.service-place-holder{
-  position: absolute;
+@keyframes right {
+  100% {
+    margin-left: 100%;
+  }
+}
+
+@keyframes left {
+  100% {
+    margin-left: -100%;
+  }
+}
+
+.service-dialog-user-stars {
+  margin: 10px auto;
+  display: -webkit-flex;
+  display: inline-flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.service-dialog-user-profile-stars {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+}
+
+.service-dialog-user-name {
+  font-size: 16pt;
+  padding: 10px 0 10px 0;
+}
+
+.service-dialog-user-container {
+  text-align: center;
+  color: #2B6665;
+  background-color: #EBF2F2;
+  border-radius: 20px;
+  padding: 5px;
+  margin: 5px 0;
+}
+.service-dialog-user-profile-picture {
+  margin: 15px auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+  background-color: #FAFAFA;
+  padding: 5%;
+  overflow: hidden;
+}
+.service-dialog-user-picture{
+  object-fit: cover;
 }

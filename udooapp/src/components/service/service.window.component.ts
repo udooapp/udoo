@@ -6,8 +6,6 @@ import {
 import 'rxjs/add/operator/switchMap';
 import {ServiceDialogController} from "./service.window.controller";
 
-declare let $: any;
-
 @Component({
   selector: 'service-dialog',
   templateUrl: './service.window.component.html',
@@ -18,11 +16,17 @@ export class ServiceDialogComponent implements AfterViewChecked {
   animations: string[] = ['back', 'left', 'right', ''];
   visible: boolean = false;
   service: any;
+  user: any;
+  image: string = '';
+  stars: number[] = [0, 0, 0, 0, 0];
   loading: boolean = false;
-  startCoordX = 0;
   movedCoordX = 0;
+  private startCoordX = 0;
+  private scrollDirection = 0;
+  private coordStartY: number = 0;
+  private coordY: number = 0;
+  private slided: boolean = false;
   animation: string = '';
-  slided: boolean = false;
   added: boolean = false;
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
@@ -34,6 +38,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
       let el = document.getElementById('service-container');
       let t = this;
       if (el != null) {
+        el.scrollTop = 0;
         let width = document.getElementById('dialog-window').clientWidth * 0.7;
         el.addEventListener(
           'animationend',
@@ -46,23 +51,25 @@ export class ServiceDialogComponent implements AfterViewChecked {
           t.animation = t.animations[3];
           let touch = e.touches[0];
           t.startCoordX = touch.pageX;
-
+          t.coordY = touch.pageY;
+          t.scrollDirection = 0;
         }, false);
         el.addEventListener('touchend', function (e) {
           e.preventDefault();
-
-          if (width / 2 > Math.abs(t.movedCoordX)) {
-            t.animation = t.animations[0];
-          } else {
-            if (t.movedCoordX > 0) {
-              if (!t.slided) {
-                t.slided = true;
-                t.onClickPrevious();
-              }
+          if (t.movedCoordX != 0) {
+            if (width / 2 > Math.abs(t.movedCoordX)) {
+              t.animation = t.animations[0];
             } else {
-              if (!t.slided) {
-                t.slided = true;
-                t.onClickNext();
+              if (t.movedCoordX > 0) {
+                if (!t.slided) {
+                  t.slided = true;
+                  t.onClickPrevious();
+                }
+              } else {
+                if (!t.slided) {
+                  t.slided = true;
+                  t.onClickNext();
+                }
               }
             }
           }
@@ -70,7 +77,23 @@ export class ServiceDialogComponent implements AfterViewChecked {
         el.addEventListener('touchmove', function (e) {
           e.preventDefault();
           let touch = e.touches[0];
-          t.movedCoordX = touch.pageX - t.startCoordX;
+          if (t.scrollDirection == 0 || t.scrollDirection == 1) {
+
+            el.scrollTop = el.scrollTop + (-1 * (touch.pageY - t.coordStartY));
+            t.coordStartY = touch.pageY;
+          }
+          if (t.scrollDirection == 0 || t.scrollDirection == -1) {
+            t.movedCoordX = touch.pageX - t.startCoordX;
+          } else {
+            t.movedCoordX = 0;
+          }
+          if (t.scrollDirection == 0) {
+            if (Math.abs(touch.pageY - t.coordY) >= 10) {
+              t.scrollDirection = 1;
+            } else if (Math.abs(t.movedCoordX) >= 10) {
+              t.scrollDirection = -1;
+            }
+          }
         }, false);
       }
     }
@@ -84,7 +107,25 @@ export class ServiceDialogComponent implements AfterViewChecked {
         this.added = false;
         this.visible = true;
         this.loading = false;
-        this.service = value;
+        this.movedCoordX = 0;
+        this.service = value.service;
+        this.user = value.user;
+        this.image = this.getPictureUrl(this.user.picture);
+        let star = this.user.stars;
+        if (star == 0) {
+          this.stars = [2, 2, 2, 2, 2];
+        } else {
+          for (let i = 0; i < 5; ++i) {
+            if (star >= 1) {
+              this.stars[i] = 2;
+            } else if (star > 0) {
+              this.stars[i] = 1;
+            } else {
+              this.stars[i] = 0;
+            }
+            star -= 1;
+          }
+        }
 
       }
       this.startCoordX = 0;
@@ -114,7 +155,20 @@ export class ServiceDialogComponent implements AfterViewChecked {
       case 39:
         this.onClickNext();
         break;
+      case 40:
+        let el = document.getElementById('service-container');
+        if(el != null){
+          el.scrollTop = el.scrollTop + 10;
+        }
+        break;
+      case 38:
+        let ele = document.getElementById('service-container');
+        if(ele != null){
+          ele.scrollTop = ele.scrollTop - 10;
+        }
+        break;
     }
+    console.log(e.keyCode);
   }
 
   @Input() set data(value: any) {
@@ -135,6 +189,13 @@ export class ServiceDialogComponent implements AfterViewChecked {
     } else {
       this.loading = false;
     }
+  }
+
+  public getPictureUrl(src: string) {
+    if (src == null || src.length == 0 || src === 'null') {
+      return './assets/profile_picture.png';
+    }
+    return this.user.picture;
   }
 
   getLocation(): string {

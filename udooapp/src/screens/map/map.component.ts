@@ -224,9 +224,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private loadDialog(type: boolean, id: number) {
     this.serviceController.loading$.emit(true);
     if (type) {
-      this.offerService.getOffer(id).subscribe(
+      this.offerService.getOfferData(id).subscribe(
         value => {
-          this.serviceController.setData$.emit(value);
+          let data:any = {service: value.offer, user: value.user};
+          this.serviceController.setData$.emit(data);
         },
         error => {
           this.serviceController.setData$.emit(null);
@@ -234,9 +235,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
         }
       );
     } else {
-      this.requestService.getRequest(id).subscribe(
+      this.requestService.getRequestData(id).subscribe(
         value => {
-          this.serviceController.setData$.emit(value);
+          let data:any = {service: value.request, user: value.user};
+          this.serviceController.setData$.emit(data);
         },
         error => {
           this.serviceController.setData$.emit(null);
