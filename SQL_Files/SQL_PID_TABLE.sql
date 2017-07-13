@@ -1,0 +1,13 @@
+CREATE TABLE BIDS(
+  bid INT AUTO_INCREMENT,
+  uid INT NOT NULL,
+  sid INT NOT NULL,
+  type BOOLEAN NOT NULL,
+  price DOUBLE NOT NULL,
+  accepted BOOLEAN,
+  description text,
+  PRIMARY KEY(bid),
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
+  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
+  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+);

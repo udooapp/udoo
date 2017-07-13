@@ -37,6 +37,7 @@ import {DialogWindowComponent} from "../components/dialog/dialog.component";
 import {GalleryComponent} from "../components/gallery/gallery.component";
 import {ServiceDialogComponent} from "../components/service/service.window.component";
 import {ServiceDialogController} from "../components/service/service.window.controller";
+import {BidDialogComponent} from "../components/bid/bid.window.component";
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {ServiceDialogController} from "../components/service/service.window.cont
     SettingsComponent,
     ActivationComponent,
     GalleryComponent,
-    ServiceDialogComponent
+    ServiceDialogComponent,
+    BidDialogComponent
   ],
   imports: [
     BrowserModule,

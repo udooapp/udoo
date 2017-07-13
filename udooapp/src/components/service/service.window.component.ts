@@ -157,13 +157,13 @@ export class ServiceDialogComponent implements AfterViewChecked {
         break;
       case 40:
         let el = document.getElementById('service-container');
-        if(el != null){
+        if (el != null) {
           el.scrollTop = el.scrollTop + 10;
         }
         break;
       case 38:
         let ele = document.getElementById('service-container');
-        if(ele != null){
+        if (ele != null) {
           ele.scrollTop = ele.scrollTop - 10;
         }
         break;

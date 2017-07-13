@@ -9,13 +9,17 @@
   </div>
 </div>
 <div *ngIf="gallery" id="gallery" class="fullscreen-gallery">
-  <img *ngIf="index > 0" id="gallery-image-left" [style.margin-left.px]="leftMargin" [style.animation-name]="animationLeft"  class="gallery-image" [src]="images[index -1].src">
-  <img id="gallery-image-center" [style.margin-left.px]="margin" [style.animation-name]="animation"  class="gallery-image" [src]="images[index].src">
-  <img *ngIf="index < images.length - 1" id="gallery-image-right" [style.margin-left.px]="rightMargin" [style.animation-name]="animationRight"  class="gallery-image" [src]="images[index + 1].src">
-  <div *ngIf="index > 0"  class="gallery-left-arrow-container gallery-arrow-container" (click)="onClickPrevious()">
+  <img *ngIf="index > 0" id="gallery-image-left" [style.margin-left.px]="leftMargin"
+       [style.animation-name]="animationLeft" class="gallery-image" [src]="images[index -1].src">
+  <img id="gallery-image-center" [style.margin-left.px]="margin" [style.animation-name]="animation"
+       class="gallery-image" [src]="images[index].src">
+  <img *ngIf="index < images.length - 1" id="gallery-image-right" [style.margin-left.px]="rightMargin"
+       [style.animation-name]="animationRight" class="gallery-image" [src]="images[index + 1].src">
+  <div *ngIf="index > 0" class="gallery-left-arrow-container gallery-arrow-container" (click)="onClickPrevious()">
     <div class="gallery-left-arrow"></div>
   </div>
-  <div  *ngIf="index < images.length - 1" class="gallery-arrow-container gallery-right-arrow-container" (click)="onClickNext()">
+  <div *ngIf="index < images.length - 1" class="gallery-arrow-container gallery-right-arrow-container"
+       (click)="onClickNext()">
     <div class="gallery-right-arrow"></div>
   </div>
 </div>

@@ -11,14 +11,15 @@ import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
 import {DialogController} from "../../controllers/dialog.controller";
+import {BidService} from "../../services/bid.service";
 
-declare let $: any;
 declare let FB;
+declare let navigator;
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css'],
-  providers: [UserService, EmailService]
+  providers: [UserService, EmailService, BidService]
 })
 
 export class MenuComponent implements OnInit {
@@ -26,16 +27,17 @@ export class MenuComponent implements OnInit {
   @Output() activatedUser = new EventEmitter<boolean>();
   @Output() menuItemClicked = new EventEmitter<boolean>();
   visibleMenu: number = -1;
+  bids: any[];
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
   image: string;
-  menuLoaded:boolean = false;
+  menuLoaded: boolean = false;
   startX: number = 0;
   currentX: number = 0;
   checkLogin: boolean = false;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private router: Router, private bidService: BidService, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
     let before: string = '';
     notifier.pageChanged$.subscribe(action => {
       if (action === 'refresh') {
@@ -92,10 +94,32 @@ export class MenuComponent implements OnInit {
     this.visibleMenu = show ? 1 : this.visibleMenu == -1 ? -1 : 0;
   }
 
+  onConfirm(buttonIndex) {
+    if (this.bids != null && this.bids.length > 0) {
+      this.bidService.sendPidResponse(this.bids[0].id, buttonIndex == 1).subscribe(data => {
+      }, error => {
+        this.dialog.notifyError(error);
+      });
+    }
+  }
+
+// Show a custom confirmation dialog
+//
+  sendNotifications() {
+    if(navigator != null) {
+      navigator.notification.confirm(
+        this.bids[0].message,  // message
+        this.onConfirm,              // callback to invoke with index of button pressed
+        'Someone sent a bid',            // title
+        'Accept,Decline'          // buttonLabels
+      );
+    }
+  }
+
   ngOnInit() {
     let t = this;
     let el = document.getElementById('swipe-area');
-    if(el != null) {
+    if (el != null) {
       el.addEventListener('touchstart', function (e) {
         e.preventDefault();
         let touch = e.touches[0];
@@ -133,15 +157,17 @@ export class MenuComponent implements OnInit {
     if (token != null && token.length > 0) {
       this.login = true;
       this.userService.getUserData().subscribe(
-        user => {
-          this.user = user;
+        data => {
+          this.user = data.user;
+          this.bids = data.bids;
+
           //   window.document =this.user.language;
           document['locale'] = this.user.language;
           getTranslationProviders().then(value => {
           }).catch(err => {
           });
-          this.image = this.getPictureUrl(user.picture);
-          let star = user.stars;
+          this.image = this.getPictureUrl(data.user.picture);
+          let star = data.user.stars;
           if (star == 0) {
             this.stars = [2, 2, 2, 2, 2];
           } else {
@@ -159,10 +185,13 @@ export class MenuComponent implements OnInit {
           if (send) {
             this.notifier.userDataPipe$.emit(this.user);
           }
-          this.activated = user.active >= 15;
+          this.activated = data.user.active >= 15;
           this.activatedUser.emit(this.activated);
           if (!this.activated && this.checkLogin) {
             this.router.navigate([CREATE]);
+          }
+          if (this.bids != null && this.bids.length > 0) {
+            this.sendNotifications();
           }
         },
         error => {

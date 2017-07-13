@@ -1,3 +1,4 @@
+<bid-dialog [show]="showBid" (close)="onClickClose()" (send)="onClickSend()" (description)="onKeyDescription($event)" (price)="onKeyPrice($event)"></bid-dialog>
 <div class="input-container" *ngIf="loaded">
   <div class="contact-container">
     <div class="contact-profile-picture">
@@ -20,6 +21,7 @@
     <div class="detail-location"><b i18h>Location:</b> {{getServiceLocation(data.location)|| ''}}</div>
     <div class="detail-date" *ngIf="!type"><b i18h>Job date:</b> {{data.jobdate || ''}}</div>
     <div class="detail-date"><b i18h>Expiry date:</b> {{convertNumberToDate(data.expirydate) || ''}}</div>
+    <button class="input-button button-light button-bid" (click)="onClickBid()">Send a bid</button>
   </div>
 </div>
 <div class="gallery-container">

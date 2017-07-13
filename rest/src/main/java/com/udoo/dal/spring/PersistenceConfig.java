@@ -1,6 +1,8 @@
 package com.udoo.dal.spring;
 
+import com.udoo.dal.dao.BidResultDao;
 import com.udoo.dal.dao.CategoryResultDao;
+import com.udoo.dal.dao.IBidResult;
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.restservice.security.SecurityConfig;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -88,6 +90,13 @@ public class PersistenceConfig {
     @Bean
     public ICategoryResult iCategoryResult(DataSource dataSource) {
         CategoryResultDao result = new CategoryResultDao();
+        result.setDataSource(dataSource);
+        return result;
+    }
+
+    @Bean
+    public IBidResult iBidResult(DataSource dataSource) {
+        BidResultDao result = new BidResultDao();
         result.setDataSource(dataSource);
         return result;
     }

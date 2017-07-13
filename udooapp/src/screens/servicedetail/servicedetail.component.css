@@ -138,7 +138,6 @@
     width: 170px;
     height: 170px;
     margin: -25px 0 0 -25px;
-    object-fit: cover;
   }
   .input-send{
     margin-top: 0;
@@ -256,4 +255,7 @@
 }
 .more-comment:hover{
   color:#378281;
+}
+.button-bid{
+  width: 40%;
 }

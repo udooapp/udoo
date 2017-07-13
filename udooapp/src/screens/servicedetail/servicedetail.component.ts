@@ -13,17 +13,20 @@ import {MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
+import {BidService} from "../../services/bid.service";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
   styleUrls: ['./servicedetail.component.css'],
-  providers: [OfferService, RequestService, UserService, ContactService, CommentService]
+  providers: [OfferService, RequestService, UserService, ContactService, CommentService, BidService]
 })
 export class ServiceDetailComponent implements OnInit {
   private static NAME: string = 'ServiceDetail';
   message: string = '';
   user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0, 0);
+  bid: any = {price: 0, description: '', sid: 0, type: false};
   commentMessage = '';
+  showBid = false;
   error: string = '';
   type: boolean = false;
   data: any;
@@ -38,7 +41,7 @@ export class ServiceDetailComponent implements OnInit {
   clearArea: boolean = false;
   hasMore: boolean = true;
 
-  constructor(private zone: NgZone, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
+  constructor(private zone: NgZone, private bidService: BidService, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
@@ -63,11 +66,13 @@ export class ServiceDetailComponent implements OnInit {
           data => {
             this.data = data.offer;
             this.loaded = true;
+            this.bid.sid = this.data.oid;
+            this.bid.type = true;
             this.pictures = this.data.picturesOffer;
-            let t: any[]= data.comments;
+            let t: any[] = data.comments;
             let i: number = t.length - 1;
             this.comments = [];
-            for(; i >= 0; --i){
+            for (; i >= 0; --i) {
               this.comments.push(t[i])
             }
             this.hasMore = this.comments.length % 5 == 0 && this.comments.length > 0;
@@ -80,6 +85,8 @@ export class ServiceDetailComponent implements OnInit {
           data => {
             this.data = data.request;
             this.pictures = this.data.picturesRequest;
+            this.bid.sid = this.data.rid;
+            this.bid.type = false;
             this.loaded = true;
             this.loadUser(data.user);
           },
@@ -146,7 +153,7 @@ export class ServiceDetailComponent implements OnInit {
   public convertNumberToDateTime(millis: number): string {
     let date: Date = new Date(millis);
     let t: string[] = date.toDateString().split(" ");
-    return date.getFullYear() + ' ' + t[1]+ ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+    return date.getFullYear() + ' ' + t[1] + ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
   }
 
   public convertNumberToDate(millis: number): string {
@@ -188,11 +195,11 @@ export class ServiceDetailComponent implements OnInit {
     }).subscribe(
       data => {
         this.clearArea = !this.clearArea;
-        if(this.comments.length % 5 > 0 || this.comments.length == 0) {
+        if (this.comments.length % 5 > 0 || this.comments.length == 0) {
           this.comments.push(data);
 
         } else {
-          this.hasMore =  true;
+          this.hasMore = true;
         }
       },
       error => {
@@ -204,20 +211,46 @@ export class ServiceDetailComponent implements OnInit {
   public showMoreComments() {
     this.commentService.getComments(this.type ? this.data.oid : this.data.rid, this.comments.length, this.type).subscribe(
       result => {
-          this.hasMore = result.length % 5 == 0 && result.length > 0;
-          let i: number = result.length - 1;
-          let res: any[] =[];
-          for(; i >= 0; --i){
-            res.push(result[i]);
-          }
-          for(i = 0; i < this.comments.length; ++i){
-            res.push(this.comments[i]);
-          }
-          this.comments = res;
+        this.hasMore = result.length % 5 == 0 && result.length > 0;
+        let i: number = result.length - 1;
+        let res: any[] = [];
+        for (; i >= 0; --i) {
+          res.push(result[i]);
+        }
+        for (i = 0; i < this.comments.length; ++i) {
+          res.push(this.comments[i]);
+        }
+        this.comments = res;
       },
       error => {
         this.dialog.notifyError(error)
       }
     );
+  }
+
+  public onClickClose() {
+    this.showBid = false;
+  }
+
+  public onClickSend() {
+    this.bidService.savePid(this.bid).subscribe(
+      data => {
+        this.dialog.sendMessage("Bid sent!");
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
+  }
+
+  public onClickBid(): void {
+    this.showBid = true;
+  }
+
+  onKeyPrice(event) {
+    this.bid.price = event;
+  }
+
+  onKeyDescription(event) {
+    this.bid.description = event;
   }
 }

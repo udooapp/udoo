@@ -3,8 +3,10 @@ package com.udoo.restservice.spring;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.udoo.dal.dao.IBidResult;
 import com.udoo.dal.entities.Token;
 import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.UserResponse;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.ITokenRepository;
 import com.udoo.dal.repositories.IUserRepository;
@@ -43,8 +45,6 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private IUserRepository userRepository;
 
-
-
     @Resource
     private ITokenRepository tokenRepository;
 
@@ -54,8 +54,13 @@ public class UserServiceController implements IUserServiceController {
     @Autowired
     private EmailService emailService;
 
+
     @Autowired
     private SmsService smsService;
+
+    @Autowired
+    private IBidResult bidResult;
+
 
     @Override
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +154,10 @@ public class UserServiceController implements IUserServiceController {
     public ResponseEntity<?> getUserData(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
         if (user != null) {
-            return new ResponseEntity<>( user, HttpStatus.OK);
+            UserResponse resp = new UserResponse();
+            resp.setUser(user);
+            resp.setBids(bidResult.getBids((long)user.getUid()));
+            return new ResponseEntity<>( resp, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -15,14 +15,15 @@ export class GalleryComponent implements AfterViewChecked {
   animation: string = '';
   animationLeft: string = '';
   animationRight: string = '';
-  animations: string[] = ['back', 'left', 'right', ''];
-  leftMargin:number = -1000;
-  rightMargin:number = 1000;
+  private animations: string[] = ['back', 'left', 'right', ''];
+  leftMargin: number = -1000;
+  rightMargin: number = 1000;
   gallery: boolean = false;
-  direction: number = 0;
+  private direction: number = 0;
   index: number = 0;
   margin: number = 0;
-  slided: boolean = false;
+  private width:number = 0;
+  private slided: boolean = false;
   private found: boolean = false;
   private startCoordX: number = 0;
   @Input() images: any[] = [];
@@ -34,6 +35,15 @@ export class GalleryComponent implements AfterViewChecked {
   @Output() onClickNewImage: EventEmitter<any> = new EventEmitter();
 
   constructor() {
+    let t = this;
+    window.addEventListener("orientationchange", function() {
+      t.leftMargin = 1000;
+      t.rightMargin = 1000;
+      let el = document.getElementById("gallery");
+      if(el != null){
+        t.width = el.clientWidth / 2;
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -41,8 +51,7 @@ export class GalleryComponent implements AfterViewChecked {
     if (el != null && !this.found) {
       this.found = true;
       let t = this;
-      let width:number = document.getElementById("gallery").clientWidth / 2;
-
+       this.width = document.getElementById("gallery").clientWidth / 2;
       el.addEventListener('animationend', function (e) {
         e.preventDefault();
         t.startCoordX = 0;
@@ -52,8 +61,10 @@ export class GalleryComponent implements AfterViewChecked {
         t.animationLeft = '';
         t.animationRight = '';
         t.direction = 0;
-        t.leftMargin = -width * 2;
-        t.rightMargin = width * 2;
+        if(t.slided) {
+          t.leftMargin = -t.width * 2;
+          t.rightMargin = t.width * 2;
+        }
       }, false);
       el.addEventListener('touchstart', function (e) {
         e.preventDefault();
@@ -63,14 +74,14 @@ export class GalleryComponent implements AfterViewChecked {
         let touch = e.touches[0];
         t.startCoordX = touch.pageX;
         t.slided = false;
-        t.leftMargin = -width * 2;
-        t.rightMargin = width * 2;
+        t.leftMargin = -t.width * 2;
+        t.rightMargin = t.width * 2;
       }, false);
       el.addEventListener('touchend', function (e) {
         e.preventDefault();
-        if (width * 2 / 3 > Math.abs(t.margin)) {
+        if (t.width * 2 / 3 > Math.abs(t.margin)) {
           t.animation = t.animations[0];
-          if(t.margin < 0) {
+          if (t.margin < 0) {
             t.animationRight = t.animations[2];
             t.animationLeft = '';
           } else {
@@ -97,8 +108,8 @@ export class GalleryComponent implements AfterViewChecked {
 
         if ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1)) {
           t.margin = touch.pageX - t.startCoordX;
-          t.leftMargin = -width * 2 + t.margin;
-          t.rightMargin = width * 2 + t.margin;
+          t.leftMargin = -t.width * 2 + t.margin;
+          t.rightMargin = t.width * 2 + t.margin;
         }
       }, false)
     }

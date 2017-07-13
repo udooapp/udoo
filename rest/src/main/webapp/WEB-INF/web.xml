@@ -39,6 +39,7 @@
         <url-pattern>/offer/user/*</url-pattern>
         <url-pattern>/contact/*</url-pattern>
         <url-pattern>/comment/save</url-pattern>
+        <url-pattern>/bid/*</url-pattern>
     </filter-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
