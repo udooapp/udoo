@@ -191,20 +191,16 @@
   height: 50px;
 
 }
-#gallery-image-bottom{
-  position: absolute;
-  margin-top: 3.5%;
-  animation-duration: 250ms;
-}
 
 .gallery-image {
   z-index: 1;
   display: inline-block;
   animation-duration: 250ms;
-  margin-top: 60px;
+  position: fixed;
+  margin-top: 0;
   max-height: 70%;
   max-width: 80%;
-  min-width: 35%;
+  min-width: 25%;
   min-height: 50%;
   background-color: #FAFAFA;
 }
@@ -217,9 +213,10 @@
 @keyframes left {
   100% {margin-left: -150%;}
 }
-@keyframes show {
-  100% {opacity: 1;}
+
+#gallery-image-left{
+  margin-left: -60%;
 }
-@keyframes hide {
-  100% {opacity: 0;}
+#gallery-image-right{
+  margin-left: 100%;
 }

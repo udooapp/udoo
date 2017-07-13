@@ -13,14 +13,15 @@ export class GalleryComponent implements AfterViewChecked {
 
   message: string = '';
   animation: string = '';
-  animations: string[] = ['back', 'left', 'right', '', 'show', 'hide'];
-  bottomAnimation = '';
+  animationLeft: string = '';
+  animationRight: string = '';
+  animations: string[] = ['back', 'left', 'right', ''];
+  leftMargin:number = -1000;
+  rightMargin:number = 1000;
   gallery: boolean = false;
-  before: number = 0;
+  direction: number = 0;
   index: number = 0;
-  index2: number = 0;
   margin: number = 0;
-  opacity: number = 0;
   slided: boolean = false;
   private found: boolean = false;
   private startCoordX: number = 0;
@@ -40,31 +41,42 @@ export class GalleryComponent implements AfterViewChecked {
     if (el != null && !this.found) {
       this.found = true;
       let t = this;
-      let width: number = document.getElementById("gallery").clientWidth / 3;
+      let width:number = document.getElementById("gallery").clientWidth / 2;
+
       el.addEventListener('animationend', function (e) {
         e.preventDefault();
-        t.animation = '';
-        t.bottomAnimation = '';
         t.startCoordX = 0;
         t.margin = 0;
-        t.opacity = 0;
-        t.index += t.before;
-        t.before = 0;
+        t.index += t.direction;
+        t.animation = '';
+        t.animationLeft = '';
+        t.animationRight = '';
+        t.direction = 0;
+        t.leftMargin = -width * 2;
+        t.rightMargin = width * 2;
       }, false);
       el.addEventListener('touchstart', function (e) {
         e.preventDefault();
         t.animation = '';
-        t.bottomAnimation = '';
+        t.animationLeft = '';
+        t.animationRight = '';
         let touch = e.touches[0];
         t.startCoordX = touch.pageX;
-        t.opacity = 0;
         t.slided = false;
+        t.leftMargin = -width * 2;
+        t.rightMargin = width * 2;
       }, false);
       el.addEventListener('touchend', function (e) {
         e.preventDefault();
-        if (width > Math.abs(t.margin)) {
+        if (width * 2 / 3 > Math.abs(t.margin)) {
           t.animation = t.animations[0];
-          t.bottomAnimation = t.animations[5];
+          if(t.margin < 0) {
+            t.animationRight = t.animations[2];
+            t.animationLeft = '';
+          } else {
+            t.animationRight = '';
+            t.animationLeft = t.animations[1];
+          }
         } else {
           if (t.margin > 0) {
             if (!t.slided) {
@@ -85,11 +97,8 @@ export class GalleryComponent implements AfterViewChecked {
 
         if ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1)) {
           t.margin = touch.pageX - t.startCoordX;
-          t.opacity = Math.abs(t.margin) / width;
-          t.opacity = t.opacity > 1 ? 1 : t.opacity;
-          t.index2 = t.index + (t.margin > 0 ? -1 : 1);
-          t.index2 = t.index2 < 0 ? 0 : t.index2;
-          t.index2 = t.index2 >= t.images.length ? t.images.length - 1 : t.index2;
+          t.leftMargin = -width * 2 + t.margin;
+          t.rightMargin = width * 2 + t.margin;
         }
       }, false)
     }
@@ -133,18 +142,21 @@ export class GalleryComponent implements AfterViewChecked {
   }
 
   public onClickPrevious() {
+
     if (this.index > 0) {
-      this.before = -1;
-      this.bottomAnimation = this.animations[5];
+      this.direction = -1;
+      this.animationRight = '';
       this.animation = this.animations[2];
+      this.animationLeft = this.animations[0];
     }
   }
 
   public onClickNext() {
     if (this.index < this.images.length - 1) {
-      this.before = 1;
-      this.bottomAnimation = this.animations[5];
+      this.direction = 1;
       this.animation = this.animations[1];
+      this.animationRight = this.animations[0];
+      this.animationLeft = '';
     }
   }
 
