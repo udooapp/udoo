@@ -221,7 +221,7 @@ dialog {
 }
 
 .service-dialog-previous {
-  background: #378281;
+  background: #69B4B3;
   height: 50px;
   width: 6px;
   float: left;
@@ -231,7 +231,7 @@ dialog {
 }
 
 .service-dialog-previous:after {
-  background: #378281;
+  background: #69B4B3;
   content: "";
   height: 6px;
   position: absolute;
@@ -263,7 +263,7 @@ dialog {
 }
 
 .service-dialog-next {
-  background: #378281;
+  background: #69B4B3;
   height: 50px;
   margin-top: 30px;
   width: 6px;
@@ -273,7 +273,7 @@ dialog {
 }
 
 .service-dialog-next:after {
-  background: #378281;
+  background: #69B4B3;
   content: "";
   height: 6px;
   position: absolute;

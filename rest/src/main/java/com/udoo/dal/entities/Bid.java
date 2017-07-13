@@ -22,7 +22,7 @@ public class Bid {
     private boolean type;
 
     @JsonIgnore
-    private boolean accepted;
+    private int accepted = -1;
 
     public Integer getBid() {
         return bid;
@@ -72,11 +72,11 @@ public class Bid {
         this.type = type;
     }
 
-    public boolean isAccepted() {
+    public int getAccepted() {
         return accepted;
     }
 
-    public void setAccepted(boolean accepted) {
+    public void setAccepted(int accepted) {
         this.accepted = accepted;
     }
 

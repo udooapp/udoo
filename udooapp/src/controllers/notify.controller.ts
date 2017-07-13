@@ -1,5 +1,7 @@
 import {EventEmitter} from "@angular/core";
 import {User} from "../entity/user";
+import {Router} from "@angular/router";
+declare let navigator;
 
 export class NotifierController {
   private user: User;
@@ -8,7 +10,8 @@ export class NotifierController {
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
   public userScrolledToTheBottom$: EventEmitter<boolean>;
-
+  private route: string = '';
+  private router: Router;
   constructor() {
     this.pageChanged$ = new EventEmitter();
     this.userModification$ = new EventEmitter();
@@ -29,7 +32,25 @@ export class NotifierController {
     }
     return null;
   }
-
+  private onConfirm(){
+    if(this.router != null) {
+      this.router.navigate([this.route]);
+    }
+  }
+  sendNotification(router: Router, route: string, data: any[]){
+    console.log(data);
+    if(navigator != null) {
+      this.route = route;
+      this.router = router;
+      for(let i = 0; i < data.length; ++i)
+      navigator.notification.confirm(
+        data[i].message,  // message
+        this.onConfirm,              // callback to invoke with index of button pressed
+        data[i].title,            // title
+        ''          // buttonLabels
+      );
+    }
+  }
   public isEmpty(): boolean {
 
     return this.pageList.length == 0;

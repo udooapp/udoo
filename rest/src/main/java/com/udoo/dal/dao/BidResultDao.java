@@ -14,8 +14,8 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
 
     @Override
     public List<BidResult> getBids(long id) {
-        String sql = "Select u.name as name, b.price as price, b.description as description, b.bid as id From Users u, Offer o, Bids b Where o.uid = " + id + " and o.oid = b.sid and b.accepted is null and b.type = 1 and b.uid = u.uid";
-        String sql2 = "Select u.name as name, b.price as price, b.description as description, b.bid as id From Users u, Request r, Bids b Where r.uid = " + id + " and r.rid = b.sid and b.accepted is null and b.type = 0 and b.uid = u.uid";
+        String sql = "Select u.name as name, b.price as price, b.description as description, o.title as title From Users u, Offer o, Bids b Where o.uid = " + id + " and o.oid = b.sid and b.accepted is null and b.type = 1 and b.uid = u.uid";
+        String sql2 = "Select u.name as name, b.price as price, b.description as description, r.title as title From Users u, Request r, Bids b Where r.uid = " + id + " and r.rid = b.sid and b.accepted is null and b.type = 0 and b.uid = u.uid";
 
         List<BidResult> list = mapping(getJdbcTemplate().queryForList(sql));
         list.addAll(mapping(getJdbcTemplate().queryForList(sql2)));
@@ -26,13 +26,12 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
         List<BidResult> result = new ArrayList<>();
         for (Map row : rows) {
             BidResult bidResult = new BidResult();
-            bidResult.setBid((Long)row.get("id"));
+            bidResult.setTitle(row.get("title").toString());
             String message = row.get("name") + " bid is: "  + row.get("price");
             String description = row.get("description").toString();
             if(description != null && !description.isEmpty()){
-                message += " (" + description + ")";
+                message += "\n" + description;
             }
-            message += ".";
             bidResult.setMessage(message);
             result.add(bidResult);
         }

@@ -6,7 +6,7 @@ import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {TokenService} from "../../services/token.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {CREATE, LOGIN, MAP} from "../../app/app.routing.module";
+import {CREATE, LOGIN, MAP, REQUEST_LIST} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
@@ -14,7 +14,6 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {BidService} from "../../services/bid.service";
 
 declare let FB;
-declare let navigator;
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
@@ -27,7 +26,6 @@ export class MenuComponent implements OnInit {
   @Output() activatedUser = new EventEmitter<boolean>();
   @Output() menuItemClicked = new EventEmitter<boolean>();
   visibleMenu: number = -1;
-  bids: any[];
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
@@ -94,28 +92,6 @@ export class MenuComponent implements OnInit {
     this.visibleMenu = show ? 1 : this.visibleMenu == -1 ? -1 : 0;
   }
 
-  onConfirm(buttonIndex) {
-    if (this.bids != null && this.bids.length > 0) {
-      this.bidService.sendPidResponse(this.bids[0].id, buttonIndex == 1).subscribe(data => {
-      }, error => {
-        this.dialog.notifyError(error);
-      });
-    }
-  }
-
-// Show a custom confirmation dialog
-//
-  sendNotifications() {
-    if(navigator != null) {
-      navigator.notification.confirm(
-        this.bids[0].message,  // message
-        this.onConfirm,              // callback to invoke with index of button pressed
-        'Someone sent a bid',            // title
-        'Accept,Decline'          // buttonLabels
-      );
-    }
-  }
-
   ngOnInit() {
     let t = this;
     let el = document.getElementById('swipe-area');
@@ -159,8 +135,6 @@ export class MenuComponent implements OnInit {
       this.userService.getUserData().subscribe(
         data => {
           this.user = data.user;
-          this.bids = data.bids;
-
           //   window.document =this.user.language;
           document['locale'] = this.user.language;
           getTranslationProviders().then(value => {
@@ -190,8 +164,8 @@ export class MenuComponent implements OnInit {
           if (!this.activated && this.checkLogin) {
             this.router.navigate([CREATE]);
           }
-          if (this.bids != null && this.bids.length > 0) {
-            this.sendNotifications();
+          if (data.bids != null && data.bids.length > 0) {
+            this.notifier.sendNotification(this.router, REQUEST_LIST, data.bids);
           }
         },
         error => {

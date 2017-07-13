@@ -32,7 +32,7 @@ export class BidService extends HeaderService{
   public sendPidResponse(pid: number, type: boolean): Observable<any[]> {
     return this.http.post(config.server + '/bid/response',JSON.stringify({
       pid: pid,
-      type: type
+      type: type ?  1 : 0
     }) ,new RequestOptions({
       headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractText)

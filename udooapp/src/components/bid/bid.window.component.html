@@ -1,0 +1,12 @@
+<div class="pid-dialog-background" *ngIf="visible">
+  <div class="pid-dialog-window " id="dialog-window">
+    <div class="pid-dialog-close-background" (click)="onClickClose()">
+      <div class="pid-dialog-close"></div>
+    </div>
+    <div class="pid-content-container input-container">
+      <text-input [placeholder]="'Price'" [validators]="validators"  [checkValidate]="checkPrice" (onValidationStateChange)="validPrice = $event" (onKey)="onKeyPrice($event)"></text-input>
+      <text-area [placeholder]="'Description'" (onKey)="onKeyDescription($event)"></text-area>
+      <button class="input-button button-dark" (click)="onClickSend()">Send bid</button>
+    </div>
+  </div>
+</div>

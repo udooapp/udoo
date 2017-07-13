@@ -42,7 +42,7 @@ public class BidServiceController implements IPidServiceController {
     @RequestMapping(value = "/response", method = RequestMethod.POST)
     public ResponseEntity<?> saveResponsePid(ServletRequest req, Bid bid) {
         Bid bd = bidRepository.findAllByBid(bid.getBid());
-        bd.setAccepted(bid.isAccepted());
+        bd.setAccepted(bid.getAccepted());
         bidRepository.save(bd);
         return new ResponseEntity<>(HttpStatus.OK);
     }

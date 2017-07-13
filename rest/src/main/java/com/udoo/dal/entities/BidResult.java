@@ -3,15 +3,15 @@ package com.udoo.dal.entities;
 /**
  */
 public class BidResult {
-    long bid;
+    String title;
     String message;
 
-    public long getBid() {
-        return bid;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBid(long bid) {
-        this.bid = bid;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getMessage() {

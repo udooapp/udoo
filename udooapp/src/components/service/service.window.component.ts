@@ -40,12 +40,10 @@ export class ServiceDialogComponent implements AfterViewChecked {
       if (el != null) {
         el.scrollTop = 0;
         let width = document.getElementById('dialog-window').clientWidth * 0.7;
-        el.addEventListener(
-          'animationend',
-          function (event) {
-            t.movedCoordX = 0;
-            t.animation = t.animations[3];
-          }, false);
+        el.addEventListener('animationend', function (event) {
+          t.movedCoordX = 0;
+          t.animation = t.animations[3];
+        }, false);
         el.addEventListener('touchstart', function (e) {
           e.preventDefault();
           t.animation = t.animations[3];
@@ -53,6 +51,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
           t.startCoordX = touch.pageX;
           t.coordY = touch.pageY;
           t.scrollDirection = 0;
+
         }, false);
         el.addEventListener('touchend', function (e) {
           e.preventDefault();
@@ -107,9 +106,10 @@ export class ServiceDialogComponent implements AfterViewChecked {
         this.added = false;
         this.visible = true;
         this.loading = false;
-        this.movedCoordX = 0;
         this.service = value.service;
         this.user = value.user;
+        this.movedCoordX = 0;
+
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         if (star == 0) {
