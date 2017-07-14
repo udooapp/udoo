@@ -30,7 +30,7 @@
 </div>
 <div class="comments" *ngIf="loaded && type" onC>
   <div class="comment-container" *ngFor="let item of comments">
-    <img class="comment-user" [src]="item.picture"/>
+    <img [src]="item.picture"/>
     <div class="comment-content">
       <div class="comment-name">{{item.name}}</div>
       <div class="comment-text">{{item.commentMessage}}</div>

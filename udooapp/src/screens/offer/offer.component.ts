@@ -11,11 +11,12 @@ import {OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
+import {BidService} from "../../services/bid.service";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
   styleUrls: ['../layouts/serviceform/serviceform.component.css', '../layouts/userform/forminput.component.css'],
-  providers: [OfferService, MapService]
+  providers: [OfferService, MapService, BidService]
 })
 export class OfferComponent implements OnInit, IServiceForm {
   private static NAME: string = 'Offer';
@@ -26,7 +27,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   refresh: boolean = false;
   location: string = '';
   load: boolean = false;
-
+  bids: any[] = [];
   data = new Offer(null, '', '', -1, -1, '', '', 0, false, []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
@@ -37,8 +38,9 @@ export class OfferComponent implements OnInit, IServiceForm {
   modification: number[] = [-1, 0, -1];
   imageLoading: number[] = [];
   imageError: number[] = [];
+  private reload:boolean = false;
 
-  constructor(private offerService: OfferService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private offerService: OfferService,private bidService: BidService,  private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action === OfferComponent.NAME) {
         if (this.modification[0] <= 0) {
@@ -46,6 +48,9 @@ export class OfferComponent implements OnInit, IServiceForm {
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([OFFER_LIST]);
+          if(this.reload){
+            this.notifier.refreshMainData();
+          }
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
           this.notifier.notify(OfferComponent.NAME);
@@ -98,13 +103,7 @@ export class OfferComponent implements OnInit, IServiceForm {
     this.notifier.notify(OfferComponent.NAME);
     this.modification[0] = -1;
     this.modification[1] = 0;
-    this.mapService.getCategories().subscribe(
-      data => {
-        this.category = data;
-        this.category.splice(0, 0, {cid: -1, name: 'Select category'})
-      },
-      error => this.error = <any>error
-    );
+
     let id: number = -1;
     this.route.params
       .subscribe((params: Params) => {
@@ -112,10 +111,13 @@ export class OfferComponent implements OnInit, IServiceForm {
           id = +params['id'];
           if (id != null) {
             this.type = true;
-            this.offerService.getOffer(id).subscribe(
+            this.offerService.getUserOffer(id).subscribe(
               data => {
-                this.data = data;
-                this.location = JSON.parse(data.location).address;
+                this.category = data.categories;
+                this.category.splice(0, 0, {cid: -1, name: 'Select category'})
+                this.data = data.offer;
+                this.bids = data.bids;
+                this.location = JSON.parse(data.offer.location).address;
               },
               error => {
                 this.error = <any>error;
@@ -123,6 +125,14 @@ export class OfferComponent implements OnInit, IServiceForm {
               }
             )
           }
+        } else {
+          this.mapService.getCategories().subscribe(
+            data => {
+              this.category = data;
+              this.category.splice(0, 0, {cid: -1, name: 'Select category'})
+            },
+            error => this.error = <any>error
+          );
         }
       });
   }
@@ -132,13 +142,16 @@ export class OfferComponent implements OnInit, IServiceForm {
       if (this.checkValidation()) {
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
           () => {
-            this.data=new Offer(null, '', '', -1, -1, '', '', 0, false, []);
+            this.data = new Offer(null, '', '', -1, -1, '', '', 0, false, []);
             this.modification[0] = -1;
             this.modification[1] = 0;
             this.modification[2] = -1;
             this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
             this.router.navigate([OFFER_LIST]);
+            if(this.reload){
+              this.notifier.refreshMainData();
+            }
           },
           error => {
             this.error = <any>error;
@@ -288,5 +301,17 @@ export class OfferComponent implements OnInit, IServiceForm {
 
   getPictures(): any[] {
     return this.data.picturesOffer;
+  }
+  onClickBid(bid, state) {
+    this.bidService.sendPidResponse(bid.bid, state).subscribe(
+      data => {
+        bid.accepted = state;
+        if(state){
+          this.reload = true;
+        }
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
   }
 }

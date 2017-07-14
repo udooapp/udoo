@@ -2,6 +2,7 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.Bid;
+import com.udoo.dal.entities.CategoryResult;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IPidServiceController;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,11 @@ public class BidServiceController implements IPidServiceController {
 
     @Override
     @RequestMapping(value = "/response", method = RequestMethod.POST)
-    public ResponseEntity<?> saveResponsePid(ServletRequest req, Bid bid) {
-        Bid bd = bidRepository.findAllByBid(bid.getBid());
-        bd.setAccepted(bid.getAccepted());
+    public ResponseEntity<?> saveResponsePid(ServletRequest req,@RequestBody CategoryResult result) {
+        System.out.println("RESULT");
+        System.out.println(result);
+        Bid bd = bidRepository.findAllByBid(result.getId());
+        bd.setAccepted((int)result.getResult());
         bidRepository.save(bd);
         return new ResponseEntity<>(HttpStatus.OK);
     }

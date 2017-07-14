@@ -164,8 +164,9 @@ export class MenuComponent implements OnInit {
           if (!this.activated && this.checkLogin) {
             this.router.navigate([CREATE]);
           }
-          if (data.bids != null && data.bids.length > 0) {
-            this.notifier.sendNotification(this.router, REQUEST_LIST, data.bids);
+
+          if (data.bid != null && data.bid.length > 0) {
+            this.notifier.sendNotification(this.router, REQUEST_LIST, data.bid);
           }
         },
         error => {

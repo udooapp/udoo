@@ -150,6 +150,16 @@ h1 {
   float: right;
 
 }
+.service-message {
+  color: white;
+  text-align: center;
+  padding-top: 5px;
+  background: url("../../../assets/message.png") no-repeat 5px 3px;
+  background-size: 30px 22px;
+  position: absolute;
+  right: 0;
+  top: 60px;
+}
 .service-button-container img{
   width: 30px;
   height: 30px;

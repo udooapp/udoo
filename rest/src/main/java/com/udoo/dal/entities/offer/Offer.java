@@ -34,6 +34,9 @@ public class Offer {
 
     private boolean realTime;
 
+    @Transient
+    private int bids;
+
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "offer")
@@ -117,6 +120,14 @@ public class Offer {
 
     public void setRealTime(boolean realTime) {
         this.realTime = realTime;
+    }
+
+    public int getBids() {
+        return bids;
+    }
+
+    public void setBids(int bids) {
+        this.bids = bids;
     }
 
     @Override

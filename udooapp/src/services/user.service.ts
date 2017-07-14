@@ -65,7 +65,7 @@ export class UserService extends HeaderService{
   }
 
   public getUserData(): Observable<any> {
-    return this.http.get(config.server + '/user/userdata', new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
+    return this.http.get(config.server + '/user/data', new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }

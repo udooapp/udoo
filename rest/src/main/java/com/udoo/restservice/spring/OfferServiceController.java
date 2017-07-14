@@ -1,15 +1,9 @@
 package com.udoo.restservice.spring;
 
 
-import com.udoo.dal.entities.Comment;
-import com.udoo.dal.entities.CommentResponse;
-import com.udoo.dal.entities.DeleteService;
+import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.*;
-import com.udoo.dal.entities.User;
-import com.udoo.dal.repositories.ICommentRepository;
-import com.udoo.dal.repositories.IOfferPictureRepository;
-import com.udoo.dal.repositories.IOfferRepository;
-import com.udoo.dal.repositories.IUserRepository;
+import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IOfferServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +41,12 @@ public class OfferServiceController implements IOfferServiceController {
     @Resource
     private ICommentRepository commentRepository;
 
+    @Resource
+    private IBidRepository bidRepository;
+
+    @Resource
+    private ICategoryRepository categoryRepository;
+
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
@@ -57,7 +57,11 @@ public class OfferServiceController implements IOfferServiceController {
             if (last == -1 || (offers.size() > 0 && offers.get(offers.size() - 1).getOid() != last)) {
                 for (Offer offer : offers) {
                     if (offer.getPicturesOffer().size() > 1) {
+                        offer.setBids(bidRepository.countBySidAndType(offer.getOid(), true));
                         offer.setPicturesOffer(offer.getPicturesOffer().subList(0, 1));
+                    }
+                    if(offer.getDescription().length() > 150){
+                        offer.setDescription(offer.getDescription().substring(0, 150) + "...");
                     }
                 }
             } else {
@@ -101,6 +105,26 @@ public class OfferServiceController implements IOfferServiceController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getOffer(@PathVariable("id") int id) {
         return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
+    }
+
+    @Override
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserOffer(@PathVariable("id") int id) {
+        UserOffer offer = new UserOffer();
+        offer.setOffer(offerRepository.findByOid(id));
+        List<Bid> bids = bidRepository.findAllBySidAndType(id, true);
+        if(bids.size() > 0){
+            User user;
+            for(Bid bid: bids){
+                user = userRepository.findByUid((int)bid.getUid());
+                bid.setName(user.getName());
+                bid.setPicture(user.getPicture());
+            }
+        }
+        offer.setCategories(categoryRepository.findAll());
+        offer.setBids(bids);
+
+        return new ResponseEntity<>(offer, HttpStatus.OK);
     }
 
     @Override

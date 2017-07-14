@@ -3,6 +3,7 @@ package com.udoo.dal.entities;
 /**
  */
 public class BidResult {
+
     String title;
     String message;
 

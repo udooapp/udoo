@@ -1,15 +1,9 @@
 package com.udoo.restservice.spring;
 
 
-import com.udoo.dal.entities.Comment;
-import com.udoo.dal.entities.CommentResponse;
-import com.udoo.dal.entities.DeleteService;
+import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.request.*;
-import com.udoo.dal.entities.User;
-import com.udoo.dal.repositories.ICommentRepository;
-import com.udoo.dal.repositories.IRequestPictureRepository;
-import com.udoo.dal.repositories.IRequestRepository;
-import com.udoo.dal.repositories.IUserRepository;
+import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRequestServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,8 +39,13 @@ public class RequestServiceController implements IRequestServiceController {
     private ICommentRepository commentRepository;
 
     @Resource
+    private ICategoryRepository categoryRepository;
+
+    @Resource
     private IRequestPictureRepository requestPictureRepository;
 
+    @Resource
+    private IBidRepository bidRepository;
 
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -185,16 +184,19 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
+    public ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             Pageable page = new PageRequest(count / 5, 5);
             List<Request> requests = requestRepository.findByUid(user.getUid(), page);
             if(last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
                 for (Request req : requests) {
+                    req.setBids(bidRepository.countBySidAndType(req.getRid(), false));
                     if (req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1) {
                         req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
+                    }
+                    if(req.getDescription().length() > 150){
+                        req.setDescription(req.getDescription().substring(0, 150) + "...");
                     }
                 }
             } else {
@@ -209,8 +211,7 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Override
     @RequestMapping(value = "/data/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<?> getRequestData(@PathVariable("id") int rid) {
+    public ResponseEntity<?> getRequestData(@PathVariable("id") int rid) {
         Request request = requestRepository.findByRid(rid);
         if (request == null) {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
@@ -243,9 +244,26 @@ public class RequestServiceController implements IRequestServiceController {
     }
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<?> getRequest(@PathVariable("id") int rid) {
+    public ResponseEntity<?> getRequest(@PathVariable("id") int rid) {
         return new ResponseEntity<>(requestRepository.findByRid(rid), HttpStatus.OK);
     }
 
+    @Override
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserRequest(@PathVariable("id") int id) {
+        UserRequest request = new UserRequest();
+        request.setRequest(requestRepository.findByRid(id));
+        List<Bid> bids = bidRepository.findAllBySidAndType(id, false);
+        request.setCategories(categoryRepository.findAll());
+        if(bids.size() > 0){
+            User user;
+            for(Bid bid: bids){
+                user = userRepository.findByUid((int)bid.getUid());
+                bid.setName(user.getName());
+                bid.setPicture(user.getPicture());
+            }
+        }
+        request.setBids(bids);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
 }

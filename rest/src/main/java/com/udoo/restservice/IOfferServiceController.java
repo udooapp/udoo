@@ -23,6 +23,9 @@ public interface IOfferServiceController {
     ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request, int count, int last);
 
     ResponseEntity<?> getOffer(int id);
+
+    ResponseEntity<?> getUserOffer(int id);
+
     ResponseEntity<?> getOfferData(int id);
 
 }

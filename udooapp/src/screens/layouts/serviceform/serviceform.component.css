@@ -13,16 +13,19 @@
 .error-message {
   color: red;
 }
-.checkbox-background{
+
+.checkbox-background {
   width: 80px;
   height: 25px;
   position: relative;
   float: right;
 }
-.checkbox-label{
+
+.checkbox-label {
   margin-right: 5%;
 }
-#checkbox{
+
+#checkbox {
   position: absolute;
   z-index: 2;
   width: 79px;
@@ -33,18 +36,19 @@
 
 }
 
-.checkbox-background label::before{
+.checkbox-background label::before {
   background-color: #2B6665;
   width: 25px;
   border-radius: 5px;
   content: '';
-  top:3px;
+  top: 3px;
   left: 3px;
   display: block;
   transition: all .2s ease;
   position: absolute;
   height: 19px;
 }
+
 .checkbox-background label:after {
   content: 'Fixed';
   position: absolute;
@@ -54,24 +58,29 @@
   height: 10px;
   color: #2B6665;
 }
-.checkbox-container{
+
+.checkbox-container {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
 
 }
-.checkbox-background{
+
+.checkbox-background {
   display: flex;
 
 }
+
 .checkbox-background input[type=checkbox]:checked + label::after {
   content: 'Realtime';
-  left:4px;
+  left: 4px;
 }
+
 .checkbox-background input[type=checkbox]:checked + label::before {
-  left:52px;
+  left: 52px;
 }
+
 .checkbox-background label {
   display: block;
   width: 80px;
@@ -83,4 +92,76 @@
   z-index: 1;
   left: 0;
   background: #378281;
+}
+
+.bid-container {
+  padding: 5px;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  border-bottom: 1px solid #378281;
+}
+
+.bid-container:hover {
+  background-color: #EFEFEF;
+}
+.bid-panel{
+  margin-top: 20px;
+  border-top: solid 2px #2B6665;
+}
+
+.bid-panel h2 {
+  color: #2B6665;
+  text-align: center;
+}
+
+.bid-container img {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  background-color: #DfDfDf;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bid-content {
+  margin: 0 10px;
+  width: 100%;
+  color: #4A9594;
+}
+
+.bid-name {
+  color: #2B6665;
+  font-size: 14pt;
+  padding: 5px 0;
+}
+
+.bid-button-container {
+  display: -webkit-flex;
+  display: flex;
+}
+
+.input-button {
+  width: 99%;
+}
+
+@media (max-width: 641px) {
+  .bid-button-container {
+    flex-direction: column-reverse;
+    -webkit-flex-direction: column-reverse;
+  }
+}
+
+@media (min-width: 642px) {
+  .bid-button-container {
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+  }
+
+  .bid-input-button {
+    width: 48%;
+  }
 }

@@ -150,7 +150,7 @@ public class UserServiceController implements IUserServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/userdata", method = RequestMethod.GET)
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ResponseEntity<?> getUserData(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
         if (user != null) {

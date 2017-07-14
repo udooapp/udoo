@@ -14,8 +14,11 @@ public interface IBidRepository extends Repository<Bid, Integer> {
 
     Bid save(Bid bid);
 
-    Bid findAllByBid(long bid);
+    Bid findAllByBid(Integer bid);
+
     List<Bid> findAllBySidAndType(long sid, boolean type);
+
+    int countBySidAndType(long sid, boolean type);
 
     List<Bid> findAllBySidAndTypeAndUid(long sid, boolean type, long uid);
 }

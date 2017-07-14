@@ -39,7 +39,7 @@ export class RequestService extends HeaderService{
       .catch(HandlerService.handleText);
   }
 
-  public getUserRequest(count: number, lastid: number): Observable<any[]> {
+  public getUserRequests(count: number, lastid: number): Observable<any[]> {
     let param: URLSearchParams = new URLSearchParams();
     param.append("count", count.toString());
     param.append("last", lastid.toString());
@@ -59,6 +59,11 @@ export class RequestService extends HeaderService{
 
   public getRequest(rid: number): Observable<any> {
     return this.http.get(config.server + '/request/' + rid)
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleText);
+  }
+  public getUserRequest(rid: number): Observable<any> {
+    return this.http.get(config.server + '/request/user/' + rid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }

@@ -1,6 +1,7 @@
 import {EventEmitter} from "@angular/core";
 import {User} from "../entity/user";
 import {Router} from "@angular/router";
+import {config} from "../environments/url.config";
 declare let navigator;
 
 export class NotifierController {
@@ -38,8 +39,8 @@ export class NotifierController {
     }
   }
   sendNotification(router: Router, route: string, data: any[]){
-    console.log(data);
-    if(navigator != null) {
+    if(navigator != null && config.mobile) {
+      console.log(navigator);
       this.route = route;
       this.router = router;
       for(let i = 0; i < data.length; ++i)

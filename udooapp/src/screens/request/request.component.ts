@@ -14,16 +14,18 @@ import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
+import {BidService} from "../../services/bid.service";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
   styleUrls: ['../layouts/serviceform/serviceform.component.css', '../layouts/userform/forminput.component.css'],
-  providers: [RequestService, MapService]
+  providers: [RequestService, MapService, BidService]
 })
 export class RequestComponent implements OnInit, IServiceForm {
   private static NAME: string = 'Request';
   registration = true;
   category = [];
+  bids: any[] = [];
   message: string;
   load: boolean = false;
   error: string = '';
@@ -36,6 +38,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   timeValidator: IValidator = new TimeValidator();
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
+  private reload: boolean = false;
 
   //Gallery
 
@@ -43,7 +46,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   imageError: number[] = [];
   imageLoading: number[] = [];
 
-  constructor(private requestService: RequestService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private requestService: RequestService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
@@ -52,6 +55,9 @@ export class RequestComponent implements OnInit, IServiceForm {
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([REQUEST_LIST]);
+          if(this.reload){
+            this.notifier.refreshMainData();
+          }
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
           this.notifier.notify(RequestComponent.NAME);
@@ -62,6 +68,7 @@ export class RequestComponent implements OnInit, IServiceForm {
     });
     dialog.errorResponse$.subscribe(() => {
       this.ngOnInit();
+      this.error = '';
     });
     this.dialog.questionResponse$.subscribe(response => {
       if (response) { //Clicked --> Yes
@@ -103,14 +110,6 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   ngOnInit() {
-    this.data.category = this.category[0];
-    this.mapService.getCategories().subscribe(
-      data => {
-        this.category = data;
-        this.category.splice(0, 0, {cid: -1, name: 'Select category'})
-      },
-      error => this.error = <any>error
-    );
     let id: number = -1;
     this.route.params
       .subscribe((params: Params) => {
@@ -118,10 +117,13 @@ export class RequestComponent implements OnInit, IServiceForm {
           id = +params['id'];
           if (id != null) {
             this.type = true;
-            this.requestService.getRequest(id).subscribe(
+            this.requestService.getUserRequest(id).subscribe(
               data => {
-                this.data = data;
-                this.location = JSON.parse(data.location).address;
+                this.category = data.categories;
+                this.category.splice(0, 0, {cid: -1, name: 'Select category'})
+                this.data = data.request;
+                this.bids = data.bids;
+                this.location = JSON.parse(data.request.location).address;
               },
               error => {
                 this.error = <any>error;
@@ -129,6 +131,14 @@ export class RequestComponent implements OnInit, IServiceForm {
               }
             )
           }
+        } else {
+          this.mapService.getCategories().subscribe(
+            data => {
+              this.category = data;
+              this.category.splice(0, 0, {cid: -1, name: 'Select category'})
+            },
+            error => this.error = <any>error
+          );
         }
       });
   }
@@ -146,6 +156,9 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.notifier.pageChanged$.emit(' ');
             this.notifier.back();
             this.router.navigate([REQUEST_LIST]);
+            if(this.reload){
+              this.notifier.refreshMainData();
+            }
           },
           error => {
             this.error = <any>error;
@@ -294,5 +307,18 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   getPictures(): any[] {
     return this.data.picturesRequest;
+  }
+
+  onClickBid(bid, state) {
+    this.bidService.sendPidResponse(bid.bid, state).subscribe(
+      data => {
+          bid.accepted = state;
+          if(state){
+            this.reload = true;
+          }
+        },
+      error => {
+        this.dialog.notifyError(error);
+    });
   }
 }

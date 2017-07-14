@@ -30,6 +30,9 @@ public class Request {
 
     private int category = -1;
 
+    @Transient
+    private int bids;
+
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "request",cascade = CascadeType.PERSIST)
@@ -105,5 +108,13 @@ public class Request {
 
     public void setRid(Integer rid) {
         this.rid = rid;
+    }
+
+    public int getBids() {
+        return bids;
+    }
+
+    public void setBids(int bids) {
+        this.bids = bids;
     }
 }

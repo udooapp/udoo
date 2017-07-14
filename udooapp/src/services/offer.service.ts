@@ -46,7 +46,7 @@ export class OfferService extends HeaderService{
       .catch(HandlerService.handleText);
   }
 
-  public getUserOffer(count: number, lastid: number): Observable<any[]> {
+  public getUserOffers(count: number, lastid: number): Observable<any[]> {
     let param: URLSearchParams = new URLSearchParams();
     param.append("count", count.toString());
     param.append("last", lastid.toString());
@@ -69,6 +69,13 @@ export class OfferService extends HeaderService{
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
+
+  public getUserOffer(oid: number): Observable<any> {
+    return this.http.get(config.server + '/offer/user/' + oid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
+  }
+
   public getOfferData(oid: number): Observable<any> {
     return this.http.get(config.server + '/offer/data/' + oid)
       .map(HandlerService.extractData)

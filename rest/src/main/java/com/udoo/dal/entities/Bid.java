@@ -11,6 +11,12 @@ public class Bid {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bid;
 
+    @Transient
+    private String name;
+
+    @Transient
+    private String picture;
+
     private long uid;
 
     private String description;
@@ -21,7 +27,6 @@ public class Bid {
 
     private boolean type;
 
-    @JsonIgnore
     private int accepted = -1;
 
     public Integer getBid() {
@@ -78,6 +83,22 @@ public class Bid {
 
     public void setAccepted(int accepted) {
         this.accepted = accepted;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     @Override
