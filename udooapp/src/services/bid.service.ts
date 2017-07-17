@@ -42,11 +42,11 @@ export class BidService extends HeaderService {
   }
 
 
-  public getBids(count: number, last: number, type: boolean): Observable<any[]> {
+  public getBids(count: number, last: number): Observable<any[]> {
     let param: URLSearchParams = new URLSearchParams();
     param.append("count", count.toString());
     param.append('last', last.toString());
-    return this.http.get(config.server + '/bid/' + (type ? 'user' : 'provider'), new RequestOptions({
+    return this.http.get(config.server + '/bid/user', new RequestOptions({
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractData)

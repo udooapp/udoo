@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {MAP} from "../../app/app.routing.module";
 import {BidService} from "../../services/bid.service";
+import {DETAIL} from "../../app/app.routing.module";
 
 @Component({
   templateUrl: './bids.component.html',
@@ -18,7 +18,6 @@ export class BidComponent implements OnInit {
   id: number = 0;
   loading: boolean = false;
   noMore: boolean = false;
-  type: boolean = false;
 
   constructor(private bidService: BidService, private dialog: DialogController, private notifier: NotifierController, private route: ActivatedRoute, private router: Router) {
     dialog.errorResponse$.subscribe(() => {
@@ -36,7 +35,7 @@ export class BidComponent implements OnInit {
       this.loading = true;
       let length = this.data.length;
       let lastId = length > 0 ? this.data[length - 1].sid : -1;
-      this.bidService.getBids(length, lastId, this.type).subscribe(
+      this.bidService.getBids(length, lastId).subscribe(
         data => {
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
@@ -55,29 +54,20 @@ export class BidComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.route.params
-      .subscribe((params: Params) => {
-        let type: string = params['type'];
-        if (type === 'user' || type === 'provider') {
-          this.type = (params['type'] === 'user');
-          this.bidService.getBids(0, -1, this.type).subscribe(
-            data => {
-              this.loading = false;
-              this.data = data;
-              if (data.length < 5) {
-                this.noMore = true;
-              }
-            },
-            error => {
-              this.loading = false;
-              this.error = <any>error;
-              this.dialog.notifyError(this.error)
-            });
-        } else {
-          this.router.navigate([MAP]);
-        }
-      });
 
+    this.bidService.getBids(0, -1).subscribe(
+      data => {
+        this.loading = false;
+        this.data = data;
+        if (data.length < 5) {
+          this.noMore = true;
+        }
+      },
+      error => {
+        this.loading = false;
+        this.error = <any>error;
+        this.dialog.notifyError(this.error)
+      });
   }
 
   getPictureUrl(url: string) {
@@ -104,27 +94,31 @@ export class BidComponent implements OnInit {
     }
   }
 
-  cancelBid(index:number) {
-    if(index > 0 && index < this.data.length) {
-      if (this.type) {
-        this.bidService.cancelBid(this.data[index].bid).subscribe(() => {
-          this.data.splice(this.index, 1)
-        }, error => {
-          this.dialog.notifyError(error);
-        });
-      }
+  cancelBid(index: number) {
+    if (index > 0 && index < this.data.length) {
+      this.bidService.cancelBid(this.data[index].bid).subscribe(() => {
+        this.data.splice(this.index, 1)
+      }, error => {
+        this.dialog.notifyError(error);
+      });
     }
   }
-  confirmBid(index:number) {
-    if(index >= 0 && index < this.data.length) {
-      if (this.type) {
-        this.bidService.confirmBid(this.data[index].bid).subscribe(() => {
-          this.data[index].status = 2
-        }, error => {
-          this.dialog.notifyError(error);
-        });
-      }
+
+  confirmBid(index: number) {
+    if (index >= 0 && index < this.data.length) {
+      this.bidService.confirmBid(this.data[index].bid).subscribe(() => {
+        this.data[index].status = 2
+      }, error => {
+        this.dialog.notifyError(error);
+      });
     }
+  }
+  onClickBid(index: number){
+    console.log(index);
+    if (index >= 0 && index < this.data.length) {
+      this.router.navigate([DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
+    }
+
   }
 }
 

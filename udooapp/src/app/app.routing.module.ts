@@ -43,7 +43,7 @@ const routes: Routes = [
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
-  {path: 'bids/:type', component: BidComponent, canActivate: [AuthGuard]},
+  {path: 'bids', component: BidComponent, canActivate: [AuthGuard]},
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo:'/map'}
 ];
@@ -58,8 +58,7 @@ export const REGISTRATION: string = '/registration';
 export const SOCIALREGISTRATION: string = '/registration/facebook';
 export const PROFILE: string = '/profile';
 export const PASSWORD: string = '/password';
-export const USER_BIDS: string = "/bids/user";
-export const PROVIDER_BIDS: string = "/bids/provider";
+export const USER_BIDS: string = "/bids";
 export const OFFER: string = '/offer';
 export const REQUEST: string = '/request';
 export const OFFER_TYPE: string = '/offer/';

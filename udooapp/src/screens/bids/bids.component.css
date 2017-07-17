@@ -22,14 +22,17 @@
     width: 80%;
   }
 
-  .contact-content{
+  .bid-content{
     margin-left: 170px;
   }
-  .contact-container {
+  .bid-container {
     width: 74%;
     padding-left: 13%;
     padding-right: 13%;
     margin-bottom: 50px;
+  }
+  .input-button{
+    margin-left: 180px;
   }
 }
 
@@ -39,19 +42,18 @@
     height: 40px;
   }
 
-  .contact-container {
+  .bid-container {
     width: 80%;
     padding-left: 10%;
     padding-right: 10%;
     margin-bottom: 50px;
   }
-  .contact-content{
+  .bid-content{
     margin-left: 170px;
   }
-}
-
-.input-button {
-  margin-left: 11%;
+  .input-button{
+    margin-left: 180px;
+  }
 }
 
 @media(max-width: 641px) {
@@ -61,18 +63,21 @@
     margin-bottom: 10px;
   }
 
-  .contact-container {
+  .bid-container {
     width: 90%;
     padding-left: 5%;
     padding-right: 5%;
     margin-bottom: 50px;
   }
-  .contact-picture{
+  .bid-picture{
     visibility: hidden;
     display: none;
   }
-  .contact-content{
+  .bid-content{
     margin-left: 0;
+  }
+  .input-button{
+    margin-left: 10px;
   }
 }
 
@@ -85,22 +90,24 @@ h1 {
   padding: 0;
 }
 
-.contact {
+.bid {
+  cursor: pointer;
   min-height: 160px;
   overflow: hidden;
   position: relative;
   border-top: 2px solid #378281;
 }
 
-.contact:hover {
+.bid:hover {
   background-color: #FAFAFA;
 }
-.contact-all-content{
+.bid-all-content{
 
 }
-.contact-picture {
+.bid-picture {
   height: 130px;
   width: 130px;
+  position: absolute;
   margin: 10px 0 10px 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 2px;
@@ -108,7 +115,7 @@ h1 {
   float: left;
 }
 
-.contact-image {
+.bid-image {
   height: 134px;
   width: 134px;
   margin-left: -2px;
@@ -119,7 +126,7 @@ h1 {
 .loader{
   margin-top: 15%;
 }
-.contact-content {
+.bid-content {
   padding: 10px 10px 10px 10px;
   color: dimgrey;
   margin-right: 50px;
@@ -141,7 +148,7 @@ h1 {
 .date-expired{
   color: #FF0000;
 }
-.contact-button-container{
+.bid-button-container{
   width: 40px;
   margin: 5px;
   padding-top: 15px;
@@ -150,17 +157,17 @@ h1 {
   float: right;
 
 }
-.contact-button-container img{
+.bid-button-container img{
   width: 30px;
   height: 30px;
   margin: 10px 5px;
   cursor: pointer;
 }
-.contact-button-container img:hover{
+.bid-button-container img:hover{
   opacity: 0.8;
 }
 .input-button{
   min-width: 150px;
   max-width: 200px;
-  margin-left: 0;
+  margin-top: 10px;
 }

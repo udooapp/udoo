@@ -16,10 +16,8 @@
   </div>
   <a *ngIf="user.active < 15 && login" routerLink="/activation" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image" src="./assets/activation.png" i18n>Account activation</a>
-  <a routerLink="/bids/user" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/bids.png">My bids</a>
-  <a routerLink="/bids/provider" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/bids.png">Accepted offers</a>
+  <a routerLink="/bids" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+    class="menu-link-image" src="./assets/bids.png">Bids</a>
   <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image" src="./assets/request.png" i18n>My service request</a>
   <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img

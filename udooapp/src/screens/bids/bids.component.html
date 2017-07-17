@@ -1,19 +1,17 @@
 <div class="data-container">
   <h1 i18n>{{getTitle()}}</h1>
   <div class="bids-container">
-    <div class="contact" *ngFor="let item of data;  let i = index">
-      <div class="contact-picture"><img class="contact-image" [src]="getPictureUrl(item.image)"></div>
-      <div class="contact-content">
+    <div class="bid" *ngFor="let item of data;  let i = index" >
+      <div class="bid-picture"><img class="bid-image" [src]="getPictureUrl(item.image)"></div>
+      <div class="bid-content" (click)="onClickBid(i)">
         <div class="bid-title"><b i18n></b>{{item.title}}</div>
         <div class="bid-name">{{item.name}}</div>
-        <div class="bid-content"><b i18n>Message: </b>{{item.description}}</div>
-        <div class="bid-content"><b i18n>Status: </b>{{getStatus(item.status)}}</div>
-        <div class="bid-content"><b i18n>Price: </b>{{item.price}}  &#8364;</div>
-        <div *ngIf="type">
-          <button *ngIf="item.status == 1" class="input-button button-dark" (click)="confirmBid(i)">Confirm</button>
-          <button *ngIf="item.status == -1" class="input-button button-light" (click)="cancelBid(i)">Cancel</button>
-        </div>
+        <div class="bid-text"><b i18n>Message: </b>{{item.description}}</div>
+        <div class="bid-text"><b i18n>Status: </b>{{getStatus(item.status)}}</div>
+        <div class="bid-text"><b i18n>Price: </b>{{item.price}} &#8364;</div>
       </div>
+      <button *ngIf="item.status == 1" class="input-button button-dark" (click)="confirmBid(i)">Confirm</button>
+      <button *ngIf="item.status == -1" class="input-button button-light" (click)="cancelBid(i)">Cancel</button>
     </div>
     <div *ngIf="loading" class="loader"></div>
   </div>

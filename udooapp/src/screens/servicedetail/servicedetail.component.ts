@@ -9,7 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAP, PROVIDER_BIDS, USER_BIDS} from "../../app/app.routing.module";
+import {MAP, USER_BIDS} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
@@ -46,15 +46,12 @@ export class ServiceDetailComponent implements OnInit {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
-        switch (this.page){
+        switch (this.page) {
           case 0:
-          this.router.navigate([MAP]);
-          break;
+            this.router.navigate([MAP]);
+            break;
           case 1:
             this.router.navigate([USER_BIDS]);
-            break;
-          case 2:
-            this.router.navigate([PROVIDER_BIDS]);
             break;
         }
       } else if (action == GalleryComponent.IMAGE) {
