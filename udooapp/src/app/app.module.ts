@@ -38,6 +38,7 @@ import {GalleryComponent} from "../components/gallery/gallery.component";
 import {ServiceDialogComponent} from "../components/service/service.window.component";
 import {ServiceDialogController} from "../components/service/service.window.controller";
 import {BidDialogComponent} from "../components/bid/bid.window.component";
+import {BidComponent} from "../screens/bids/bids.component";
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import {BidDialogComponent} from "../components/bid/bid.window.component";
     ActivationComponent,
     GalleryComponent,
     ServiceDialogComponent,
-    BidDialogComponent
+    BidDialogComponent,
+    BidComponent
   ],
   imports: [
     BrowserModule,

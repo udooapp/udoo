@@ -4,6 +4,8 @@ import com.udoo.dal.dao.BidResultDao;
 import com.udoo.dal.dao.CategoryResultDao;
 import com.udoo.dal.dao.IBidResult;
 import com.udoo.dal.dao.ICategoryResult;
+import com.udoo.restservice.payment.IPaymentService;
+import com.udoo.restservice.payment.PaymentService;
 import com.udoo.restservice.security.SecurityConfig;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +101,10 @@ public class PersistenceConfig {
         BidResultDao result = new BidResultDao();
         result.setDataSource(dataSource);
         return result;
+    }
+
+    @Bean
+    public IPaymentService paymentService(){
+        return new PaymentService();
     }
 }

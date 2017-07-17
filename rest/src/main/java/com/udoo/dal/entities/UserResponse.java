@@ -16,7 +16,7 @@ public class UserResponse {
         this.user = user;
     }
 
-    public List<BidResult> getBid() {
+    public List<BidResult> getBids() {
         return bids;
     }
 

@@ -17,6 +17,7 @@ import {VerificationComponent} from "../screens/verification/verification.compon
 import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
+import {BidComponent} from "../screens/bids/bids.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -38,9 +39,11 @@ const routes: Routes = [
   {path: 'verification/:token', component: VerificationComponent},
   {path: 'verification', component: VerificationComponent},
   {path: 'contact', component: ContactsComponent, canActivate: [AuthGuard]},
-  {path: 'detail/:id/:type', component: ServiceDetailComponent},
+  {path: 'detail/:id/:type/:page', component: ServiceDetailComponent},
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
+  {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
+  {path: 'bids/:type', component: BidComponent, canActivate: [AuthGuard]},
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo:'/map'}
 ];
@@ -55,6 +58,8 @@ export const REGISTRATION: string = '/registration';
 export const SOCIALREGISTRATION: string = '/registration/facebook';
 export const PROFILE: string = '/profile';
 export const PASSWORD: string = '/password';
+export const USER_BIDS: string = "/bids/user";
+export const PROVIDER_BIDS: string = "/bids/provider";
 export const OFFER: string = '/offer';
 export const REQUEST: string = '/request';
 export const OFFER_TYPE: string = '/offer/';

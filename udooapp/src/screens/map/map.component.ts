@@ -282,7 +282,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onClickOpen(element: any) {
     let type: boolean = element.rid;
-    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1)]);
+    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
   }
 
   public findCatName(catID: number): string {

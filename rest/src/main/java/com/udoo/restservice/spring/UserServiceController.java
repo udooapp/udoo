@@ -139,15 +139,6 @@ public class UserServiceController implements IUserServiceController {
         }
     }
 
-    @Override
-    @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-    public User getUser(@PathVariable("email") final String email) {
-        if (email != null) {
-            return userRepository.findByEmail(email).get(0);
-        } else {
-            return null;
-        }
-    }
 
     @Override
     @RequestMapping(value = "/data", method = RequestMethod.GET)

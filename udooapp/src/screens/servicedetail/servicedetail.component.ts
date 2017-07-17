@@ -9,7 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAP} from "../../app/app.routing.module";
+import {MAP, PROVIDER_BIDS, USER_BIDS} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
@@ -40,12 +40,23 @@ export class ServiceDetailComponent implements OnInit {
   comments: any[];
   clearArea: boolean = false;
   hasMore: boolean = true;
+  page: number = 0;
 
-  constructor(private zone: NgZone, private bidService: BidService, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private userService: UserService, private route: ActivatedRoute, private  contactServiece: ContactService, private dialog: DialogController) {
+  constructor(private zone: NgZone, private bidService: BidService, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private route: ActivatedRoute, private  contactService: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
     notifier.pageChanged$.subscribe(action => {
       if (action == ServiceDetailComponent.NAME) {
-        this.router.navigate([MAP]);
+        switch (this.page){
+          case 0:
+          this.router.navigate([MAP]);
+          break;
+          case 1:
+            this.router.navigate([USER_BIDS]);
+            break;
+          case 2:
+            this.router.navigate([PROVIDER_BIDS]);
+            break;
+        }
       } else if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
         this.open = -1;
@@ -102,6 +113,7 @@ export class ServiceDetailComponent implements OnInit {
       .subscribe((params: Params) => {
 
         id = +params['id'];
+        this.page = +params['page'];
         this.type = (+params['type'] === 1);
         if (id > -1) {
           this.processOutsideOfAngularZone(id);
@@ -163,7 +175,7 @@ export class ServiceDetailComponent implements OnInit {
 
   public onClickAddToContact() {
     if (!this.added) {
-      this.contactServiece.addContact(this.data.uid).subscribe(
+      this.contactService.addContact(this.data.uid).subscribe(
         message => {
           this.message = message;
           this.error = '';

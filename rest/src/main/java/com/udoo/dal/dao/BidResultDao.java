@@ -1,6 +1,7 @@
 package com.udoo.dal.dao;
 
 import com.udoo.dal.entities.BidResult;
+import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.ArrayList;
@@ -36,5 +37,17 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
             result.add(bidResult);
         }
         return result;
+    }
+
+    @Override
+    public int[] getUserBids(int uid) {
+        String SQLUser = "Select count(b.sid) as count From Bids b where b.accepted = 1 and b.uid = " + uid;
+        String SQLProvider = "Select count(DISTINCT b.bid) as count From Bids b, Offer o, Request r Where b.accepted = 1 and ((o.uid = 5 and o.oid = b.sid and b.type = 1) || (r.uid = 5 and r.rid = b.sid and b.type = 0))";
+        List<Map<String, Object>> rows = getJdbcTemplate().queryForList(SQLUser);
+        int [] counts = new int[2];
+        counts[0] = Integer.parseInt(rows.get(0).get("count").toString());
+        rows = getJdbcTemplate().queryForList(SQLProvider);
+        counts[1] = Integer.parseInt(rows.get(0).get("count").toString());
+        return counts;
     }
 }

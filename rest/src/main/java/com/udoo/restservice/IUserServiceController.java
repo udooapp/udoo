@@ -18,8 +18,6 @@ public interface IUserServiceController {
 
     ResponseEntity<String> updateUser(ServletRequest request, final User user);
 
-    User getUser(final String id);
-
     ResponseEntity<?> getUserData(ServletRequest request);
 
 }

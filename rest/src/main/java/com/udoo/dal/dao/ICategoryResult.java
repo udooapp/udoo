@@ -1,6 +1,7 @@
 package com.udoo.dal.dao;
 
 import com.udoo.dal.entities.CategoryResult;
+import org.springframework.data.util.Pair;
 
 import java.util.List;
 

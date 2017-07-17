@@ -178,15 +178,15 @@
   padding: 5%;
   overflow: hidden;
 }
-.contact-name{
+.bid-title{
   font-size: 16pt;
   padding: 10px 0 10px 0;
 }
-.contact-phone{
+.bid-content{
   font-size: 12pt;
   padding: 5px;
 }
-.contact-email{
+.bid-name{
   font-size: 12pt;
   padding: 5px;
 }
