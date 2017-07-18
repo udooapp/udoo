@@ -41,6 +41,16 @@ export class BidService extends HeaderService {
       .catch(HandlerService.handleError);
   }
 
+  public sendPaymentReminder(pid: number): Observable<any[]> {
+    let param: URLSearchParams = new URLSearchParams();
+    param.append('bid', pid.toString());
+    return this.http.get(config.server + '/bid/reminder', new RequestOptions({
+      headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
+    }))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleError);
+  }
+
 
   public getBids(count: number, last: number): Observable<any[]> {
     let param: URLSearchParams = new URLSearchParams();
@@ -57,6 +67,16 @@ export class BidService extends HeaderService {
     let param: URLSearchParams = new URLSearchParams();
     param.append('bid', bid.toString());
     return this.http.get(config.server + '/bid/cancel', new RequestOptions({
+      headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
+    }))
+      .map(HandlerService.extractText)
+      .catch(HandlerService.handleError);
+  }
+
+  public sendPayment(bid: number): Observable<string> {
+    let param: URLSearchParams = new URLSearchParams();
+    param.append('bid', bid.toString());
+    return this.http.get(config.server + '/bid/send', new RequestOptions({
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractText)

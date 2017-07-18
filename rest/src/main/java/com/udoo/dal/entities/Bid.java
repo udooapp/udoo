@@ -1,7 +1,5 @@
 package com.udoo.dal.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +14,9 @@ public class Bid {
 
     @Transient
     private String picture;
+
+    @Transient
+    private int paymentState;
 
     private long uid;
 
@@ -99,6 +100,14 @@ public class Bid {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public int getPaymentState() {
+        return paymentState;
+    }
+
+    public void setPaymentState(int paymentState) {
+        this.paymentState = paymentState;
     }
 
     @Override

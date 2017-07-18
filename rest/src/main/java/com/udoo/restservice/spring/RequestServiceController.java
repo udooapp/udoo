@@ -5,6 +5,8 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.request.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRequestServiceController;
+import com.udoo.restservice.payment.IPaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -46,6 +48,9 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Resource
     private IBidRepository bidRepository;
+
+    @Autowired
+    private IPaymentService paymentService;
 
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -257,10 +262,16 @@ public class RequestServiceController implements IRequestServiceController {
         request.setCategories(categoryRepository.findAll());
         if(bids.size() > 0){
             User user;
+            Payment payment;
             for(Bid bid: bids){
+                payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
+                if(payment != null){
+                    bid.setPaymentState(payment.getState());
+                }
                 user = userRepository.findByUid((int)bid.getUid());
                 bid.setName(user.getName());
                 bid.setPicture(user.getPicture());
+
             }
         }
         request.setBids(bids);

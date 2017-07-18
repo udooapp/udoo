@@ -93,6 +93,18 @@ export class BidComponent implements OnInit {
         return 'Pending';
     }
   }
+  getColor(status: number) {
+    switch (status) {
+      case 0:
+        return 'red';
+      case 1:
+        return '#2B6665';
+      case 2:
+        return 'green';
+      case -1:
+        return '#ff8c00';
+    }
+  }
 
   cancelBid(index: number) {
     if (index > 0 && index < this.data.length) {
@@ -114,11 +126,19 @@ export class BidComponent implements OnInit {
     }
   }
   onClickBid(index: number){
-    console.log(index);
     if (index >= 0 && index < this.data.length) {
       this.router.navigate([DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
     }
 
+  }
+  onClickSendMoney(index:number){
+    if (index >= 0 && index < this.data.length) {
+      this.bidService.sendPayment(this.data[index].bid).subscribe(() => {
+        this.data.splice(this.index, 1)
+      }, error => {
+        this.dialog.notifyError(error);
+      });
+    }
   }
 }
 

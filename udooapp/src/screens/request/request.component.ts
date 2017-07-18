@@ -321,4 +321,28 @@ export class RequestComponent implements OnInit, IServiceForm {
         this.dialog.notifyError(error);
     });
   }
+
+  onClickPaymentReminder(bid) {
+    this.bidService.sendPaymentReminder(bid.bid).subscribe(
+      data => {
+        this.dialog.sendMessage("Payment reminder sent!");
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
+  }
+  getPaymentState(i: number){
+    switch (i){
+      case -1:
+        return 'Payment is unchecked';
+      case 0:
+        return 'Payment is checked';
+      case 1:
+        return 'Money is transferred';
+      case 2:
+        return 'Reminder sent';
+      case 3:
+        return 'Transferred invalidated'
+    }
+  }
 }

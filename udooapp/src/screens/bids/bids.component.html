@@ -7,11 +7,14 @@
         <div class="bid-title"><b i18n></b>{{item.title}}</div>
         <div class="bid-name">{{item.name}}</div>
         <div class="bid-text"><b i18n>Message: </b>{{item.description}}</div>
-        <div class="bid-text"><b i18n>Status: </b>{{getStatus(item.status)}}</div>
+        <div class="bid-text"><b i18n>Status: </b><span [style.color]="getColor(item.status)">{{getStatus(item.status)}}</span></div>
         <div class="bid-text"><b i18n>Price: </b>{{item.price}} &#8364;</div>
+        <div class="bid-text"><b i18n *ngIf="item.date != null">Last update: </b>{{item.date}}</div>
       </div>
+      <div *ngIf="item.paymentState == 2" [style.color]="'red'">The provider sent a reminder! Please pay his/her work!</div>
       <button *ngIf="item.status == 1" class="input-button button-dark" (click)="confirmBid(i)">Confirm</button>
       <button *ngIf="item.status == -1" class="input-button button-light" (click)="cancelBid(i)">Cancel</button>
+      <button *ngIf="item.status == 2 && item.paymentState > -1" class="input-button button-dark" (click)="onClickSendMoney(i)">Send money</button>
     </div>
     <div *ngIf="loading" class="loader"></div>
   </div>

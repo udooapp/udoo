@@ -16,11 +16,14 @@ public interface IBidServiceController {
 
     ResponseEntity<?> getUserBids(ServletRequest req, int count, int last);
 
-    ResponseEntity<?> getProviderBids(ServletRequest req, int count, int last);
-
     ResponseEntity<?> deleteBid(ServletRequest req, long bid);
 
     ResponseEntity<?> confirmBid(ServletRequest req, int bid);
 
+    ResponseEntity<?> sendMoney(ServletRequest req, int bid);
+
+    ResponseEntity<?> sendReminder(ServletRequest req, int bid);
+
+    ResponseEntity<?> sendBackMoney(ServletRequest req, int bid);
 
 }

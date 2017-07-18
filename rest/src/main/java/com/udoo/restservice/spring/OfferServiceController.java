@@ -5,6 +5,8 @@ import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IOfferServiceController;
+import com.udoo.restservice.payment.IPaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -46,6 +48,9 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Resource
     private ICategoryRepository categoryRepository;
+
+    @Autowired
+    private IPaymentService paymentService;
 
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -115,7 +120,12 @@ public class OfferServiceController implements IOfferServiceController {
         List<Bid> bids = bidRepository.findAllBySidAndType(id, true);
         if(bids.size() > 0){
             User user;
+            Payment payment;
             for(Bid bid: bids){
+                payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
+                if(payment != null){
+                    bid.setPaymentState(payment.getState());
+                }
                 user = userRepository.findByUid((int)bid.getUid());
                 bid.setName(user.getName());
                 bid.setPicture(user.getPicture());

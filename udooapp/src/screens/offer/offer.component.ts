@@ -314,4 +314,13 @@ export class OfferComponent implements OnInit, IServiceForm {
         this.dialog.notifyError(error);
       });
   }
+  onClickPaymentReminder(bid) {
+    this.bidService.sendPaymentReminder(bid.bid).subscribe(
+      data => {
+       this.dialog.sendMessage("Payment reminder sent!");
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
+  }
 }

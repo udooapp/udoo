@@ -16,6 +16,7 @@ public class BidResponse {
     private Date date;
     private String image;
     private String description;
+    private int paymentState;
 
     public String getName() {
         return name;
@@ -95,5 +96,13 @@ public class BidResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getPaymentState() {
+        return paymentState;
+    }
+
+    public void setPaymentState(int paymentState) {
+        this.paymentState = paymentState;
     }
 }

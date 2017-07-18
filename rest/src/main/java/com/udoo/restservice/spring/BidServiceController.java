@@ -1,10 +1,7 @@
 package com.udoo.restservice.spring;
 
 
-import com.udoo.dal.entities.Bid;
-import com.udoo.dal.entities.BidResponse;
-import com.udoo.dal.entities.CategoryResult;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
@@ -12,8 +9,6 @@ import com.udoo.restservice.IBidServiceController;
 import com.udoo.restservice.payment.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -88,6 +83,11 @@ public class BidServiceController implements IBidServiceController {
                     resp.setDescription(bid.getDescription());
                     resp.setType(bid.isType());
                     resp.setSid(bid.getSid());
+                    Payment payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
+                    if(payment != null){
+                        resp.setDate(payment.getDate());
+                        resp.setPaymentState(payment.getState());
+                    }
                     if (resp.isType()) {
                         Offer offer = offerRepository.findByOid((int) resp.getSid());
                         resp.setTitle(offer.getTitle());
@@ -112,44 +112,6 @@ public class BidServiceController implements IBidServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/provider", method = RequestMethod.GET)
-    public ResponseEntity<?> getProviderBids(ServletRequest req, @RequestParam("count") int count, @RequestParam("last") int last) {
-        User currentUser = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
-        if (currentUser != null && currentUser.getUid() > 0) {
-            List<Bid> bids = bidRepository.findAllByProviderId(currentUser.getUid(), new PageRequest(count / 5, 5, Sort.Direction.DESC));
-            List<BidResponse> response = new ArrayList<>();
-            if (last == -1 || (bids.size() > 0 && bids.get(bids.size() - 1).getBid() != last)) {
-                for (int i = 0; i < bids.size(); ++i) {
-                    BidResponse resp = new BidResponse();
-                    resp.setBid(bids.get(i).getBid());
-                    resp.setStatus(bids.get(i).getAccepted());
-                    resp.setPrice(bids.get(i).getPrice());
-                    resp.setDescription(bids.get(i).getDescription());
-                    resp.setType(bids.get(i).isType());
-                    resp.setSid(bids.get(i).getSid());
-                    if (resp.isType()) {
-                        Offer offer = offerRepository.findByOid((int) resp.getSid());
-                        resp.setTitle(offer.getTitle());
-                        if (offer.getPicturesOffer() != null && offer.getPicturesOffer().size() > 0) {
-                            resp.setImage(offer.getPicturesOffer().get(0).getSrc());
-                        }
-                    } else {
-                        Request request = requestRepository.findByRid((int) resp.getSid());
-                        resp.setTitle(request.getTitle());
-                        if (request.getPicturesRequest() != null && request.getPicturesRequest().size() > 0) {
-                            resp.setImage(request.getPicturesRequest().get(0).getSrc());
-                        }
-                    }
-                    resp.setName(userRepository.findByUid((int) bids.get(i).getUid()).getName());
-                    response.add(resp);
-                }
-            }
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Something wrong", HttpStatus.UNAUTHORIZED);
-    }
-
-    @Override
     @RequestMapping(value = "/cancel", method = RequestMethod.GET)
     public ResponseEntity<?> deleteBid(ServletRequest req, @RequestParam("bid") long bid) {
         Bid bd = bidRepository.findAllByBid((int) bid);
@@ -158,7 +120,6 @@ public class BidServiceController implements IBidServiceController {
             return new ResponseEntity<>("Deleted", HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
-
     }
 
     @Override
@@ -169,12 +130,64 @@ public class BidServiceController implements IBidServiceController {
             if(bd.getAccepted() == 1) {
                 bd.setAccepted(2);
                 bidRepository.save(bd);
+                paymentService.reserveSumFromUserToService((int)bd.getUid(), (int)bd.getSid(), bd.isType(), bd.getPrice());
                 return new ResponseEntity<>("Confirmed", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Your bid is not accepted", HttpStatus.UNAUTHORIZED);
             }
-
         }
         return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
     }
+
+    @Override
+    @RequestMapping(value = "/reminder", method = RequestMethod.GET)
+    public ResponseEntity<?> sendReminder(ServletRequest req, @RequestParam("bid") int bid) {
+        Bid bd = bidRepository.findAllByBid(bid);
+        if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
+                if(this.paymentService.sendPaymentReminder((int)bd.getUid(), (int)bd.getSid(), bd.isType(), Integer.parseInt(req.getAttribute(USERID).toString()))) {
+                    return new ResponseEntity<>("Confirmed", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+                }
+        }
+        return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @RequestMapping(value = "/send", method = RequestMethod.GET)
+    public ResponseEntity<?> sendMoney(ServletRequest req, @RequestParam("bid") int bid) {
+        Bid bd = bidRepository.findAllByBid(bid);
+        if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
+            if(bd.getAccepted() == 1) {
+                if (this.paymentService.sendMoney((int) bd.getUid(), (int) bd.getSid(), bd.isType())) {
+                    return new ResponseEntity<>("Reminder send", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>("Your bid is not accepted", HttpStatus.UNAUTHORIZED);
+            }
+        }
+        return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @RequestMapping(value = "/invalidate", method = RequestMethod.GET)
+    public ResponseEntity<?> sendBackMoney(ServletRequest req, @RequestParam("bid") int bid) {
+        Bid bd = bidRepository.findAllByBid(bid);
+        if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
+            if(bd.getAccepted() == 1) {
+                if (this.paymentService.sendBackMoney((int) bd.getUid(), (int) bd.getSid(), bd.isType())) {
+                    return new ResponseEntity<>("Success", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                return new ResponseEntity<>("Your bid is not accepted", HttpStatus.UNAUTHORIZED);
+            }
+        }
+        return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+    }
+
+
 }
