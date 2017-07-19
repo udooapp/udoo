@@ -38,9 +38,9 @@ export class OfferComponent implements OnInit, IServiceForm {
   modification: number[] = [-1, 0, -1];
   imageLoading: number[] = [];
   imageError: number[] = [];
-  private reload:boolean = false;
+  private reload: boolean = false;
 
-  constructor(private offerService: OfferService,private bidService: BidService,  private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private offerService: OfferService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action === OfferComponent.NAME) {
         if (this.modification[0] <= 0) {
@@ -48,7 +48,7 @@ export class OfferComponent implements OnInit, IServiceForm {
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([OFFER_LIST]);
-          if(this.reload){
+          if (this.reload) {
             this.notifier.refreshMainData();
           }
         } else {
@@ -137,7 +137,7 @@ export class OfferComponent implements OnInit, IServiceForm {
       });
   }
 
-  public  onClickSave() {
+  public onClickSave() {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
@@ -149,7 +149,7 @@ export class OfferComponent implements OnInit, IServiceForm {
             this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
             this.router.navigate([OFFER_LIST]);
-            if(this.reload){
+            if (this.reload) {
               this.notifier.refreshMainData();
             }
           },
@@ -302,11 +302,12 @@ export class OfferComponent implements OnInit, IServiceForm {
   getPictures(): any[] {
     return this.data.picturesOffer;
   }
+
   onClickBid(bid, state) {
     this.bidService.sendPidResponse(bid.bid, state).subscribe(
       data => {
         bid.accepted = state;
-        if(state){
+        if (state) {
           this.reload = true;
         }
       },
@@ -314,13 +315,29 @@ export class OfferComponent implements OnInit, IServiceForm {
         this.dialog.notifyError(error);
       });
   }
+
   onClickPaymentReminder(bid) {
     this.bidService.sendPaymentReminder(bid.bid).subscribe(
       data => {
-       this.dialog.sendMessage("Payment reminder sent!");
+        this.dialog.sendMessage("Payment reminder sent!");
       },
       error => {
         this.dialog.notifyError(error);
       });
+  }
+
+  getPaymentState(i: number) {
+    switch (i) {
+      case -1:
+        return 'Payment is unchecked';
+      case 0:
+        return 'Payment is checked';
+      case 1:
+        return 'Money is transferred';
+      case 2:
+        return 'Reminder sent';
+      case 3:
+        return 'Transferred invalidated'
+    }
   }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 public class UserResponse {
     private User user;
     private List<BidResult> bids;
+    private List<BidResult> reminders;
 
     public User getUser() {
         return user;
@@ -24,4 +25,11 @@ public class UserResponse {
         this.bids = bids;
     }
 
+    public List<BidResult> getReminders() {
+        return reminders;
+    }
+
+    public void setReminders(List<BidResult> reminders) {
+        this.reminders = reminders;
+    }
 }

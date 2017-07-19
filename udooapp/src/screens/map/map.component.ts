@@ -11,10 +11,11 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {OfferService} from "../../services/offer.service";
 import {RequestService} from "../../services/request.service";
 import {ServiceDialogController} from "../../components/service/service.window.controller";
+import {config} from "../../environments/url.config";
 
 declare let google: any;
-// let SockJS = require('sockjs-client');
-// let Stomp = require('stompjs');
+let SockJS = require('sockjs-client');
+let Stomp = require('stompjs');
 
 
 @Component({
@@ -44,7 +45,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   private offerSize: number = 0;
   private requestSize: number = 0;
   public result: any[] = [];
-  // private stompClient: any;
+  private stompClient: any;
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
 
 
@@ -71,7 +72,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   //     });
   //   });
   // }
-  //
+
   // disconnect() {
   //   if (this.stompClient != null) {
   //     this.stompClient.disconnect();
@@ -84,7 +85,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
   // }
 
   ngOnInit() {
-    // this.connect();
+   // this.connect();
 
     this.mapView = !this.tokenService.getMapState();
     this.error = '';

@@ -14,7 +14,8 @@ import java.util.List;
 public class PaymentService implements IPaymentService {
 
     private final int STATE_RESERVE = 0;
-    private final int STATE_SEND = 1;
+    private final int STATE_SEND = 4;
+    private final int STATE_CONFIRM = 1;
     private final int STATE_REMIND = 2;
     private final int STATE_SEND_BACK = 3;
 
@@ -45,7 +46,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public boolean sendMoney(int uid, int sid, boolean type) {
-        Payment payment = paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_RESERVE);
+        Payment payment = paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_CONFIRM);
         return paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_SEND) == null && this.savePayment(payment, STATE_SEND);
     }
 
@@ -69,6 +70,13 @@ public class PaymentService implements IPaymentService {
     public boolean sendBackMoney(int uid, int sid, boolean type) {
         Payment payment = paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_SEND);
         return paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_SEND_BACK) == null && this.savePayment(payment, STATE_SEND_BACK);
+    }
+
+    @Override
+    public boolean setConfirmed(int uid, int sid, boolean type) {
+        Payment payment = paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_RESERVE);
+        return paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_CONFIRM) == null && this.savePayment(payment, STATE_CONFIRM);
+
     }
 
     private boolean savePayment(Payment payment, int state) {

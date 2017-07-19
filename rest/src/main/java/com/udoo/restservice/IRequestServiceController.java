@@ -18,8 +18,6 @@ public interface IRequestServiceController {
 
     ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, int cound, int last);
 
-    ResponseEntity<?> getRequest(int id);
-
     ResponseEntity<?> getUserRequest(int id);
 
     ResponseEntity<?> getRequestData(int id);

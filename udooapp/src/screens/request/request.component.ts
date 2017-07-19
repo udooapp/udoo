@@ -55,7 +55,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([REQUEST_LIST]);
-          if(this.reload){
+          if (this.reload) {
             this.notifier.refreshMainData();
           }
         } else {
@@ -156,7 +156,7 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.notifier.pageChanged$.emit(' ');
             this.notifier.back();
             this.router.navigate([REQUEST_LIST]);
-            if(this.reload){
+            if (this.reload) {
               this.notifier.refreshMainData();
             }
           },
@@ -312,14 +312,14 @@ export class RequestComponent implements OnInit, IServiceForm {
   onClickBid(bid, state) {
     this.bidService.sendPidResponse(bid.bid, state).subscribe(
       data => {
-          bid.accepted = state;
-          if(state){
-            this.reload = true;
-          }
-        },
+        bid.accepted = state;
+        if (state) {
+          this.reload = true;
+        }
+      },
       error => {
         this.dialog.notifyError(error);
-    });
+      });
   }
 
   onClickPaymentReminder(bid) {
@@ -331,8 +331,9 @@ export class RequestComponent implements OnInit, IServiceForm {
         this.dialog.notifyError(error);
       });
   }
-  getPaymentState(i: number){
-    switch (i){
+
+  getPaymentState(i: number) {
+    switch (i) {
       case -1:
         return 'Payment is unchecked';
       case 0:

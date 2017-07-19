@@ -35,7 +35,7 @@ export class MenuComponent implements OnInit {
   currentX: number = 0;
   checkLogin: boolean = false;
 
-  constructor(private router: Router, private bidService: BidService, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
     let before: string = '';
     notifier.pageChanged$.subscribe(action => {
       if (action === 'refresh') {
@@ -64,25 +64,14 @@ export class MenuComponent implements OnInit {
       }
     });
     notifier.userModification$.subscribe(verify => {
-      if (verify == 0 || verify == 1) {
+      if (verify == NotifierController.LANGUAGE_ENGLISH  || verify == NotifierController.LANGUAGE_GERMAN) {
         this.user.language = verify === 0 ? 'en' : 'de';
         // document['locale'] = this.user.language;
         // getTranslationProviders().then(value => {
         // }).catch(err => {
         // });
-        this.userService.updateUser(this.user).subscribe(
-          message => {
-          },
-          error => {
-            if (error === 'Invalid token') {
-              this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
-              this.login = false;
-              this.image = this.getPictureUrl('');
-            }
-            this.dialog.notifyError(error);
-          }
-        );
-      } else if (verify == 4) {
+
+      } else if (verify == NotifierController.REFRESH_USER_DATA) {
         this.checkUser(true);
       }
     });
@@ -167,6 +156,9 @@ export class MenuComponent implements OnInit {
 
           if (data.bid != null && data.bid.length > 0) {
             this.notifier.sendNotification(this.router, REQUEST_LIST, data.bid);
+          }
+          if (data.reminders != null && data.reminders.length > 0) {
+            this.notifier.sendNotification(this.router, REQUEST_LIST, data.reminders);
           }
         },
         error => {

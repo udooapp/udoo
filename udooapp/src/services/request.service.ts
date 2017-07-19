@@ -10,8 +10,9 @@ import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
 import {config} from "../environments/url.config";
 import {HeaderService} from "./header.service";
+
 @Injectable()
-export class RequestService extends HeaderService{
+export class RequestService extends HeaderService {
 
   constructor(private http: Http, private tokenService: TokenService) {
     super();
@@ -22,6 +23,7 @@ export class RequestService extends HeaderService{
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
+
   public uploadPicture(rid: number, src: string): Observable<number> {
     return this.http.post(config.server + '/request/user/upload', JSON.stringify({
       prid: rid,
@@ -30,6 +32,7 @@ export class RequestService extends HeaderService{
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
+
   public saveRequest(request: Request, deleted: number): Observable<String> {
     return this.http.post(config.server + '/request/user/save', JSON.stringify({
       request: request,
@@ -43,7 +46,10 @@ export class RequestService extends HeaderService{
     let param: URLSearchParams = new URLSearchParams();
     param.append("count", count.toString());
     param.append("last", lastid.toString());
-    return this.http.get(config.server + '/request/user', new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken()), search: param}))
+    return this.http.get(config.server + '/request/user', new RequestOptions({
+      headers: this.getTokenHeaders(this.tokenService.getToken()),
+      search: param
+    }))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
@@ -57,16 +63,12 @@ export class RequestService extends HeaderService{
       .catch(HandlerService.handleText);
   }
 
-  public getRequest(rid: number): Observable<any> {
-    return this.http.get(config.server + '/request/' + rid)
-      .map(HandlerService.extractData)
-      .catch(HandlerService.handleText);
-  }
   public getUserRequest(rid: number): Observable<any> {
     return this.http.get(config.server + '/request/user/' + rid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
+
   public getRequestData(rid: number): Observable<any> {
     return this.http.get(config.server + '/request/data/' + rid)
       .map(HandlerService.extractData)

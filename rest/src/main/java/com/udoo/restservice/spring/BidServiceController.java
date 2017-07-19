@@ -64,6 +64,9 @@ public class BidServiceController implements IBidServiceController {
         Bid bd = bidRepository.findAllByBid(result.getId());
         bd.setAccepted((int) result.getResult());
         bidRepository.save(bd);
+        if(bd.getAccepted()  == 1) {
+            paymentService.reserveSumFromUserToService((int) bd.getUid(), (int) bd.getSid(), bd.isType(), bd.getPrice());
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -130,7 +133,7 @@ public class BidServiceController implements IBidServiceController {
             if(bd.getAccepted() == 1) {
                 bd.setAccepted(2);
                 bidRepository.save(bd);
-                paymentService.reserveSumFromUserToService((int)bd.getUid(), (int)bd.getSid(), bd.isType(), bd.getPrice());
+                paymentService.setConfirmed((int)bd.getUid(), (int)bd.getSid(), bd.isType());
                 return new ResponseEntity<>("Confirmed", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Your bid is not accepted", HttpStatus.UNAUTHORIZED);
@@ -145,7 +148,7 @@ public class BidServiceController implements IBidServiceController {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
                 if(this.paymentService.sendPaymentReminder((int)bd.getUid(), (int)bd.getSid(), bd.isType(), Integer.parseInt(req.getAttribute(USERID).toString()))) {
-                    return new ResponseEntity<>("Confirmed", HttpStatus.OK);
+                    return new ResponseEntity<>("Reminder sent", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
                 }
@@ -188,6 +191,4 @@ public class BidServiceController implements IBidServiceController {
         }
         return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
     }
-
-
 }

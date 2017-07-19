@@ -20,4 +20,5 @@ public interface IPaymentService {
 
    boolean sendBackMoney(int uid, int sid, boolean type);
 
+   boolean setConfirmed(int uid, int sid, boolean type);
 }

@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit, IFormInput {
       this.lastPicture = this.user.picture;
       this.error = '';
     });
-    this.notifier.sendUserModification(4);
+    this.notifier.sendUserModification(NotifierController.REFRESH_USER_DATA);
   }
 
   public getPictureUrl() {

@@ -61,11 +61,11 @@ public class OfferServiceController implements IOfferServiceController {
             List<Offer> offers = offerRepository.findByUid(user.getUid(), page);
             if (last == -1 || (offers.size() > 0 && offers.get(offers.size() - 1).getOid() != last)) {
                 for (Offer offer : offers) {
+                    offer.setBids(bidRepository.countBySidAndTypeAndAcceptedLessThan(offer.getOid(), true, 0));
                     if (offer.getPicturesOffer().size() > 1) {
-                        offer.setBids(bidRepository.countBySidAndType(offer.getOid(), true));
                         offer.setPicturesOffer(offer.getPicturesOffer().subList(0, 1));
                     }
-                    if(offer.getDescription().length() > 150){
+                    if (offer.getDescription().length() > 150) {
                         offer.setDescription(offer.getDescription().substring(0, 150) + "...");
                     }
                 }
@@ -106,11 +106,6 @@ public class OfferServiceController implements IOfferServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getOffer(@PathVariable("id") int id) {
-        return new ResponseEntity<>(offerRepository.findByOid(id), HttpStatus.OK);
-    }
 
     @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
@@ -118,15 +113,15 @@ public class OfferServiceController implements IOfferServiceController {
         UserOffer offer = new UserOffer();
         offer.setOffer(offerRepository.findByOid(id));
         List<Bid> bids = bidRepository.findAllBySidAndType(id, true);
-        if(bids.size() > 0){
+        if (bids.size() > 0) {
             User user;
             Payment payment;
-            for(Bid bid: bids){
-                payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
-                if(payment != null){
+            for (Bid bid : bids) {
+                payment = paymentService.getStatusServicePayment((int) bid.getUid(), (int) bid.getSid(), bid.isType());
+                if (payment != null) {
                     bid.setPaymentState(payment.getState());
                 }
-                user = userRepository.findByUid((int)bid.getUid());
+                user = userRepository.findByUid((int) bid.getUid());
                 bid.setName(user.getName());
                 bid.setPicture(user.getPicture());
             }

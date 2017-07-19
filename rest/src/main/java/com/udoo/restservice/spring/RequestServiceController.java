@@ -194,13 +194,13 @@ public class RequestServiceController implements IRequestServiceController {
         if (user != null) {
             Pageable page = new PageRequest(count / 5, 5);
             List<Request> requests = requestRepository.findByUid(user.getUid(), page);
-            if(last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
+            if (last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
                 for (Request req : requests) {
-                    req.setBids(bidRepository.countBySidAndType(req.getRid(), false));
+                    req.setBids(bidRepository.countBySidAndTypeAndAcceptedLessThan(req.getRid(), false, 0));
                     if (req.getPicturesRequest() != null && req.getPicturesRequest().size() > 1) {
                         req.setPicturesRequest(req.getPicturesRequest().subList(0, 1));
                     }
-                    if(req.getDescription().length() > 150){
+                    if (req.getDescription().length() > 150) {
                         req.setDescription(req.getDescription().substring(0, 150) + "...");
                     }
                 }
@@ -223,19 +223,20 @@ public class RequestServiceController implements IRequestServiceController {
         } else {
             RequestResponse response = new RequestResponse();
             response.setRequest(request);
-            response.setUser(userRepository.findByUid(request.getUid()));;
+            response.setUser(userRepository.findByUid(request.getUid()));
+            ;
             List<Comment> comments = commentRepository.findAllBySidAndType(rid, false, new PageRequest(0, 5, Sort.Direction.ASC, "creatingdate"));
             List<CommentResponse> list = new ArrayList<>();
-            if(comments != null && !comments.isEmpty()){
+            if (comments != null && !comments.isEmpty()) {
                 User usr;
-                for(Comment comment : comments){
-                    usr = userRepository.findByUid((int)comment.getUid());
-                    if(usr != null){
+                for (Comment comment : comments) {
+                    usr = userRepository.findByUid((int) comment.getUid());
+                    if (usr != null) {
                         CommentResponse resp = new CommentResponse();
                         resp.setCommentMessage(comment.getComment());
                         resp.setName(usr.getName());
                         resp.setPicture(usr.getPicture());
-                        resp.setUid((int)comment.getUid());
+                        resp.setUid((int) comment.getUid());
                         resp.setDate(comment.getDate());
                         list.add(resp);
                     } else {
@@ -247,11 +248,6 @@ public class RequestServiceController implements IRequestServiceController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
-    @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getRequest(@PathVariable("id") int rid) {
-        return new ResponseEntity<>(requestRepository.findByRid(rid), HttpStatus.OK);
-    }
 
     @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
@@ -260,15 +256,15 @@ public class RequestServiceController implements IRequestServiceController {
         request.setRequest(requestRepository.findByRid(id));
         List<Bid> bids = bidRepository.findAllBySidAndType(id, false);
         request.setCategories(categoryRepository.findAll());
-        if(bids.size() > 0){
+        if (bids.size() > 0) {
             User user;
             Payment payment;
-            for(Bid bid: bids){
-                payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
-                if(payment != null){
+            for (Bid bid : bids) {
+                payment = paymentService.getStatusServicePayment((int) bid.getUid(), (int) bid.getSid(), bid.isType());
+                if (payment != null) {
                     bid.setPaymentState(payment.getState());
                 }
-                user = userRepository.findByUid((int)bid.getUid());
+                user = userRepository.findByUid((int) bid.getUid());
                 bid.setName(user.getName());
                 bid.setPicture(user.getPicture());
 

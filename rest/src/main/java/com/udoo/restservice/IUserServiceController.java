@@ -12,8 +12,6 @@ public interface IUserServiceController {
 
     ResponseEntity<?> logoutUser(ServletRequest request);
 
-    String getUserName(final Integer id);
-
     ResponseEntity<String> updatePassword(ServletRequest request, String req);
 
     ResponseEntity<String> updateUser(ServletRequest request, final User user);

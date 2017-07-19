@@ -11,4 +11,7 @@ public interface IBidResult {
     List<BidResult> getBids(long id);
 
     int[] getUserBids(int uid);
+
+    List<BidResult> getUserReminders(long id);
+
 }

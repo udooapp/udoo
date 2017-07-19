@@ -13,6 +13,7 @@ import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
+import com.udoo.restservice.payment.IPaymentService;
 import com.udoo.restservice.sms.SmsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -77,22 +78,21 @@ public class UserServiceController implements IUserServiceController {
                 if (user2.getUid() == user.getUid()) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
-                    if(user.getLocation() == null){
+                    if (user.getLocation() == null) {
                         user.setLocation("");
                         user.setLocation("");
                     }
                     String responseMessage = "Profile updated";
-                    if(!user.getEmail().equals(user2.getEmail())){
-                        responseMessage = "Check your email address ";
+                    if (!user.getEmail().equals(user2.getEmail())) {
+                        responseMessage = "Check your email address";
                         int activated = user2.getActive();
                         verificationRepository.deleteByUid(user.getUid(), false);
-                        Calendar cal = Calendar.getInstance();
                         emailService.sendEmailVerification(user);
                         activated &= ~0b10;
                         user.setActive(activated);
                     }
-                    if(!user.getPhone().equals(user2.getPhone())){
-                        if(responseMessage.equals("Check your email address")){
+                    if (!user.getPhone().equals(user2.getPhone())) {
+                        if (responseMessage.equals("Check your email address")) {
                             responseMessage += " and phone";
                         } else {
                             responseMessage = "Check your phone";
@@ -123,23 +123,6 @@ public class UserServiceController implements IUserServiceController {
         return new ResponseEntity<>("Incorrect parameter", HttpStatus.UNAUTHORIZED);
     }
 
-
-    @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String getUserName(@PathVariable("id") final Integer id) {
-        if (id != null) {
-            User user = userRepository.findByUid(id);
-            if (user != null) {
-                return user.toString();
-            } else {
-                return "Not Found";
-            }
-        } else {
-            return "Error";
-        }
-    }
-
-
     @Override
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ResponseEntity<?> getUserData(ServletRequest request) {
@@ -147,8 +130,9 @@ public class UserServiceController implements IUserServiceController {
         if (user != null) {
             UserResponse resp = new UserResponse();
             resp.setUser(user);
-            resp.setBids(bidResult.getBids((long)user.getUid()));
-            return new ResponseEntity<>( resp, HttpStatus.OK);
+            resp.setBids(bidResult.getBids((long) user.getUid()));
+            resp.setReminders(bidResult.getUserReminders((long) user.getUid()));
+            return new ResponseEntity<>(resp, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

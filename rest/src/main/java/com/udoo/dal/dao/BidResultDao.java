@@ -1,7 +1,6 @@
 package com.udoo.dal.dao;
 
 import com.udoo.dal.entities.BidResult;
-import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.ArrayList;
@@ -23,6 +22,17 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
         return list;
     }
 
+    @Override
+    public List<BidResult> getUserReminders(long id) {
+        String sql1 = "Select r.title as title From Request r, Payments p Where p.uid = " + id + " and r.rid = p.sid and p.state = 2 and p.type = 0 and p.pid = " +
+                "(Select p2.pid From Payments p2 Where p2.uid = " + id + " and p2.type = 0 and p2.sid = p.sid Order By p2.date DESC Limit 1)";
+        String sql2 = "Select o.title as title From Offer o, Payments p Where p.uid = " + id + " and o.oid = p.sid and p.state = 2 and p.type = 1 and p.pid = " +
+                "(Select p2.pid From Payments p2 Where p2.uid = " + id + " and p2.type = 1 and p2.sid = p.sid Order By p2.date DESC Limit 1)";
+        List<BidResult> list = mapping2(getJdbcTemplate().queryForList(sql1));
+        list.addAll(mapping2(getJdbcTemplate().queryForList(sql2)));
+        return list;
+    }
+
     private List<BidResult> mapping(List<Map<String, Object>> rows){
         List<BidResult> result = new ArrayList<>();
         for (Map row : rows) {
@@ -33,6 +43,18 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
             if(description != null && !description.isEmpty()){
                 message += "\n" + description;
             }
+            bidResult.setMessage(message);
+            result.add(bidResult);
+        }
+        return result;
+    }
+
+    private List<BidResult> mapping2(List<Map<String, Object>> rows){
+        List<BidResult> result = new ArrayList<>();
+        for (Map row : rows) {
+            BidResult bidResult = new BidResult();
+            bidResult.setTitle("You have an unpaid service");
+            String message = "Please paid the " + row.get("title").toString() + " service.";
             bidResult.setMessage(message);
             result.add(bidResult);
         }

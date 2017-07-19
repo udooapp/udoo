@@ -5,6 +5,11 @@ import {config} from "../environments/url.config";
 declare let navigator;
 
 export class NotifierController {
+  public static LANGUAGE_GERMAN: number = 0;
+  public static LANGUAGE_ENGLISH: number = 0;
+  public static REFRESH_USER_DATA: number = 0;
+
+
   private user: User;
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<string>;

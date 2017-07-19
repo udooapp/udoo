@@ -23,7 +23,7 @@ public interface IBidRepository extends Repository<Bid, Integer> {
 
     List<Bid> findAllBySidAndType(long sid, boolean type);
 
-    int countBySidAndType(long sid, boolean type);
+    int countBySidAndTypeAndAcceptedLessThan(long sid, boolean type, int accepted);
 
     List<Bid> findAllBySidAndTypeAndUid(long sid, boolean type, long uid);
 

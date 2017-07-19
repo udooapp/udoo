@@ -14,10 +14,10 @@ import {config} from "../environments/url.config";
 import {HeaderService} from "./header.service";
 
 @Injectable()
-export class OfferService extends HeaderService{
+export class OfferService extends HeaderService {
 
   constructor(private http: Http, private tokenService: TokenService) {
-  super();
+    super();
   }
 
 
@@ -50,7 +50,10 @@ export class OfferService extends HeaderService{
     let param: URLSearchParams = new URLSearchParams();
     param.append("count", count.toString());
     param.append("last", lastid.toString());
-    return this.http.get(config.server + '/offer/user', new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken()), search: param}))
+    return this.http.get(config.server + '/offer/user', new RequestOptions({
+      headers: this.getTokenHeaders(this.tokenService.getToken()),
+      search: param
+    }))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
@@ -62,12 +65,6 @@ export class OfferService extends HeaderService{
     }), new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
-  }
-
-  public getOffer(oid: number): Observable<Offer> {
-    return this.http.get(config.server + '/offer/' + oid)
-      .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
   }
 
   public getUserOffer(oid: number): Observable<any> {
