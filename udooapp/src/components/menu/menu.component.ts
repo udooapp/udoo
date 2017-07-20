@@ -104,8 +104,8 @@ export class MenuComponent implements OnInit {
         if (Math.abs(t.currentX) >= 10 && !t.menuLoaded) {
 
           if (t.currentX < 0) {
+            t.onClickPlaceHolder();
             t.menuLoaded = true;
-            t.clickMenuButton();
           } else if (t.currentX > 0) {
             t.visibleMenu = 1;
             t.menuLoaded = true;
@@ -188,12 +188,15 @@ export class MenuComponent implements OnInit {
 
   public clickMenuButton() {
     this.visibleMenu = 0;
-    this.menuItemClicked.emit(false);
+    this.menuItemClicked.emit(true);
   }
-
-  public logOut() {
+  public onClickPlaceHolder(){
     this.visibleMenu = 0;
     this.menuItemClicked.emit(false);
+  }
+  public logOut() {
+    this.visibleMenu = 0;
+    this.menuItemClicked.emit(true);
     this.image = this.getPictureUrl('');
     this.activated = false;
     this.activatedUser.emit(true);

@@ -95,18 +95,21 @@ export class BidComponent implements OnInit {
       });
   }
 
-  getPictureUrl(url: string) {
+  public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '';
     }
     return url;
   }
 
-  getTitle(): string {
+  public getTitle(): string {
     return "Accepted Offers";
   }
 
-  getStatus(status: number) {
+  public getStatus(status: number, paymentStatus: number) {
+    if(paymentStatus == 4){
+      return 'Paid'
+    }
     switch (status) {
       case 0:
         return 'Decline';
@@ -119,7 +122,7 @@ export class BidComponent implements OnInit {
     }
   }
 
-  getColor(status: number) {
+  public getColor(status: number) {
     switch (status) {
       case 0:
         return 'red';
@@ -132,7 +135,7 @@ export class BidComponent implements OnInit {
     }
   }
 
-  cancelBid(index: number) {
+  public cancelBid(index: number) {
     if (index > 0 && index < this.data.length) {
       this.dialog.sendQuestion('Do you want to remove this bid?');
       this.clickedIndex = index;
@@ -140,7 +143,7 @@ export class BidComponent implements OnInit {
     }
   }
 
-  confirmBid(index: number) {
+  public confirmBid(index: number) {
     if (index >= 0 && index < this.data.length) {
       this.dialog.sendQuestion('The provider completed the work?');
       this.clickedIndex = index;
@@ -148,20 +151,27 @@ export class BidComponent implements OnInit {
     }
   }
 
-  onClickBid(index: number) {
+  public onClickBid(index: number) {
     if (index >= 0 && index < this.data.length) {
       this.router.navigate([DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
     }
   }
 
-  onClickSendMoney(index: number) {
+  public onClickSendMoney(index: number) {
+    console.log(this.data[index]);
     if (index >= 0 && index < this.data.length) {
       this.bidService.sendPayment(this.data[index].bid).subscribe(() => {
-        this.data.splice(this.index, 1)
+        this.data[index].paymentState = 4;
+        this.dialog.sendMessage('The money transferred');
       }, error => {
         this.dialog.notifyError(error);
       });
     }
+  }
+  public convertNumberToDateTime(millis: number): string {
+    let date: Date = new Date(millis);
+    let t: string[] = date.toDateString().split(" ");
+    return date.getFullYear() + ' ' + t[1] + ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
   }
 }
 

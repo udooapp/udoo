@@ -168,7 +168,6 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }
         break;
     }
-    console.log(e.keyCode);
   }
 
   @Input() set data(value: any) {

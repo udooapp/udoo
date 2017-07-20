@@ -6,7 +6,7 @@
   </div>
 </div>
 <div class="content">
-  <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked()" (activatedUser)="activated = $event"></side-menu>
+  <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)" (activatedUser)="activated = $event"></side-menu>
   <div class="map-container" (scroll)="onScroll()" id="content-container">
     <router-outlet></router-outlet>
   </div>

@@ -161,9 +161,9 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> sendMoney(ServletRequest req, @RequestParam("bid") int bid) {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
-            if(bd.getAccepted() == 1) {
+            if(bd.getAccepted() > 1) {
                 if (this.paymentService.sendMoney((int) bd.getUid(), (int) bd.getSid(), bd.isType())) {
-                    return new ResponseEntity<>("Reminder send", HttpStatus.OK);
+                    return new ResponseEntity<>("Money send", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
                 }

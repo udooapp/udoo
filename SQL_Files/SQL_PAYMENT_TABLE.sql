@@ -1,6 +1,6 @@
 CREATE TABLE Payments(
 	pid int AUTO_INCREMENT,
-  date Date not null,
+  date DATETIME not null,
   uid int not null,
   sid int not null,
   type BOOLEAN not null,

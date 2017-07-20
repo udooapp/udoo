@@ -15,6 +15,7 @@ export class AppComponent {
   errorMessage: string = '';
   error: boolean = false;
   activated: boolean = true;
+  private clickedPage: boolean = false;
 
   constructor(private notifier: NotifierController) {
     MAP;
@@ -24,6 +25,7 @@ export class AppComponent {
         this.menuButton = true;
       } else if (action.endsWith('New')) {
         this.menuButton = false;
+        this.clickedPage =  true;
       }
 
     });
@@ -41,16 +43,28 @@ export class AppComponent {
     if (!this.menuButton && !this.visibleMenu) {
       this.notifier.back();
       if (this.notifier.isEmpty()) {
+        this.clickedPage = false;
         this.menuButton = true;
       }
     } else {
       this.visibleMenu = !this.visibleMenu;
-      this.menuButton = !this.menuButton;
+      if(!this.clickedPage) {
+        this.menuButton = !this.menuButton;
+      }
     }
   }
-  public menuItemClicked(){
-    this.visibleMenu = !this.visibleMenu;
-    this.menuButton = !this.menuButton;
+  public menuItemClicked(event){
+    if(event){
+      this.visibleMenu = false;
+      this.clickedPage = false;
+      this.notifier.clear();
+      this.menuButton = true;
+    } else {
+      this.visibleMenu = !this.visibleMenu;
+      if(!this.clickedPage) {
+        this.menuButton = !this.menuButton;
+      }
+    }
   }
 
   public onScroll(){

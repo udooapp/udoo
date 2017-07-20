@@ -53,12 +53,13 @@ public class PaymentService implements IPaymentService {
     @Override
     public boolean sendPaymentReminder(int uid, int sid, boolean type, int cuid) {
         Payment payment = paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_RESERVE);
-        return type ? offerRepository.findByOid(sid).getUid() != cuid : requestRepository.findByRid(sid).getUid() == cuid && this.savePayment(payment, STATE_REMIND);
+
+        return (type ? offerRepository.findByOid(sid).getUid() == cuid : requestRepository.findByRid(sid).getUid() == cuid) && this.savePayment(payment, STATE_REMIND);
     }
 
     @Override
     public Payment getStatusServicePayment(int uid, int sid, boolean type) {
-        return paymentRepository.findTopByUidAndSidAndTypeAndStateOrderByPidDesc(uid, sid, type, STATE_RESERVE);
+        return paymentRepository.findTopByUidAndSidAndTypeOrderByPidDesc(uid, sid, type);
     }
 
     @Override
