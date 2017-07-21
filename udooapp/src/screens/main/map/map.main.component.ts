@@ -94,6 +94,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
 
   ngOnInit(): void {
     if(this.searchListener != null){
+      this.searchListener.getData(0);
       let data = this.searchListener.getSearchData();
       this.search = data.text;
       this.type = data.type;

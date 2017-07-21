@@ -46,6 +46,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
 
   ngOnInit(): void {
     if (this.searchListener != null) {
+      this.searchListener.getData(1);
       let data = this.searchListener.getSearchData();
       this.search = data.text;
       this.type = data.type;

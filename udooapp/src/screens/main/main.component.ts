@@ -57,6 +57,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   public loadAvailableServices() {
+    console.log('GetData');
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {
         this.listData = {services: [], offerSize: 0, requestSize: 0, more: true};
@@ -195,5 +196,17 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
 
   getSearchData(): any {
     return {text: this.searchString, type: this.type, category: this.category};
+  }
+
+  getData(page: number) {
+    switch (page){
+      case 0:
+        this.mapController.setData$.emit(this.mapData);
+        break;
+      case 1:
+        this.listController.setData$.emit(this.listData);
+        break;
+      case 2:
+    }
   }
 }

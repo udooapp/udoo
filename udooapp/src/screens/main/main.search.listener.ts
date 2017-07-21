@@ -6,4 +6,5 @@ export interface MainSearchListener{
   onClickResultDropdown(index);
   loadMoreElement();
   getSearchData(): any;
+  getData(page: number)
 }
