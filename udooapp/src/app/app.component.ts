@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {MAP} from "./app.routing.module";
+import {TokenService} from "../services/token.service";
 
 @Component({
   selector: 'app-root',
@@ -17,8 +18,9 @@ export class AppComponent {
   activated: boolean = true;
   private clickedPage: boolean = false;
 
-  constructor(private notifier: NotifierController) {
+  constructor(private notifier: NotifierController, private tokenService: TokenService) {
     MAP;
+    tokenService.clearSearchData();
     document['locale'] = 'en';
     notifier.pageChanged$.subscribe(action => {
       if (action === ' ') {

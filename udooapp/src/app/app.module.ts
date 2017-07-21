@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
-import {MapComponent} from '../screens/map/map.component';
+import {MainComponent} from '../screens/main/main.component';
 import {RegistrationComponent} from '../screens/registration/registration.component';
 import {LoginComponent} from '../screens/login/login.component';
 import {AppRoutingModule} from './app.routing.module';
@@ -39,11 +39,16 @@ import {ServiceDialogComponent} from "../components/service/service.window.compo
 import {ServiceDialogController} from "../components/service/service.window.controller";
 import {BidDialogComponent} from "../components/bid/bid.window.component";
 import {BidComponent} from "../screens/bids/bids.component";
+import {MainListComponent} from "../screens/main/list/list.main.component";
+import {MainMapComponent} from "../screens/main/map/map.main.component";
+import {MainWallComponent} from "../screens/main/wall/wall.main.component";
+import {MapMainController} from "../screens/main/map/map.main.controller";
+import {ListMainController} from "../screens/main/list/list.main.controller";
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapComponent,
+    MainComponent,
     RegistrationComponent,
     LoginComponent,
     ProfileComponent,
@@ -70,7 +75,10 @@ import {BidComponent} from "../screens/bids/bids.component";
     GalleryComponent,
     ServiceDialogComponent,
     BidDialogComponent,
-    BidComponent
+    BidComponent,
+    MainListComponent,
+    MainMapComponent,
+    MainWallComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +86,7 @@ import {BidComponent} from "../screens/bids/bids.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService, ServiceDialogController],
+  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController],
   bootstrap: [AppComponent]
 })
 export class AppModule {

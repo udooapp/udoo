@@ -1,0 +1,10 @@
+<div class="main-tab-container">
+  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 0}" (click)="onClickPage(0)">Map</div>
+  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 1}" (click)="onClickPage(1)">List</div>
+  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 2}" (click)="onClickPage(2)">Wall</div>
+</div>
+<div class="main-content-container">
+  <main-map class="main-map-container" *ngIf="page == 0" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
+  <main-list *ngIf="page == 1"  [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
+  <main-wall *ngIf="page == 2"></main-wall>
+</div>

@@ -11,6 +11,10 @@ export class TextInputSelectComponent {
   text: String = '';
   @Input() data: any[];
   @Input() placeholder: string;
+
+  @Input() set value(value: string){
+    this.text = value;
+  }
   @Output() selectedResult: EventEmitter<number>;
   @Output() onKeyEvent: EventEmitter<string>;
 

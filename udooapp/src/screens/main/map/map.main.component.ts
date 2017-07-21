@@ -1,64 +1,72 @@
-import {Component, NgZone, OnInit} from '@angular/core';
-import {MapService} from "../../services/map.service";
-import {Offer} from "../../entity/offer";
-import {Request} from "../../entity/request";
+import {AfterViewInit, Component, Input, NgZone, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {TokenService} from "../../services/token.service";
-import {DETAIL} from "../../app/app.routing.module";
-import {ConversionMethods} from "../layouts/conversion.methods";
-import {DialogController} from "../../controllers/dialog.controller";
-import {NotifierController} from "../../controllers/notify.controller";
-import {OfferService} from "../../services/offer.service";
-import {RequestService} from "../../services/request.service";
-import {ServiceDialogController} from "../../components/service/service.window.controller";
-import {config} from "../../environments/url.config";
+import {Offer} from "../../../entity/offer";
+import {Request} from "../../../entity/request";
+import {DETAIL} from "../../../app/app.routing.module";
+import {ConversionMethods} from "../../layouts/conversion.methods";
+import {DialogController} from "../../../controllers/dialog.controller";
+import {OfferService} from "../../../services/offer.service";
+import {RequestService} from "../../../services/request.service";
+import {ServiceDialogController} from "../../../components/service/service.window.controller";
+import {MainSearchListener} from "../main.search.listener";
+import {MapMainController} from "./map.main.controller";
 
 declare let google: any;
-let SockJS = require('sockjs-client');
-let Stomp = require('stompjs');
+// let SockJS = require('sockjs-client');
+// let Stomp = require('stompjs');
 
 
 @Component({
-  selector: 'map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css'],
-  providers: [MapService, OfferService, RequestService]
+  selector: 'main-map',
+  templateUrl: './map.main.component.html',
+  styleUrls: ['./map.main.component.css'],
+  providers: [OfferService, RequestService]
 })
-export class MapComponent extends ConversionMethods implements OnInit {
+export class MainMapComponent extends ConversionMethods implements OnInit{
 
   public types: string[] = ['Select', 'Offer', 'Request'];
-  public mapView = true;
   public showSearch = true;
-  public type = 0;
-  public categories: any[] = [{cid: -1, name: ''}];
   private scriptLoadingPromise: Promise<void>;
   private map;
-  private error: string;
-  private searchString = '';
   public category = -1;
+  public type = 0;
+  public search: string = '';
   private markers = [];
   private requestsWindow: any[] = [];
-  private services: any[] = [];
   private icon = {};
-  private scrolledDown;
   private offersWindow: any[] = [];
-  private offerSize: number = 0;
-  private requestSize: number = 0;
-  public result: any[] = [];
   private stompClient: any;
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
 
-
-  constructor(private serviceController: ServiceDialogController, private zone: NgZone, private mapService: MapService, private requestService: RequestService, private offerService: OfferService, private router: Router, private dialog: DialogController, private tokenService: TokenService, private notifier: NotifierController) {
-    super();
-    dialog.errorResponse$.subscribe(() => {
-      if (this.error.length > 0) {
-        this.ngOnInit();
+  @Input() result: any[] = [];
+  @Input() searchListener: MainSearchListener;
+  @Input() categories: any[] = [{cid: -1, name: ''}];
+  @Input() set service(data: any){
+    if(data != null){
+      this.requestsWindow= data.requestsWindow;
+      this.offersWindow = data.offersWindow;
+      if(this.map != null){
+        this.deleteMarkers();
+        this.loadRequests();
+        this.loadOffers();
       }
-    });
-    notifier.userScrolledToTheBottom$.subscribe(() => {
-      this.loadMoreElements();
-    });
+    }
+  }
+
+
+  constructor(private mapController: MapMainController, private serviceController: ServiceDialogController, private zone: NgZone, private requestService: RequestService, private offerService: OfferService, private router: Router, private dialog: DialogController) {
+    super();
+    mapController.setData$.subscribe(data=>{
+      if(data != null){
+        this.requestsWindow= data.requestsWindow;
+        this.offersWindow = data.offersWindow;
+        if(this.map != null){
+          this.deleteMarkers();
+          this.loadRequests();
+          this.loadOffers();
+        }
+      }
+    })
   }
 
   // connect() {
@@ -84,42 +92,14 @@ export class MapComponent extends ConversionMethods implements OnInit {
   //   this.stompClient.send("/rest/hello", {}, 'Hello');
   // }
 
-  ngOnInit() {
-   // this.connect();
-
-    this.mapView = !this.tokenService.getMapState();
-    this.error = '';
-    this.mapService.getCategories().subscribe(
-      data => {
-        data.splice(0, 0, {cid: "-1", name: 'Select category'});
-        this.categories = data;
-      },
-      error => {
-        this.error = <any>error;
-        this.checkError();
-      }
-    );
-    this.load().then(() => {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 48.211029, lng: 16.373990},
-        zoom: 14,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          style: google.maps.MapTypeControlStyle.DEFAULT,
-          position: google.maps.ControlPosition.LEFT_BOTTOM
-        }
-      });
-      this.icon = {
-        url: "assets/pin.png", // url
-        scaledSize: new google.maps.Size(30, 50), // scaled size
-        origin: new google.maps.Point(0, 0), // origin
-        anchor: new google.maps.Point(0, 0) // anchor
-      };
-      this.loadAvailableServices();
-    }).catch((error) => {
-      console.log("ERROR: " + error.toString());
-    });
-
+  ngOnInit(): void {
+    if(this.searchListener != null){
+      let data = this.searchListener.getSearchData();
+      this.search = data.text;
+      this.type = data.type;
+      this.category = data.category
+    }
+    this.initMap();
   }
 
   private initMap() {
@@ -139,6 +119,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
         origin: new google.maps.Point(0, 0), // origin
         anchor: new google.maps.Point(0, 0) // anchor
       };
+      this.loadOffers();
+      this.loadRequests();
+    }).catch((error) => {
+      console.log("ERROR: " + error.toString());
     });
   }
 
@@ -149,18 +133,7 @@ export class MapComponent extends ConversionMethods implements OnInit {
     this.markers = [];
   }
 
-  public getPicture(index: number) {
-    if (this.services.length >= 0 && index < this.services.length) {
-      let type: boolean = this.services[index].rid;
-      if ((type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
-        return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
-      }
-    }
-    return '';
-  }
-
   private loadRequests() {
-    let map = this.map;
     let mk = this;
     for (let i = 0; i < this.requestsWindow.length; ++i) {
       let request: any = this.requestsWindow[i];
@@ -286,59 +259,11 @@ export class MapComponent extends ConversionMethods implements OnInit {
     this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
   }
 
-  public findCatName(catID: number): string {
-    for (let i = 0; i < this.categories.length; ++i) {
-      if (catID == this.categories[i].cid) {
-        return this.categories[i].name;
-      }
-    }
-    return 'Unknown category';
-  }
-
   public getCoordinates(location: string) {
     if (!location.match('address') && !location.match('coordinate')) {
       return null;
     }
     return JSON.parse(location).coordinate;
-  }
-
-  public loadAvailableServices() {
-    this.scrolledDown = true;
-    this.deleteMarkers();
-    this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
-      result => {
-        this.scrolledDown = false;
-        this.services = [];
-        if (result.request) {
-          this.requestsWindow = result.requestLite;
-          this.services = result.request;
-          this.requestSize = result.request.length;
-          this.loadRequests();
-        } else {
-          this.requestsWindow = [];
-        }
-        if (result.offer) {
-
-          this.offerSize = result.offer.length;
-          this.offersWindow = result.offerLite;
-          for (let i = 0; i < result.offer.length; ++i) {
-            this.services.push(result.offer[i]);
-          }
-          this.loadOffers();
-        } else {
-          this.offersWindow = [];
-        }
-      },
-      error => {
-        this.scrolledDown = false;
-        this.error = error;
-        this.checkError();
-      }
-    );
-  }
-
-  private checkError() {
-    this.dialog.notifyError(this.error);
   }
 
   private load(): Promise<void> {
@@ -367,51 +292,20 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
     return this.scriptLoadingPromise;
   }
-
-  public onKey(event: any): void {
-    if (event.which === 13) {
-      this.loadAvailableServices();
-    } else {
-      this.searchString = event.target.value;
-      if (this.searchString.length > 0) {
-        this.mapService.getAvailableResults(this.searchString, this.type).subscribe(
-          result => {
-            this.result = [];
-            for (let i = 0; i < result.length; ++i) {
-              this.result.push({
-                category: this.findCatName(result[i].id),
-                result: result[i].result,
-                id: result[i].id
-              })
-            }
-          },
-          error => console.log(error)
-        );
-      }
-    }
-  }
-
   public onClickSearchPanel() {
     this.showSearch = !this.showSearch;
   }
 
+  public onKey(event: any): void {
+    this.searchListener.onKey(event);
+  }
+
   public onChangeTypeSelect(event: any) {
-    if (this.type != event) {
-      this.type = event;
-      this.loadAvailableServices();
-    }
+    this.searchListener.onTypeChangeId(event);
   }
 
   public onChangeCategorySelect(event: any) {
-    if (this.category != event) {
-      this.category = event;
-      this.loadAvailableServices();
-    }
-  }
-
-  public showList() {
-    this.mapView = !this.mapView;
-    this.tokenService.setMapState(!this.mapView);
+    this.searchListener.onCategoryChange(event);
   }
 
   public getCategory(category: number): string {
@@ -421,45 +315,10 @@ export class MapComponent extends ConversionMethods implements OnInit {
 
   public onClickResultDropDown(index: number) {
     this.category = index;
-    this.loadAvailableServices();
+    this.searchListener.onClickResultDropdown(index);
   }
 
-  private loadMoreElements() {
-    if (!this.scrolledDown && (this.requestSize > -1 || this.offerSize > -1)) {
-      this.scrolledDown = true;
-      this.mapService.getMoreAvailableServices(this.category, this.searchString, this.type, this.offerSize, this.requestSize).subscribe(
-        result => {
-          this.scrolledDown = false;
-          if (this.requestSize > -1 && result.requests) {
-            let rlength: number = result.requests.length;
-            for (let i = 0; i < rlength; ++i) {
-              this.services.push(result.requests[i]);
-            }
-            if (rlength >= 5) {
-              this.requestSize += rlength;
-            } else {
-              this.requestSize = -1;
-            }
-          }
-          if (this.offerSize > -1 && result.offers) {
-            let olength: number = result.offers.length;
-            for (let i = 0; i < olength; ++i) {
-              this.services.push(result.offers[i]);
-            }
-            if (olength >= 5) {
-              this.offerSize += olength;
-            } else {
-              this.offerSize = -1;
-            }
-          }
-        },
-        error => {
-          this.scrolledDown = false;
-          this.dialog.notifyError(error);
-        }
-      );
-    }
-  }
+
 
   private searchElement(direction: boolean): any {
     let req = this.calculateMinDistance(this.requestsWindow, direction);

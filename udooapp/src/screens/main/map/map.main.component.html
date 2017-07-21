@@ -1,0 +1,24 @@
+<div id="map"></div>
+<service-dialog style="margin-top: -10px" (next)="onClickNext($event)" (previous)="onClickPrevious($event)"
+                (open)="onClickOpen($event)"></service-dialog>
+<div class="map-filter" [ngClass]="{'hide-map-filter' : showSearch}">
+
+  <div class="map-inputs-container" [ngClass]="{'hide-map-inputs' : showSearch}">
+    <text-input-select [placeholder]="'Search'" [data]="result" [value]="search" (selectedResult)="onClickResultDropDown($event)"
+                       (onKeyEvent)="onKey($event)" class="map-search"></text-input-select>
+
+    <div class="map-selector-container input-group">
+      <select-input class="map-select right-padding" [values]="types" [selected]="type" (onChange)="onChangeTypeSelect($event)"
+                    [disableValidation]="true"></select-input>
+      <select-input class="map-select" [options]="categories" [selected]="category"
+                    (onChange)="onChangeCategorySelect($event)"
+                    [disableValidation]="true"></select-input>
+    </div>
+  </div>
+  <div id="close-container" *ngIf="!showSearch" (click)="onClickSearchPanel()">
+    <div id="close-icon" class="close-button"></div>
+  </div>
+  <div *ngIf="showSearch" class="search-button" (click)="onClickSearchPanel()">
+    <div id="magnifying-glass" class="map-triangle-container"></div>
+  </div>
+</div>

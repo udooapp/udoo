@@ -1,0 +1,42 @@
+.main-tab-container {
+  background-color: #378281;
+  color: #ffffff;
+  width: 100%;
+  margin-top: -1px;
+  position: fixed;
+  height: 50px;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  font-size: 20pt;
+  z-index: 5;
+  top: 60px;
+}
+
+.main-tab-element {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  width: 33.3%;
+  padding: 10px;
+}
+
+.selected-tab {
+  border-bottom: 2px solid #FFFFFF;
+}
+
+.main-content-container{
+  margin-top: 50px;
+  height: 100%;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.main-map-container{
+  display: block;
+  height: calc(100% - 110px);
+  width: 100%;
+  position: fixed;
+}

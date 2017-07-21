@@ -187,6 +187,7 @@ export class MenuComponent implements OnInit {
   }
 
   public clickMenuButton() {
+    this.tokenService.clearSearchData();
     this.visibleMenu = 0;
     this.menuItemClicked.emit(true);
   }

@@ -1,5 +1,3 @@
-/* Always set the map height explicitly to define the size of the div
-     * element that contains the map. */
 @media (min-width: 961px) {
   .map-filter {
     width: 40%;
@@ -13,18 +11,6 @@
     width: 90%;
   }
 
-  .service-container {
-    width: 80%;
-    padding-left: 10%;
-    padding-right: 10%;
-    margin-bottom: 50px;
-  }
-
-  .service-inputs-container {
-    width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
-  }
 }
 
 @media (max-width: 960px) {
@@ -40,19 +26,6 @@
   .map-inputs-container {
     width: 87.5%;
   }
-
-  .service-container {
-    width: 80%;
-    padding-left: 10%;
-    padding-right: 10%;
-    margin-bottom: 50px;
-  }
-
-  .service-inputs-container {
-    width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
-  }
 }
 
 @media (max-width: 641px) {
@@ -67,23 +40,12 @@
   .map-inputs-container {
     width: 90%;
   }
-
-  .service-container {
-    width: 90%;
-    padding-left: 5%;
-    padding-right: 5%;
-    margin-bottom: 50px;
-  }
-
-  .service-inputs-container {
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
-  }
 }
-.map-inputs-container{
+
+.map-inputs-container {
   padding: 2%;
 }
+
 .hide-map-filter {
   margin: 0;
   width: 50px;
@@ -121,16 +83,19 @@
   width: 49%;
   border-radius: 3px;
 }
-#close-container{
+
+#close-container {
   width: 20px;
   height: 20px;
   margin: 1% auto;
   cursor: pointer;
   border-radius: 20px;
 }
-#close-container:hover{
+
+#close-container:hover {
   background-color: #EAEAEA;
 }
+
 #close-icon {
   background: #378281;
   height: 12px;
@@ -151,15 +116,14 @@
   top: 5px;
   width: 12px;
 }
-.service-inputs-container{
-  margin-bottom: 10px;
-}
-.search-button{
+
+.search-button {
   background-color: #378281;
   width: 100%;
   padding-left: 13px;
   padding-top: 13px;
 }
+
 #magnifying-glass {
   font-size: 2em;
   display: inline-block;
@@ -169,6 +133,13 @@
   position: relative;
   border-radius: 0.35em;
   cursor: pointer;
+}
+
+#map {
+  top: 50px;
+  height: calc(100% - 60px);
+  position: initial !important;
+  overflow: hidden;
 }
 
 #magnifying-glass::before {
@@ -187,15 +158,10 @@
   -o-transform: rotate(45deg);
 }
 
-.hide-map {
-  height: 0;
-}
-.show-map{
-  height: 100%;
-}
-.right-padding{
+.right-padding {
   padding-right: 2%;
 }
+
 .input-group {
   height: 40px;
 }
@@ -208,74 +174,4 @@
 .input-button {
   margin-top: 0;
   width: 100%;
-}
-
-/*Service*/
-
-.service {
-  min-height: 160px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  border-top: 2px solid #378281;
-}
-
-.service:hover {
-  background-color: #FAFAFA;
-}
-.service-picture {
-  height: 130px;
-  width: 130px;
-  margin: 10px 10px 10px 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 2px;
-  overflow: hidden;
-}
-
-.service-image {
-  height: 134px;
-  width: 134px;
-  margin-left: -2px;
-  margin-top: -2px;
-  background-color: #FAFAFA;
-  object-fit: cover;
-}
-
-h1 {
-  text-align: center;
-  color: #378281;
-  font-weight: 100;
-}
-.link{
-  color: #2B6665;
-  font-size: 14pt;
-}
-.service-content {
-  margin-left: 140px;
-  padding: 10px 10px 10px 10px;
-  margin-right: 10px;
-  margin-top: -150px;
-  color: dimgrey;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.service-title {
-  color: #378281;
-  font-weight: lighter;
-  font-size: 18pt;
-}
-
-.service-description {
-  word-wrap: break-word;
-  font-size: 14pt;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.service-date {
-}
-
-/*END*/
-.service-inputs-container {
-  position: relative;
 }

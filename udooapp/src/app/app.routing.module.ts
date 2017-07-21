@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RegistrationComponent} from '../screens/registration/registration.component';
 import {LoginComponent} from '../screens/login/login.component';
-import {MapComponent} from '../screens/map/map.component';
+import {MainComponent} from '../screens/main/main.component';
 import {ProfileComponent} from "../screens/profile/profile.component";
 import {PasswordComponent} from "../screens/password/password.component";
 import {OfferComponent} from "../screens/offer/offer.component";
@@ -33,7 +33,7 @@ const routes: Routes = [
   {path: 'request/:id/:type', component: RequestComponent, canActivate: [AuthGuard]},
   {path: 'requestlist', component: RequestListComponent, canActivate: [AuthGuard]},
   {path: 'offerlist', component: OfferListComponent, canActivate: [AuthGuard]},
-  {path: 'map', component: MapComponent},
+  {path: 'map', component: MainComponent},
   {path: 'reminder', component: ReminderComponent},
   {path: 'reminder/:token', component: ReminderComponent},
   {path: 'verification/:token', component: VerificationComponent},
