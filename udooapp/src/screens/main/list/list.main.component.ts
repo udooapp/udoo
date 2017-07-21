@@ -62,15 +62,20 @@ export class MainListComponent extends ConversionMethods implements OnInit {
         this.searchListener.loadMoreElement();
       }
     });
+    let finished: boolean = true;
     listController.setData$.subscribe(data=>{
-      if (data != null) {
-        if(data.more != true) {
-          this.scrolledDown = false;
+      if(finished) {
+        finished = false;
+        if (data != null) {
+          if (data.more != true) {
+            this.scrolledDown = false;
+          }
+          if (data.services.length > 0) {
+            this.scrolledDown = false;
+            this.services = data.services;
+          }
         }
-        if (data.services.length > 0) {
-          this.scrolledDown = false;
-          this.services = data.services;
-        }
+        finished = true;
       }
     })
   }

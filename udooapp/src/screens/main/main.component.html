@@ -1,10 +1,11 @@
-<div class="main-tab-container">
-  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 0}" (click)="onClickPage(0)">Map</div>
-  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 1}" (click)="onClickPage(1)">List</div>
-  <div class="main-tab-element" [ngClass]="{'selected-tab' : page == 2}" (click)="onClickPage(2)">Wall</div>
+<div id="tab-pager" class="main-tab-container">
+  <div class="main-tab-element" (click)="onClickPage(0)">Map</div>
+  <div class="main-tab-element" (click)="onClickPage(1)">List</div>
+  <div class="main-tab-element" (click)="onClickPage(2)">Wall</div>
+  <div id="main-tab-selected" [style.margin-left.px]="margin" [style.animation-name]="tabAnimation"></div>
 </div>
 <div class="main-content-container">
-  <main-map class="main-map-container" *ngIf="page == 0" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
-  <main-list *ngIf="page == 1"  [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
-  <main-wall *ngIf="page == 2"></main-wall>
+  <main-map *ngIf="page == 0" class="main-map-container main-content-element" [style.margin-left.px]="getMargin(0)" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
+  <main-list *ngIf="page == 1" class="main-content-element" [style.margin-left.px]="getMargin(1)"  [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
+  <main-wall *ngIf="page == 2" class="main-content-element" [style.margin-left.px]="getMargin(2)"></main-wall>
 </div>

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, NgZone, OnInit} from '@angular/core';
+import {Component, Input, NgZone, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Offer} from "../../../entity/offer";
 import {Request} from "../../../entity/request";
@@ -22,11 +22,10 @@ declare let google: any;
   styleUrls: ['./map.main.component.css'],
   providers: [OfferService, RequestService]
 })
-export class MainMapComponent extends ConversionMethods implements OnInit{
+export class MainMapComponent extends ConversionMethods implements OnInit {
 
   public types: string[] = ['Select', 'Offer', 'Request'];
   public showSearch = true;
-  private scriptLoadingPromise: Promise<void>;
   private map;
   public category = -1;
   public type = 0;
@@ -36,37 +35,83 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
   private icon = {};
   private offersWindow: any[] = [];
   private stompClient: any;
+  private lastId = 0;
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
 
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
   @Input() categories: any[] = [{cid: -1, name: ''}];
-  @Input() set service(data: any){
-    if(data != null){
-      this.requestsWindow= data.requestsWindow;
+
+  @Input()
+  set service(data: any) {
+    if (data.requestsWindow) {
+      this.requestsWindow = data.requestsWindow;
       this.offersWindow = data.offersWindow;
-      if(this.map != null){
-        this.deleteMarkers();
-        this.loadRequests();
-        this.loadOffers();
+      if (data.mapInit) {
+        if (this.map == null) {
+          this.initMap();
+        } else {
+          this.deleteMarkers();
+          this.loadRequests();
+          this.loadOffers();
+        }
       }
+    } else {
+      this.initMap();
     }
   }
 
 
   constructor(private mapController: MapMainController, private serviceController: ServiceDialogController, private zone: NgZone, private requestService: RequestService, private offerService: OfferService, private router: Router, private dialog: DialogController) {
     super();
-    mapController.setData$.subscribe(data=>{
-      if(data != null){
-        this.requestsWindow= data.requestsWindow;
-        this.offersWindow = data.offersWindow;
-        if(this.map != null){
-          this.deleteMarkers();
-          this.loadRequests();
-          this.loadOffers();
+    let finished: boolean = true;
+    mapController.setData$.subscribe(data => {
+      if(finished) {
+        finished = false;
+        if (!data.id) {
+          this.initMap();
         }
+        else if (this.lastId < data.id) {
+          this.lastId = data.id;
+          if (data.requestsWindow) {
+            this.requestsWindow = data.requestsWindow;
+            this.offersWindow = data.offersWindow;
+            if (data.mapInit) {
+              if (this.map == null) {
+                this.initMap();
+              } else {
+                this.deleteMarkers();
+                this.loadRequests();
+                this.loadOffers();
+              }
+            }
+          } else {
+            this.initMap();
+          }
+        }
+        finished = true;
       }
-    })
+    });
+  }
+
+  initMap() {
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 48.211029, lng: 16.373990},
+      zoom: 14,
+      mapTypeControl: true,
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.DEFAULT,
+        position: google.maps.ControlPosition.LEFT_BOTTOM
+      }
+    });
+    this.icon = {
+      url: "assets/pin.png", // url
+      scaledSize: new google.maps.Size(30, 50), // scaled size
+      origin: new google.maps.Point(0, 0), // origin
+      anchor: new google.maps.Point(0, 0) // anchor
+    };
+    this.loadRequests();
+    this.loadOffers();
   }
 
   // connect() {
@@ -93,38 +138,16 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
   // }
 
   ngOnInit(): void {
-    if(this.searchListener != null){
-      this.searchListener.getData(0);
+    console.log('MAPINIT');
+    if (this.searchListener != null) {
+      if(this.requestsWindow.length == 0) {
+        this.searchListener.getData(0);
+      }
       let data = this.searchListener.getSearchData();
       this.search = data.text;
       this.type = data.type;
       this.category = data.category
     }
-    this.initMap();
-  }
-
-  private initMap() {
-    this.load().then(() => {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 48.211029, lng: 16.373990},
-        zoom: 14,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          style: google.maps.MapTypeControlStyle.DEFAULT,
-          position: google.maps.ControlPosition.LEFT_BOTTOM
-        }
-      });
-      this.icon = {
-        url: "assets/pin.png", // url
-        scaledSize: new google.maps.Size(30, 50), // scaled size
-        origin: new google.maps.Point(0, 0), // origin
-        anchor: new google.maps.Point(0, 0) // anchor
-      };
-      this.loadOffers();
-      this.loadRequests();
-    }).catch((error) => {
-      console.log("ERROR: " + error.toString());
-    });
   }
 
   private deleteMarkers() {
@@ -201,7 +224,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
     if (type) {
       this.offerService.getOfferData(id).subscribe(
         value => {
-          let data:any = {service: value.offer, user: value.user};
+          let data: any = {service: value.offer, user: value.user};
           this.serviceController.setData$.emit(data);
         },
         error => {
@@ -212,7 +235,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
     } else {
       this.requestService.getRequestData(id).subscribe(
         value => {
-          let data:any = {service: value.request, user: value.user};
+          let data: any = {service: value.request, user: value.user};
           this.serviceController.setData$.emit(data);
         },
         error => {
@@ -231,7 +254,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
       if ((type != t.type || id != t.id) && t.dist >= this.elementCoordinates.dist) {
         this.elementCoordinates.dist = t.dist;
         this.loadDialog(t.type, t.id);
-      } else{
+      } else {
         this.serviceController.setData$.emit(null);
       }
     } else {
@@ -267,32 +290,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
     return JSON.parse(location).coordinate;
   }
 
-  private load(): Promise<void> {
-    if (this.scriptLoadingPromise) {
-      return this.scriptLoadingPromise;
-    }
 
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.defer = true;
-    const callbackName = 'initMap';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
-
-    this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
-      (<any>window)[callbackName] = () => {
-        resolve();
-      };
-
-      script.onerror = (error: Event) => {
-        reject(error);
-      };
-    });
-
-    document.body.appendChild(script);
-
-    return this.scriptLoadingPromise;
-  }
   public onClickSearchPanel() {
     this.showSearch = !this.showSearch;
   }
@@ -318,7 +316,6 @@ export class MainMapComponent extends ConversionMethods implements OnInit{
     this.category = index;
     this.searchListener.onClickResultDropdown(index);
   }
-
 
 
   private searchElement(direction: boolean): any {

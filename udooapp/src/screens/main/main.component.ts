@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, OnInit} from '@angular/core';
 import {MapService} from "../../services/map.service";
 import {TokenService} from "../../services/token.service";
 import {ConversionMethods} from "../layouts/conversion.methods";
@@ -14,34 +14,80 @@ import {ListMainController} from "./list/list.main.controller";
   styleUrls: ['./main.component.css'],
   providers: [MapService]
 })
-export class MainComponent extends ConversionMethods implements OnInit, MainSearchListener {
+export class MainComponent extends ConversionMethods implements OnInit, MainSearchListener, AfterViewChecked {
   public page: number = 1;
-
+  public margin: number = 0;
+  public tabAnimation = '';
   public type = 0;
+  private scriptLoadingPromise: Promise<void>;
   public categories: any[] = [{cid: -1, name: ''}];
   private error: string;
   private category: number = -1;
   private searchString = '';
-  public mapData: any = {requestsWindow: [], offersWindow: []};
+  public mapData: any = {requestsWindow: [], offersWindow: [], mapInit: false, id: 0};
   public listData: any = {services: [], offerSize: 0, requestSize: 0, more: true};
   public searchListener: MainSearchListener = this;
   public result: any[];
+  private width: number = 0;
 
   constructor(private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
     super();
+    let t = this;
     dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
       }
     });
+
+    window.addEventListener("orientationchange", function () {
+      let el = document.getElementById("tab-pager");
+      if (el != null) {
+        t.width = el.clientWidth / 3;
+      }
+    });
+    window.addEventListener("resize", function () {
+      let el = document.getElementById("tab-pager");
+      if (el != null) {
+        t.width = el.clientWidth / 3;
+        t.margin = t.page * t.width;
+      }
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    let el = document.getElementById("tab-pager");
+    if (el != null) {
+      this.width = el.clientWidth / 3;
+    }
+    let t = this;
+    let el2 = document.getElementById("main-tab-selected");
+    if (el2 != null) {
+      el2.addEventListener('animationend', function (e) {
+        e.preventDefault();
+        t.tabAnimation = '';
+        t.margin = t.width * t.page;
+      }, false);
+    }
+  }
+
+  initMap() {
+    this.load().then(() => {
+      this.mapData.mapInit = true;
+      this.mapController.setData$.emit(true);
+    }).catch((error) => {
+      console.log("ERROR: " + error.toString());
+    });
   }
 
   ngOnInit() {
+    this.initMap();
     let data = this.tokenService.getSearchData();
     this.searchString = data.text == null || data.text.length == 0 ? '' : data.text;
     this.type = data.type == null ? 0 : data.type;
     this.category = data.category == null ? -1 : data.category;
     this.page = this.tokenService.getPageState();
+    this.width = window.innerWidth / 3;
+    this.margin = this.page * this.width;
     this.error = '';
     this.mapService.getCategories().subscribe(
       data => {
@@ -57,7 +103,6 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   public loadAvailableServices() {
-    console.log('GetData');
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {
         this.listData = {services: [], offerSize: 0, requestSize: 0, more: true};
@@ -78,8 +123,13 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         } else {
           this.mapData.offersWindow = [];
         }
-        this.mapController.setData$.emit(this.mapData);
-        this.listController.setData$.emit(this.listData);
+        if (this.page == 0) {
+          ++this.mapData.id;
+          this.mapController.setData$.emit(this.mapData);
+        } else if (this.page == 1) {
+          this.listController.setData$.emit(this.listData);
+        }
+
       },
       error => {
         this.error = error;
@@ -93,9 +143,10 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   public onClickPage(pageIndex: number) {
-    if (pageIndex >= 0 && pageIndex < 3) {
+    if (pageIndex >= 0 && pageIndex < 3 && this.page != pageIndex) {
       this.page = pageIndex;
       this.tokenService.setPageState(pageIndex);
+      this.tabAnimation = 'tabPage' + pageIndex;
     }
   }
 
@@ -144,6 +195,33 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       }
     }
     return 'Unknown category';
+  }
+
+  private load(): Promise<void> {
+    if (this.scriptLoadingPromise) {
+      return this.scriptLoadingPromise;
+    }
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.defer = true;
+    const callbackName = 'initMap';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
+
+    this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
+      (<any>window)[callbackName] = () => {
+        resolve();
+      };
+
+      script.onerror = (error: Event) => {
+        reject(error);
+      };
+    });
+
+    document.body.appendChild(script);
+
+    return this.scriptLoadingPromise;
   }
 
   loadMoreElement() {
@@ -199,14 +277,33 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   getData(page: number) {
-    switch (page){
+    switch (page) {
       case 0:
+        ++this.mapData.id;
         this.mapController.setData$.emit(this.mapData);
         break;
       case 1:
         this.listController.setData$.emit(this.listData);
         break;
       case 2:
+        break;
     }
+  }
+
+  public getMargin(index: number) {
+    let width = this.width * 3;
+    let margin = 0;
+    switch (index) {
+      case 0:
+        margin = -(this.page * width);
+        break;
+      case 1:
+        margin = ((1 - this.page) * width);
+        break;
+      case 2:
+        margin = ((2 - this.page) * width);
+        break;
+    }
+    return margin;
   }
 }
