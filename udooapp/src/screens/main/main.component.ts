@@ -54,6 +54,16 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       let el = document.getElementById("tab-pager");
       if (el != null) {
         t.width = el.clientWidth / 3;
+        switch (t.page){
+          case 0:
+            t.pageMargin = 3 * t.width;
+            break;
+          case 1:
+            t.pageMargin = 0;
+            break;
+          case 2:
+            t.pageMargin = -3* t.width;
+        }
       }
     });
     window.addEventListener("resize", function () {
@@ -61,6 +71,16 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       if (el != null) {
         t.width = el.clientWidth / 3;
         t.margin = t.page * t.width;
+        switch (t.page){
+          case 0:
+            t.pageMargin = 3 * t.width;
+            break;
+          case 1:
+            t.pageMargin = 0;
+            break;
+          case 2:
+            t.pageMargin = -3* t.width;
+        }
       }
     });
 

@@ -136,9 +136,8 @@
 }
 
 #map {
-  top: 50px;
-  height: calc(100% - 60px);
-  position: initial !important;
+  height: calc(100% - 50px);
+  position: relative !important;
   overflow: hidden;
 }
 

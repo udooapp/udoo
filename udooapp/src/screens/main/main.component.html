@@ -6,6 +6,6 @@
 </div>
 <div  class="main-content-container" id="page-container">
   <main-map   *ngIf="pageMargin > 0" class="main-map-container main-content-element" [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
-  <main-list  *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-content-element" [style.margin-left.px]="pageMargin"  [style.animation-name]="pageAnim1" [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
+  <main-list  *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-content-element" [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin"  [style.animation-name]="pageAnim1" [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
   <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"></main-wall>
 </div>
