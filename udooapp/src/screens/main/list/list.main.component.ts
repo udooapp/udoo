@@ -26,6 +26,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   public search: string = '';
   private services: any[] = [];
   private scrolledDown: boolean = true;
+  private loaded = false;
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
   @Input() categories: any[] = [{cid: -1, name: ''}];
@@ -46,8 +47,10 @@ export class MainListComponent extends ConversionMethods implements OnInit {
 
   ngOnInit(): void {
     if (this.searchListener != null) {
-      this.searchListener.getData(1);
-      let data = this.searchListener.getSearchData();
+      let data = this.searchListener.getData(1);
+      this.services = data.services;
+      this.loaded =  true;
+      data = this.searchListener.getSearchData();
       this.search = data.text;
       this.type = data.type;
       this.category = data.category
@@ -62,21 +65,16 @@ export class MainListComponent extends ConversionMethods implements OnInit {
         this.searchListener.loadMoreElement();
       }
     });
-    let finished: boolean = true;
     listController.setData$.subscribe(data=>{
-      if(finished) {
-        finished = false;
-        if (data != null) {
-          if (data.more != true) {
-            this.scrolledDown = false;
+          if(this.loaded) {
+            if (data.more != true) {
+              this.scrolledDown = false;
+            }
+            if (data.services.length > 0) {
+              this.scrolledDown = false;
+              this.services = data.services;
+            }
           }
-          if (data.services.length > 0) {
-            this.scrolledDown = false;
-            this.services = data.services;
-          }
-        }
-        finished = true;
-      }
     })
   }
 

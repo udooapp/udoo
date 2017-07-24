@@ -35,9 +35,8 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   private icon = {};
   private offersWindow: any[] = [];
   private stompClient: any;
-  private lastId = 0;
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
-
+  private loaded = false;
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
   @Input() categories: any[] = [{cid: -1, name: ''}];
@@ -64,32 +63,27 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
 
   constructor(private mapController: MapMainController, private serviceController: ServiceDialogController, private zone: NgZone, private requestService: RequestService, private offerService: OfferService, private router: Router, private dialog: DialogController) {
     super();
-    let finished: boolean = true;
     mapController.setData$.subscribe(data => {
-      if(finished) {
-        finished = false;
-        if (!data.id) {
+      if (this.loaded) {
+        if (data.requestsWindow) {
+          this.requestsWindow = data.requestsWindow;
+          this.offersWindow = data.offersWindow;
+          if (data.mapInit) {
+            if (this.map == null) {
+              this.initMap();
+            } else {
+              this.deleteMarkers();
+              this.loadRequests();
+              this.loadOffers();
+            }
+          }
+        } else {
           this.initMap();
         }
-        else if (this.lastId < data.id) {
-          this.lastId = data.id;
-          if (data.requestsWindow) {
-            this.requestsWindow = data.requestsWindow;
-            this.offersWindow = data.offersWindow;
-            if (data.mapInit) {
-              if (this.map == null) {
-                this.initMap();
-              } else {
-                this.deleteMarkers();
-                this.loadRequests();
-                this.loadOffers();
-              }
-            }
-          } else {
-            this.initMap();
-          }
+      } else {
+        if(this.map == null && data.mapInit){
+          this.initMap();
         }
-        finished = true;
       }
     });
   }
@@ -110,6 +104,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
       origin: new google.maps.Point(0, 0), // origin
       anchor: new google.maps.Point(0, 0) // anchor
     };
+    this.markers = [];
     this.loadRequests();
     this.loadOffers();
   }
@@ -138,10 +133,15 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   // }
 
   ngOnInit(): void {
-    console.log('MAPINIT');
     if (this.searchListener != null) {
-      if(this.requestsWindow.length == 0) {
-        this.searchListener.getData(0);
+      if (this.requestsWindow.length == 0) {
+        let data = this.searchListener.getData(0);
+        this.requestsWindow = data.requestsWindow;
+        this.offersWindow = data.offersWindow;
+        if(data.mapInit){
+          this.initMap();
+        }
+        this.loaded = true;
       }
       let data = this.searchListener.getSearchData();
       this.search = data.text;

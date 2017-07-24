@@ -15,6 +15,8 @@ import {ListMainController} from "./list/list.main.controller";
   providers: [MapService]
 })
 export class MainComponent extends ConversionMethods implements OnInit, MainSearchListener, AfterViewChecked {
+  private TAB_ANIM: string = 'tabPage';
+  private PAGE_ANIM: string = 'page';
   public page: number = 1;
   public margin: number = 0;
   public tabAnimation = '';
@@ -24,11 +26,20 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   private error: string;
   private category: number = -1;
   private searchString = '';
-  public mapData: any = {requestsWindow: [], offersWindow: [], mapInit: false, id: 0};
+  public mapData: any = {requestsWindow: [], offersWindow: [], mapInit: false};
   public listData: any = {services: [], offerSize: 0, requestSize: 0, more: true};
   public searchListener: MainSearchListener = this;
   public result: any[];
-  private width: number = 0;
+  public pageMargin: number = 0;
+  public width: number = 0;
+  private el: any;
+  private el2: any;
+  private el3: any;
+  private startTouchX: number = 0;
+  private moveTouchX: number = 0;
+  private pageAnim0: string = '';
+  private pageAnim1: string = '';
+  private pageAnim2: string = '';
 
   constructor(private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
     super();
@@ -52,21 +63,97 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         t.margin = t.page * t.width;
       }
     });
+
   }
 
   ngAfterViewChecked(): void {
-    let el = document.getElementById("tab-pager");
-    if (el != null) {
-      this.width = el.clientWidth / 3;
+    if(this.el2 == null) {
+      this.el2 = document.getElementById("tab-pager");
+      if (this.el2 != null) {
+        this.width = this.el2.clientWidth / 3;
+      }
     }
-    let t = this;
-    let el2 = document.getElementById("main-tab-selected");
-    if (el2 != null) {
-      el2.addEventListener('animationend', function (e) {
-        e.preventDefault();
-        t.tabAnimation = '';
-        t.margin = t.width * t.page;
-      }, false);
+    if(this.el3 == null) {
+      let t = this;
+      this.el3 = document.getElementById("main-tab-selected");
+      if (this.el3 != null) {
+        this.el3.addEventListener('animationend', function (e) {
+          e.preventDefault();
+          t.tabAnimation = '';
+          t.margin = t.width * t.page;
+          switch (t.page){
+            case 0:
+              t.pageMargin = 3 * t.width;
+              break;
+            case 1:
+              t.pageMargin = 0;
+              break;
+            case 2:
+              t.pageMargin = -3* t.width;
+          }
+          t.pageAnim0 = '';
+          t.pageAnim1 = '';
+          t.pageAnim2 = '';
+        }, false);
+      }
+    }
+    if(this.el == null) {
+      let t = this;
+      this.el = document.getElementById('page-container');
+      if (this.el) {
+        this.el.addEventListener('touchstart', function (e) {
+          let touch = e.touches[0];
+          t.startTouchX = touch.pageX;
+        });
+        this.el.addEventListener('touchmove', function (e) {
+          if(t.page != 0) {
+            let touch = e.touches[0];
+            t.moveTouchX = t.startTouchX;
+            t.startTouchX = touch.pageX;
+            t.margin += (t.moveTouchX - t.startTouchX) / 3;
+            if(t.margin >  t.width * 2){
+              t.margin = t.width  * 2;
+            } else if(t.margin < 0){
+              t.margin = 0;
+            }
+            t.pageMargin -= (t.moveTouchX - t.startTouchX);
+            if(t.pageMargin < -t.width * 3){
+              t.pageMargin = -t.width * 3;
+            } else if(t.pageMargin > t.width * 3){
+              t.pageMargin = t.width * 3;
+            }
+          }
+        });
+        this.el.addEventListener('touchend', function (e) {
+          t.tabAnimation = t.TAB_ANIM;
+          if(t.margin < t.width / 2){
+            t.tabAnimation += 0;
+            t.page = 0;
+            } else if(t.margin < t.width + t.width / 2){
+            t.tabAnimation += 1;
+            t.page = 1;
+            } else {
+            t.page = 2;
+            t.tabAnimation += 2;
+          }
+          switch (t.page){
+            case 0:
+              t.pageAnim0 = t.PAGE_ANIM + 1;
+              t.pageAnim1 = t.PAGE_ANIM + 2;
+              t.pageAnim2 = t.PAGE_ANIM + 2;
+              break;
+            case 1:
+              t.pageAnim0 = t.PAGE_ANIM + 0;
+              t.pageAnim1 = t.PAGE_ANIM + 1;
+              t.pageAnim2 = t.PAGE_ANIM + 2;
+              break;
+            case 2:
+              t.pageAnim0 = t.PAGE_ANIM + 0;
+              t.pageAnim1 = t.PAGE_ANIM + 0;
+              t.pageAnim2 = t.PAGE_ANIM + 1;
+          }
+        });
+      }
     }
   }
 
@@ -89,6 +176,16 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     this.width = window.innerWidth / 3;
     this.margin = this.page * this.width;
     this.error = '';
+    switch (this.page){
+      case 0:
+        this.pageMargin = 3 * this.width;
+        break;
+      case 1:
+        this.pageMargin = 0;
+        break;
+      case 2:
+        this.pageMargin = -3* this.width;
+    }
     this.mapService.getCategories().subscribe(
       data => {
         data.splice(0, 0, {cid: "-1", name: 'Select category'});
@@ -100,6 +197,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       }
     );
     this.loadAvailableServices();
+
   }
 
   public loadAvailableServices() {
@@ -123,12 +221,8 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         } else {
           this.mapData.offersWindow = [];
         }
-        if (this.page == 0) {
-          ++this.mapData.id;
           this.mapController.setData$.emit(this.mapData);
-        } else if (this.page == 1) {
           this.listController.setData$.emit(this.listData);
-        }
 
       },
       error => {
@@ -144,9 +238,25 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
 
   public onClickPage(pageIndex: number) {
     if (pageIndex >= 0 && pageIndex < 3 && this.page != pageIndex) {
-      this.page = pageIndex;
       this.tokenService.setPageState(pageIndex);
-      this.tabAnimation = 'tabPage' + pageIndex;
+      this.page = pageIndex;
+      switch (this.page){
+        case 0:
+          this.pageAnim0 = this.PAGE_ANIM + 1;
+          this.pageAnim1 = this.PAGE_ANIM + 2;
+          this.pageAnim2 = this.PAGE_ANIM + 2;
+          break;
+        case 1:
+          this.pageAnim0 = this.PAGE_ANIM + 0;
+          this.pageAnim1 = this.PAGE_ANIM + 1;
+          this.pageAnim2 = this.PAGE_ANIM + 2;
+          break;
+        case 2:
+          this.pageAnim0 = this.PAGE_ANIM + 0;
+          this.pageAnim1 = this.PAGE_ANIM + 0;
+          this.pageAnim2 = this.PAGE_ANIM + 1;
+      }
+      this.tabAnimation = this.TAB_ANIM + pageIndex;
     }
   }
 
@@ -276,34 +386,14 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     return {text: this.searchString, type: this.type, category: this.category};
   }
 
-  getData(page: number) {
+  getData(page: number):any{
     switch (page) {
       case 0:
-        ++this.mapData.id;
-        this.mapController.setData$.emit(this.mapData);
-        break;
+        return this.mapData;
       case 1:
-        this.listController.setData$.emit(this.listData);
-        break;
+        return this.listData;
       case 2:
         break;
     }
-  }
-
-  public getMargin(index: number) {
-    let width = this.width * 3;
-    let margin = 0;
-    switch (index) {
-      case 0:
-        margin = -(this.page * width);
-        break;
-      case 1:
-        margin = ((1 - this.page) * width);
-        break;
-      case 2:
-        margin = ((2 - this.page) * width);
-        break;
-    }
-    return margin;
   }
 }
