@@ -179,12 +179,14 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   initMap() {
-    this.load().then(() => {
-      this.mapData.mapInit = true;
-      this.mapController.setData$.emit(true);
-    }).catch((error) => {
-      console.log("ERROR: " + error.toString());
-    });
+    if(!this.mapData.mapInit) {
+      this.load().then(() => {
+        this.mapData.mapInit = true;
+        this.mapController.setData$.emit(true);
+      }).catch((error) => {
+        console.log("ERROR: " + error.toString());
+      });
+    }
   }
 
   ngOnInit() {

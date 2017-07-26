@@ -211,6 +211,7 @@ export class MenuComponent implements OnInit {
         this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
         this.router.navigate([MAP]);
         this.tokenService.clearToken();
+        this.notifier.userLogOut$.emit(true);
       },
       error => {
         console.log("Error:" + error);

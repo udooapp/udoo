@@ -20,7 +20,7 @@ export class WallService extends HeaderService {
   public getWall(date: Date): Observable<any> {
     let param: URLSearchParams = new URLSearchParams();
     param.append('date', date.getTime().toString());
-      return this.http.get(config.server + '/wall' + (this.tokenService.getToken() ? '/user' : ''), new RequestOptions(!this.tokenService.getToken() ? {search: param} :  {headers: this.getTokenHeaders(this.tokenService.getToken()), search: param}))
+      return this.http.get(config.server + '/wall' + (this.tokenService.getToken() ? '/user' : '/public'), new RequestOptions(!this.tokenService.getToken() ? {search: param} :  {headers: this.getTokenHeaders(this.tokenService.getToken()), search: param}))
         .map(HandlerService.extractData)
         .catch(HandlerService.handleText);
   }

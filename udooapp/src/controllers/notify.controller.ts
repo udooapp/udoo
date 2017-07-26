@@ -6,8 +6,8 @@ declare let navigator;
 
 export class NotifierController {
   public static LANGUAGE_GERMAN: number = 0;
-  public static LANGUAGE_ENGLISH: number = 0;
-  public static REFRESH_USER_DATA: number = 0;
+  public static LANGUAGE_ENGLISH: number = 1;
+  public static REFRESH_USER_DATA: number = 4;
 
 
   private user: User;
@@ -16,6 +16,7 @@ export class NotifierController {
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
   public userScrolledToTheBottom$: EventEmitter<boolean>;
+  public userLogOut$: EventEmitter<boolean>;
   private route: string = '';
   private router: Router;
   constructor() {
@@ -23,6 +24,7 @@ export class NotifierController {
     this.userModification$ = new EventEmitter();
     this.userDataPipe$ = new EventEmitter();
     this.userScrolledToTheBottom$ = new EventEmitter();
+    this.userLogOut$ = new EventEmitter();
   }
   public sendVerification(){
     this.userModification$.emit(-1);

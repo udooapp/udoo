@@ -49,7 +49,7 @@ public class WallServiceController implements IWallServiceController {
     private IUserRepository userRepository;
 
     @Override
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/public", method = RequestMethod.GET)
     public ResponseEntity<?> getOfflineWord(@RequestParam("date") long millis) {
         Date date = new Date(millis);
         Pageable page = new PageRequest(0, 5);

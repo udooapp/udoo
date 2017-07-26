@@ -30,7 +30,6 @@ export class LocationComponent implements OnInit {
 
   ngOnInit() {
     this.load().then(() => {
-      console.log("LocationComponent: mapLoaded");
       const loc = this;
       const map = new google.maps.Map(document.getElementById('location'), {
         center: {lat: 48.211029, lng: 16.373990},
@@ -50,7 +49,6 @@ export class LocationComponent implements OnInit {
         let bounds = new google.maps.LatLngBounds();
         places.forEach(function (place) {
           if (!place.geometry) {
-            console.log("Returned place contains no geometry");
             return;
           }
           marker.setPosition(place.geometry.location);
@@ -78,8 +76,6 @@ export class LocationComponent implements OnInit {
               loc.position.lat = marker.getPosition().lat();
               loc.position.address = results[0].formatted_address;
               document.getElementById('search-input').nodeValue = results[0].formatted_address;
-            } else {
-              console.log('No results found');
             }
           } else {
             window.alert('Geocoder failed due to: ' + status);
@@ -98,14 +94,12 @@ export class LocationComponent implements OnInit {
         icon: icon
       });
     }).catch(error => {
-      console.log("LocationComponentError: "+ error);
       this.dialog.notifyError('No internet connection');
     });
   }
 
 
   private load(): Promise<void> {
-    console.log("LocationComponent: Map loading started");
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
     }
@@ -121,12 +115,10 @@ export class LocationComponent implements OnInit {
     this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
       (<any>window)[callbackName] = () => {
         resolve();
-        console.log("LocationComponent: Map loaded");
       };
 
       script.onerror = (error: Event) => {
         reject(error);
-        console.log("LocationComponent error: " + error);
       };
     });
 

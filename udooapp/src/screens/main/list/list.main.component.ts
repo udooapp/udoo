@@ -24,8 +24,8 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   public category = -1;
   public type: number = 0;
   public search: string = '';
-  private services: any[] = [];
-  private scrolledDown: boolean = true;
+  public services: any[] = [];
+  public scrolledDown: boolean = true;
   private loaded = false;
   private noMoreElement: boolean = false;
   @Input() result: any[] = [];

@@ -81,13 +81,13 @@ public class UserServiceController implements IUserServiceController {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
                 User user2 = userRepository.getByEmail(user.getEmail());
-                if (user2.getUid() == user.getUid()) {
+                if (user2 != null && user2.getUid() != user.getUid()) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
                     if (user.getLocation() == null) {
                         user.setLocation("");
-                        user.setLocation("");
                     }
+                    user2 = userRepository.findByUid(user.getUid());
                     String responseMessage = "Profile updated";
                     if (!user.getEmail().equals(user2.getEmail())) {
                         responseMessage = "Check your email address";

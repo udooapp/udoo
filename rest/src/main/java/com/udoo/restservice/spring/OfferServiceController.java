@@ -216,14 +216,14 @@ public class OfferServiceController implements IOfferServiceController {
             int uid = Integer.parseInt(request.getAttribute(USERID).toString());
             User user = userRepository.findByUid(uid);
             Offer offer = save.getOffer();
-            if (user != null && save.getOffer().getUid() == user.getUid()) {
+            if (user != null &&(save.getOffer().getUid() == user.getUid() || offer.getUid() == -1)) {
                 int delete = save.getDelete();
                 OfferHistory hist =  new OfferHistory();
                 hist.setDate(new Date());
-                hist.setOid(offer.getOid());
-
+                offer.setUid(uid);
                 if (delete <= -1) {
                     offer = offerRepository.save(offer);
+                    hist.setOid(offer.getOid());
                     List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
                     List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
                     for (OfferPictures pic : pictures) {
@@ -235,12 +235,13 @@ public class OfferServiceController implements IOfferServiceController {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
                         }
                     }
-                    hist.setAction(0);
+                    hist.setAction(1);
                     offerHistoryRepository.save(hist);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     int d = offer.getOid();
                     offer.setOid(delete);
+                    hist.setOid(offer.getOid());
                     offer.setUid(user.getUid());
                     Offer offer2 = offerRepository.findByOid(d);
                     offer = offerRepository.save(offer);
@@ -284,7 +285,6 @@ public class OfferServiceController implements IOfferServiceController {
                         pic2.setPoid(pic.getPoid());
                         offerPictureRepository.save(pic2);
                     }
-                    System.out.println("Size:" + offer.getPicturesOffer().size());
                     if (offer2 != null && offer2.getUid() == user.getUid()) {
                         offerRepository.deleteByOid(d);
                         offerHistoryRepository.save(hist);

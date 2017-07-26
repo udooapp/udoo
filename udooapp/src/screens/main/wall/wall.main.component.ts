@@ -14,7 +14,7 @@ import {ConversionMethods} from "../../layouts/conversion.methods";
 export class MainWallComponent extends ConversionMethods implements OnInit {
   public data: any[] = [];
   private lastDate: Date;
-  private scrolledDown: boolean = true;
+  public scrolledDown: boolean = true;
   private noMoreElement: boolean = false;
 
   constructor(private dialog: DialogController, private wallService: WallService, private notifier: NotifierController) {
@@ -25,6 +25,9 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
         this.scrolledDown = true;
         this.loadMoreElement();
       }
+    });
+    notifier.userLogOut$.subscribe(value=>{
+      this.ngOnInit();
     });
   }
 

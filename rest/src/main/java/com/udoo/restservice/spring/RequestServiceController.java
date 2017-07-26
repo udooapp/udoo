@@ -78,17 +78,17 @@ public class RequestServiceController implements IRequestServiceController {
             int uid = Integer.parseInt(req.getAttribute(USERID).toString());
             User user = userRepository.findByUid(uid);
             Request request = save.getRequest();
-            if (user != null && request.getUid() == user.getUid()) {
+            if (user != null && (request.getUid() == user.getUid() || request.getUid() == -1)) {
                 int delete = save.getDelete();
                 RequestHistory hist = new RequestHistory();
-
+                request.setUid(uid);
                 hist.setDate(new Date());
-                hist.setRid(request.getRid());
                 if (delete <= -1) {
                     request = requestRepository.save(request);
+                    hist.setRid(request.getRid());
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
-                    hist.setAction(0);
+                    hist.setAction(1);
                     for (RequestPictures pic : pictures) {
                         int i = 0;
                         while (i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()) {
@@ -106,6 +106,7 @@ public class RequestServiceController implements IRequestServiceController {
                     request.setUid(user.getUid());
                     Request request2 = requestRepository.findByRid(d);
                     requestRepository.save(request);
+                    hist.setRid(request.getRid());
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
                     int changes = 0;
