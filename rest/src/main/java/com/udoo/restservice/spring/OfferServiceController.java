@@ -2,6 +2,7 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.history.OfferHistory;
 import com.udoo.dal.entities.offer.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IOfferServiceController;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.udoo.restservice.spring.RestServiceController.USERID;
@@ -48,6 +50,9 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Resource
     private ICategoryRepository categoryRepository;
+
+    @Resource
+    private IOfferHistoryRepository offerHistoryRepository;
 
     @Autowired
     private IPaymentService paymentService;
@@ -213,8 +218,12 @@ public class OfferServiceController implements IOfferServiceController {
             Offer offer = save.getOffer();
             if (user != null && save.getOffer().getUid() == user.getUid()) {
                 int delete = save.getDelete();
+                OfferHistory hist =  new OfferHistory();
+                hist.setDate(new Date());
+                hist.setOid(offer.getOid());
+
                 if (delete <= -1) {
-                    offerRepository.save(offer);
+                    offer = offerRepository.save(offer);
                     List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
                     List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
                     for (OfferPictures pic : pictures) {
@@ -226,16 +235,38 @@ public class OfferServiceController implements IOfferServiceController {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
                         }
                     }
+                    hist.setAction(0);
+                    offerHistoryRepository.save(hist);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     int d = offer.getOid();
                     offer.setOid(delete);
                     offer.setUid(user.getUid());
                     Offer offer2 = offerRepository.findByOid(d);
-                    offerRepository.save(offer);
+                    offer = offerRepository.save(offer);
 
                     List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
                     List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
+                    int changes = 0;
+                    if(pictures.size() < currentPictures.size()){
+                        hist.setAction(3);
+                        ++changes;
+                    }
+                    if(offer2.getDescription().length() != offer.getDescription().length()) {
+                        hist.setAction(2);
+                        ++changes;
+                    }
+                    if(offer.getExpirydate()!= offer.getExpirydate()) {
+                        hist.setAction(4);
+                        ++changes;
+                    }
+                    if(!offer2.getLocation().equals(offer.getLocation())) {
+                        hist.setAction(5);
+                        ++changes;
+                    }
+                    if(changes > 1 || changes == 0){
+                        hist.setAction(1);
+                    }
                     for (OfferPictures pic : pictures) {
                         int i = 0;
                         while (i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()) {
@@ -256,6 +287,7 @@ public class OfferServiceController implements IOfferServiceController {
                     System.out.println("Size:" + offer.getPicturesOffer().size());
                     if (offer2 != null && offer2.getUid() == user.getUid()) {
                         offerRepository.deleteByOid(d);
+                        offerHistoryRepository.save(hist);
                         return new ResponseEntity<>("Saved", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
@@ -264,7 +296,12 @@ public class OfferServiceController implements IOfferServiceController {
             } else {
                 if (offer.getUid() < 0 && save.getDelete() <= 0) {
                     offer.setUid(uid);
-                    offerRepository.save(offer);
+                    offer = offerRepository.save(offer);
+                    OfferHistory hist =  new OfferHistory();
+                    hist.setAction(0);
+                    hist.setDate(new Date());
+                    hist.setOid(offer.getOid());
+                    offerHistoryRepository.save(hist);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);

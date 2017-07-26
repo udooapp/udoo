@@ -1,4 +1,12 @@
 <div class="wall-data-container">
-  <h1 i18n>Wall</h1>
+  <div class="main-wall-service" *ngFor="let item of data">
+    <div class="main-wall-service-picture"><img class="main-wall-service-image" [src]="getPicture(item.picture)"></div>
+    <div class="main-wall-service-content">
+      <div class="main-wall-service-title">{{item.title}}</div>
+      <div class="main-wall-service-description">{{item.description}}</div>
+      <div class="main-wall-service-date"><b>Date: </b>{{convertNumberToDateTime(item.date)}}</div>
+    </div>
+  </div>
+  <div *ngIf="scrolledDown" class="loader">Loading....</div>
 </div>
 

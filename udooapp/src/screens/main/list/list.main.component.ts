@@ -27,6 +27,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   private services: any[] = [];
   private scrolledDown: boolean = true;
   private loaded = false;
+  private noMoreElement: boolean = false;
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
   @Input() categories: any[] = [{cid: -1, name: ''}];
@@ -60,7 +61,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   constructor(private router: Router, private notifier: NotifierController, private listController: ListMainController) {
     super();
     notifier.userScrolledToTheBottom$.subscribe(() => {
-      if (!this.scrolledDown) {
+      if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
         this.searchListener.loadMoreElement();
       }
@@ -68,6 +69,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
     listController.setData$.subscribe(data=>{
           if(this.loaded) {
             if (data.more != true) {
+              this.noMoreElement = true;
               this.scrolledDown = false;
             }
             if (data.services.length > 0) {

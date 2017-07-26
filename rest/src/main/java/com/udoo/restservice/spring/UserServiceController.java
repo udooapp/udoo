@@ -8,7 +8,9 @@ import com.udoo.dal.entities.Token;
 import com.udoo.dal.entities.User;
 import com.udoo.dal.entities.UserResponse;
 import com.udoo.dal.entities.Verification;
+import com.udoo.dal.entities.history.UserHistory;
 import com.udoo.dal.repositories.ITokenRepository;
+import com.udoo.dal.repositories.IUserHistoryRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.restservice.IUserServiceController;
@@ -31,6 +33,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -51,6 +54,9 @@ public class UserServiceController implements IUserServiceController {
 
     @Resource
     private IVerificationRepository verificationRepository;
+
+    @Resource
+    private IUserHistoryRepository userHistoryRepository;
 
     @Autowired
     private EmailService emailService;
@@ -103,6 +109,16 @@ public class UserServiceController implements IUserServiceController {
                         activated &= ~0b1000;
                         user.setActive(activated);
                     }
+                    UserHistory userHistory = new UserHistory();
+                    userHistory.setUid(user.getUid());
+                    userHistory.setDate(new Date());
+
+                    if(!user.getPicture().equals(cuser.getPicture())){
+                        userHistory.setAction(2);
+                    } else {
+                        userHistory.setAction(1);
+                    }
+                    userHistoryRepository.save(userHistory);
                     userRepository.save(user);
                     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
                 }

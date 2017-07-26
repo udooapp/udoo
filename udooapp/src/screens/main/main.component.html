@@ -4,8 +4,8 @@
   <div class="main-tab-element" (click)="onClickPage(2)">Wall</div>
   <div id="main-tab-selected" [style.margin-left.px]="margin" [style.animation-name]="tabAnimation"></div>
 </div>
-<div  class="main-content-container" id="page-container">
+<div class="main-content-container" id="page-container" (scroll)="onMainScroll()">
   <main-map   *ngIf="pageMargin > 0" class="main-map-container main-content-element" [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
   <main-list  *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-content-element" [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin"  [style.animation-name]="pageAnim1" [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
-  <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"></main-wall>
+  <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"></main-wall>
 </div>

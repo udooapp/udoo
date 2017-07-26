@@ -24,5 +24,9 @@ export class ConversionMethods{
     let date: Date = new Date(millis);
     return date.getFullYear() + '/' + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth()) + '/' + (date.getDay() > 9 ? date.getDay() : '0' + date.getDay());
   }
-
+  public convertNumberToDateTime(millis: number): string {
+    let date: Date = new Date(millis);
+    let t: string[] = date.toDateString().split(" ");
+    return date.getFullYear() + ' ' + t[1] + ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  }
 }

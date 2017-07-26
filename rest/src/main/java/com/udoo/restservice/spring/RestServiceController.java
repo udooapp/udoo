@@ -3,6 +3,7 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.history.UserHistory;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.offer.OfferLite;
 import com.udoo.dal.entities.offer.PicturesOffer;
@@ -80,6 +81,9 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private IOfferRepository offerRepository;
 
+    @Resource
+    private IUserHistoryRepository userHistoryRepository;
+
     @Autowired
     private ICategoryResult categoryResultRepository;
 
@@ -138,6 +142,11 @@ public class RestServiceController implements IRestServiceController {
                     if (!smsService.sendVerificationMessage(user).isEmpty()) {
                         user.setActive(0b0101);
                         userRepository.save(user);
+                        UserHistory usr = new UserHistory();
+                        usr.setAction(0);
+                        usr.setDate(new Date());
+                        usr.setUid(user.getUid());
+                        userHistoryRepository.save(usr);
                         return new ResponseEntity<>("Registration complete", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("Registration complete,  but please send a new sms verification!", HttpStatus.OK);

@@ -6,6 +6,7 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {MainSearchListener} from "./main.search.listener";
 import {MapMainController} from "./map/map.main.controller";
 import {ListMainController} from "./list/list.main.controller";
+import {NotifierController} from "../../controllers/notify.controller";
 
 
 @Component({
@@ -41,7 +42,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   private pageAnim1: string = '';
   private pageAnim2: string = '';
 
-  constructor(private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
+  constructor(private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
     super();
     let t = this;
     dialog.errorResponse$.subscribe(() => {
@@ -259,6 +260,11 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   public onClickPage(pageIndex: number) {
     if (pageIndex >= 0 && pageIndex < 3 && this.page != pageIndex) {
       this.tokenService.setPageState(pageIndex);
+      if(this.pageMargin < 0){
+        ++this.pageMargin;
+      } else {
+        --this.pageMargin;
+      }
       this.page = pageIndex;
       switch (this.page){
         case 0:
@@ -414,6 +420,12 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         return this.listData;
       case 2:
         break;
+    }
+  }
+  public onMainScroll(){
+    let e: HTMLElement = document.getElementById("page-container");
+    if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
+      this.notifier.userScrolledToTheBottom$.emit(true);
     }
   }
 }

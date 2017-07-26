@@ -2,6 +2,7 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.history.RequestHistory;
 import com.udoo.dal.entities.request.*;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRequestServiceController;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.udoo.restservice.spring.RestServiceController.USERID;
@@ -49,6 +51,9 @@ public class RequestServiceController implements IRequestServiceController {
     @Resource
     private IBidRepository bidRepository;
 
+    @Resource
+    private IRequestHistoryRepository requestHistoryRepository;
+
     @Autowired
     private IPaymentService paymentService;
 
@@ -73,12 +78,17 @@ public class RequestServiceController implements IRequestServiceController {
             int uid = Integer.parseInt(req.getAttribute(USERID).toString());
             User user = userRepository.findByUid(uid);
             Request request = save.getRequest();
-            if (user != null && save.getRequest().getUid() == user.getUid()) {
+            if (user != null && request.getUid() == user.getUid()) {
                 int delete = save.getDelete();
+                RequestHistory hist = new RequestHistory();
+
+                hist.setDate(new Date());
+                hist.setRid(request.getRid());
                 if (delete <= -1) {
-                    requestRepository.save(request);
+                    request = requestRepository.save(request);
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
+                    hist.setAction(0);
                     for (RequestPictures pic : pictures) {
                         int i = 0;
                         while (i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()) {
@@ -88,6 +98,7 @@ public class RequestServiceController implements IRequestServiceController {
                             requestPictureRepository.deleteByPrid(pic.getPrid());
                         }
                     }
+                    requestHistoryRepository.save(hist);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     int d = request.getRid();
@@ -97,6 +108,26 @@ public class RequestServiceController implements IRequestServiceController {
                     requestRepository.save(request);
                     List<RequestPictures> pictures = requestPictureRepository.findAllByRid(request.getRid());
                     List<PicturesRequest> currentPictures = new ArrayList<>(request.getPicturesRequest());
+                    int changes = 0;
+                    if(pictures.size() < currentPictures.size()){
+                        hist.setAction(3);
+                        ++changes;
+                    }
+                    if(request2.getDescription().length() != request.getDescription().length()) {
+                        hist.setAction(2);
+                        ++changes;
+                    }
+                    if(request2.getExpirydate()!= request.getExpirydate()) {
+                        hist.setAction(4);
+                        ++changes;
+                    }
+                    if(!request2.getLocation().equals(request.getLocation())) {
+                        hist.setAction(5);
+                        ++changes;
+                    }
+                    if(changes > 1 || changes == 0){
+                        hist.setAction(1);
+                    }
                     for (RequestPictures pic : pictures) {
                         int i = 0;
                         while (i < currentPictures.size() && currentPictures.get(i).getPrid() != pic.getPrid()) {
@@ -117,7 +148,9 @@ public class RequestServiceController implements IRequestServiceController {
 
                     if (request2 != null & request2.getUid() == user.getUid()) {
                         requestRepository.deleteByRid(d);
-                        return new ResponseEntity<>("Saved", HttpStatus.OK);
+
+                        requestHistoryRepository.save(hist);
+                        return new ResponseEntity<>("Updated", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
                     }
@@ -125,8 +158,13 @@ public class RequestServiceController implements IRequestServiceController {
             } else {
                 if (request.getUid() < 0 && save.getDelete() <= 0) {
                     request.setUid(uid);
-                    requestRepository.save(request);
-                    return new ResponseEntity<>("Request Saved", HttpStatus.OK);
+                    request = requestRepository.save(request);
+                    RequestHistory hist = new RequestHistory();
+                    hist.setAction(0);
+                    hist.setDate(new Date());
+                    hist.setRid(request.getRid());
+                    requestHistoryRepository.save(hist);
+                    return new ResponseEntity<>("Request saved", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
                 }
