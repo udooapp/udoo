@@ -38,6 +38,13 @@ export class ServiceDialogComponent implements AfterViewChecked {
       let el = document.getElementById('service-container');
       let t = this;
       if (el != null) {
+        let buttonText = document.getElementById('service-dialog-more-button');
+        if(buttonText != null){
+          let th = this;
+          buttonText.addEventListener('touchend', function (event) {
+            th.onClickOpen();
+          })
+        }
         el.scrollTop = 0;
         let width = document.getElementById('dialog-window').clientWidth * 0.7;
         el.addEventListener('animationend', function (event) {
