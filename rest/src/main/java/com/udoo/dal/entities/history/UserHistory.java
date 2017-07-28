@@ -1,22 +1,29 @@
 package com.udoo.dal.entities.history;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "UserHistory")
 public class UserHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int uhid;
 
     private int uid;
 
     private Date date;
 
-    private int action;
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "userHistory",cascade = CascadeType.PERSIST)
+    private List<UserHistoryElements> userHistoryElements;
 
 
     public int getUhid() {
@@ -43,11 +50,11 @@ public class UserHistory {
         this.date = date;
     }
 
-    public int getAction() {
-        return action;
+    public List<UserHistoryElements> getUserHistoryElements() {
+        return userHistoryElements;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public void setUserHistoryElements(List<UserHistoryElements> userHistoryElements) {
+        this.userHistoryElements = userHistoryElements;
     }
 }

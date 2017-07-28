@@ -1,27 +1,29 @@
 package com.udoo.dal.entities.history;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="OfferHistory")
 public class OfferHistory {
     @Id
-    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ohid;
 
     private int oid;
 
-    private String changes;
-
     private Date date;
 
-    private int action;
-
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "offerHistory",cascade = CascadeType.PERSIST)
+    private List<OfferHistoryElements> offerHistoryElements;
     public int getOhid() {
         return ohid;
     }
@@ -38,13 +40,6 @@ public class OfferHistory {
         this.oid = oid;
     }
 
-    public String getChanges() {
-        return changes;
-    }
-
-    public void setChanges(String changes) {
-        this.changes = changes;
-    }
 
     public Date getDate() {
         return date;
@@ -54,11 +49,21 @@ public class OfferHistory {
         this.date = date;
     }
 
-    public int getAction() {
-        return action;
+    public List<OfferHistoryElements> getOfferHistoryElements() {
+        return offerHistoryElements;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public void setOfferHistoryElements(List<OfferHistoryElements> offerHistoryElements) {
+        this.offerHistoryElements = offerHistoryElements;
+    }
+
+    @Override
+    public String toString() {
+        return "OfferHistory{" +
+                "ohid=" + ohid +
+                ", oid=" + oid +
+                ", date=" + date +
+                ", offerHistoryElements=" + offerHistoryElements +
+                '}';
     }
 }

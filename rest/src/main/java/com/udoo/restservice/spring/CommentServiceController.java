@@ -3,7 +3,7 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.entities.Comment;
 import com.udoo.dal.entities.CommentResponse;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;

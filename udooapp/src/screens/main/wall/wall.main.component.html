@@ -1,9 +1,20 @@
 <div class="wall-data-container">
-  <div class="main-wall-service" *ngFor="let item of data">
+  <div class="main-wall-service" *ngFor="let item of data" >
     <div class="main-wall-service-picture"><img class="main-wall-service-image" [src]="getPicture(item.picture)"></div>
-    <div class="main-wall-service-content">
-      <div class="main-wall-service-title">{{item.title}}</div>
-      <div class="main-wall-service-description">{{item.description}}</div>
+    <div class="main-wall-service-content" (click)="onClickContent(item)">
+      <div class="main-wall-service-title"><b>{{item.userName}} </b>{{getTitle(item)}}</div>
+      <div class="main-wall-service-description" *ngFor="let content of item.content">
+        <div *ngIf="content.type != 3"><b>New {{getUpdateType(item.type, content.type)}}:</b> {{getUpdateText(item, content.type, content.content)}}</div>
+      </div>
+
+      <div *ngIf="cointainPicture(item.content)">
+        <div><b>New pictures:</b></div>
+        <div class="main-wall-picture-container">
+          <div class="image-item" *ngFor="let img of getPictures(item.content); let i = index">
+            <img class="image-content" [src]="getPicture(img)">
+          </div>
+        </div>
+      </div>
       <div class="main-wall-service-date"><b>Date: </b>{{convertNumberToDateTime(item.date)}}</div>
     </div>
   </div>

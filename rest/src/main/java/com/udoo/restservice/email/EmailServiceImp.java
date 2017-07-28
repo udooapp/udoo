@@ -1,7 +1,7 @@
 package com.udoo.restservice.email;
 
 import com.udoo.dal.entities.Reminder;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.IReminderRepository;
 import com.udoo.dal.repositories.IVerificationRepository;

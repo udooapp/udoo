@@ -16,7 +16,7 @@ import java.util.List;
 public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer oid;
+    private Integer oid = -1;
 
     private Integer uid;
 

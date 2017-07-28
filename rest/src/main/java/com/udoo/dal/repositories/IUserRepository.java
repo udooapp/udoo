@@ -1,7 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.User;
-import org.springframework.data.repository.NoRepositoryBean;
+import com.udoo.dal.entities.user.User;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

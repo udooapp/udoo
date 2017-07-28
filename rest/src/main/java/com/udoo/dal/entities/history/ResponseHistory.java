@@ -1,14 +1,18 @@
 package com.udoo.dal.entities.history;
 
+import com.udoo.dal.entities.WallContent;
+
 import java.util.Date;
+import java.util.List;
 
 public class ResponseHistory {
     private int id;
     private int type;
-    private String title;
-    private String description;
+    private String userName;
     private Date date;
     private String picture;
+    private String serviceName;
+    private List<WallContent> content;
 
     public int getId() {
         return id;
@@ -43,19 +47,27 @@ public class ResponseHistory {
         this.picture = picture;
     }
 
-    public String getTitle() {
-        return title;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getDescription() {
-        return description;
+    public List<WallContent> getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(List<WallContent> content) {
+        this.content = content;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

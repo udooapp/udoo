@@ -3,7 +3,9 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.history.OfferHistory;
+import com.udoo.dal.entities.history.OfferHistoryElement;
 import com.udoo.dal.entities.offer.*;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IOfferServiceController;
 import com.udoo.restservice.payment.IPaymentService;
@@ -53,6 +55,9 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Resource
     private IOfferHistoryRepository offerHistoryRepository;
+
+    @Resource
+    private IOfferHistoryElementRepository offerHistoryElementRepository;
 
     @Autowired
     private IPaymentService paymentService;
@@ -145,6 +150,7 @@ public class OfferServiceController implements IOfferServiceController {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
         } else {
             OfferResponse response = new OfferResponse();
+            offer.setBids(-1);
             response.setOffer(offer);
             response.setUser(userRepository.findByUid(offer.getUid()));
             List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.DESC, "creatingdate"));
@@ -211,97 +217,96 @@ public class OfferServiceController implements IOfferServiceController {
     @Override
     @RequestMapping(value = "/user/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveOffer(ServletRequest request, @RequestBody OfferSave save) {
-
         if (save != null) {
             int uid = Integer.parseInt(request.getAttribute(USERID).toString());
             User user = userRepository.findByUid(uid);
-            Offer offer = save.getOffer();
-            if (user != null &&(save.getOffer().getUid() == user.getUid() || offer.getUid() == -1)) {
+            Offer offerNew = save.getOffer();
+            OfferHistory hist = new OfferHistory();
+            hist.setDate(new Date());
+            if (offerNew != null && (offerNew.getUid() == user.getUid() || offerNew.getUid() == -1)) {
                 int delete = save.getDelete();
-                OfferHistory hist =  new OfferHistory();
-                hist.setDate(new Date());
-                offer.setUid(uid);
+                offerNew.setUid(uid);
                 if (delete <= -1) {
-                    offer = offerRepository.save(offer);
-                    hist.setOid(offer.getOid());
-                    List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
-                    List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
-                    for (OfferPictures pic : pictures) {
+                    Offer offerSaved = new Offer();
+                    if (offerNew.getOid() != null && offerNew.getOid() > -1) {
+                        offerSaved = offerRepository.findByOid(offerNew.getOid());
+                    }
+                    offerNew = offerRepository.save(offerNew);
+                    hist.setOid(offerNew.getOid());
+                    hist = offerHistoryRepository.save(hist);
+                    List<OfferPictures> picturesSaved = offerPictureRepository.findAllByOid(offerNew.getOid());
+                    List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
+
+                    if (offerSaved.getOid() != -1) {
+                        this.saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getOhid());
+                    } else {
+                        OfferHistoryElement histElement = new OfferHistoryElement();
+                        histElement.setAction(WallServiceController.NEW);
+                        histElement.setOhid(hist.getOhid());
+                        offerHistoryElementRepository.save(histElement);
+                    }
+                    for (OfferPictures pic : picturesSaved) {
                         int i = 0;
-                        while (i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()) {
+                        while (i < picturesNew.size() && picturesNew.get(i).getPoid() != pic.getPoid()) {
                             ++i;
                         }
-                        if (i >= currentPictures.size()) {
+                        if (i >= picturesNew.size()) {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
                         }
                     }
-                    hist.setAction(1);
-                    offerHistoryRepository.save(hist);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
-                    int d = offer.getOid();
-                    offer.setOid(delete);
-                    hist.setOid(offer.getOid());
-                    offer.setUid(user.getUid());
-                    Offer offer2 = offerRepository.findByOid(d);
-                    offer = offerRepository.save(offer);
+                    int d = offerNew.getOid();
+                    offerNew.setOid(delete);
+                    offerNew.setUid(user.getUid());
+                    Offer offerSaved = offerRepository.findByOid(d);
+                    offerNew = offerRepository.save(offerNew);
+                    hist.setOid(offerNew.getOid());
+                    hist = offerHistoryRepository.save(hist);
 
-                    List<OfferPictures> pictures = offerPictureRepository.findAllByOid(offer.getOid());
-                    List<PicturesOffer> currentPictures = new ArrayList<>(offer.getPicturesOffer());
-                    int changes = 0;
-                    if(pictures.size() < currentPictures.size()){
-                        hist.setAction(3);
-                        ++changes;
+                    List<OfferPictures> picturesSaved = offerPictureRepository.findAllByOid(offerNew.getOid());
+                    List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
+
+                    if (offerSaved != null && offerSaved.getUid() > 0) {
+                        saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getOhid());
                     }
-                    if(offer2.getDescription().length() != offer.getDescription().length()) {
-                        hist.setAction(2);
-                        ++changes;
-                    }
-                    if(offer.getExpirydate()!= offer.getExpirydate()) {
-                        hist.setAction(4);
-                        ++changes;
-                    }
-                    if(!offer2.getLocation().equals(offer.getLocation())) {
-                        hist.setAction(5);
-                        ++changes;
-                    }
-                    if(changes > 1 || changes == 0){
-                        hist.setAction(1);
-                    }
-                    for (OfferPictures pic : pictures) {
+
+                    for (OfferPictures pic : picturesSaved) {
                         int i = 0;
-                        while (i < currentPictures.size() && currentPictures.get(i).getPoid() != pic.getPoid()) {
+                        while (i < picturesNew.size() && picturesNew.get(i).getPoid() != pic.getPoid()) {
                             ++i;
                         }
-                        if (i >= currentPictures.size()) {
+                        if (i >= picturesNew.size()) {
                             offerPictureRepository.deleteByPoid(pic.getPoid());
                         } else {
-                            currentPictures.remove(i);
+                            picturesNew.remove(i);
                         }
                     }
 
-                    for (PicturesOffer pic : currentPictures) {
-                        OfferPictures pic2 = new OfferPictures(pic.getSrc(), offer.getOid());
+                    for (PicturesOffer pic : picturesNew) {
+                        OfferPictures pic2 = new OfferPictures(pic.getSrc(), offerNew.getOid());
                         pic2.setPoid(pic.getPoid());
                         offerPictureRepository.save(pic2);
                     }
-                    if (offer2 != null && offer2.getUid() == user.getUid()) {
+                    if (offerSaved != null && offerSaved.getUid() == user.getUid()) {
                         offerRepository.deleteByOid(d);
-                        offerHistoryRepository.save(hist);
                         return new ResponseEntity<>("Saved", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("It's not your service", HttpStatus.UNAUTHORIZED);
                     }
                 }
             } else {
-                if (offer.getUid() < 0 && save.getDelete() <= 0) {
-                    offer.setUid(uid);
-                    offer = offerRepository.save(offer);
-                    OfferHistory hist =  new OfferHistory();
-                    hist.setAction(0);
+                if (offerNew != null && offerNew.getUid() < 0 && save.getDelete() <= 0) {
+                    offerNew.setUid(uid);
+                    offerNew = offerRepository.save(offerNew);
+                    hist.setOid(offerNew.getOid());
                     hist.setDate(new Date());
-                    hist.setOid(offer.getOid());
-                    offerHistoryRepository.save(hist);
+                    hist = offerHistoryRepository.save(hist);
+                    OfferHistoryElement histElement = new OfferHistoryElement();
+                    histElement.setAction(WallServiceController.NEW);
+                    histElement.setOhid(hist.getOhid());
+                    histElement.setOhid(hist.getOhid());
+                    offerHistoryElementRepository.save(histElement);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
@@ -309,6 +314,59 @@ public class OfferServiceController implements IOfferServiceController {
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private void saveChanges(Offer offerNew, Offer offerSaved, List<PicturesOffer> picturesNew, List<OfferPictures> picturesSaved, int ohid) {
+        for (PicturesOffer pic : picturesNew) {
+            int i = 0;
+            while (i < picturesSaved.size() && picturesSaved.get(i).getPoid() != pic.getPoid()) {
+                ++i;
+            }
+            if (i >= picturesSaved.size()) {
+                OfferHistoryElement histElement = new OfferHistoryElement();
+                histElement.setAction(WallServiceController.UPDATED_PICTURE);
+                histElement.setChanges(pic.getPoid() + "");
+                histElement.setOhid(ohid);
+                offerHistoryElementRepository.save(histElement);
+            }
+        }
+        if (!offerNew.getTitle().equals(offerSaved.getTitle())) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
+            histElement.setChanges(offerSaved.getTitle());
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
+        }
+        if (!offerNew.getDescription().equals(offerSaved.getDescription())) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
+        }
+        if (!offerNew.getAvailability().equals(offerSaved.getAvailability())) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_AVAILABILITY);
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
+        }
+        if (offerNew.getExpirydate().compareTo(offerSaved.getExpirydate()) != 0) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
+        }
+        if (!offerNew.getLocation().equals(offerSaved.getLocation())) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_LOCATION);
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
+        }
+        if (offerNew.getCategory() != offerSaved.getCategory()) {
+            OfferHistoryElement histElement = new OfferHistoryElement();
+            histElement.setAction(WallServiceController.UPDATED_CATEGORY);
+            histElement.setOhid(ohid);
+            offerHistoryElementRepository.save(histElement);
         }
     }
 }

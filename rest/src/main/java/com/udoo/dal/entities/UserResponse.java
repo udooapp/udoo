@@ -1,5 +1,7 @@
 package com.udoo.dal.entities;
 
+import com.udoo.dal.entities.user.User;
+
 import java.util.List;
 
 /**

@@ -16,7 +16,8 @@ public interface IUserHistoryRepository extends Repository<UserHistory, Integer>
 
     UserHistory save(UserHistory history);
 
-    List<UserHistory> findFirst5ByActionAndDateLessThanOrderByDateDesc(int action, Date date, Pageable page);
+    @Query("Select uh From UserHistory uh, UserHistoryElement uhe Where uhe.uhid = uh.uhid and uhe.action = :action and uh.date < :date order by uh.date DESC ")
+    List<UserHistory> findAllByActionAndDateLessThanOrderByDateDesc(@Param("action") int action, @Param("date") Date date, Pageable page);
 
     @Query("Select uh From UserHistory uh Where uh.date < :date and uh.uid in (Select c.cid From Contact c Where c.uid = :uid) order by uh.date DESC ")
     List<UserHistory> findAllByUidAndDateLessThan(@Param("uid") int uid,@Param("date") Date date, Pageable page);

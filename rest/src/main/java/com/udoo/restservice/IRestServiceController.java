@@ -3,7 +3,7 @@ package com.udoo.restservice;
 
 import com.udoo.dal.entities.Category;
 import com.udoo.dal.entities.Social;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;

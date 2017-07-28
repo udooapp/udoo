@@ -1,4 +1,4 @@
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.spring.PersistenceConfig;
 import org.junit.Test;

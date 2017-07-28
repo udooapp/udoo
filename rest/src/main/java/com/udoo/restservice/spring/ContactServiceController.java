@@ -4,7 +4,7 @@ package com.udoo.restservice.spring;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.entities.Contact;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.IContactRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IContactServiceController;

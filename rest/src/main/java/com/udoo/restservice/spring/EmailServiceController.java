@@ -2,17 +2,13 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.Reminder;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IEmailServiceController;
 import com.udoo.restservice.email.EmailService;
-import com.udoo.restservice.email.EmailServiceImp;
 
 import com.udoo.restservice.sms.SmsService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.udoo.restservice.spring.RestServiceController.USERID;

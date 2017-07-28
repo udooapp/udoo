@@ -1,7 +1,7 @@
 package com.udoo.restservice;
 
 
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.ServletRequest;

@@ -5,24 +5,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.dao.IBidResult;
 import com.udoo.dal.entities.Token;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.history.UserHistoryElement;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.UserResponse;
-import com.udoo.dal.entities.Verification;
 import com.udoo.dal.entities.history.UserHistory;
-import com.udoo.dal.repositories.ITokenRepository;
-import com.udoo.dal.repositories.IUserHistoryRepository;
-import com.udoo.dal.repositories.IUserRepository;
-import com.udoo.dal.repositories.IVerificationRepository;
+import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
-import com.udoo.restservice.payment.IPaymentService;
 import com.udoo.restservice.sms.SmsService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -58,6 +47,9 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private IUserHistoryRepository userHistoryRepository;
 
+    @Resource
+    private IUserHistoryElementRepository userHistoryElementRepository;
+
     @Autowired
     private EmailService emailService;
 
@@ -71,55 +63,79 @@ public class UserServiceController implements IUserServiceController {
 
     @Override
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateUser(ServletRequest request, @RequestBody final User user) {
-        if (user != null) {
-            if (user.getBirthdate() != null && (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null"))) {
-                user.setBirthdate(null);
+    public ResponseEntity<String> updateUser(ServletRequest request, @RequestBody final User userUpdated) {
+        if (userUpdated != null) {
+            if (userUpdated.getBirthdate() != null && (userUpdated.getBirthdate().isEmpty() || userUpdated.getBirthdate().equals("null"))) {
+                userUpdated.setBirthdate(null);
             }
-            User cuser = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
-            if (cuser == null) {
+            User userSaved = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
+            if (userSaved == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
-                User user2 = userRepository.getByEmail(user.getEmail());
-                if (user2 != null && user2.getUid() != user.getUid()) {
+                User user2 = userRepository.getByEmail(userUpdated.getEmail());
+                if (user2 != null && user2.getUid() != userUpdated.getUid()) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
-                    if (user.getLocation() == null) {
-                        user.setLocation("");
+                    if (userUpdated.getLocation() == null) {
+                        userUpdated.setLocation("");
                     }
-                    user2 = userRepository.findByUid(user.getUid());
+                    user2 = userRepository.findByUid(userUpdated.getUid());
                     String responseMessage = "Profile updated";
-                    if (!user.getEmail().equals(user2.getEmail())) {
+                    if (!userUpdated.getEmail().equals(user2.getEmail())) {
                         responseMessage = "Check your email address";
                         int activated = user2.getActive();
-                        verificationRepository.deleteByUid(user.getUid(), false);
-                        emailService.sendEmailVerification(user);
+                        verificationRepository.deleteByUid(userUpdated.getUid(), false);
+                        emailService.sendEmailVerification(userUpdated);
                         activated &= ~0b10;
-                        user.setActive(activated);
+                        userUpdated.setActive(activated);
                     }
-                    if (!user.getPhone().equals(user2.getPhone())) {
+                    if (!userUpdated.getPhone().equals(user2.getPhone())) {
                         if (responseMessage.equals("Check your email address")) {
                             responseMessage += " and phone";
                         } else {
                             responseMessage = "Check your phone";
                         }
                         int activated = user2.getActive();
-                        verificationRepository.deleteByUid(user.getUid(), false);
-                        smsService.sendVerificationMessage(user);
+                        verificationRepository.deleteByUid(userUpdated.getUid(), false);
+                        smsService.sendVerificationMessage(userUpdated);
                         activated &= ~0b1000;
-                        user.setActive(activated);
+                        userUpdated.setActive(activated);
                     }
                     UserHistory userHistory = new UserHistory();
-                    userHistory.setUid(user.getUid());
+                    userHistory.setUid(userUpdated.getUid());
                     userHistory.setDate(new Date());
+                    userHistory = userHistoryRepository.save(userHistory);
 
-                    if(!user.getPicture().equals(cuser.getPicture())){
-                        userHistory.setAction(2);
-                    } else {
-                        userHistory.setAction(1);
+                    if(userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())){
+                        UserHistoryElement historyElement = new UserHistoryElement();
+                        historyElement.setChanges(userSaved.getPicture());
+                        historyElement.setAction(WallServiceController.UPDATED_PICTURE);
+                        historyElement.setUhid(userHistory.getUhid());
+                        userHistoryElementRepository.save(historyElement);
                     }
-                    userHistoryRepository.save(userHistory);
-                    userRepository.save(user);
+                    if(!userUpdated.getName().equals(userSaved.getName())){
+                        UserHistoryElement historyElement = new UserHistoryElement();
+                        historyElement.setChanges(userSaved.getName());
+                        historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
+                        historyElement.setUhid(userHistory.getUhid());
+                        userHistoryElementRepository.save(historyElement);
+                    }
+                    if(!userUpdated.getPhone().equals(userSaved.getPhone())){
+                        UserHistoryElement historyElement = new UserHistoryElement();
+                        historyElement.setChanges(userSaved.getPhone());
+                        historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
+                        historyElement.setUhid(userHistory.getUhid());
+                        userHistoryElementRepository.save(historyElement);
+                    }
+                    if(!userUpdated.getEmail().equals(userSaved.getEmail())){
+                        UserHistoryElement historyElement = new UserHistoryElement();
+                        historyElement.setChanges(userSaved.getEmail());
+                        historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
+                        historyElement.setUhid(userHistory.getUhid());
+                        userHistoryElementRepository.save(historyElement);
+                    }
+
+                    userRepository.save(userUpdated);
                     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
                 }
             }

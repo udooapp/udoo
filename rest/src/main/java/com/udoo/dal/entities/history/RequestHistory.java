@@ -1,27 +1,29 @@
 package com.udoo.dal.entities.history;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="RequestHistory")
 public class RequestHistory{
     @Id
-    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rhid;
 
     private int rid;
 
-    private String changes;
-
     private Date date;
 
-    private int action;
-
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "requestHistory",cascade = CascadeType.PERSIST)
+    private List<RequestHistoryElements> requestHistoryElements;
 
     public int getRhid() {
         return rhid;
@@ -39,13 +41,6 @@ public class RequestHistory{
         this.rid = rid;
     }
 
-    public String getChanges() {
-        return changes;
-    }
-
-    public void setChanges(String changes) {
-        this.changes = changes;
-    }
 
     public Date getDate() {
         return date;
@@ -55,12 +50,11 @@ public class RequestHistory{
         this.date = date;
     }
 
-
-    public int getAction() {
-        return action;
+    public List<RequestHistoryElements> getRequestHistoryElements() {
+        return requestHistoryElements;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public void setRequestHistoryElements(List<RequestHistoryElements> requestHistoryElements) {
+        this.requestHistoryElements = requestHistoryElements;
     }
 }

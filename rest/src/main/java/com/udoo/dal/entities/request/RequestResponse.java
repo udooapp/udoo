@@ -2,7 +2,7 @@ package com.udoo.dal.entities.request;
 
 
 import com.udoo.dal.entities.CommentResponse;
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 
 import java.util.List;
 

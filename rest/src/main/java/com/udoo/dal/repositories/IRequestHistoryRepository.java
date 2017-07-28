@@ -16,7 +16,8 @@ public interface IRequestHistoryRepository extends Repository<RequestHistory, In
 
     RequestHistory save(RequestHistory history);
 
-    List<RequestHistory> findFirst5ByActionAndDateLessThanOrderByDateDesc(int action, Date date, Pageable page);
+    @Query("Select rh From RequestHistory rh, RequestHistoryElement rhe Where rhe.rhid = rh.rhid and rhe.action = :action and rh.date < :date order by rh.date DESC ")
+    List<RequestHistory> findAllByActionAndDateLessThanOrderByDateDesc(@Param("action") int action, @Param("date") Date date, Pageable page);
 
     @Query("Select rh From RequestHistory rh Where rh.date < :date and rh.rid in (Select r.rid From Request r Where r.uid in (Select c.cid From Contact c Where c.uid = :uid)) order by rh.date DESC ")
     List<RequestHistory> findAllByUidAndDateLessThan(@Param("uid") int uid, @Param("date") Date date, Pageable page);

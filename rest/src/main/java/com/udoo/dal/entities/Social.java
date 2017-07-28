@@ -4,12 +4,12 @@ package com.udoo.dal.entities;
  * Created by Zoltan on 6/29/2017.
  */
 public class Social {
-    String id;
-    String name;
-    String birthday;
-    String email;
-    String picture;
-    boolean type;
+    private String id;
+    private String name;
+    private String birthday;
+    private String email;
+    private String picture;
+    private boolean type;
 
     public String getBirthday() {
         return birthday;

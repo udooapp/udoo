@@ -4,6 +4,7 @@ package com.udoo.restservice.spring;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IBidServiceController;
 import com.udoo.restservice.payment.IPaymentService;

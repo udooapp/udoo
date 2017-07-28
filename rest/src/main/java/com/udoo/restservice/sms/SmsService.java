@@ -1,6 +1,6 @@
 package com.udoo.restservice.sms;
 
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 
 /**
  *

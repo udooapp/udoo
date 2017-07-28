@@ -1,6 +1,6 @@
 package com.udoo.restservice.email;
 
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 
 /**
  *

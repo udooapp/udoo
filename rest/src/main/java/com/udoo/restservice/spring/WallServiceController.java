@@ -1,10 +1,8 @@
 package com.udoo.restservice.spring;
 
-import com.udoo.dal.entities.User;
-import com.udoo.dal.entities.history.OfferHistory;
-import com.udoo.dal.entities.history.RequestHistory;
-import com.udoo.dal.entities.history.ResponseHistory;
-import com.udoo.dal.entities.history.UserHistory;
+import com.udoo.dal.entities.WallContent;
+import com.udoo.dal.entities.history.*;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
@@ -29,6 +27,17 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/wall")
 public class WallServiceController implements IWallServiceController {
+    public static final int NEW = 0;
+    public static final int UPDATED_DESCRIPTION = 2;
+    public static final int UPDATED_PICTURE = 3;
+    public static final int UPDATED_EXPIRATION_DATE = 4;
+    public static final int UPDATED_LOCATION = 5;
+    public static final int UPDATED_TITLE_OR_NAME = 6;
+    public static final int UPDATED_AVAILABILITY = 7;
+    public static final int UPDATED_JOB_DATE = 8;
+    public static final int UPDATED_CATEGORY = 9;
+    public static final int UPDATED_PHONE_NUMBER = 10;
+    public static final int UPDATED_EMAIL_ADDRESS = 11;
 
     @Resource
     private IOfferHistoryRepository offerHistoryRepository;
@@ -48,14 +57,29 @@ public class WallServiceController implements IWallServiceController {
     @Resource
     private IUserRepository userRepository;
 
+    @Resource
+    private IOfferPictureRepository offerPictureRepository;
+
+    @Resource
+    private IRequestPictureRepository requestPictureRepository;
+
+    @Resource
+    private IUserHistoryElementRepository userHistoryElementRepository;
+
+    @Resource
+    private IOfferHistoryElementRepository offerHistoryElementRepository;
+
+    @Resource
+    private IRequestHistoryElementRepository requestHistoryElementRepository;
+
     @Override
     @RequestMapping(value = "/public", method = RequestMethod.GET)
-    public ResponseEntity<?> getOfflineWord(@RequestParam("date") long millis) {
+    public ResponseEntity<?> getOfflineWall(@RequestParam("date") long millis) {
         Date date = new Date(millis);
         Pageable page = new PageRequest(0, 5);
-        List<UserHistory> userHistories = userHistoryRepository.findFirst5ByActionAndDateLessThanOrderByDateDesc(0, date, page);
-        List<RequestHistory> requestHistories = requestHistoryRepository.findFirst5ByActionAndDateLessThanOrderByDateDesc(0, date, page);
-        List<OfferHistory> offerHistories = offerHistoryRepository.findFirst5ByActionAndDateLessThanOrderByDateDesc(0, date, page);
+        List<UserHistory> userHistories = userHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
+        List<RequestHistory> requestHistories = requestHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
+        List<OfferHistory> offerHistories = offerHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
         return new ResponseEntity<>(this.sort(userHistories, offerHistories, requestHistories), HttpStatus.OK);
     }
 
@@ -94,8 +118,9 @@ public class WallServiceController implements IWallServiceController {
                     hist.setType(0);
                     User usr = userRepository.findByUid(hist.getId());
                     hist.setDate(uh.getDate());
-                    hist.setTitle(usr.getName() + getUserActionType(uh.getAction()));
+                    hist.setUserName(usr.getName());
                     hist.setPicture(usr.getPicture());
+                    hist.setContent(getUserActionType(uh.getUserHistoryElements(), usr));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -109,8 +134,10 @@ public class WallServiceController implements IWallServiceController {
                     Offer off = offerRepository.findByOid(hist.getId());
                     hist.setDate(oh.getDate());
                     User usro = userRepository.findByUid(off.getUid());
-                    hist.setTitle(usro.getName() + getOfferActionType(oh.getAction(), off.getTitle()));
                     hist.setPicture(usro.getPicture());
+                    hist.setUserName(usro.getName());
+                    hist.setServiceName(off.getTitle());
+                    hist.setContent(getOfferActionType(oh.getOfferHistoryElements(), off));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -124,8 +151,10 @@ public class WallServiceController implements IWallServiceController {
                     Request req = requestRepository.findByRid(hist.getId());
                     hist.setDate(rh.getDate());
                     User usrr = userRepository.findByUid(req.getUid());
-                    hist.setTitle(usrr.getName() + getRequestActionType(rh.getAction(), req.getTitle()));
+                    hist.setServiceName(req.getTitle());
                     hist.setPicture(usrr.getPicture());
+                    hist.setUserName(usrr.getName());
+                    hist.setContent(getRequestActionType(rh.getRequestHistoryElements(), req));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -137,54 +166,96 @@ public class WallServiceController implements IWallServiceController {
         return history;
     }
 
-    private String getUserActionType(int action) {
-        switch (action) {
-            case 0:
-                return " registered on the site";
-            case 1:
-                return " updated his/her profile";
-            case 2:
-                return " updated his/her profile picture";
-            default:
-                return "";
+    private List<WallContent> getUserActionType(List<UserHistoryElements> list, User user) {
+        List<WallContent> content = new ArrayList<>();
+        for (UserHistoryElements element : list) {
+            int action = element.getAction();
+            WallContent wallContent = new WallContent();
+            wallContent.setType(action);
+            switch (action) {
+                case UPDATED_PICTURE:
+                    wallContent.setContent(user.getPicture());
+                    break;
+                case UPDATED_TITLE_OR_NAME:
+                    wallContent.setContent(element.getChanges() + " to " + user.getName());
+                    break;
+                case UPDATED_PHONE_NUMBER:
+                    wallContent.setContent(user.getPhone());
+                    break;
+                case UPDATED_EMAIL_ADDRESS:
+                    wallContent.setContent(user.getEmail());
+                    break;
+            }
+            content.add(wallContent);
         }
+        return content;
     }
 
-    private String getOfferActionType(int action, String title) {
-        switch (action) {
-            case 0:
-                return " create a new offer with " + title + " title";
-            case 1:
-                return " updated his/her " + title + " offer";
-            case 2:
-                return " updated his/her" + title + " offer description";
-            case 3:
-                return " uploaded a picture  to his/her" + title + " request";
-            case 4:
-                return " changed the " + title + " offer expiration date";
-            case 5:
-                return " changed the " + title + " offer location";
-            default:
-                return "";
+    private List<WallContent> getOfferActionType(List<OfferHistoryElements> list, Offer offer) {
+        List<WallContent> content = new ArrayList<>();
+        for (OfferHistoryElements element : list) {
+            int action = element.getAction();
+            WallContent wallContent = new WallContent();
+            wallContent.setType(action);
+            switch (action) {
+                case UPDATED_DESCRIPTION:
+                    wallContent.setContent(offer.getDescription());
+                    break;
+                case UPDATED_PICTURE:
+                    wallContent.setContent(offerPictureRepository.findByPoid(Integer.parseInt(element.getChanges())).getSrc());
+                    break;
+                case UPDATED_EXPIRATION_DATE:
+                    wallContent.setContent(offer.getExpirydate().getTime() + "");
+                    break;
+                case UPDATED_LOCATION:
+                    wallContent.setContent(offer.getLocation());
+                    break;
+                case UPDATED_TITLE_OR_NAME:
+                    wallContent.setContent(element.getChanges());
+                    break;
+                case UPDATED_CATEGORY:
+                    wallContent.setContent(offer.getCategory() + "");
+                    break;
+                case UPDATED_AVAILABILITY:
+                    wallContent.setContent(offer.getAvailability());
+                    break;
+            }
+            content.add(wallContent);
         }
+        return content;
     }
 
-    private String getRequestActionType(int action, String title) {
-        switch (action) {
-            case 0:
-                return " create a new offer with " + title + " title";
-            case 1:
-                return " updated his/her " + title + " request";
-            case 2:
-                return " updated his/her" + title + " request description";
-            case 3:
-                return " uploaded a picture  to his/her" + title + " request";
-            case 4:
-                return " changed the " + title + " request expiration date";
-            case 5:
-                return " changed the " + title + " request location";
-            default:
-                return "";
+    private List<WallContent> getRequestActionType(List<RequestHistoryElements> list, Request request) {
+        List<WallContent> content = new ArrayList<>();
+        for (RequestHistoryElements element : list) {
+            int action = element.getAction();
+            WallContent wallContent = new WallContent();
+            wallContent.setType(action);
+            switch (action) {
+                case UPDATED_DESCRIPTION:
+                    wallContent.setContent(request.getDescription());
+                    break;
+                case UPDATED_PICTURE:
+                    wallContent.setContent(requestPictureRepository.findByPrid(Integer.parseInt(element.getChanges())).getSrc());
+                    break;
+                case UPDATED_EXPIRATION_DATE:
+                    wallContent.setContent(request.getExpirydate().getTime() + "");
+                    break;
+                case UPDATED_LOCATION:
+                    wallContent.setContent(request.getLocation());
+                    break;
+                case UPDATED_CATEGORY:
+                    wallContent.setContent(request.getCategory() + "");
+                    break;
+                case UPDATED_JOB_DATE:
+                    wallContent.setContent(request.getJobdate());
+                    break;
+                case UPDATED_TITLE_OR_NAME:
+                    wallContent.setContent(element.getChanges());
+                    break;
+            }
+            content.add(wallContent);
         }
+        return content;
     }
 }

@@ -4,12 +4,14 @@ package com.udoo.restservice.spring;
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.history.UserHistory;
+import com.udoo.dal.entities.history.UserHistoryElement;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.offer.OfferLite;
 import com.udoo.dal.entities.offer.PicturesOffer;
 import com.udoo.dal.entities.request.PicturesRequest;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.entities.request.RequestLite;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
 
@@ -28,7 +30,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,8 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private ITokenRepository tokenRepository;
 
+    @Resource
+    private IUserHistoryElementRepository userHistoryElementRepository;
 
     @Resource
     private IRequestRepository requestRepository;
@@ -142,11 +145,14 @@ public class RestServiceController implements IRestServiceController {
                     if (!smsService.sendVerificationMessage(user).isEmpty()) {
                         user.setActive(0b0101);
                         userRepository.save(user);
-                        UserHistory usr = new UserHistory();
-                        usr.setAction(0);
-                        usr.setDate(new Date());
-                        usr.setUid(user.getUid());
-                        userHistoryRepository.save(usr);
+                        UserHistory usrHistory = new UserHistory();
+                        usrHistory.setDate(new Date());
+                        usrHistory.setUid(user.getUid());
+                        usrHistory = userHistoryRepository.save(usrHistory);
+                        UserHistoryElement historyElement = new UserHistoryElement();
+                        historyElement.setAction(WallServiceController.NEW);
+                        historyElement.setUhid(usrHistory.getUhid());
+                        userHistoryElementRepository.save(historyElement);
                         return new ResponseEntity<>("Registration complete", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("Registration complete,  but please send a new sms verification!", HttpStatus.OK);

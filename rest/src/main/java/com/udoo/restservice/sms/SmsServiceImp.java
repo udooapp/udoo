@@ -1,6 +1,6 @@
 package com.udoo.restservice.sms;
 
-import com.udoo.dal.entities.User;
+import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.IVerificationRepository;
 import com.udoo.dal.smsprovider.SmsProvider;

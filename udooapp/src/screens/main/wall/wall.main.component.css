@@ -46,8 +46,8 @@
 .main-wall-service-description {
   word-wrap: break-word;
   font-size: 14pt;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 .main-wall-service-content {
   margin-left: 140px;
@@ -56,4 +56,39 @@
   margin-top: -150px;
   color: dimgrey;
   font-family: Arial, Helvetica, sans-serif;
+}
+.main-wall-service-date{
+  padding-top: 10px;
+}
+.main-wall-picture-container {
+  width: 100%;
+  margin: 5px 0;
+  height: auto;
+  overflow-x: auto;
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -webkit-flex-direction: row;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.image-item {
+  overflow: hidden;
+  width: 140px;
+  height: 140px;
+  position: relative;
+  margin: 5px;
+  display: block;
+  align-items: center;
+  background-color: #EAEAEA;
+  border-radius: 26px;
+}
+.image-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
