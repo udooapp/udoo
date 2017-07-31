@@ -10,8 +10,8 @@ import java.util.Date;
  */
 public interface IWallServiceController {
 
-    ResponseEntity<?> getOfflineWall(long millis);
+    ResponseEntity<?> getOfflineWall(int lastId);
 
-    ResponseEntity<?> getUserWall(ServletRequest request, long millis);
+    ResponseEntity<?> getUserWall(ServletRequest request, int lastId);
 
 }

@@ -29,13 +29,12 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
 
   @Input() categories: any[] = [];
   public data: any[] = [];
-  private lastDate: Date;
+  private lastId: number = 0;
   public scrolledDown: boolean = true;
   private noMoreElement: boolean = false;
 
   constructor(private dialog: DialogController, private wallService: WallService, private notifier: NotifierController, private router: Router) {
     super();
-    this.lastDate = new Date();
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
@@ -48,12 +47,11 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   }
 
   ngOnInit(): void {
-    this.wallService.getWall(this.lastDate).subscribe(
+    this.wallService.getWall(this.lastId).subscribe(
       data => {
-        console.log(data);
         this.data = data;
         if (data.length > 0) {
-          this.lastDate.setTime(data[data.length - 1].date);
+          this.lastId = data[data.length - 1].hid;
         }
         if (data.length < 5) {
           this.noMoreElement = true;
@@ -68,7 +66,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   }
 
   private loadMoreElement() {
-    this.wallService.getWall(this.lastDate).subscribe(
+    this.wallService.getWall(this.lastId).subscribe(
       data => {
         console.log(data);
         if (data.length < 5) {
@@ -78,7 +76,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
           }
-          this.lastDate.setTime(data[data.length - 1].date);
+          this.lastId = data[data.length - 1].hid;
         }
         this.scrolledDown = false;
       },
@@ -91,7 +89,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
 
   public getCategory(category: number): string {
     let cat = this.categories.find(cat => cat.cid == category);
-    return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
+    return cat != null && cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
 
   public getPicture(picture: string) {

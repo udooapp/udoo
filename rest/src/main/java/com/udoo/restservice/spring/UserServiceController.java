@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.dao.IBidResult;
 import com.udoo.dal.entities.Token;
-import com.udoo.dal.entities.history.UserHistoryElement;
+import com.udoo.dal.entities.history.History;
+import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.UserResponse;
-import com.udoo.dal.entities.history.UserHistory;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
@@ -45,10 +45,10 @@ public class UserServiceController implements IUserServiceController {
     private IVerificationRepository verificationRepository;
 
     @Resource
-    private IUserHistoryRepository userHistoryRepository;
+    private IHistoryRepository historyRepository;
 
     @Resource
-    private IUserHistoryElementRepository userHistoryElementRepository;
+    private IHistoryElementRepository historyElementRepository;
 
     @Autowired
     private EmailService emailService;
@@ -101,38 +101,40 @@ public class UserServiceController implements IUserServiceController {
                         activated &= ~0b1000;
                         userUpdated.setActive(activated);
                     }
-                    UserHistory userHistory = new UserHistory();
-                    userHistory.setUid(userUpdated.getUid());
-                    userHistory.setDate(new Date());
-                    userHistory = userHistoryRepository.save(userHistory);
+
+                    History history = new History();
+                    history.setTid(userUpdated.getUid());
+                    history.setDate(new Date());
+                    history.setType(0);
+                    history = historyRepository.save(history);
 
                     if(userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())){
-                        UserHistoryElement historyElement = new UserHistoryElement();
+                        HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getPicture());
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
-                        historyElement.setUhid(userHistory.getUhid());
-                        userHistoryElementRepository.save(historyElement);
+                        historyElement.setHid(history.getHid());
+                        historyElementRepository.save(historyElement);
                     }
                     if(!userUpdated.getName().equals(userSaved.getName())){
-                        UserHistoryElement historyElement = new UserHistoryElement();
+                        HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getName());
                         historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
-                        historyElement.setUhid(userHistory.getUhid());
-                        userHistoryElementRepository.save(historyElement);
+                        historyElement.setHid(history.getHid());
+                        historyElementRepository.save(historyElement);
                     }
                     if(!userUpdated.getPhone().equals(userSaved.getPhone())){
-                        UserHistoryElement historyElement = new UserHistoryElement();
+                        HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
-                        historyElement.setUhid(userHistory.getUhid());
-                        userHistoryElementRepository.save(historyElement);
+                        historyElement.setHid(history.getHid());
+                        historyElementRepository.save(historyElement);
                     }
                     if(!userUpdated.getEmail().equals(userSaved.getEmail())){
-                        UserHistoryElement historyElement = new UserHistoryElement();
+                        HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getEmail());
                         historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
-                        historyElement.setUhid(userHistory.getUhid());
-                        userHistoryElementRepository.save(historyElement);
+                        historyElement.setHid(history.getHid());
+                        historyElementRepository.save(historyElement);
                     }
 
                     userRepository.save(userUpdated);

@@ -5,25 +5,28 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 
 @Entity
-@Table(name="RequestHistoryElements")
-public class RequestHistoryElement {
+@Table(name="HistoryElements")
+public class HistoryElements {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int RHEID;
+    private int HEID;
 
     private int action;
 
     private String changes;
 
-    private int rhid = -1;
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch=FetchType.LAZY)
+    @JoinColumn(name = "hid")
+    private History History;
 
-    public int getRHEID() {
-        return RHEID;
+    public int getHEID() {
+        return HEID;
     }
 
-    public void setRHEID(int RHEID) {
-        this.RHEID = RHEID;
+    public void setHEID(int HEID) {
+        this.HEID = HEID;
     }
 
     public int getAction() {
@@ -42,11 +45,11 @@ public class RequestHistoryElement {
         this.changes = changes;
     }
 
-    public int getRhid() {
-        return rhid;
+    public com.udoo.dal.entities.history.History getHistory() {
+        return History;
     }
 
-    public void setRhid(int rhid) {
-        this.rhid = rhid;
+    public void setHistory(com.udoo.dal.entities.history.History history) {
+        History = history;
     }
 }

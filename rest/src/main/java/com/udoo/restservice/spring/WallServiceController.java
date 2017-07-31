@@ -40,13 +40,7 @@ public class WallServiceController implements IWallServiceController {
     public static final int UPDATED_EMAIL_ADDRESS = 11;
 
     @Resource
-    private IOfferHistoryRepository offerHistoryRepository;
-
-    @Resource
-    private IRequestHistoryRepository requestHistoryRepository;
-
-    @Resource
-    private IUserHistoryRepository userHistoryRepository;
+    private IHistoryRepository historyRepository;
 
     @Resource
     private IOfferRepository offerRepository;
@@ -63,64 +57,44 @@ public class WallServiceController implements IWallServiceController {
     @Resource
     private IRequestPictureRepository requestPictureRepository;
 
-    @Resource
-    private IUserHistoryElementRepository userHistoryElementRepository;
-
-    @Resource
-    private IOfferHistoryElementRepository offerHistoryElementRepository;
-
-    @Resource
-    private IRequestHistoryElementRepository requestHistoryElementRepository;
-
     @Override
     @RequestMapping(value = "/public", method = RequestMethod.GET)
-    public ResponseEntity<?> getOfflineWall(@RequestParam("date") long millis) {
-        Date date = new Date(millis);
+    public ResponseEntity<?> getOfflineWall(@RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
-        List<UserHistory> userHistories = userHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
-        List<RequestHistory> requestHistories = requestHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
-        List<OfferHistory> offerHistories = offerHistoryRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, date, page);
-        return new ResponseEntity<>(this.sort(userHistories, offerHistories, requestHistories), HttpStatus.OK);
+        return new ResponseEntity<>(this.sort(historyRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, lastId, page)), HttpStatus.OK);
     }
 
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("date") long millis) {
-        Date date = new Date(millis);
+    public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
         int uid = Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString());
-        List<UserHistory> userHistories = userHistoryRepository.findAllByUidAndDateLessThan(uid, date, page);
-        List<RequestHistory> requestHistories = requestHistoryRepository.findAllByUidAndDateLessThan(uid, date, page);
-        List<OfferHistory> offerHistories = offerHistoryRepository.findAllByUidAndDateLessThan(uid, date, page);
-        return new ResponseEntity<>(this.sort(userHistories, offerHistories, requestHistories), HttpStatus.OK);
+        return new ResponseEntity<>(this.sort(historyRepository.findAllUidAndDateLessThan(uid, lastId, page)), HttpStatus.OK);
 
     }
 
-    private List<ResponseHistory> sort(List<UserHistory> uhistory, List<OfferHistory> ohistory, List<RequestHistory> rhistory) {
+    private List<ResponseHistory> sort(List<History> history) {
+        return merge(history);
+    }
+
+    private List<ResponseHistory> merge(List<History> list) {
         List<ResponseHistory> history = new ArrayList<>();
-        history = merge(history, uhistory, 0);
-        history = merge(history, ohistory, 1);
-        history = merge(history, rhistory, 2);
-        return history;
-    }
-
-    private List<ResponseHistory> merge(List<ResponseHistory> history, List list, int type) {
-        for (Object obj : list) {
+        for (History obj : list) {
             int j = 0;
-            ResponseHistory hist = new ResponseHistory();
-            while (j < history.size() && history.get(j).getDate().compareTo(type == 0 ? ((UserHistory) obj).getDate() : type == 1 ? ((OfferHistory) obj).getDate() : ((RequestHistory) obj).getDate()) >= 0) {
+            while (j < history.size() && history.get(j).getDate().compareTo(obj.getDate()) >= 0) {
                 ++j;
             }
-            switch (type) {
+            ResponseHistory hist = new ResponseHistory();
+            hist.setId(obj.getTid());
+            hist.setType(obj.getType());
+            hist.setDate(obj.getDate());
+            hist.setHid(obj.getHid());
+            switch (obj.getType()) {
                 case 0:
-                    UserHistory uh = (UserHistory) obj;
-                    hist.setId(uh.getUid());
-                    hist.setType(0);
                     User usr = userRepository.findByUid(hist.getId());
-                    hist.setDate(uh.getDate());
                     hist.setUserName(usr.getName());
                     hist.setPicture(usr.getPicture());
-                    hist.setContent(getUserActionType(uh.getUserHistoryElements(), usr));
+                    hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -128,16 +102,12 @@ public class WallServiceController implements IWallServiceController {
                     }
                     break;
                 case 1:
-                    OfferHistory oh = (OfferHistory) obj;
-                    hist.setId(oh.getOid());
-                    hist.setType(1);
                     Offer off = offerRepository.findByOid(hist.getId());
-                    hist.setDate(oh.getDate());
                     User usro = userRepository.findByUid(off.getUid());
                     hist.setPicture(usro.getPicture());
                     hist.setUserName(usro.getName());
                     hist.setServiceName(off.getTitle());
-                    hist.setContent(getOfferActionType(oh.getOfferHistoryElements(), off));
+                    hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -145,16 +115,12 @@ public class WallServiceController implements IWallServiceController {
                     }
                     break;
                 case 2:
-                    RequestHistory rh = (RequestHistory) obj;
-                    hist.setId(rh.getRid());
-                    hist.setType(2);
                     Request req = requestRepository.findByRid(hist.getId());
-                    hist.setDate(rh.getDate());
                     User usrr = userRepository.findByUid(req.getUid());
                     hist.setServiceName(req.getTitle());
                     hist.setPicture(usrr.getPicture());
                     hist.setUserName(usrr.getName());
-                    hist.setContent(getRequestActionType(rh.getRequestHistoryElements(), req));
+                    hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
                     if (j < history.size()) {
                         history.add(j, hist);
                     } else {
@@ -166,9 +132,9 @@ public class WallServiceController implements IWallServiceController {
         return history;
     }
 
-    private List<WallContent> getUserActionType(List<UserHistoryElements> list, User user) {
+    private List<WallContent> getUserActionType(List<HistoryElements> list, User user) {
         List<WallContent> content = new ArrayList<>();
-        for (UserHistoryElements element : list) {
+        for (HistoryElements element : list) {
             int action = element.getAction();
             WallContent wallContent = new WallContent();
             wallContent.setType(action);
@@ -191,9 +157,9 @@ public class WallServiceController implements IWallServiceController {
         return content;
     }
 
-    private List<WallContent> getOfferActionType(List<OfferHistoryElements> list, Offer offer) {
+    private List<WallContent> getOfferActionType(List<HistoryElements> list, Offer offer) {
         List<WallContent> content = new ArrayList<>();
-        for (OfferHistoryElements element : list) {
+        for (HistoryElements element : list) {
             int action = element.getAction();
             WallContent wallContent = new WallContent();
             wallContent.setType(action);
@@ -225,9 +191,9 @@ public class WallServiceController implements IWallServiceController {
         return content;
     }
 
-    private List<WallContent> getRequestActionType(List<RequestHistoryElements> list, Request request) {
+    private List<WallContent> getRequestActionType(List<HistoryElements> list, Request request) {
         List<WallContent> content = new ArrayList<>();
-        for (RequestHistoryElements element : list) {
+        for (HistoryElements element : list) {
             int action = element.getAction();
             WallContent wallContent = new WallContent();
             wallContent.setType(action);

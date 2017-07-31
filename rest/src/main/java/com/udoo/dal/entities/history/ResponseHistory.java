@@ -8,6 +8,7 @@ import java.util.List;
 public class ResponseHistory {
     private int id;
     private int type;
+    private int hid;
     private String userName;
     private Date date;
     private String picture;
@@ -69,5 +70,13 @@ public class ResponseHistory {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public int getHid() {
+        return hid;
+    }
+
+    public void setHid(int hid) {
+        this.hid = hid;
     }
 }

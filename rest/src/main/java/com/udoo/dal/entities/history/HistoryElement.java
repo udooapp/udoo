@@ -4,25 +4,25 @@ package com.udoo.dal.entities.history;
 import javax.persistence.*;
 
 @Entity
-@Table(name="OfferHistoryElements")
-public class OfferHistoryElement {
+@Table(name="HistoryElements")
+public class HistoryElement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int OHEID;
+    private int HEID;
 
     private int action;
 
     private String changes;
 
-    private int ohid = -1;
+    private int hid = -1;
 
-    public int getOHEID() {
-        return OHEID;
+    public int getHEID() {
+        return HEID;
     }
 
-    public void setOHEID(int OHEID) {
-        this.OHEID = OHEID;
+    public void setHEID(int HEID) {
+        this.HEID = HEID;
     }
 
     public int getAction() {
@@ -41,11 +41,13 @@ public class OfferHistoryElement {
         this.changes = changes;
     }
 
-    public int getOhid() {
-        return ohid;
+    public int getHid() {
+        return hid;
     }
 
-    public void setOhid(int ohid) {
-        this.ohid = ohid;
+    public void setHid(int hid) {
+        this.hid = hid;
     }
+
+
 }

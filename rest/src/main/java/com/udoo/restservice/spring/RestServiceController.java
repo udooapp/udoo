@@ -3,8 +3,8 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
-import com.udoo.dal.entities.history.UserHistory;
-import com.udoo.dal.entities.history.UserHistoryElement;
+import com.udoo.dal.entities.history.History;
+import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.offer.OfferLite;
 import com.udoo.dal.entities.offer.PicturesOffer;
@@ -76,7 +76,7 @@ public class RestServiceController implements IRestServiceController {
     private ITokenRepository tokenRepository;
 
     @Resource
-    private IUserHistoryElementRepository userHistoryElementRepository;
+    private IHistoryElementRepository historyElementRepository;
 
     @Resource
     private IRequestRepository requestRepository;
@@ -85,7 +85,7 @@ public class RestServiceController implements IRestServiceController {
     private IOfferRepository offerRepository;
 
     @Resource
-    private IUserHistoryRepository userHistoryRepository;
+    private IHistoryRepository historyRepository;
 
     @Autowired
     private ICategoryResult categoryResultRepository;
@@ -145,14 +145,15 @@ public class RestServiceController implements IRestServiceController {
                     if (!smsService.sendVerificationMessage(user).isEmpty()) {
                         user.setActive(0b0101);
                         userRepository.save(user);
-                        UserHistory usrHistory = new UserHistory();
+                        History usrHistory = new History();
                         usrHistory.setDate(new Date());
-                        usrHistory.setUid(user.getUid());
-                        usrHistory = userHistoryRepository.save(usrHistory);
-                        UserHistoryElement historyElement = new UserHistoryElement();
+                        usrHistory.setTid(user.getUid());
+                        usrHistory.setType(0);
+                        usrHistory = historyRepository.save(usrHistory);
+                        HistoryElement historyElement = new HistoryElement();
                         historyElement.setAction(WallServiceController.NEW);
-                        historyElement.setUhid(usrHistory.getUhid());
-                        userHistoryElementRepository.save(historyElement);
+                        historyElement.setHid(usrHistory.getHid());
+                        historyElementRepository.save(historyElement);
                         return new ResponseEntity<>("Registration complete", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("Registration complete,  but please send a new sms verification!", HttpStatus.OK);

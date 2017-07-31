@@ -2,8 +2,8 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.*;
-import com.udoo.dal.entities.history.RequestHistory;
-import com.udoo.dal.entities.history.RequestHistoryElement;
+import com.udoo.dal.entities.history.History;
+import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.request.*;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
@@ -54,10 +54,10 @@ public class RequestServiceController implements IRequestServiceController {
     private IBidRepository bidRepository;
 
     @Resource
-    private IRequestHistoryRepository requestHistoryRepository;
+    private IHistoryRepository historyRepository;
 
     @Resource
-    private IRequestHistoryElementRepository requestHistoryElementRepository;
+    private IHistoryElementRepository historyElementRepository;
 
     @Autowired
     private IPaymentService paymentService;
@@ -83,8 +83,9 @@ public class RequestServiceController implements IRequestServiceController {
             int uid = Integer.parseInt(req.getAttribute(USERID).toString());
             User user = userRepository.findByUid(uid);
             Request requestNew = save.getRequest();
-            RequestHistory hist = new RequestHistory();
+            History hist = new History();
             hist.setDate(new Date());
+            hist.setType(2);
             if (requestNew != null  && (requestNew.getUid() == user.getUid() || requestNew.getUid() == -1)) {
                 int delete = save.getDelete();
                 requestNew.setUid(uid);
@@ -94,17 +95,17 @@ public class RequestServiceController implements IRequestServiceController {
                         requestSaved = requestRepository.findByRid(requestNew.getRid());
                     }
                     requestNew = requestRepository.save(requestNew);
-                    hist.setRid(requestNew.getRid());
-                    hist = requestHistoryRepository.save(hist);
+                    hist.setTid(requestNew.getRid());
+                    hist = historyRepository.save(hist);
                     List<RequestPictures> picturesSaved = requestPictureRepository.findAllByRid(requestNew.getRid());
                     List<PicturesRequest> picturesNew = new ArrayList<>(requestNew.getPicturesRequest());
                     if (requestSaved.getRid() != null && requestSaved.getRid() != -1) {
-                        this.saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getRhid());
+                        this.saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getHid());
                     } else {
-                        RequestHistoryElement histElement = new RequestHistoryElement();
+                        HistoryElement histElement = new HistoryElement();
                         histElement.setAction(WallServiceController.NEW);
-                        histElement.setRhid(hist.getRhid());
-                        requestHistoryElementRepository.save(histElement);
+                        histElement.setHid(hist.getHid());
+                        historyElementRepository.save(histElement);
                     }
                     for (RequestPictures pic : picturesSaved) {
                         int i = 0;
@@ -122,12 +123,12 @@ public class RequestServiceController implements IRequestServiceController {
                     requestNew.setUid(user.getUid());
                     Request requestSaved = requestRepository.findByRid(d);
                     requestRepository.save(requestNew);
-                    hist.setRid(requestNew.getRid());
-                    hist = requestHistoryRepository.save(hist);
+                    hist.setTid(requestNew.getRid());
+                    hist = historyRepository.save(hist);
                     List<RequestPictures> picturesSaved = requestPictureRepository.findAllByRid(requestNew.getRid());
                     List<PicturesRequest> picturesNew = new ArrayList<>(requestNew.getPicturesRequest());
                     if (requestSaved != null) {
-                        saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getRhid());
+                        saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getHid());
                     }
                     for (RequestPictures pic : picturesSaved) {
                         int i = 0;
@@ -158,12 +159,12 @@ public class RequestServiceController implements IRequestServiceController {
                 if (requestNew.getUid() < 0 && save.getDelete() <= 0) {
                     requestNew.setUid(uid);
                     requestNew = requestRepository.save(requestNew);
-                    hist.setRid(requestNew.getRid());
-                    hist = requestHistoryRepository.save(hist);
-                    RequestHistoryElement histElement = new RequestHistoryElement();
+                    hist.setTid(requestNew.getRid());
+                    hist = historyRepository.save(hist);
+                    HistoryElement histElement = new HistoryElement();
                     histElement.setAction(WallServiceController.NEW);
-                    histElement.setRhid(hist.getRhid());
-                    requestHistoryElementRepository.save(histElement);
+                    histElement.setHid(hist.getHid());
+                    historyElementRepository.save(histElement);
                     return new ResponseEntity<>("Request saved", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Incorrect data", HttpStatus.UNAUTHORIZED);
@@ -310,56 +311,56 @@ public class RequestServiceController implements IRequestServiceController {
         request.setBids(bids);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
-    private void saveChanges(Request requestNew, Request requestSaved, List<PicturesRequest> picturesNew, List<RequestPictures> picturesSaved, int rhid) {
+    private void saveChanges(Request requestNew, Request requestSaved, List<PicturesRequest> picturesNew, List<RequestPictures> picturesSaved, int hid) {
         for (PicturesRequest pic : picturesNew) {
             int i = 0;
             while (i < picturesSaved.size() && picturesSaved.get(i).getPrid() != pic.getPrid()) {
                 ++i;
             }
             if (i >= picturesSaved.size()) {
-                RequestHistoryElement histElement = new RequestHistoryElement();
+                HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
                 histElement.setChanges(pic.getPrid() + "");
-                histElement.setRhid(rhid);
-                requestHistoryElementRepository.save(histElement);
+                histElement.setHid(hid);
+                historyElementRepository.save(histElement);
             }
         }
         if (!requestNew.getTitle().equals(requestSaved.getTitle())) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
             histElement.setChanges(requestSaved.getTitle());
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
         if (!requestNew.getDescription().equals(requestSaved.getDescription())) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
         if (requestNew.getExpirydate().compareTo(requestSaved.getExpirydate()) != 0) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
         if (!requestNew.getLocation().equals(requestSaved.getLocation())) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_LOCATION);
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
         if (!requestNew.getJobdate().equals(requestSaved.getJobdate())) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_JOB_DATE);
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
         if (requestNew.getCategory() != requestSaved.getCategory()) {
-            RequestHistoryElement histElement = new RequestHistoryElement();
+            HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
-            histElement.setRhid(rhid);
-            requestHistoryElementRepository.save(histElement);
+            histElement.setHid(hid);
+            historyElementRepository.save(histElement);
         }
     }
 }
