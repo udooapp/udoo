@@ -140,7 +140,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
       case 0:
         switch (action) {
           case this.UPDATED_PICTURE:
-            return 'picture';
+            return 'profile picture';
           case this.UPDATED_TITLE_OR_NAME:
             return 'name';
           case this.UPDATED_PHONE_NUMBER:

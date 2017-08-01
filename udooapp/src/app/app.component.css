@@ -9,6 +9,17 @@
   height: 60px;
   width: 50px;
 }
+.header-search{
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 15px;
+  position: absolute;
+  float: right;
+  right: 0;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
 .header-button-menu {
   background: url("../assets/ic_hamburger.png") no-repeat center;
   background-size: 50px 50px;
@@ -17,7 +28,10 @@
   background: url("../assets/back_arrow.png") no-repeat center;
   background-size: 50px 50px;
 }
-
+.header-button-search{
+  background: url("../assets/search.png") no-repeat center;
+  background-size: 40px 40px;
+}
 .header {
   display: -webkit-flex;
   display: flex;
@@ -59,11 +73,10 @@
   text-decoration: underline;
 }
 
-.map-container {
-
+#content-container {
   top: 60px;
   position: fixed;
-  width: 100%;
+  width: 100%;;
   height: calc(100% - 60px);
   overflow-y: auto;
   overflow-x: hidden;

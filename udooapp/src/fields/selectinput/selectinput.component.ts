@@ -50,10 +50,16 @@ export class SelectInputComponent {
   @Input() set options(options: any[]) {
     this.data = options;
     this.isOption = true;
+    if(this.selectd > -1){
+      this.focusChange();
+    }
   }
 
   @Input() set values(options: any[]) {
     this.data = options;
+    if(this.selectd > -1){
+      this.focusChange();
+    }
   }
 
 
@@ -67,8 +73,8 @@ export class SelectInputComponent {
         this.ok = true;
         this.show = false;
       }
-      this.onValidationStateChange.emit(this.ok);
     }
+    this.onValidationStateChange.emit(this.ok);
   }
 
   onKey(event: any) {

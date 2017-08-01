@@ -4,10 +4,12 @@
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
+  <div class="header-search" [ngClass]="{'header-button-search' : searchButton}"
+       (click)="onClickMenu()"></div>
 </div>
 <div class="content">
   <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)" (activatedUser)="activated = $event"></side-menu>
-  <div class="map-container" (scroll)="onScroll()" id="content-container">
+  <div (scroll)="onScroll()" id="content-container">
     <router-outlet></router-outlet>
   </div>
 </div>

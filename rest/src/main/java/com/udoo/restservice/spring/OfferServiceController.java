@@ -176,6 +176,20 @@ public class OfferServiceController implements IOfferServiceController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+    @Override
+    @RequestMapping(value = "/data/dialog/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getOfferDialogData(@PathVariable("id") int id) {
+        Offer offer = offerRepository.findByOid(id);
+        if (offer == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            OfferResponse response = new OfferResponse();
+            offer.setBids(-1);
+            response.setOffer(offer);
+            response.setUser(userRepository.findByUid(offer.getUid()));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
 
     @Override
     @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

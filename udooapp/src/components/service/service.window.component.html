@@ -1,9 +1,15 @@
-<div class="service-dialog-background" *ngIf="visible">
+<bid-dialog [show]="showBid" (close)="onClickBidClose()" (send)="onClickSend()" (description)="onKeyDescription($event)"
+            (price)="onKeyPrice($event)"></bid-dialog>
+<div class="service-dialog-background" id="service-dialog-container" *ngIf="visible">
   <div class="service-dialog-direction service-dialog-direction-left" (click)="onClickPrevious()">
-    <div class="service-dialog-previous"></div>
+    <div class="service-dialog-direction-container">
+      <div class="service-dialog-previous"></div>
+    </div>
   </div>
   <div class="service-dialog-direction service-dialog-direction-right" (click)="onClickNext()">
-    <div class="service-dialog-next"></div>
+    <div class="service-dialog-direction-container">
+      <div class="service-dialog-next"></div>
+    </div>
   </div>
   <div class="service-dialog-window" id="dialog-window">
     <div class="service-dialog-close-background" (click)="onClickClose()">
@@ -11,28 +17,53 @@
     </div>
     <div class="container">
       <div class="loader">Loading...</div>
-      <div id="service-container" [style.margin-left.px]="movedCoordX" [style.animation-name]="animation">
+      <div id="service-container" [style.height.px]="maxHeight - 50" [style.mix-height.px]="maxHeight - 90" [style.margin-left.px]="movedCoordX"
+           [style.animation-name]="animation">
         <div class="loader" *ngIf="loading">Loading...</div>
         <div class="service-dialog-content" *ngIf="!loading">
-          <div class="service-dialog-title">{{service.title}}</div>
           <div class="service-dialog-user-container">
             <div class="service-dialog-user-profile-picture">
               <img class="service-dialog-user-picture" [src]="image">
             </div>
-            <div class="service-dialog-user-name">{{user.name}}</div>
-            <div class="service-dialog-user-stars">
-              <img class="service-dialog-user-profile-stars" *ngFor="let i of stars"
-                   [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
+            <div class="service-dialog-user-data">
+              <div class="service-dialog-user-name">{{user.name}}</div>
+              <div class="service-dialog-user-stars">
+                <img class="service-dialog-user-profile-stars" *ngFor="let i of stars"
+                     [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
+              </div>
+              <div class="service-dialog-user-action">
+                <img class="service-dialog-user-profile-action" src="./assets/call.png">
+                <img class="service-dialog-user-profile-action" src="./assets/message2.png">
+                <img class="service-dialog-user-profile-action" src="./assets/add-to-contacts.png">
+              </div>
             </div>
           </div>
-          <div class="service-dialog-description">{{service.description}}<span id="service-dialog-more-button" class="service-dialog-more"
-                                                                               (click)="onClickOpen()"> More...</span>
-          </div>
+          <div class="service-dialog-service-data">
+            <div class="service-dialog-title">{{service.title}}</div>
+            <div class="service-dialog-location"><img
+              class="service-dialog-user-profile-action service-dialog-user-profile-location"
+              src="./assets/location.png"> <span class="service-dialog-user-icon-text">{{getLocation()}}</span>
+            </div>
+            <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
+                     [close]="isClose()" [smallPictures]="true"></gallery>
 
-          <div class="service-dialog-location">Location: {{getLocation()}}</div>
-          <br>
-          <div class="service-dialog-date">Expiry date: {{convertMillisToDate(service.expirydate)}}</div>
+            <div class="service-dialog-description">{{service.description}}<span id="service-dialog-more-button"
+                                                                                 class="service-dialog-more"
+                                                                                 (click)="onClickOpen()"> More...</span>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+    <div *ngIf="!loading" class="service-dialog-service-button-container">
+      <div class="service-dialog-service-button">
+        <div>
+          <img class="service-dialog-user-profile-action"
+               src="./assets/bookmark.png"><span class="service-dialog-user-icon">Bookmark</span></div>
+      </div>
+      <div class="service-dialog-service-button" (click)="onClickSendOffer()">
+        <div><img class="service-dialog-user-profile-action"
+                  src="./assets/offer.png"><span class="service-dialog-user-icon">Send Offer</span></div>
       </div>
     </div>
   </div>

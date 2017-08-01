@@ -16,11 +16,10 @@ import {NotifierController} from "../../controllers/notify.controller";
   providers: [MapService]
 })
 export class MainComponent extends ConversionMethods implements OnInit, MainSearchListener, AfterViewChecked {
-  private TAB_ANIM: string = 'tabPage';
   private PAGE_ANIM: string = 'page';
+  private TAB_ANIM: string = 'tabPage';
   public page: number = 1;
   public margin: number = 0;
-  public tabAnimation = '';
   public type = 0;
   private scriptLoadingPromise: Promise<void>;
   public categories: any[] = [{cid: -1, name: ''}];
@@ -35,12 +34,12 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   public width: number = 0;
   private el: any;
   private el2: any;
-  private el3: any;
   private startTouchX: number = 0;
   private moveTouchX: number = 0;
   private pageAnim0: string = '';
   private pageAnim1: string = '';
   private pageAnim2: string = '';
+  public tabAnimation = '';
 
   constructor(private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
     super();
@@ -94,11 +93,11 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         this.width = this.el2.clientWidth / 3;
       }
     }
-    if(this.el3 == null) {
+    if(this.el == null && this.page != 1) {
       let t = this;
-      this.el3 = document.getElementById("main-tab-selected");
-      if (this.el3 != null) {
-        this.el3.addEventListener('animationend', function (e) {
+      let el3 = document.getElementById("main-tab-selected");
+      if (el3 != null) {
+        el3.addEventListener('animationend', function (e) {
           e.preventDefault();
           t.tabAnimation = '';
           t.margin = t.width * t.page;
@@ -117,17 +116,32 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
           t.pageAnim2 = '';
         }, false);
       }
-    }
-    if(this.el == null) {
-      let t = this;
       this.el = document.getElementById('page-container');
       if (this.el) {
+        this.el.addEventListener('animationend', function (e) {
+          e.preventDefault();
+          t.tabAnimation = '';
+          t.margin = t.width * t.page;
+          switch (t.page){
+            case 0:
+              t.pageMargin = 3 * t.width;
+              break;
+            case 1:
+              t.pageMargin = 0;
+              break;
+            case 2:
+              t.pageMargin = -3* t.width;
+          }
+          t.pageAnim0 = '';
+          t.pageAnim1 = '';
+          t.pageAnim2 = '';
+        }, false);
         this.el.addEventListener('touchstart', function (e) {
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
         });
         this.el.addEventListener('touchmove', function (e) {
-          if(t.page != 0) {
+          if(t.page != 1) {
             let touch = e.touches[0];
             t.moveTouchX = t.startTouchX;
             t.startTouchX = touch.pageX;
@@ -150,10 +164,10 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
           if(t.margin < t.width / 2){
             t.tabAnimation += 0;
             t.page = 0;
-            } else if(t.margin < t.width + t.width / 2){
+          } else if(t.margin < t.width + t.width / 2){
             t.tabAnimation += 1;
             t.page = 1;
-            } else {
+          } else {
             t.page = 2;
             t.tabAnimation += 2;
           }
@@ -268,7 +282,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         --this.pageMargin;
       }
       this.page = pageIndex;
-      switch (this.page){
+      switch (this.page) {
         case 0:
           this.pageAnim0 = this.PAGE_ANIM + 1;
           this.pageAnim1 = this.PAGE_ANIM + 2;
@@ -362,7 +376,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     return this.scriptLoadingPromise;
   }
 
-  loadMoreElement() {
+  loadMoreElementMap() {
     this.mapService.getMoreAvailableServices(this.category, this.searchString, this.type, this.listData.offerSize, this.listData.requestSize).subscribe(
       result => {
         let more = 0;

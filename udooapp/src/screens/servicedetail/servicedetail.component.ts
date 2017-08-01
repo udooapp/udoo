@@ -188,7 +188,7 @@ export class ServiceDetailComponent implements OnInit {
 
   public imageOpen(event) {
     this.open = event;
-    this.notifier.notify(GalleryComponent.IMAGE)
+    this.notifier.notify(GalleryComponent.IMAGE);
   }
 
   public isClose(): number {

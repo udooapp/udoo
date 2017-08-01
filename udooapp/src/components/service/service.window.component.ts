@@ -1,15 +1,20 @@
 import {
-  AfterViewChecked, AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit,
-  Output
+  AfterViewChecked, Component, EventEmitter, HostListener, Input, Output
 } from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 import {ServiceDialogController} from "./service.window.controller";
+import {BidService} from "../../services/bid.service";
+import {DialogController} from "../../controllers/dialog.controller";
+import {GalleryComponent} from "../gallery/gallery.component";
+import {NotifierController} from "../../controllers/notify.controller";
+import {ServiceDetailComponent} from "../../screens/servicedetail/servicedetail.component";
 
 @Component({
   selector: 'service-dialog',
   templateUrl: './service.window.component.html',
-  styleUrls: ['./service.window.component.css']
+  styleUrls: ['./service.window.component.css'],
+  providers: [BidService]
 })
 
 export class ServiceDialogComponent implements AfterViewChecked {
@@ -21,25 +26,31 @@ export class ServiceDialogComponent implements AfterViewChecked {
   stars: number[] = [0, 0, 0, 0, 0];
   loading: boolean = false;
   movedCoordX = 0;
+  maxHeight: number = 300;
   private startCoordX = 0;
   private scrollDirection = 0;
   private coordStartY: number = 0;
   private coordY: number = 0;
   private slided: boolean = false;
   animation: string = '';
+  imageClose: number = 0;
+  pictureOpen: number = -1;
   added: boolean = false;
+  showBid: boolean = false;
+  bid: any = {price: 0, description: '', sid: 0, type: false};
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
 
   ngAfterViewChecked(): void {
+
     if (!this.added) {
       this.added = true;
       let el = document.getElementById('service-container');
       let t = this;
       if (el != null) {
         let buttonText = document.getElementById('service-dialog-more-button');
-        if(buttonText != null){
+        if (buttonText != null) {
           let th = this;
           buttonText.addEventListener('touchend', function (event) {
             th.onClickOpen();
@@ -53,12 +64,13 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }, false);
         el.addEventListener('touchstart', function (e) {
           e.preventDefault();
-          t.animation = t.animations[3];
-          let touch = e.touches[0];
-          t.startCoordX = touch.pageX;
-          t.coordY = touch.pageY;
-          t.scrollDirection = 0;
-
+          if(t.pictureOpen == -1) {
+            t.animation = t.animations[3];
+            let touch = e.touches[0];
+            t.startCoordX = touch.pageX;
+            t.coordY = touch.pageY;
+            t.scrollDirection = 0;
+          }
         }, false);
         el.addEventListener('touchend', function (e) {
           e.preventDefault();
@@ -82,22 +94,24 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }, false);
         el.addEventListener('touchmove', function (e) {
           e.preventDefault();
-          let touch = e.touches[0];
-          if (t.scrollDirection == 0 || t.scrollDirection == 1) {
+          if(t.pictureOpen == -1) {
+            let touch = e.touches[0];
+            if (t.scrollDirection == 0 || t.scrollDirection == 1) {
 
-            el.scrollTop = el.scrollTop + (-1 * (touch.pageY - t.coordStartY));
-            t.coordStartY = touch.pageY;
-          }
-          if (t.scrollDirection == 0 || t.scrollDirection == -1) {
-            t.movedCoordX = touch.pageX - t.startCoordX;
-          } else {
-            t.movedCoordX = 0;
-          }
-          if (t.scrollDirection == 0) {
-            if (Math.abs(touch.pageY - t.coordY) >= 10) {
-              t.scrollDirection = 1;
-            } else if (Math.abs(t.movedCoordX) >= 10) {
-              t.scrollDirection = -1;
+              el.scrollTop = el.scrollTop + (-1 * (touch.pageY - t.coordStartY));
+              t.coordStartY = touch.pageY;
+            }
+            if (t.scrollDirection == 0 || t.scrollDirection == -1) {
+              t.movedCoordX = touch.pageX - t.startCoordX;
+            } else {
+              t.movedCoordX = 0;
+            }
+            if (t.scrollDirection == 0) {
+              if (Math.abs(touch.pageY - t.coordY) >= 10) {
+                t.scrollDirection = 1;
+              } else if (Math.abs(t.movedCoordX) >= 10) {
+                t.scrollDirection = -1;
+              }
             }
           }
         }, false);
@@ -105,7 +119,27 @@ export class ServiceDialogComponent implements AfterViewChecked {
     }
   }
 
-  constructor(private controller: ServiceDialogController) {
+  constructor(private controller: ServiceDialogController, private bidService: BidService, private dialog: DialogController, private notifier: NotifierController) {
+    notifier.pageChanged$.subscribe(action => {
+      if (action == GalleryComponent.IMAGE) {
+        ++this.imageClose;
+        this.pictureOpen = -1;
+      }
+    });
+    let t = this;
+    this.maxHeight = window.innerHeight - 150;
+    window.addEventListener("orientationchange", function () {
+      let el = document.getElementById("service-dialog-container");
+      if (el != null) {
+        t.maxHeight = el.clientHeight - 90;
+      }
+    });
+    window.addEventListener("resize", function () {
+      let el = document.getElementById("service-dialog-container");
+      if (el != null) {
+        t.maxHeight = el.clientHeight - 90;
+      }
+    });
     controller.setData$.subscribe(value => {
       if (value == null) {
         this.loading = false;
@@ -116,7 +150,10 @@ export class ServiceDialogComponent implements AfterViewChecked {
         this.service = value.service;
         this.user = value.user;
         this.movedCoordX = 0;
-
+        this.bid.type = this.service.oid;
+        this.bid.sid = this.bid.type ? this.service.oid : this.service.rid;
+        this.bid.price = '';
+        this.bid.description = '';
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         if (star == 0) {
@@ -177,7 +214,8 @@ export class ServiceDialogComponent implements AfterViewChecked {
     }
   }
 
-  @Input() set data(value: any) {
+  @Input()
+  set data(value: any) {
     if (value != null) {
       this.loading = false;
       this.service = value;
@@ -188,13 +226,27 @@ export class ServiceDialogComponent implements AfterViewChecked {
     }
   }
 
-  @Input() set load(value: boolean) {
+  @Input()
+  set load(value: boolean) {
     if (value) {
       this.visible = true;
       this.loading = true;
     } else {
       this.loading = false;
     }
+  }
+
+  getPictures(): any[] {
+    return this.service.picturesOffer ? this.service.picturesOffer : this.service.picturesRequest;
+  }
+
+  imageOpen(event) {
+    this.pictureOpen = event;
+    this.notifier.notify(GalleryComponent.IMAGE)
+  }
+
+  isClose() {
+    return this.imageClose;
   }
 
   public getPictureUrl(src: string) {
@@ -228,6 +280,34 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   onClickClose() {
     this.visible = false;
+  }
+
+  onClickBidClose() {
+    this.showBid = false;
+    this.visible = true;
+  }
+
+  onClickSendOffer() {
+    this.visible = false;
+    this.showBid = true;
+  }
+
+  onClickSend() {
+    this.bidService.savePid(this.bid).subscribe(
+      data => {
+        this.dialog.sendMessage("Bid sent!");
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
+  }
+
+  onKeyPrice(event) {
+    this.bid.price = event;
+  }
+
+  onKeyDescription(event) {
+    this.bid.description = event;
   }
 
   public convertMillisToDate(millis: number): string {

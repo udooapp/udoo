@@ -63,7 +63,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
-        this.searchListener.loadMoreElement();
+        this.searchListener.loadMoreElementMap();
       }
     });
     listController.setData$.subscribe(data=>{
@@ -97,6 +97,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   }
 
   public onKey(event: any): void {
+    this.noMoreElement = false;
     this.searchListener.onKey(event);
   }
 
@@ -105,6 +106,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   }
 
   public onChangeCategorySelect(event: any) {
+    this.noMoreElement = false;
     this.searchListener.onCategoryChange(event);
   }
 
@@ -115,6 +117,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
 
   public onClickResultDropDown(index: number) {
     this.category = index;
+    this.noMoreElement = false;
     this.searchListener.onClickResultDropdown(index);
   }
 }

@@ -13,6 +13,7 @@ import {TokenService} from "../services/token.service";
 export class AppComponent {
   visibleMenu: boolean = false;
   menuButton: boolean = true;
+  searchButton: boolean = false;
   errorMessage: string = '';
   error: boolean = false;
   activated: boolean = true;

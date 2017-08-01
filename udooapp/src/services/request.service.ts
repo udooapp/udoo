@@ -74,4 +74,9 @@ export class RequestService extends HeaderService {
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
   }
+  public getRequestDialogData(rid: number): Observable<any> {
+    return this.http.get(config.server + '/request/data/dialog/' + rid)
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleText);
+  }
 }

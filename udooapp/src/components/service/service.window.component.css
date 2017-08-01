@@ -8,16 +8,37 @@ dialog {
 
 @media (min-width: 2000px) {
   .service-dialog-window {
-    margin-left: 20%;
-    width: 60%;
+    margin-left: 15%;
+    width: 70%;
   }
 
+  .service-dialog-user-picture {
+    width: 250px;
+    height: 250px;
+    margin: -90px 0 0 -90px;
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1269px) {
+  .service-dialog-user-picture {
+    width: 140px;
+    height: 140px;
+    margin: -35px 0 0 -35px;
+  }
+}
+
+@media (min-width: 1270px) {
+  .service-dialog-user-picture {
+    width: 320%;
+    min-height: 120%;
+    margin: -100% 0 0 -100%;
+  }
 }
 
 @media (min-width: 961px) {
   .service-dialog-window {
-    margin-left: 16%;
-    width: 60%;
+    margin-left: 15%;
+    width: 70%;
   }
 
   .service-dialog-direction-left {
@@ -32,50 +53,42 @@ dialog {
     margin-top: 300px;
   }
 
-  #service-container {
-    max-height: 430px;
-  }
-
-  .service-dialog-user-picture {
-    width: 194px;
-    height: 194px;
-    margin: -37px 0 0 -37px;
-  }
 }
 
 @media (max-width: 960px)  and (orientation: portrait) {
   .service-dialog-window {
-    width: 70%;
-    margin-left: 12%;
+    width: 80%;
+    margin-left: 10%;
   }
 
   .service-dialog-direction {
     margin-top: 250px;
   }
-
   .service-dialog-direction-left {
-    left: 15px;
+    left: -10px;
   }
 
   .service-dialog-direction-right {
-    right: 15px;
+    right: -10px;
   }
-
-  #service-container {
-    max-height: 470px;
-  }
-
   .service-dialog-user-picture {
-    width: 170px;
-    height: 170px;
-    margin: -25px 0 0 -25px;
+    width: 140px;
+    height: 140px;
+    margin: -30px 0 0 -30px;
   }
 }
 
 @media (max-width: 960px) and (orientation: landscape) {
   .service-dialog-window {
-    width: 70%;
-    margin-left: 12%;
+    width: 85%;
+    margin-left: 7.5%;
+  }
+  .service-dialog-direction-left {
+    left: -10px;
+  }
+
+  .service-dialog-direction-right {
+    right: -10px;
   }
 
   .service-dialog-direction {
@@ -83,70 +96,55 @@ dialog {
   }
 
   .service-dialog-user-picture {
-    width: 180px;
-    height: 180px;
-    margin: -30px 0 0 -30px;
-  }
-
-  .service-dialog-direction-left {
-    left: 10px;
-  }
-
-  .service-dialog-direction-right {
-    right: 10px;
+    width: 170px;
+    height: 170px;
+    margin: -50px 0 0 -50px;
   }
 
   #service-container {
-    max-height: 180px;
     -webkit-touch-overflow: scroll;
   }
 }
 
 @media (max-width: 641px) {
   .service-dialog-window {
-    width: 65%;
-    margin-left: 15%;
+    width: 85%;
+    margin-left: 7.5%;
   }
 
   .service-dialog-direction-left {
-    left: 5px;
+    left: -10px;
   }
 
   .service-dialog-direction-right {
-    right: 5px;
+    right: -10px;
   }
 
 }
 
 @media (max-width: 641px) and (orientation: landscape) {
-  #service-container {
-    max-height: 100px;
-  }
 
   .service-dialog-direction {
     margin-top: 120px;
   }
 
   .service-dialog-user-picture {
-    width: 160px;
-    height: 160px;
-    margin: -20px 0 0 -20px;
+    width: 130px;
+    height: 130px;
+    margin: -30px 0 0 -30px;
   }
 }
 
 @media (max-width: 641px) and (orientation: portrait) {
-  #service-container {
-    max-height: 410px;
-  }
 
   .service-dialog-direction {
     margin-top: 230px;
   }
 
   .service-dialog-user-picture {
-    width: 156px;
-    height: 156px;
-    margin: -18px 0 0 -18px;
+    width: 130px;
+    height: 130px;
+    margin: -30px 0 0 -30px;
   }
 }
 
@@ -163,11 +161,11 @@ dialog {
   overflow: hidden;
   position: relative;
   top: 0;
-  background-color: #FAFAFA;
-  border-radius: 5px;
-  padding: 2% 3%;
+  background-color: #FFFFFF;
+  border-radius: 1px;
   min-height: 100px;
-  margin-top: 30px;
+  max-height: 90%;
+  margin-top: 20px;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
 }
 
@@ -220,66 +218,80 @@ dialog {
   background-color: #E5E5E5;
 }
 
-.service-dialog-previous {
-  background: #69B4B3;
-  height: 50px;
-  width: 6px;
-  float: left;
-  margin-left: 15px;
-  border-radius: 1px;
-  transform: rotate(45deg);
-}
-
-.service-dialog-previous:after {
-  background: #69B4B3;
-  content: "";
-  height: 6px;
-  position: absolute;
-  border-radius: 1px;
-  top: 44px;
-  width: 46px;
-}
-
 .service-dialog-direction {
   position: absolute;
   cursor: pointer;
   width: 45px;
-  height: 80px;
+  height: 50px;
   padding-left: 5px;
-  border-radius: 10px;
+  border-radius: 150%;
+  background-color: #378281;
   z-index: 3;
 }
 
 .container {
   overflow-x: hidden;
   overflow-y: auto;
-  margin: 25px 10px 10px 20px;
   position: relative;
   height: auto;
 }
 
-.service-dialog-direction:hover {
-  background-color: rgba(79, 79, 79, 0.4);
+.service-dialog-previous {
+  background: #F7F7F7;
+  height: 25px;
+  width: 4px;
+  float: left;
+  margin: -6px 18px;
+  transform: rotate(45deg);
 }
-
+.service-dialog-direction-container{
+  position: relative;
+  height: 25px;
+  width: auto;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.service-dialog-previous:after {
+  background: #F7F7F7;
+  content: "";
+  height: 4px;
+  position: absolute;
+  top: 21px;
+  width: 25px;
+}
 .service-dialog-next {
-  background: #69B4B3;
-  height: 50px;
-  margin-top: 30px;
-  width: 6px;
-  margin-left: 20px;
-  border-radius: 1px;
+  background: #F7F7F7;
+  height: 25px;
+  width: 4px;
+  margin: 6px 18px;
   transform: rotate(225deg);
 }
 
 .service-dialog-next:after {
-  background: #69B4B3;
+  background: #F7F7F7;
   content: "";
-  height: 6px;
+  height: 4px;
   position: absolute;
-  border-radius: 1px;
-  top: 44px;
-  width: 46px;
+  top: 21px;
+  width: 25px;
+}
+.service-dialog-direction:hover {
+  background-color: #F7F7F7;
+}
+
+.service-dialog-direction-left:hover .service-dialog-previous {
+  background: #378281;
+}
+
+.service-dialog-direction-left:hover .service-dialog-previous:after {
+  background: #378281;
+}
+.service-dialog-direction-right:hover .service-dialog-next{
+  background: #378281;
+}
+
+.service-dialog-direction-right:hover .service-dialog-next:after {
+  background: #378281;
 }
 
 .service-dialog-more {
@@ -292,15 +304,14 @@ dialog {
 }
 
 .service-dialog-title {
-  text-align: center;
-  padding-bottom: 20px;
-  font-size: 18pt;
-  color: #2B6665;
+  text-align: left;
+  font-size: 14pt;
+  color: #121212;
 }
 
 .service-dialog-description {
   text-align: left;
-  font-size: 14pt;
+  font-size: 11pt;
 }
 
 #service-container {
@@ -308,9 +319,9 @@ dialog {
   overflow-y: auto;
   animation-duration: 250ms;
   position: relative;
+  padding-bottom: 60px;
   width: 100%;
-  min-height: 110px;
-  background-color: #FAFAFA;
+  background-color: #FFFFFF;
 }
 
 .service-dialog-content {
@@ -322,9 +333,51 @@ dialog {
 }
 
 .service-dialog-location {
-  padding-top: 15px;
-  font-size: 15pt;
+  padding-top: 5px;
+  font-size: 11pt;
+  width: 100%;
   float: left;
+  position: relative;
+}
+
+.service-dialog-service-button-container {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  position: absolute;
+  margin-top: -50px;
+  flex-direction: row;
+  background-color: #FFFFFF;
+  -webkit-flex-direction: row;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+.service-dialog-service-button {
+  width: calc(49% - 10px);
+  color: #378281;
+  padding: 5px 5px;
+  text-align: center;
+  display: -webkit-flex;
+  display: flex;
+  cursor: pointer;
+  flex-direction: row;
+  background-color: #F7F7F7;
+  -webkit-flex-direction: row;
+}
+
+.service-dialog-service-button div {
+  margin: auto;
+}
+
+.service-dialog-user-icon-text {
+  margin-top: 10px;
+  position: absolute;
+}
+
+.service-dialog-user-icon {
+  top: -10px;
+  position: relative;
 }
 
 .service-dialog-date {
@@ -352,7 +405,18 @@ dialog {
 }
 
 .service-dialog-user-stars {
-  margin: 10px auto;
+  display: -webkit-flex;
+  display: inline-flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.service-dialog-service-data {
+  padding: 15px;
+}
+
+.service-dialog-user-action {
+  margin-top: 10px;
   display: -webkit-flex;
   display: inline-flex;
   -webkit-flex-direction: row;
@@ -365,24 +429,44 @@ dialog {
   margin: 2px;
 }
 
+.service-dialog-user-profile-action {
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+}
+
+.service-dialog-user-profile-location {
+  margin-left: -5px;
+}
+
 .service-dialog-user-name {
-  font-size: 16pt;
-  padding: 10px 0 10px 0;
+  font-size: 12pt;
+  margin-left: 2px;
 }
 
 .service-dialog-user-container {
-  text-align: center;
   color: #2B6665;
-  background-color: #EBF2F2;
-  border-radius: 20px;
+  background-color: #F7F7F7;
+  border-radius: 1px;
   padding: 5px;
-  margin: 5px 0;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+.service-dialog-user-data {
+  padding: 10px;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
 }
 
 .service-dialog-user-profile-picture {
-  margin: 15px auto;
-  width: 120px;
-  height: 120px;
+  margin: 5px;
+  width: 70px;
+  height: 70px;
   border-radius: 100%;
   background-color: #FAFAFA;
   padding: 5%;

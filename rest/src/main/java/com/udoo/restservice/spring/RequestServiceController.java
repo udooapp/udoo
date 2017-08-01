@@ -288,6 +288,20 @@ public class RequestServiceController implements IRequestServiceController {
     }
 
     @Override
+    @RequestMapping(value = "/data/dialog/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getRequestDialogData(@PathVariable("id") int rid) {
+        Request request = requestRepository.findByRid(rid);
+        if (request == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            RequestResponse response = new RequestResponse();
+            response.setRequest(request);
+            response.setUser(userRepository.findByUid(request.getUid()));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+
+    @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserRequest(@PathVariable("id") int id) {
         UserRequest request = new UserRequest();

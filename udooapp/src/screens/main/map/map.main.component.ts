@@ -222,7 +222,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   private loadDialog(type: boolean, id: number) {
     this.serviceController.loading$.emit(true);
     if (type) {
-      this.offerService.getOfferData(id).subscribe(
+      this.offerService.getOfferDialogData(id).subscribe(
         value => {
           let data: any = {service: value.offer, user: value.user};
           this.serviceController.setData$.emit(data);
@@ -233,7 +233,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
         }
       );
     } else {
-      this.requestService.getRequestData(id).subscribe(
+      this.requestService.getRequestDialogData(id).subscribe(
         value => {
           let data: any = {service: value.request, user: value.user};
           this.serviceController.setData$.emit(data);

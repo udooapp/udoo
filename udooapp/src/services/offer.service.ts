@@ -78,4 +78,9 @@ export class OfferService extends HeaderService {
       .map(HandlerService.extractData)
       .catch(HandlerService.handleError);
   }
+  public getOfferDialogData(oid: number): Observable<any> {
+    return this.http.get(config.server + '/offer/data/dialog/' + oid)
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleError);
+  }
 }

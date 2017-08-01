@@ -26,6 +26,7 @@ export class GalleryComponent implements AfterViewChecked {
   private slided: boolean = false;
   private found: boolean = false;
   private startCoordX: number = 0;
+  @Input() smallPictures: boolean = false;
   @Input() images: any[] = [];
   @Input() editable: boolean = false;
   @Input() loading: number[] = [];

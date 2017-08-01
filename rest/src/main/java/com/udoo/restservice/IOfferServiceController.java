@@ -26,4 +26,5 @@ public interface IOfferServiceController {
 
     ResponseEntity<?> getOfferData(int id);
 
+    ResponseEntity<?> getOfferDialogData(int id);
 }

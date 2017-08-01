@@ -4,7 +4,7 @@ export interface MainSearchListener{
   onCategoryChange(id);
   onTypeChangeId(index);
   onClickResultDropdown(index);
-  loadMoreElement();
+  loadMoreElementMap();
   getSearchData(): any;
   getData(page: number)
 }
