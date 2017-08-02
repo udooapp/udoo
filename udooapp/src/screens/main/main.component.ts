@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy, OnInit} from '@angular/core';
 import {MapService} from "../../services/map.service";
 import {TokenService} from "../../services/token.service";
 import {ConversionMethods} from "../layouts/conversion.methods";
@@ -7,6 +7,7 @@ import {MainSearchListener} from "./main.search.listener";
 import {MapMainController} from "./map/map.main.controller";
 import {ListMainController} from "./list/list.main.controller";
 import {NotifierController} from "../../controllers/notify.controller";
+import {SearchController} from "../../controllers/search.controller";
 
 
 @Component({
@@ -15,7 +16,7 @@ import {NotifierController} from "../../controllers/notify.controller";
   styleUrls: ['./main.component.css'],
   providers: [MapService]
 })
-export class MainComponent extends ConversionMethods implements OnInit, MainSearchListener, AfterViewChecked {
+export class MainComponent extends ConversionMethods implements OnInit, OnDestroy, MainSearchListener, AfterViewChecked {
   private PAGE_ANIM: string = 'page';
   private TAB_ANIM: string = 'tabPage';
   public page: number = 1;
@@ -40,9 +41,16 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   private pageAnim1: string = '';
   private pageAnim2: string = '';
   public tabAnimation = '';
+  public pagerMargin: number = 0;
+  public pagerAnimation: string = '';
+  public searchVisibility: boolean = false;
 
-  constructor(private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
+  constructor(private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController) {
     super();
+    searchController.onClickSearchButton$.subscribe((value) => {
+      this.searchVisibility = true;
+    });
+
     let t = this;
     dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
@@ -54,7 +62,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       let el = document.getElementById("tab-pager");
       if (el != null) {
         t.width = el.clientWidth / 3;
-        switch (t.page){
+        switch (t.page) {
           case 0:
             t.pageMargin = 3 * t.width;
             break;
@@ -62,7 +70,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
             t.pageMargin = 0;
             break;
           case 2:
-            t.pageMargin = -3* t.width;
+            t.pageMargin = -3 * t.width;
         }
       }
     });
@@ -71,7 +79,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
       if (el != null) {
         t.width = el.clientWidth / 3;
         t.margin = t.page * t.width;
-        switch (t.page){
+        switch (t.page) {
           case 0:
             t.pageMargin = 3 * t.width;
             break;
@@ -79,7 +87,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
             t.pageMargin = 0;
             break;
           case 2:
-            t.pageMargin = -3* t.width;
+            t.pageMargin = -3 * t.width;
         }
       }
     });
@@ -87,21 +95,34 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   ngAfterViewChecked(): void {
-    if(this.el2 == null) {
+    let t = this;
+    if (this.el2 == null) {
       this.el2 = document.getElementById("tab-pager");
       if (this.el2 != null) {
         this.width = this.el2.clientWidth / 3;
       }
+      this.el2.addEventListener('animationend', function (e) {
+        e.preventDefault();
+        if(t.pagerAnimation.length > 0){
+          if(t.pagerAnimation == 'pagerUpAnimation'){
+            t.pagerAnimation = '';
+            t.pagerMargin = 50;
+          } else {
+            t.pagerAnimation = '';
+            t.pagerMargin = 0;
+          }
+          t.pagerAnimation = '';
+        }
+      });
     }
-    if(this.el == null && this.page != 1) {
-      let t = this;
+    if (this.el == null && this.page != 1) {
       let el3 = document.getElementById("main-tab-selected");
       if (el3 != null) {
         el3.addEventListener('animationend', function (e) {
           e.preventDefault();
           t.tabAnimation = '';
           t.margin = t.width * t.page;
-          switch (t.page){
+          switch (t.page) {
             case 0:
               t.pageMargin = 3 * t.width;
               break;
@@ -109,7 +130,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
               t.pageMargin = 0;
               break;
             case 2:
-              t.pageMargin = -3* t.width;
+              t.pageMargin = -3 * t.width;
           }
           t.pageAnim0 = '';
           t.pageAnim1 = '';
@@ -122,7 +143,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
           e.preventDefault();
           t.tabAnimation = '';
           t.margin = t.width * t.page;
-          switch (t.page){
+          switch (t.page) {
             case 0:
               t.pageMargin = 3 * t.width;
               break;
@@ -130,48 +151,49 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
               t.pageMargin = 0;
               break;
             case 2:
-              t.pageMargin = -3* t.width;
+              t.pageMargin = -3 * t.width;
           }
           t.pageAnim0 = '';
           t.pageAnim1 = '';
           t.pageAnim2 = '';
+          t.searchController.onChangeSearchButtonVisibility$.emit(t.page != 2);
         }, false);
         this.el.addEventListener('touchstart', function (e) {
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
         });
         this.el.addEventListener('touchmove', function (e) {
-          if(t.page != 1) {
+          if (t.page != 1) {
             let touch = e.touches[0];
             t.moveTouchX = t.startTouchX;
             t.startTouchX = touch.pageX;
             t.margin += (t.moveTouchX - t.startTouchX) / 3;
-            if(t.margin >  t.width * 2){
-              t.margin = t.width  * 2;
-            } else if(t.margin < 0){
+            if (t.margin > t.width * 2) {
+              t.margin = t.width * 2;
+            } else if (t.margin < 0) {
               t.margin = 0;
             }
             t.pageMargin -= (t.moveTouchX - t.startTouchX);
-            if(t.pageMargin < -t.width * 3){
+            if (t.pageMargin < -t.width * 3) {
               t.pageMargin = -t.width * 3;
-            } else if(t.pageMargin > t.width * 3){
+            } else if (t.pageMargin > t.width * 3) {
               t.pageMargin = t.width * 3;
             }
           }
         });
         this.el.addEventListener('touchend', function (e) {
           t.tabAnimation = t.TAB_ANIM;
-          if(t.margin < t.width / 2){
+          if (t.margin < t.width / 2) {
             t.tabAnimation += 0;
             t.page = 0;
-          } else if(t.margin < t.width + t.width / 2){
+          } else if (t.margin < t.width + t.width / 2) {
             t.tabAnimation += 1;
             t.page = 1;
           } else {
             t.page = 2;
             t.tabAnimation += 2;
           }
-          switch (t.page){
+          switch (t.page) {
             case 0:
               t.pageAnim0 = t.PAGE_ANIM + 1;
               t.pageAnim1 = t.PAGE_ANIM + 2;
@@ -193,7 +215,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   }
 
   initMap() {
-    if(!this.mapData.mapInit) {
+    if (!this.mapData.mapInit) {
       this.load().then(() => {
         this.mapData.mapInit = true;
         this.mapController.setData$.emit(true);
@@ -210,10 +232,11 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     this.type = data.type == null ? 0 : data.type;
     this.category = data.category == null ? -1 : data.category;
     this.page = this.tokenService.getPageState();
+    this.searchController.onChangeSearchButtonVisibility$.emit(this.page != 2);
     this.width = window.innerWidth / 3;
     this.margin = this.page * this.width;
     this.error = '';
-    switch (this.page){
+    switch (this.page) {
       case 0:
         this.pageMargin = 3 * this.width;
         break;
@@ -221,7 +244,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         this.pageMargin = 0;
         break;
       case 2:
-        this.pageMargin = -3* this.width;
+        this.pageMargin = -3 * this.width;
     }
     this.mapService.getCategories().subscribe(
       data => {
@@ -235,6 +258,10 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     );
     this.loadAvailableServices();
 
+  }
+
+  ngOnDestroy(): void {
+    this.searchController.onChangeSearchButtonVisibility$.emit(SearchController.SEARCH_HIDE);
   }
 
   public loadAvailableServices() {
@@ -258,8 +285,8 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         } else {
           this.mapData.offersWindow = [];
         }
-          this.mapController.setData$.emit(this.mapData);
-          this.listController.setData$.emit(this.listData);
+        this.mapController.setData$.emit(this.mapData);
+        this.listController.setData$.emit(this.listData);
 
       },
       error => {
@@ -276,7 +303,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
   public onClickPage(pageIndex: number) {
     if (pageIndex >= 0 && pageIndex < 3 && this.page != pageIndex) {
       this.tokenService.setPageState(pageIndex);
-      if(this.pageMargin < 0){
+      if (this.pageMargin < 0) {
         ++this.pageMargin;
       } else {
         --this.pageMargin;
@@ -299,6 +326,8 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
           this.pageAnim2 = this.PAGE_ANIM + 1;
       }
       this.tabAnimation = this.TAB_ANIM + pageIndex;
+      this.searchController.onChangeSearchButtonVisibility$.emit(this.page != 2);
+
     }
   }
 
@@ -428,7 +457,7 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
     return {text: this.searchString, type: this.type, category: this.category};
   }
 
-  getData(page: number):any{
+  getData(page: number): any {
     switch (page) {
       case 0:
         return this.mapData;
@@ -438,8 +467,27 @@ export class MainComponent extends ConversionMethods implements OnInit, MainSear
         break;
     }
   }
-  public onMainScroll(){
+
+  public onMainScroll() {
     let e: HTMLElement = document.getElementById("page-container");
+    let t = this.pagerMargin;
+    this.pagerMargin = e.scrollTop;
+    if (this.pagerMargin > 50) {
+      this.pagerMargin = 50;
+    } else if (this.pagerMargin < 0) {
+      this.pagerMargin = 0;
+    }
+    if(this.pagerMargin < 50 && this.pagerMargin > 0) {
+      if (t > this.pagerMargin) {
+        this.pagerAnimation = 'pagerDownAnimation';
+      } else if (t < this.pagerMargin) {
+        this.pagerAnimation = 'pagerUpAnimation';
+      } else {
+        this.pagerAnimation = '';
+      }
+    } else {
+      this.pagerAnimation = '';
+    }
     if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
       this.notifier.userScrolledToTheBottom$.emit(true);
     }

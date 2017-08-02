@@ -122,13 +122,14 @@ public class RequestServiceController implements IRequestServiceController {
                     requestNew.setRid(delete);
                     requestNew.setUid(user.getUid());
                     Request requestSaved = requestRepository.findByRid(d);
+                    Request requestCurrent = requestRepository.findByRid(delete);
                     requestRepository.save(requestNew);
                     hist.setTid(requestNew.getRid());
                     hist = historyRepository.save(hist);
                     List<RequestPictures> picturesSaved = requestPictureRepository.findAllByRid(requestNew.getRid());
                     List<PicturesRequest> picturesNew = new ArrayList<>(requestNew.getPicturesRequest());
-                    if (requestSaved != null) {
-                        saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getHid());
+                    if (requestCurrent!= null) {
+                        saveChanges(requestNew, requestCurrent, picturesNew, picturesSaved, hist.getHid());
                     }
                     for (RequestPictures pic : picturesSaved) {
                         int i = 0;

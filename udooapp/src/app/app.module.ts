@@ -44,6 +44,8 @@ import {MainMapComponent} from "../screens/main/map/map.main.component";
 import {MainWallComponent} from "../screens/main/wall/wall.main.component";
 import {MapMainController} from "../screens/main/map/map.main.controller";
 import {ListMainController} from "../screens/main/list/list.main.controller";
+import {SearchController} from "../controllers/search.controller";
+import {ToolbarSearchComponent} from "../components/seach/toolbar.search.component";
 
 @NgModule({
   declarations: [
@@ -78,7 +80,8 @@ import {ListMainController} from "../screens/main/list/list.main.controller";
     BidComponent,
     MainListComponent,
     MainMapComponent,
-    MainWallComponent
+    MainWallComponent,
+    ToolbarSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +89,7 @@ import {ListMainController} from "../screens/main/list/list.main.controller";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController],
+  providers: [AuthGuard, TokenService, NotifierController, SearchController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController],
   bootstrap: [AppComponent]
 })
 export class AppModule {

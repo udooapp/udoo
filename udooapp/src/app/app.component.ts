@@ -3,6 +3,7 @@ import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {MAP} from "./app.routing.module";
 import {TokenService} from "../services/token.service";
+import {SearchController} from "../controllers/search.controller";
 
 @Component({
   selector: 'app-root',
@@ -17,9 +18,10 @@ export class AppComponent {
   errorMessage: string = '';
   error: boolean = false;
   activated: boolean = true;
+  public searchVisibility: boolean = false;
   private clickedPage: boolean = false;
 
-  constructor(private notifier: NotifierController, private tokenService: TokenService) {
+  constructor(private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
     MAP;
     tokenService.clearSearchData();
     document['locale'] = 'en';
@@ -30,11 +32,22 @@ export class AppComponent {
         this.menuButton = false;
         this.clickedPage =  true;
       }
-
+    });
+    searchController.onChangeSearchButtonVisibility$.subscribe(value=>{
+      this.searchButton = value;
     });
 
   }
+  public onClickSearchButton(){
+    this.searchVisibility = true;
+    this.searchController.onClickSearchButton$.emit(true);
+  }
+  public onClickSearchClose(){
+    this.searchVisibility = false;
+  }
+  public onKeySearch(event){
 
+  }
   public changeButton() {
     if (!this.menuButton && !this.visibleMenu) {
       this.menuButton = true;

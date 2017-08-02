@@ -72,7 +72,9 @@
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-
+.map-filter{
+  visibility: hidden;
+}
 .map-search {
   position: relative;
   width: 83%;

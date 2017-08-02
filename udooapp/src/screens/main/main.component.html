@@ -1,11 +1,24 @@
-<div id="tab-pager" class="main-tab-container">
-  <div class="main-tab-element" (click)="onClickPage(0)" [style.color]="page == 0 ? '#378281' : '#97B6B6'">List<div class="main-tab-border"></div></div>
-  <div class="main-tab-element" (click)="onClickPage(1)" [style.color]="page == 1 ? '#378281' : '#97B6B6'">Map<div class="main-tab-border"></div></div>
-  <div class="main-tab-element" (click)="onClickPage(2)" [style.color]="page == 2 ? '#378281' : '#97B6B6'">Wall<div class="main-tab-border"></div></div>
-  <div id="main-tab-selected" [style.margin-left.px]="margin + (width / 33 * 1.5)" [style.animation-name]="tabAnimation"></div>
+<div id="tab-pager" class="main-tab-container" [style.margin-top.px]="-pagerMargin - 1" [style.animation-name]="pagerAnimation">
+  <div class="main-tab-element" (click)="onClickPage(0)" [style.color]="page == 0 ? '#378281' : '#97B6B6'">List
+    <div class="main-tab-border"></div>
+  </div>
+  <div class="main-tab-element" (click)="onClickPage(1)" [style.color]="page == 1 ? '#378281' : '#97B6B6'">Map
+    <div class="main-tab-border"></div>
+  </div>
+  <div class="main-tab-element" (click)="onClickPage(2)" [style.color]="page == 2 ? '#378281' : '#97B6B6'">Wall
+    <div class="main-tab-border"></div>
+  </div>
+  <div id="main-tab-selected" [style.margin-left.px]="margin + (width / 33 * 1.5)"
+       [style.animation-name]="tabAnimation"></div>
 </div>
-<div class="main-content-container" id="page-container" (scroll)="onMainScroll()">
-  <main-list  *ngIf="pageMargin > 0" class="main-content-element" [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin - 3 * width"  [style.animation-name]="pageAnim0" [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
-  <main-map   *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-map-container main-content-element" [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [categories]="categories" [searchListener]="searchListener" [result]="result" ></main-map>
-  <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2" [categories]="categories"></main-wall>
+<div class="main-content-container" [style.margin-top.px]="49 - pagerMargin" id="page-container" (scroll)="onMainScroll()">
+  <main-list *ngIf="pageMargin > 0" class="main-content-element" [style.min-width.px]="3*width"
+             [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0"
+             [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
+  <main-map *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-map-container main-content-element"
+            [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [categories]="categories"
+            [searchListener]="searchListener" [result]="result"></main-map>
+  <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.min-width.px]="3*width"
+             [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"
+             [categories]="categories"></main-wall>
 </div>

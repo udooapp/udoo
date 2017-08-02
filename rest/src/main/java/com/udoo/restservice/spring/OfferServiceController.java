@@ -275,6 +275,7 @@ public class OfferServiceController implements IOfferServiceController {
                     offerNew.setOid(delete);
                     offerNew.setUid(user.getUid());
                     Offer offerSaved = offerRepository.findByOid(d);
+                    Offer offerCurrent = offerRepository.findByOid(delete);
                     offerNew = offerRepository.save(offerNew);
                     hist.setTid(offerNew.getOid());
                     hist = historyRepository.save(hist);
@@ -282,8 +283,8 @@ public class OfferServiceController implements IOfferServiceController {
                     List<OfferPictures> picturesSaved = offerPictureRepository.findAllByOid(offerNew.getOid());
                     List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
 
-                    if (offerSaved != null && offerSaved.getUid() > 0) {
-                        saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getHid());
+                    if (offerCurrent != null && offerCurrent.getUid() > 0) {
+                        saveChanges(offerNew, offerCurrent, picturesNew, picturesSaved, hist.getHid());
                     }
 
                     for (OfferPictures pic : picturesSaved) {

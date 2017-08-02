@@ -1,14 +1,17 @@
+<toolbar-search (close)="onClickSearchClose()" (search)="onKeySearch($event)"
+                [visibility]="searchVisibility"></toolbar-search>
 <div class="header">
-  <div class="header-button" id="menu-button" [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
+  <div class="header-button" id="menu-button"
+       [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
        (click)="onClickMenu()"></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
-  <div class="header-search" [ngClass]="{'header-button-search' : searchButton}"
-       (click)="onClickMenu()"></div>
+  <div *ngIf="searchButton" class="header-search" (click)="onClickSearchButton()"></div>
 </div>
 <div class="content">
-  <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)" (activatedUser)="activated = $event"></side-menu>
+  <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)"
+             (activatedUser)="activated = $event"></side-menu>
   <div (scroll)="onScroll()" id="content-container">
     <router-outlet></router-outlet>
   </div>

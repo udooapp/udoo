@@ -68,7 +68,6 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   private loadMoreElement() {
     this.wallService.getWall(this.lastId).subscribe(
       data => {
-        console.log(data);
         if (data.length < 5) {
           this.noMoreElement = true;
         }

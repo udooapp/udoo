@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
   login: boolean = false;
-  image: string;
+  image: string = '';
   menuLoaded: boolean = false;
   startX: number = 0;
   currentX: number = 0;
