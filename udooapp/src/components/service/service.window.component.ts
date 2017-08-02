@@ -41,6 +41,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
+  @Output() close: EventEmitter<any> = new EventEmitter();
 
   ngAfterViewChecked(): void {
 
@@ -189,28 +190,30 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   keypress(e: KeyboardEvent) {
-    switch (e.keyCode) {
-      case 27:
-        this.onClickClose();
-        break;
-      case 37:
-        this.onClickPrevious();
-        break;
-      case 39:
-        this.onClickNext();
-        break;
-      case 40:
-        let el = document.getElementById('service-container');
-        if (el != null) {
-          el.scrollTop = el.scrollTop + 10;
-        }
-        break;
-      case 38:
-        let ele = document.getElementById('service-container');
-        if (ele != null) {
-          ele.scrollTop = ele.scrollTop - 10;
-        }
-        break;
+    if(this.pictureOpen == -1) {
+      switch (e.keyCode) {
+        case 27:
+          this.onClickClose();
+          break;
+        case 37:
+          this.onClickPrevious();
+          break;
+        case 39:
+          this.onClickNext();
+          break;
+        case 40:
+          let el = document.getElementById('service-container');
+          if (el != null) {
+            el.scrollTop = el.scrollTop + 10;
+          }
+          break;
+        case 38:
+          let ele = document.getElementById('service-container');
+          if (ele != null) {
+            ele.scrollTop = ele.scrollTop - 10;
+          }
+          break;
+      }
     }
   }
 
@@ -280,6 +283,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   onClickClose() {
     this.visible = false;
+    this.close.emit(true);
   }
 
   onClickBidClose() {

@@ -176,7 +176,7 @@ dialog {
 .loader {
   position: absolute;
   margin-left: 50%;
-  margin-top: 80px;
+  top: 30%;
 }
 
 .service-dialog-close {
@@ -346,6 +346,7 @@ dialog {
   display: flex;
   position: absolute;
   margin-top: -50px;
+  animation-duration: 250ms;
   flex-direction: row;
   background-color: #FFFFFF;
   -webkit-flex-direction: row;

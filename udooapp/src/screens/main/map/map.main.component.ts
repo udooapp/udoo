@@ -35,6 +35,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   private icon = {};
   private offersWindow: any[] = [];
   private stompClient: any;
+  private blur: boolean = false;
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
   private loaded = false;
   @Input() result: any[] = [];
@@ -224,10 +225,12 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
     if (type) {
       this.offerService.getOfferDialogData(id).subscribe(
         value => {
+          this.blur = true;
           let data: any = {service: value.offer, user: value.user};
           this.serviceController.setData$.emit(data);
         },
         error => {
+          this.blur = false;
           this.serviceController.setData$.emit(null);
           this.dialog.notifyError(error)
         }
@@ -235,10 +238,12 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
     } else {
       this.requestService.getRequestDialogData(id).subscribe(
         value => {
+          this.blur = true;
           let data: any = {service: value.request, user: value.user};
           this.serviceController.setData$.emit(data);
         },
         error => {
+          this.blur = false;
           this.serviceController.setData$.emit(null);
           this.dialog.notifyError(error)
         }
@@ -282,7 +287,9 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
     let type: boolean = element.rid;
     this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
   }
-
+  public onClickClose(){
+    this.blur = false;
+  }
   public getCoordinates(location: string) {
     if (!location.match('address') && !location.match('coordinate')) {
       return null;

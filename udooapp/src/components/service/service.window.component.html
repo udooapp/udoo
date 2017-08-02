@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="!loading" class="service-dialog-service-button-container">
+    <div *ngIf="!loading" class="service-dialog-service-button-container" [style.margin-left.px]="movedCoordX"  [style.animation-name]="animation">
       <div class="service-dialog-service-button">
         <div>
           <img class="service-dialog-user-profile-action"

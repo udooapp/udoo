@@ -2,8 +2,8 @@
   <div class="image-item" *ngFor="let img of images; let i = index">
     <div [ngClass]="{'gallery-image-loader' : isLoading(i), 'gallery-image-error' : isError(i)}"></div>
     <img (click)="onClickDelete(i)" *ngIf="editable" class="image-trash" src="./assets/trash.png">
-    <img class="image-content" [src]="getPictureUrl(img.src)">
-    <div class="image-hover" (click)="onClickPicture(i)"></div>
+    <img class="image-content" [src]="getPictureUrl(img.src, i)">
+    <div class="image-hover" (click)="onClickPicture(i)" [id]="'galleryTouch' + i"></div>
   </div>
   <div *ngIf="editable" class="image-item new-image"><input type="file" accept="image/*" (change)="onClickNew($event)">
   </div>
@@ -11,8 +11,8 @@
 <div *ngIf="smallPictures" class="gallery-dialog-images">
   <div class="gallery-dialog-picture-container"
        *ngFor="let img of images; let i = index">
-    <img class="gallery-dialog-picture" [src]="getPictureUrl(img.src)">
-    <div class="gallery-image-hover" (click)="onClickPicture(i)"></div>
+    <img class="gallery-dialog-picture" [src]="getPictureUrl(img.src, i)"  (click)="onClickPicture(i)">
+    <div class="gallery-image-hover" (click)="onClickPicture(i)" [id]="'galleryTouch' + i"></div>
   </div>
 </div>
 <div *ngIf="gallery" id="gallery" class="fullscreen-gallery">

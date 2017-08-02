@@ -1,6 +1,7 @@
 import {AfterViewChecked, Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
+
 @Component({
   selector: 'gallery',
   templateUrl: './gallery.component.html',
@@ -22,10 +23,12 @@ export class GalleryComponent implements AfterViewChecked {
   private direction: number = 0;
   index: number = 0;
   margin: number = 0;
-  private width:number = 0;
+  private width: number = 0;
   private slided: boolean = false;
   private found: boolean = false;
   private startCoordX: number = 0;
+  private clicked: boolean = false;
+  private imageElements: any[] = [];
   @Input() smallPictures: boolean = false;
   @Input() images: any[] = [];
   @Input() editable: boolean = false;
@@ -37,12 +40,24 @@ export class GalleryComponent implements AfterViewChecked {
 
   constructor() {
     let t = this;
-    window.addEventListener("orientationchange", function() {
+    t.leftMargin = -window.innerWidth;
+    t.rightMargin = window.innerWidth;
+    t.width = window.innerWidth;
+    window.addEventListener("orientationchange", function () {
+
+      let el = document.getElementById("gallery");
+      if (el != null) {
+        t.width = el.clientWidth / 2;
+      }
+    });
+    window.addEventListener("resize", function () {
       t.leftMargin = 1000;
       t.rightMargin = 1000;
       let el = document.getElementById("gallery");
-      if(el != null){
+      if (el != null) {
         t.width = el.clientWidth / 2;
+        t.leftMargin = -t.width * 2;
+        t.rightMargin = t.width * 2;
       }
     });
   }
@@ -52,7 +67,6 @@ export class GalleryComponent implements AfterViewChecked {
     if (el != null && !this.found) {
       this.found = true;
       let t = this;
-       this.width = document.getElementById("gallery").clientWidth / 2;
       el.addEventListener('animationend', function (e) {
         e.preventDefault();
         t.startCoordX = 0;
@@ -62,7 +76,7 @@ export class GalleryComponent implements AfterViewChecked {
         t.animationLeft = '';
         t.animationRight = '';
         t.direction = 0;
-        if(t.slided) {
+        if (t.slided) {
           t.leftMargin = -t.width * 2;
           t.rightMargin = t.width * 2;
         }
@@ -128,8 +142,10 @@ export class GalleryComponent implements AfterViewChecked {
     }
   }
 
-  @Input() set close(value: number) {
+  @Input()
+  set close(value: number) {
     this.gallery = false;
+    this.found = false;
   }
 
   public onClickDelete(i: number) {
@@ -140,7 +156,33 @@ export class GalleryComponent implements AfterViewChecked {
     this.onClickNewImage.emit(event);
   }
 
-  public getPictureUrl(image: string) {
+  public getPictureUrl(image: string, i: number) {
+    if (this.imageElements.length <= i || this.imageElements[i] == null) {
+      let el = document.getElementById('galleryTouch' + i);
+      let t = this;
+      if (el != null) {
+        this.imageElements.push(el);
+        let coord = {x: 0, y: 0};
+        el.addEventListener('touchstart', function (e) {
+          e.preventDefault();
+          coord.x = 0;
+          coord.y = 0;
+          t.clicked = false;
+        });
+        el.addEventListener('touchmove', function (e) {
+          e.preventDefault();
+          ++coord.x;
+          ++coord.y;
+        });
+        el.addEventListener('touchend', function (e) {
+          e.preventDefault();
+          if (!t.clicked && coord.x < 10 && coord.y < 10) {
+            t.clicked = true;
+            t.onClickPicture(i);
+          }
+        });
+      }
+    }
     if (image == null || image.length == 0 || image === 'null') {
       return '';
     }
@@ -154,7 +196,6 @@ export class GalleryComponent implements AfterViewChecked {
   }
 
   public onClickPrevious() {
-
     if (this.index > 0) {
       this.direction = -1;
       this.animationRight = '';
