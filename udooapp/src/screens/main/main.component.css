@@ -10,8 +10,6 @@
   box-shadow: 1px 1px 1px #CACACA;
   -webkit-flex-direction: row;
   font-size: 14pt;
-  animation-delay: 500ms;
-  animation-duration: 500ms;
   -webkit-transition: margin-top 500ms; /* Safari */
   transition: margin-top 500ms;
   z-index: 5;
@@ -104,24 +102,24 @@
   }
 }
 
-@media (min-width: 642px){
-  @keyframes tabPage0{
-    to {margin-left: 1.5%;}
+@media (min-width: 642px) {
+  @keyframes tabPage0 {
+    to {
+      margin-left: 1.5%;
+    }
   }
-  @keyframes tabPage1{
-    to {margin-left: 34.8%;}
+  @keyframes tabPage1 {
+    to {
+      margin-left: 34.8%;
+    }
   }
-  @keyframes tabPage2{
-    to {margin-left: 68.1%;}
+  @keyframes tabPage2 {
+    to {
+      margin-left: 68.1%;
+    }
   }
 
-  #main-tab-selected{
+  #main-tab-selected {
     width: 30%;
   }
-}
-@keyframes pagerUpAnimation {
-  to{ margin-top: -51px}
-}
-@keyframes pagerDownAnimation {
-  to{ margin-top: -51px}
 }

@@ -253,7 +253,9 @@ public class OfferServiceController implements IOfferServiceController {
                     List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
 
                     if (offerSaved.getOid() != -1) {
-                        this.saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getHid());
+                        if(!this.saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getHid())){
+                            historyRepository.deleteByHid(hist.getHid());
+                        }
                     } else {
                         HistoryElement histElement = new HistoryElement();
                         histElement.setAction(WallServiceController.NEW);
@@ -284,7 +286,9 @@ public class OfferServiceController implements IOfferServiceController {
                     List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
 
                     if (offerCurrent != null && offerCurrent.getUid() > 0) {
-                        saveChanges(offerNew, offerCurrent, picturesNew, picturesSaved, hist.getHid());
+                        if(!saveChanges(offerNew, offerCurrent, picturesNew, picturesSaved, hist.getHid())){
+                          historyRepository.deleteByHid(hist.getHid());
+                        }
                     }
 
                     for (OfferPictures pic : picturesSaved) {
@@ -332,7 +336,8 @@ public class OfferServiceController implements IOfferServiceController {
         }
     }
 
-    private void saveChanges(Offer offerNew, Offer offerSaved, List<PicturesOffer> picturesNew, List<OfferPictures> picturesSaved, int hid) {
+    private boolean saveChanges(Offer offerNew, Offer offerSaved, List<PicturesOffer> picturesNew, List<OfferPictures> picturesSaved, int hid) {
+        boolean update = false;
         for (PicturesOffer pic : picturesNew) {
             int i = 0;
             while (i < picturesSaved.size() && picturesSaved.get(i).getPoid() != pic.getPoid()) {
@@ -344,6 +349,7 @@ public class OfferServiceController implements IOfferServiceController {
                 histElement.setChanges(pic.getPoid() + "");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
+                update = true;
             }
         }
         if (!offerNew.getTitle().equals(offerSaved.getTitle())) {
@@ -352,36 +358,43 @@ public class OfferServiceController implements IOfferServiceController {
             histElement.setChanges(offerSaved.getTitle());
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
         if (!offerNew.getDescription().equals(offerSaved.getDescription())) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
         if (!offerNew.getAvailability().equals(offerSaved.getAvailability())) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_AVAILABILITY);
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
         if (offerNew.getExpirydate().compareTo(offerSaved.getExpirydate()) != 0) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
         if (!offerNew.getLocation().equals(offerSaved.getLocation())) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_LOCATION);
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
         if (offerNew.getCategory() != offerSaved.getCategory()) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
+            update = true;
         }
+        return update;
     }
 }

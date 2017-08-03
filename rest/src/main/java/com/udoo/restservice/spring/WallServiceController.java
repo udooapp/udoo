@@ -61,7 +61,7 @@ public class WallServiceController implements IWallServiceController {
     @RequestMapping(value = "/public", method = RequestMethod.GET)
     public ResponseEntity<?> getOfflineWall(@RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
-        return new ResponseEntity<>(this.sort(historyRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, lastId, page)), HttpStatus.OK);
+        return new ResponseEntity<>(this.merge(historyRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, lastId, page)), HttpStatus.OK);
     }
 
     @Override
@@ -69,64 +69,47 @@ public class WallServiceController implements IWallServiceController {
     public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
         int uid = Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString());
-        return new ResponseEntity<>(this.sort(historyRepository.findAllUidAndDateLessThan(uid, lastId, page)), HttpStatus.OK);
+        return new ResponseEntity<>(this.merge(historyRepository.findAllUidAndDateLessThan(uid, lastId, page)), HttpStatus.OK);
 
-    }
-
-    private List<ResponseHistory> sort(List<History> history) {
-        return merge(history);
     }
 
     private List<ResponseHistory> merge(List<History> list) {
         List<ResponseHistory> history = new ArrayList<>();
         for (History obj : list) {
-            int j = 0;
-            while (j < history.size() && history.get(j).getDate().compareTo(obj.getDate()) >= 0) {
-                ++j;
-            }
-            ResponseHistory hist = new ResponseHistory();
-            hist.setId(obj.getTid());
-            hist.setType(obj.getType());
-            hist.setDate(obj.getDate());
-            hist.setHid(obj.getHid());
-            switch (obj.getType()) {
-                case 0:
-                    User usr = userRepository.findByUid(hist.getId());
-                    hist.setUserName(usr.getName());
-                    hist.setPicture(usr.getPicture());
-                    hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
-                    if (j < history.size()) {
-                        history.add(j, hist);
-                    } else {
+            if(obj.getHistoryElements() != null && obj.getHistoryElements().size() > 0) {
+                ResponseHistory hist = new ResponseHistory();
+                hist.setId(obj.getTid());
+                hist.setType(obj.getType());
+                hist.setDate(obj.getDate());
+                hist.setHid(obj.getHid());
+
+                switch (obj.getType()) {
+                    case 0:
+                        User usr = userRepository.findByUid(hist.getId());
+                        hist.setUserName(usr.getName());
+                        hist.setPicture(usr.getPicture());
+                        hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
                         history.add(hist);
-                    }
-                    break;
-                case 1:
-                    Offer off = offerRepository.findByOid(hist.getId());
-                    User usro = userRepository.findByUid(off.getUid());
-                    hist.setPicture(usro.getPicture());
-                    hist.setUserName(usro.getName());
-                    hist.setServiceName(off.getTitle());
-                    hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
-                    if (j < history.size()) {
-                        history.add(j, hist);
-                    } else {
+                        break;
+                    case 1:
+                        Offer off = offerRepository.findByOid(hist.getId());
+                        User usro = userRepository.findByUid(off.getUid());
+                        hist.setPicture(usro.getPicture());
+                        hist.setUserName(usro.getName());
+                        hist.setServiceName(off.getTitle());
+                        hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
                         history.add(hist);
-                    }
-                    break;
-                case 2:
-                    Request req = requestRepository.findByRid(hist.getId());
-                    User usrr = userRepository.findByUid(req.getUid());
-                    hist.setServiceName(req.getTitle());
-                    hist.setPicture(usrr.getPicture());
-                    hist.setUserName(usrr.getName());
-                    hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
-                    if (j < history.size()) {
-                        history.add(j, hist);
-                    } else {
+                        break;
+                    case 2:
+                        Request req = requestRepository.findByRid(hist.getId());
+                        User usrr = userRepository.findByUid(req.getUid());
+                        hist.setServiceName(req.getTitle());
+                        hist.setPicture(usrr.getPicture());
+                        hist.setUserName(usrr.getName());
+                        hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
                         history.add(hist);
-                    }
-                    break;
+                        break;
+                }
             }
         }
         return history;

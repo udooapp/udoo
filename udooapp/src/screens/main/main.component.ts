@@ -44,7 +44,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   private pageAnim2: string = '';
   public tabAnimation = '';
   public pagerMargin: number = 0;
-  public pagerAnimation: string = '';
   public searchVisibility: boolean = false;
   private swipeEnabled: boolean = true;
 
@@ -107,21 +106,16 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       if (this.el2 != null) {
         this.width = this.el2.clientWidth / 3;
       }
-      this.el2.addEventListener('animationend', function (e) {
+      this.el2.addEventListener('transitionend', function (e) {
         e.preventDefault();
-        if (t.pagerAnimation.length > 0) {
-          if (t.pagerAnimation == 'pagerUpAnimation') {
-            t.pagerAnimation = '';
-            t.pagerMargin = 50;
-          } else {
-            t.pagerAnimation = '';
-            t.pagerMargin = 0;
-          }
-          t.pagerAnimation = '';
+        if(t.pagerMargin > 25){
+          t.pagerMargin = 50;
+        } else {
+          t.pagerMargin = 0;
         }
       });
     }
-    if (this.el == null && this.page != 1) {
+    if (this.el == null) {
       let el3 = document.getElementById("main-tab-selected");
       if (el3 != null) {
         el3.addEventListener('animationend', function (e) {
@@ -167,14 +161,14 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           t.searchController.onChangeSearchButtonVisibility$.emit(t.page != 2);
         }, false);
         this.el.addEventListener('touchstart', function (e) {
-          if(t.pageMargin % (3 * t.width) != 0){
+          if (t.pageMargin % (3 * t.width) != 0) {
             t.swipeTouchEnd();
           }
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
           let touchZone = t.width * 0.15;
           t.swipeEnabled = (t.page != 1) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone);
-          if(t.page == 1 && t.swipeEnabled){
+          if (t.page == 1 && t.swipeEnabled) {
             t.mapController.enableSwipe$.emit(false);
           }
         });
@@ -184,35 +178,44 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
             t.moveTouchX = t.startTouchX;
             t.startTouchX = touch.pageX;
             t.margin += (t.moveTouchX - t.startTouchX) / 3;
-            if (t.margin > t.width * 3) {
-              t.margin = t.width * 3;
-            } else if (t.margin < 0) {
-              t.margin = 0;
-            }
-            t.pageMargin -= (t.moveTouchX - t.startTouchX);
-            if (t.pageMargin < -t.width * 3) {
-              t.pageMargin = -t.width * 3;
-            } else if (t.pageMargin > t.width * 3) {
-              t.pageMargin = t.width * 3;
-            }
-            if(t.page == 2 && t.pageMargin > 0){
-              t.pageMargin = 0;
-              t.margin = t.width;
-              t.mapController.enableSwipe$.emit(true);
-            } else if(t.page == 0 && t.pageMargin < 0){
-              t.pageMargin = 0;
-              t.margin = t.width;
-              t.mapController.enableSwipe$.emit(true);
+            if (t.margin >= 0 && t.margin <= 2 * t.width) {
+              if (t.margin > t.width * 3) {
+                t.margin = t.width * 3;
+              } else if (t.margin < 0) {
+                t.margin = 0;
+              }
+              t.pageMargin -= (t.moveTouchX - t.startTouchX);
+              if (t.pageMargin < -t.width * 3) {
+                t.pageMargin = -t.width * 3;
+              } else if (t.pageMargin > t.width * 3) {
+                t.pageMargin = t.width * 3;
+              }
+              if (t.page == 2 && t.pageMargin > 0) {
+                t.pageMargin = 0;
+                t.margin = t.width;
+                t.mapController.enableSwipe$.emit(true);
+              } else if (t.page == 0 && t.pageMargin < 0) {
+                t.pageMargin = 0;
+                t.margin = t.width;
+                t.mapController.enableSwipe$.emit(true);
+              }
+            } else {
+              if(t.margin < 0){
+                t.margin = 0;
+              } else if( t.margin > 2 * t.width){
+                t.margin = 2 * t.width;
+              }
             }
           }
         });
         this.el.addEventListener('touchend', function (e) {
-         t.swipeTouchEnd();
+          t.swipeTouchEnd();
         });
       }
     }
   }
-  private swipeTouchEnd(){
+
+  private swipeTouchEnd() {
     this.tabAnimation = this.TAB_ANIM;
     if (this.margin < this.width / 2) {
       this.tabAnimation += 0;
@@ -227,6 +230,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.page = 2;
       this.tabAnimation += 2;
     }
+    this.tokenService.setPageState(this.page);
     switch (this.page) {
       case 0:
         this.pageAnim0 = this.PAGE_ANIM + 1;
@@ -244,6 +248,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         this.pageAnim2 = this.PAGE_ANIM + 1;
     }
   }
+
   initMap() {
     if (!this.mapData.mapInit) {
       this.load().then(() => {
@@ -506,47 +511,18 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   public onMainScroll() {
     let e: HTMLElement = document.getElementById("page-container");
-    let t = this.pagerMargin;
-    this.pagerMargin = e.scrollTop;
-    if (this.pagerMargin > 50) {
-      this.pagerMargin = 50;
-    } else if (this.pagerMargin < 0) {
-      this.pagerMargin = 0;
-    }
-    if (this.pagerMargin < 50 && this.pagerMargin > 0) {
-      if (t > this.pagerMargin) {
-        this.pagerAnimation = 'pagerDownAnimation';
-      } else if (t < this.pagerMargin) {
-        this.pagerAnimation = 'pagerUpAnimation';
-      } else {
-        this.pagerAnimation = '';
-      }
-    } else {
-      this.pagerAnimation = '';
-    }
+    this.notifyScrollTo(e.scrollTop);
     if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
       this.notifier.userScrolledToTheBottom$.emit(true);
     }
   }
 
   notifyScrollTo(pos: number) {
-    let t = this.pagerMargin;
     this.pagerMargin = pos;
     if (this.pagerMargin > 50) {
       this.pagerMargin = 50;
     } else if (this.pagerMargin < 0) {
       this.pagerMargin = 0;
-    }
-    if (this.pagerMargin < 50 && this.pagerMargin > 0) {
-      if (t < this.pagerMargin) {
-        this.pagerAnimation = 'pagerDownAnimation';
-      } else if (t > this.pagerMargin) {
-        this.pagerAnimation = 'pagerUpAnimation';
-      } else {
-        this.pagerAnimation = '';
-      }
-    } else {
-      this.pagerAnimation = '';
     }
   }
 }

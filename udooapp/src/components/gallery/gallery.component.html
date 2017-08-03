@@ -1,5 +1,5 @@
 <div *ngIf="!smallPictures" class="scrollable-gallery-container">
-  <div class="image-item" *ngFor="let img of images; let i = index">
+  <div class="image-item" *ngFor="let img of images; let i = index" >
     <div [ngClass]="{'gallery-image-loader' : isLoading(i), 'gallery-image-error' : isError(i)}"></div>
     <img (click)="onClickDelete(i)" *ngIf="editable" class="image-trash" src="./assets/trash.png">
     <img class="image-content" [src]="getPictureUrl(img.src, i)">

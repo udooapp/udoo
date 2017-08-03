@@ -120,8 +120,7 @@ export class GalleryComponent implements AfterViewChecked {
       el.addEventListener('touchmove', function (e) {
         e.preventDefault();
         let touch = e.touches[0];
-
-        if ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1)) {
+        if (t.images.length > 1 && ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1))) {
           t.margin = touch.pageX - t.startCoordX;
           t.leftMargin = -t.width * 2 + t.margin;
           t.rightMargin = t.width * 2 + t.margin;
