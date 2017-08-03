@@ -199,11 +199,11 @@
   display: inline-block;
   animation-duration: 250ms;
   position: fixed;
-  margin-top: 0;
+  margin-top: 5px;
   max-height: 70%;
   max-width: 80%;
   min-width: 25%;
-  min-height: 50%;
+  min-height: 25%;
   background-color: #FAFAFA;
 }
 

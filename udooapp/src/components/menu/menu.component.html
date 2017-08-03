@@ -1,5 +1,5 @@
 <div class="menu-container-background" *ngIf="visibleMenu == 1" (click)="onClickPlaceHolder()"></div>
-<div id="swipe-area" [ngClass]="{'swipe-area-right' : visibleMenu == 1, 'swipe-area-left' : visibleMenu == 0 || visibleMenu == -1}" ></div>
+<div *ngIf="!disableSwipe" id="swipe-area" [ngClass]="{'swipe-area-right' : visibleMenu == 1, 'swipe-area-left' : visibleMenu == 0 || visibleMenu == -1}" ></div>
 <div class="menu-container" [ngClass]="{'menu-slide-in' : visibleMenu == 1, 'menu-slide-out' : visibleMenu == 0, 'hide-menu' : visibleMenu == -1}">
   <div class="menu-profile">
     <div class="menu-profile-picture">

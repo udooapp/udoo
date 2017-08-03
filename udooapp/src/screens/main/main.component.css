@@ -2,7 +2,6 @@
   background-color: #ffffff;
   color: #378281;
   width: 100%;
-  margin-top: -1px;
   position: fixed;
   height: 50px;
   display: -webkit-flex;
@@ -29,8 +28,6 @@
 }
 
 .main-content-container{
-  margin-top: 49px;
-  height: calc(100% - 110px);
   width: 100%;
   display: -webkit-flex;
   display: flex;
@@ -39,8 +36,8 @@
   position: fixed;
   overflow-x: hidden;
   overflow-y: auto;
-  -webkit-transition: margin-top 500ms; /* Safari */
-  transition: margin-top 500ms;
+  -webkit-transition: margin-top 500ms, height 500ms; /* Safari */
+  transition: margin-top 500ms, height 500ms;
 }
 .main-map-container{
   position: fixed;
@@ -58,7 +55,7 @@
 
 .main-content-element{
   width: 100%;
-  height: calc(100% - 60px);
+  height:100%;
   display: inline-block;
   animation-duration: 250ms;
 }

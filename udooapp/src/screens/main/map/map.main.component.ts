@@ -87,6 +87,11 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
         }
       }
     });
+    mapController.enableSwipe$.subscribe(value=>{
+      if(this.map != null){
+        this.map.setOptions({draggable: value});
+      }
+    });
   }
 
   initMap() {
@@ -440,7 +445,9 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
       this.category = data.category
     }
   }
-
+  public dialogScroll(pos: number){
+    this.searchListener.notifyScrollTo(pos);
+  }
   private deleteMarkers() {
     for (let i = 0; i < this.markers.length; i++) {
       this.markers[i].setMap(null);

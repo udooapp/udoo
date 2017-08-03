@@ -1,6 +1,6 @@
 <div id="map" [ngClass]="{'map-blur': blur}"></div>
 <service-dialog style="margin-top: -10px" (next)="onClickNext($event)" (previous)="onClickPrevious($event)"
-                (open)="onClickOpen($event)" (close)="onClickClose()"></service-dialog>
+                (open)="onClickOpen($event)" (close)="onClickClose()" (scroll)="dialogScroll($event)"></service-dialog>
 <div class="map-filter" [ngClass]="{'hide-map-filter' : showSearch}">
 
   <div class="map-inputs-container" [ngClass]="{'hide-map-inputs' : showSearch}">

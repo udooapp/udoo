@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewChecked, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 import {NavigationEnd, Router} from "@angular/router";
@@ -12,8 +12,10 @@ import {document} from "@angular/platform-browser/src/facade/browser";
 import {getTranslationProviders} from "../../localization/i18n-providers";
 import {DialogController} from "../../controllers/dialog.controller";
 import {BidService} from "../../services/bid.service";
+import {MenuController} from "../../controllers/menu.controller";
 
 declare let FB;
+
 @Component({
   selector: 'side-menu',
   templateUrl: './menu.component.html',
@@ -21,7 +23,7 @@ declare let FB;
   providers: [UserService, EmailService, BidService]
 })
 
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, AfterViewChecked {
   activated: boolean = false;
   @Output() activatedUser = new EventEmitter<boolean>();
   @Output() menuItemClicked = new EventEmitter<boolean>();
@@ -34,9 +36,14 @@ export class MenuComponent implements OnInit {
   startX: number = 0;
   currentX: number = 0;
   checkLogin: boolean = false;
+  private swipeAttached: boolean = false;
+  public disableSwipe: boolean = false;
 
-  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private router: Router, private userService: UserService, private tokenService: TokenService, private notifier: NotifierController, private dialog: DialogController, private menuController: MenuController) {
     let before: string = '';
+    menuController.disableMenuSwipe$.subscribe(value => {
+      this.disableSwipe = value;
+    });
     notifier.pageChanged$.subscribe(action => {
       if (action === 'refresh') {
         this.checkUser(false);
@@ -64,7 +71,7 @@ export class MenuComponent implements OnInit {
       }
     });
     notifier.userModification$.subscribe(verify => {
-      if (verify == NotifierController.LANGUAGE_ENGLISH  || verify == NotifierController.LANGUAGE_GERMAN) {
+      if (verify == NotifierController.LANGUAGE_ENGLISH || verify == NotifierController.LANGUAGE_GERMAN) {
         this.user.language = verify === 0 ? 'en' : 'de';
         // document['locale'] = this.user.language;
         // getTranslationProviders().then(value => {
@@ -77,46 +84,63 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  @Input() set showMenu(show: boolean) {
+  ngAfterViewChecked(): void {
+    if(!this.disableSwipe){
+      this.attachSwipeToMenu();
+    } else {
+      this.swipeAttached = false;
+    }
+  }
+
+  @Input()
+  set showMenu(show: boolean) {
     this.visibleMenu = show ? 1 : this.visibleMenu == -1 ? -1 : 0;
   }
 
   ngOnInit() {
+    this.attachSwipeToMenu();
+    this.checkUser(false);
+  }
+  public attachSwipeToMenu(){
     let t = this;
     let el = document.getElementById('swipe-area');
-    if (el != null) {
+    if (el != null && !this.swipeAttached) {
+      this.swipeAttached = true;
       el.addEventListener('touchstart', function (e) {
         e.preventDefault();
-        let touch = e.touches[0];
-        t.startX = touch.pageX;
-
+        if (!t.disableSwipe) {
+          let touch = e.touches[0];
+          t.startX = touch.pageX;
+        }
       }, false);
       el.addEventListener('touchend', function (e) {
         e.preventDefault();
-        t.currentX = 0;
-        t.startX = 0;
-        t.menuLoaded = false;
+        if (!t.disableSwipe) {
+          t.currentX = 0;
+          t.startX = 0;
+          t.menuLoaded = false;
+        }
       }, false);
       el.addEventListener('touchmove', function (e) {
         e.preventDefault();
-        let touch = e.touches[0];
-        t.currentX = touch.pageX - t.startX;
-        if (Math.abs(t.currentX) >= 10 && !t.menuLoaded) {
+        if (!t.disableSwipe) {
+          let touch = e.touches[0];
+          t.currentX = touch.pageX - t.startX;
+          if (Math.abs(t.currentX) >= 10 && !t.menuLoaded) {
 
-          if (t.currentX < 0) {
-            t.onClickPlaceHolder();
-            t.menuLoaded = true;
-          } else if (t.currentX > 0) {
-            t.visibleMenu = 1;
-            t.menuLoaded = true;
-            t.menuItemClicked.emit(false);
+            if (t.currentX < 0) {
+              t.onClickPlaceHolder();
+              t.menuLoaded = true;
+            } else if (t.currentX > 0) {
+              t.visibleMenu = 1;
+              t.menuLoaded = true;
+              t.menuItemClicked.emit(false);
+            }
           }
         }
       }, false);
     }
-    this.checkUser(false);
   }
-
   public checkUser(send: boolean) {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
@@ -191,10 +215,12 @@ export class MenuComponent implements OnInit {
     this.visibleMenu = 0;
     this.menuItemClicked.emit(true);
   }
-  public onClickPlaceHolder(){
+
+  public onClickPlaceHolder() {
     this.visibleMenu = 0;
     this.menuItemClicked.emit(false);
   }
+
   public logOut() {
     this.visibleMenu = 0;
     this.menuItemClicked.emit(true);

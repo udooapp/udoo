@@ -27,6 +27,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   loading: boolean = false;
   movedCoordX = 0;
   maxHeight: number = 300;
+  scrollTop: number = 0;
   private startCoordX = 0;
   private scrollDirection = 0;
   private coordStartY: number = 0;
@@ -42,6 +43,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
   @Output() close: EventEmitter<any> = new EventEmitter();
+  @Output() scroll: EventEmitter<number> = new EventEmitter();
 
   ngAfterViewChecked(): void {
 
@@ -50,6 +52,14 @@ export class ServiceDialogComponent implements AfterViewChecked {
       let el = document.getElementById('service-container');
       let t = this;
       if (el != null) {
+        let closeBtn = document.getElementById('service-dialog-close-button');
+        if (closeBtn != null) {
+          closeBtn.addEventListener('touchend', function (event) {
+            if (t.movedCoordX == 0) {
+              t.onClickClose();
+            }
+          });
+        }
         let buttonText = document.getElementById('service-dialog-more-button');
         if (buttonText != null) {
           let th = this;
@@ -65,7 +75,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }, false);
         el.addEventListener('touchstart', function (e) {
           e.preventDefault();
-          if(t.pictureOpen == -1) {
+          if (t.pictureOpen == -1) {
             t.animation = t.animations[3];
             let touch = e.touches[0];
             t.startCoordX = touch.pageX;
@@ -95,7 +105,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }, false);
         el.addEventListener('touchmove', function (e) {
           e.preventDefault();
-          if(t.pictureOpen == -1) {
+          if (t.pictureOpen == -1) {
             let touch = e.touches[0];
             if (t.scrollDirection == 0 || t.scrollDirection == 1) {
 
@@ -130,18 +140,15 @@ export class ServiceDialogComponent implements AfterViewChecked {
     let t = this;
     this.maxHeight = window.innerHeight - 150;
     window.addEventListener("orientationchange", function () {
-      let el = document.getElementById("service-dialog-container");
-      if (el != null) {
-        t.maxHeight = el.clientHeight - 90;
-      }
+      t.maxHeight = window.innerHeight - 150;
+      t.containerScroll();
     });
     window.addEventListener("resize", function () {
-      let el = document.getElementById("service-dialog-container");
-      if (el != null) {
-        t.maxHeight = el.clientHeight - 90;
-      }
+      t.containerScroll();
+      t.maxHeight = window.innerHeight - 150;
     });
     controller.setData$.subscribe(value => {
+      this.scrollTop = 0;
       if (value == null) {
         this.loading = false;
       } else {
@@ -190,7 +197,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   keypress(e: KeyboardEvent) {
-    if(this.pictureOpen == -1) {
+    if (this.pictureOpen == -1) {
       switch (e.keyCode) {
         case 27:
           this.onClickClose();
@@ -282,8 +289,11 @@ export class ServiceDialogComponent implements AfterViewChecked {
   }
 
   onClickClose() {
-    this.visible = false;
-    this.close.emit(true);
+    if (this.visible) {
+      this.visible = false;
+      this.close.emit(true);
+      this.scroll.emit(0);
+    }
   }
 
   onClickBidClose() {
@@ -312,6 +322,17 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   onKeyDescription(event) {
     this.bid.description = event;
+  }
+
+  containerScroll() {
+    let e: HTMLElement = document.getElementById("service-container");
+    this.scrollTop = e.scrollTop;
+    if (this.scrollTop > 50) {
+      this.scrollTop = 50;
+    } else if (this.scrollTop < 0) {
+      this.scrollTop = 0;
+    }
+    this.scroll.emit(e.scrollTop);
   }
 
   public convertMillisToDate(millis: number): string {

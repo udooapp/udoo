@@ -12,13 +12,14 @@
     </div>
   </div>
   <div class="service-dialog-window" id="dialog-window">
-    <div class="service-dialog-close-background" (click)="onClickClose()">
-      <div class="service-dialog-close"></div>
-    </div>
+
     <div class="container">
       <div class="loader">Loading...</div>
-      <div id="service-container" [style.height.px]="maxHeight - 50" [style.mix-height.px]="maxHeight - 90" [style.margin-left.px]="movedCoordX"
+      <div id="service-container" (scroll)="containerScroll()" [style.height.px]="maxHeight - 50 + scrollTop" [style.margin-left.px]="movedCoordX"
            [style.animation-name]="animation">
+        <div class="service-dialog-close-background" id="service-dialog-close-button" (click)="onClickClose()">
+          <div class="service-dialog-close"></div>
+        </div>
         <div class="loader" *ngIf="loading">Loading...</div>
         <div class="service-dialog-content" *ngIf="!loading">
           <div class="service-dialog-user-container">

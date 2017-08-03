@@ -11,7 +11,7 @@
   <div id="main-tab-selected" [style.margin-left.px]="margin + (width / 33 * 1.5)"
        [style.animation-name]="tabAnimation"></div>
 </div>
-<div class="main-content-container" [style.margin-top.px]="49 - pagerMargin" id="page-container" (scroll)="onMainScroll()">
+<div class="main-content-container" [style.margin-top.px]="49 - pagerMargin" [style.height.px]="pageContainerHeight + pagerMargin" id="page-container" (scroll)="onMainScroll()">
   <main-list *ngIf="pageMargin > 0" class="main-content-element" [style.min-width.px]="3*width"
              [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0"
              [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>

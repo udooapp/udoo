@@ -321,6 +321,7 @@ dialog {
   position: relative;
   padding-bottom: 60px;
   width: 100%;
+  transition: height 500ms;
   background-color: #FFFFFF;
 }
 
@@ -345,7 +346,7 @@ dialog {
   display: -webkit-flex;
   display: flex;
   position: absolute;
-  margin-top: -50px;
+  margin-top: -49px;
   animation-duration: 250ms;
   flex-direction: row;
   background-color: #FFFFFF;
