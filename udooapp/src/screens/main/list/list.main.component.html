@@ -1,28 +1,20 @@
-<div class="main-list-service-container">
-  <div class="main-list-inputs-container">
-    <text-input-select [placeholder]="'Search'" [data]="result" [value]="search" (selectedResult)="onClickResultDropDown($event)"
-                       (onKeyEvent)="onKey($event)" class="main-list-search"></text-input-select>
-    <div class="main-list-input-group">
-      <select-input class="main-list-select right-padding" [selected]="type" [values]="types" (onChange)="onChangeTypeSelect($event)"
-                    [disableValidation]="true"></select-input>
-      <select-input class="main-list-select" [options]="categories" [selected]="category"
-                    (onChange)="onChangeCategorySelect($event)"
-                    [disableValidation]="true"></select-input>
-    </div>
-  </div>
-  <div class="main-list-service-list">
-    <div class="main-list-service" *ngFor="let item of services; let i = index" (click)="onClickOpen(item)"
-         routerLinkActive="active">
-      <div class="main-list-service-picture"><img class="main-list-service-image" [src]="getPicture(i)"></div>
+<div class="main-list-container">
+  <div class="main-list-service" *ngFor="let item of services; let i = index" routerLinkActive="active" id="main-list-service">
+    <div [id]="'main-list-service-button-container' + i" class="main-list-service-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" (click)="onClickOpen(item)">
       <div class="main-list-service-content">
         <div class="main-list-service-title">{{item.title}}</div>
-        <div class="main-list-service-description">{{item.description}}</div>
-        <div class="main-list-service-location"><b i18n>Address: </b>{{getAddress(item.location)}}</div>
-        <div class="main-list-service-category"><b i18n>Category: </b>{{getCategory(item.category)}}</div>
-        <div class="main-list-service-date"><b i18n>Date: </b>{{convertMillisToDate(item.expirydate)}}</div>
+        <div class="main-list-service-content-text"><img
+          src="./assets/location.png"><span>{{getAddress(item.location)}}</span></div>
+        <div class="main-list-service-content-text"><img src="./assets/contact.png"><span>by {{item.user}}</span></div>
       </div>
+      <div class="main-list-service-picture"><img class="main-list-service-image" [src]="getPicture(i)"></div>
     </div>
-    <div *ngIf="scrolledDown" class="loader">Loading....</div>
+    <div class="main-list-service-button-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" >
+      <div class="main-list-service-button main-list-service-button-detail" (click)="onClickOpen(item)">Detail</div>
+      <div class="main-list-service-button main-list-service-button-bookmarks">Bookmarks</div>
+      <div class="main-list-service-button main-list-service-button-send-offer">Send Offer</div>
+    </div>
   </div>
+  <div *ngIf="scrolledDown" class="loader">Loading....</div>
 </div>
 

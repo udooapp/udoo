@@ -320,13 +320,13 @@ public class RestServiceController implements IRestServiceController {
                     requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual());
             result.setRequestLite(getRequestLiteList(requests));
             int size = requests.size();
-            result.setRequest(changeRequestImage(requests.subList(0 ,size > 5 ? 5 : size)));
+            result.setElementsRequest(changeRequestImage(requests.subList(0 ,size > 5 ? 5 : size)));
         }
         if (type == 0 || type == 1) {
             List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual());
             result.setOfferLite(getOfferLiteList(offers));
             int size = offers.size();
-            result.setOffer(changeOfferImage(offers).subList(0 ,size > 5 ? 5 : size));
+            result.setElementsOffer(changeOfferImage(offers).subList(0 ,size > 5 ? 5 : size));
         }
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
@@ -352,7 +352,7 @@ public class RestServiceController implements IRestServiceController {
                 more.setOffers(changeOfferImage(offers));
             }
         }
-        return new ResponseEntity<Object>(more, HttpStatus.OK);
+        return new ResponseEntity<>(more, HttpStatus.OK);
     }
 
     private List<RequestLite> getRequestLiteList(List<Request> list) {
@@ -373,30 +373,42 @@ public class RestServiceController implements IRestServiceController {
         return offerLites;
     }
 
-    private List<Offer> changeOfferImage(List<Offer> offers) {
+    private List<ListElement> changeOfferImage(List<Offer> offers) {
         User usr;
+        List<ListElement> list = new ArrayList<>();
         for (Offer offer : offers) {
             usr = userRepository.findByUid(offer.getUid());
             if (usr != null && usr.getPicture() != null) {
-                List<PicturesOffer> off = new ArrayList<>();
-                off.add(new PicturesOffer(usr.getPicture()));
-                offer.setPicturesOffer(off);
+                ListElement element = new ListElement();
+                element.setId(offer.getOid());
+                element.setType(true);
+                element.setTitle(offer.getTitle());
+                element.setLocation(offer.getLocation());
+                element.setPicture(usr.getPicture());
+                element.setUser(usr.getName());
+                list.add(element);
             }
         }
-        return offers;
+        return list;
     }
 
-    private List<Request> changeRequestImage(List<Request> requests) {
+    private List<ListElement> changeRequestImage(List<Request> requests) {
         User usr;
+        List<ListElement> list = new ArrayList<>();
         for (Request request : requests) {
             usr = userRepository.findByUid(request.getUid());
             if (usr != null && usr.getPicture() != null) {
-                List<PicturesRequest> req = new ArrayList<>();
-                req.add(new PicturesRequest(usr.getPicture()));
-                request.setPicturesRequest(req);
+                ListElement element = new ListElement();
+                element.setId(request.getRid());
+                element.setType(false);
+                element.setTitle(request.getTitle());
+                element.setLocation(request.getLocation());
+                element.setPicture(usr.getPicture());
+                element.setUser(usr.getName());
+                list.add(element);
             }
         }
-        return requests;
+        return list;
     }
 
     @Override

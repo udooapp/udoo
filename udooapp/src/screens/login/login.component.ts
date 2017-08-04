@@ -13,7 +13,6 @@ import {SOCIALREGISTRATION, MAP} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {TokenService} from "../../services/token.service";
 import {config} from "../../environments/url.config";
-import {HttpRequest} from "selenium-webdriver/http";
 import {Http} from "@angular/http";
 
 

@@ -101,6 +101,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   ngAfterViewChecked(): void {
     let t = this;
+
     if (this.el2 == null) {
       this.el2 = document.getElementById("tab-pager");
       if (this.el2 != null) {
@@ -108,7 +109,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       }
       this.el2.addEventListener('transitionend', function (e) {
         e.preventDefault();
-        if(t.pagerMargin > 25){
+        if (t.pagerMargin > 25) {
           t.pagerMargin = 50;
         } else {
           t.pagerMargin = 0;
@@ -167,7 +168,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
           let touchZone = t.width * 0.15;
-          t.swipeEnabled = (t.page != 1) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone);
+          t.swipeEnabled = (t.page == 2) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone);
           if (t.page == 1 && t.swipeEnabled) {
             t.mapController.enableSwipe$.emit(false);
           }
@@ -200,9 +201,9 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
                 t.mapController.enableSwipe$.emit(true);
               }
             } else {
-              if(t.margin < 0){
+              if (t.margin < 0) {
                 t.margin = 0;
-              } else if( t.margin > 2 * t.width){
+              } else if (t.margin > 2 * t.width) {
                 t.margin = 2 * t.width;
               }
             }
@@ -305,19 +306,19 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
       result => {
         this.listData = {services: [], offerSize: 0, requestSize: 0, more: true};
-        if (result.request) {
+        if (result.elementsRequest) {
 
           this.mapData.requestsWindow = result.requestLite;
-          this.listData.services = result.request;
-          this.listData.requestSize = result.request.length;
+          this.listData.services = result.elementsRequest;
+          this.listData.requestSize = result.elementsRequest.length;
         } else {
           this.mapData.requestsWindow = [];
         }
-        if (result.offer) {
-          this.listData.offerSize = result.offer.length;
+        if (result.elementsOffer) {
+          this.listData.offerSize = result.elementsOffer.length;
           this.mapData.offersWindow = result.offerLite;
-          for (let i = 0; i < result.offer.length; ++i) {
-            this.listData.services.push(result.offer[i]);
+          for (let i = 0; i < result.elementsOffer.length; ++i) {
+            this.listData.services.push(result.elementsOffer[i]);
           }
         } else {
           this.mapData.offersWindow = [];

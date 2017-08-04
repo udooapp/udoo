@@ -46,6 +46,13 @@
   color: white;
 }
 
+.social-button img {
+  width: auto;
+  max-height: 18px;
+  margin: auto 6px;
+  float: left;
+}
+
 .input-title {
   text-align: center;
   color: #378281;

@@ -1,3 +1,4 @@
+<div class="main-map-container">
 <div id="map" [ngClass]="{'map-blur': blur}"></div>
 <service-dialog style="margin-top: -10px" (next)="onClickNext($event)" (previous)="onClickPrevious($event)"
                 (open)="onClickOpen($event)" (close)="onClickClose()" (scroll)="dialogScroll($event)"></service-dialog>
@@ -21,4 +22,5 @@
   <div *ngIf="showSearch" class="search-button" (click)="onClickSearchPanel()">
     <div id="magnifying-glass" class="map-triangle-container"></div>
   </div>
+</div>
 </div>

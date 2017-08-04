@@ -1,8 +1,7 @@
-import {AfterViewChecked, AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MapService} from "../../../services/map.service";
 import {Offer} from "../../../entity/offer";
-import {Request} from "../../../entity/request";
 import {DETAIL} from "../../../app/app.routing.module";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {NotifierController} from "../../../controllers/notify.controller";
@@ -18,7 +17,7 @@ import {ListMainController} from "./list.main.controller";
   styleUrls: ['./list.main.component.css'],
   providers: [MapService, OfferService, RequestService]
 })
-export class MainListComponent extends ConversionMethods implements OnInit {
+export class MainListComponent extends ConversionMethods implements OnInit, AfterViewChecked {
 
   public types: string[] = ['Select', 'Offer', 'Request'];
   public category = -1;
@@ -28,6 +27,11 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   public scrolledDown: boolean = true;
   private loaded = false;
   private noMoreElement: boolean = false;
+  public serviceMargin: number = 0;
+  public selectedService: number = 0;
+  private selectedServiceStartX: number = 0;
+  private attachedSwipes: any[] = [];
+  private swipeWidth;
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
   @Input() categories: any[] = [{cid: -1, name: ''}];
@@ -35,7 +39,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
   @Input()
   set service(data: any) {
     if (data != null) {
-      if(data.more != true) {
+      if (data.more != true) {
         this.scrolledDown = false;
       }
       if (data.services.length > 0) {
@@ -50,7 +54,7 @@ export class MainListComponent extends ConversionMethods implements OnInit {
     if (this.searchListener != null) {
       let data = this.searchListener.getData(1);
       this.services = data.services;
-      this.loaded =  true;
+      this.loaded = true;
       data = this.searchListener.getSearchData();
       this.search = data.text;
       this.type = data.type;
@@ -60,40 +64,97 @@ export class MainListComponent extends ConversionMethods implements OnInit {
 
   constructor(private router: Router, private notifier: NotifierController, private listController: ListMainController) {
     super();
+    this.swipeWidth = window.innerWidth * 0.85;
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
         this.searchListener.loadMoreElementMap();
       }
     });
-    listController.setData$.subscribe(data=>{
-          if(this.loaded) {
-            if (data.more != true) {
-              this.noMoreElement = true;
-              this.scrolledDown = false;
-            }
-            if (data.services.length > 0) {
-              this.scrolledDown = false;
-              this.services = data.services;
-            }
-          }
-    })
+    listController.setData$.subscribe(data => {
+      if (this.loaded) {
+        if (data.more != true) {
+          this.noMoreElement = true;
+          this.scrolledDown = false;
+        }
+        if (data.services.length > 0) {
+          this.scrolledDown = false;
+          this.services = data.services;
+        }
+      }
+    });
+    let t = this;
+    window.addEventListener("orientationchange", function () {
+      let el = document.getElementById('main-list-service');
+      if(el != null){
+        t.swipeWidth = el.clientWidth * 0.85
+      }
+    });
+    window.addEventListener("resize", function () {
+      let el = document.getElementById('main-list-service');
+      if(el != null){
+        t.swipeWidth = el.clientWidth * 0.85
+      }
+    });
   }
 
 
   public getPicture(index: number) {
-    if (this.services.length >= 0 && index < this.services.length) {
-      let type: boolean = this.services[index].rid;
-      if ((type ? this.services[index].picturesRequest.length : this.services[index].picturesOffer.length) > 0) {
-        return type ? this.services[index].picturesRequest[0].src : this.services[index].picturesOffer[0].src;
-      }
+    if (this.services.length >= 0 && index < this.services.length && this.services[index].picture.length > 0) {
+      return this.services[index].picture;
     }
     return '';
   }
 
+  ngAfterViewChecked(): void {
+    let el = document.getElementById('main-list-service');
+    if(el != null){
+      this.swipeWidth = el.clientWidth * 0.85
+    }
+    for (let i = 0; i < this.services.length; ++i) {
+      if (this.attachedSwipes.length <= i || this.attachedSwipes[i] == null) {
+        this.attachSwipeMethods(i);
+      }
+    }
+  }
+
+  private attachSwipeMethods(i) {
+    let el = document.getElementById('main-list-service-button-container' + i);
+    if (el != null) {
+      let t = this;
+      el.addEventListener('touchstart', function (e) {
+        if (t.selectedService != i) {
+          t.serviceMargin = 0;
+        }
+        t.selectedService = i;
+        let touch = e.touches[0];
+        t.selectedServiceStartX = touch.pageX;
+      });
+      el.addEventListener('touchmove', function (e) {
+        let touch = e.touches[0];
+        t.serviceMargin -= touch.pageX - t.selectedServiceStartX;
+        t.selectedServiceStartX = touch.pageX;
+        if(t.serviceMargin < 0){
+          t.serviceMargin = 0;
+        }
+        if(t.serviceMargin > t.swipeWidth){
+          t.serviceMargin = t.swipeWidth;
+        }
+      });
+      el.addEventListener('touchend', function (e) {
+        if(t.serviceMargin > t.swipeWidth / 2){
+          t.serviceMargin = t.swipeWidth;
+        } else if(t.serviceMargin <= t.swipeWidth / 2){
+          t.serviceMargin = 0;
+        }
+
+      });
+      this.attachedSwipes.push(el);
+    }
+  }
+
   public onClickOpen(element: any) {
-    let type: boolean = element.rid;
-    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
+    this.router.navigate([DETAIL + element.id + '/' + (element.type ? 1 : 0) + '/' + 0]);
   }
 
   public onKey(event: any): void {

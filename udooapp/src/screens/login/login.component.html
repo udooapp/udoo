@@ -13,8 +13,8 @@
   <p class="input-link" routerLink="/reminder" routerLinkActive="active">Forgot password?</p>
 
   <div class="social-container" id="gSignInWrapper">
-    <input type="submit" value="Login with Facebook" class="social-button button-facebook" (click)="facebookLogin()"/>
-    <input id="gLoginBtn" type="submit" value="Login with Google" class="customGPlusSignIn social-button button-google" (click)="callGoogle()"/>
+    <button class="social-button button-facebook" (click)="facebookLogin()"><img src="./assets/facebook-icon.png">Login with Facebook</button>
+    <button id="gLoginBtn" class="customGPlusSignIn social-button button-google" (click)="callGoogle()"><img src="./assets/google-icon.png">Login with Google</button>
 
   </div>
 </div>

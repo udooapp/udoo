@@ -1,33 +1,32 @@
 package com.udoo.dal.entities;
 
-import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.offer.OfferLite;
-import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.entities.request.RequestLite;
 
 import java.util.List;
 
 public class SearchResult {
-    private List<Offer> offer;
+    private List<ListElement> elementsOffer;
+    private List<ListElement> elementsRequest;
     private List<OfferLite> offerLite;
     private List<RequestLite> requestLite;
-    private List<Request> request;
 
-    public List<Offer> getOffer() {
-        return offer;
+    public List<ListElement> getElementsOffer() {
+        return elementsOffer;
     }
 
-    public void setOffer(List<Offer> offer) {
-        this.offer = offer;
+    public void setElementsOffer(List<ListElement> elementsOffer) {
+        this.elementsOffer = elementsOffer;
     }
 
-    public List<Request> getRequest() {
-        return request;
+    public List<ListElement> getElementsRequest() {
+        return elementsRequest;
     }
 
-    public void setRequest(List<Request> request) {
-        this.request = request;
+    public void setElementsRequest(List<ListElement> elementsRequest) {
+        this.elementsRequest = elementsRequest;
     }
+
 
     public List<OfferLite> getOfferLite() {
         return offerLite;
