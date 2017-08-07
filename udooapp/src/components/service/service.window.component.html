@@ -1,5 +1,3 @@
-<bid-dialog [show]="showBid" (close)="onClickBidClose()" (send)="onClickSend()" (description)="onKeyDescription($event)"
-            (price)="onKeyPrice($event)"></bid-dialog>
 <div class="service-dialog-background" id="service-dialog-container" *ngIf="visible">
   <div class="service-dialog-direction service-dialog-direction-left" (click)="onClickPrevious()">
     <div class="service-dialog-direction-container">
@@ -35,7 +33,7 @@
               <div class="service-dialog-user-action">
                 <img class="service-dialog-user-profile-action" src="./assets/call.png">
                 <img class="service-dialog-user-profile-action" src="./assets/message2.png">
-                <img class="service-dialog-user-profile-action" src="./assets/add-to-contacts.png">
+                <img id="service-dialog-add-to-contact" class="service-dialog-user-profile-action" src="./assets/add-to-contacts.png" (click)="onClickAddToContact()">
               </div>
             </div>
           </div>

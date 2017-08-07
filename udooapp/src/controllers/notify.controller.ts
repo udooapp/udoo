@@ -54,7 +54,6 @@ export class NotifierController {
 
   sendNotification(router: Router, route: string, data: any[]) {
     if (navigator != null && config.mobile) {
-      console.log(navigator);
       this.route = route;
       this.router = router;
       for (let i = 0; i < data.length; ++i)

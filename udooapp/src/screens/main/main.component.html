@@ -11,14 +11,18 @@
   <div id="main-tab-selected" [style.margin-left.px]="margin + (width / 33 * 1.5)"
        [style.animation-name]="tabAnimation"></div>
 </div>
-<div class="main-content-container" [style.margin-top.px]="49 - pagerMargin" [style.height.px]="pageContainerHeight + pagerMargin" id="page-container" (scroll)="onMainScroll()">
-  <main-list *ngIf="pageMargin > 0" class="main-content-element" [style.min-width.px]="3*width"
+<div class="main-content-container" [style.overflow-y]=" blur ? 'hidden' : 'auto' " [style.margin-top.px]="49 - pagerMargin" [style.height.px]="pageContainerHeight + pagerMargin" id="page-container" (scroll)="onMainScroll()">
+  <service-dialog style="margin-top: -10px" (next)="onClickNext($event)" (previous)="onClickPrevious($event)"
+                  (open)="onClickOpen($event)" (close)="onClickClose()" (scroll)="notifyScrollTo($event)" (sendOffer)="onClickServiceDialogSendBid($event)"></service-dialog>
+  <bid-dialog [show]="showBid" (close)="onBidClickClose()" (send)="onBidClickSend()" (description)="onBidKeyDescription($event)"
+              (price)="onBidKeyPrice($event)"></bid-dialog>
+  <main-list  [ngClass]="{'element-blur': blur}" *ngIf="pageMargin > 0" class="main-content-element" [style.min-width.px]="3*width"
              [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0"
              [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
-  <main-map *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-map-container main-content-element"
+  <main-map [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 3 * width && pageMargin > -3 * width" class="main-map-container main-content-element"
             [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [categories]="categories"
             [searchListener]="searchListener" [result]="result"></main-map>
-  <main-wall *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.min-width.px]="3*width"
+  <main-wall [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 0" class="main-content-element wall-content" [style.min-width.px]="3*width"
              [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"
              [categories]="categories"></main-wall>
 </div>

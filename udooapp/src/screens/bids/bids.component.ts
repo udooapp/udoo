@@ -158,7 +158,6 @@ export class BidComponent implements OnInit {
   }
 
   public onClickSendMoney(index: number) {
-    console.log(this.data[index]);
     if (index >= 0 && index < this.data.length) {
       this.bidService.sendPayment(this.data[index].bid).subscribe(() => {
         this.data[index].paymentState = 4;

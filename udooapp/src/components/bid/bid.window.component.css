@@ -8,7 +8,7 @@ pid-dialog{
 
 @media (min-width: 2000px) {
   .pid-dialog-window {
-    margin-left: 20%;
+    margin-left: 25%;
     width: 50%;
   }
 
@@ -30,7 +30,7 @@ pid-dialog{
 @media (max-width: 960px) {
   .pid-dialog-window {
     width: 50%;
-    margin-left: 22%;
+    margin-left: 25%;
   }
 
   .pid-content-container{
@@ -41,7 +41,7 @@ pid-dialog{
 @media (max-width: 641px) {
   .pid-dialog-window {
     width: 80%;
-    margin-left: 7%;
+    margin-left: 10%;
   }
   .pid-content-container{
     margin: 12% 5% 5% 5%;

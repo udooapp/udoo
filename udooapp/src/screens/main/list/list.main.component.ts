@@ -24,7 +24,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   public type: number = 0;
   public search: string = '';
   public services: any[] = [];
-  public scrolledDown: boolean = true;
+  public scrolledDown: boolean = false;
   private loaded = false;
   private noMoreElement: boolean = false;
   public serviceMargin: number = 0;
@@ -68,6 +68,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
+
         this.searchListener.loadMoreElementMap();
       }
     });
@@ -154,7 +155,10 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   }
 
   public onClickOpen(element: any) {
-    this.router.navigate([DETAIL + element.id + '/' + (element.type ? 1 : 0) + '/' + 0]);
+    this.searchListener.onClickService(element.id, element.type, element.location);
+  }
+  public onClickSendOffer(element: any) {
+    this.searchListener.onBidClickSendOffer(element.type, element.id);
   }
 
   public onKey(event: any): void {

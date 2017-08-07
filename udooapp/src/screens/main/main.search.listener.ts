@@ -3,8 +3,9 @@ export interface MainSearchListener{
   onCategoryChange(id);
   onTypeChangeId(index);
   onClickResultDropdown(index);
+  onClickService(id: number, type: boolean, location: string);
   loadMoreElementMap();
+  onBidClickSendOffer(type: boolean, id: number);
   getSearchData(): any;
-  getData(page: number);
-  notifyScrollTo(pos: number);
+  getData(page: number)
 }

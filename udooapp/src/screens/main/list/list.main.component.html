@@ -12,7 +12,7 @@
     <div class="main-list-service-button-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" >
       <div class="main-list-service-button main-list-service-button-detail" (click)="onClickOpen(item)">Detail</div>
       <div class="main-list-service-button main-list-service-button-bookmarks">Bookmarks</div>
-      <div class="main-list-service-button main-list-service-button-send-offer">Send Offer</div>
+      <div class="main-list-service-button main-list-service-button-send-offer" (click)="onClickSendOffer(item)">Send Offer</div>
     </div>
   </div>
   <div *ngIf="scrolledDown" class="loader">Loading....</div>

@@ -9,13 +9,19 @@ import {ListMainController} from "./list/list.main.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {SearchController} from "../../controllers/search.controller";
 import {MenuController} from "../../controllers/menu.controller";
+import {DETAIL} from "../../app/app.routing.module";
+import {Router} from "@angular/router";
+import {ServiceDialogController} from "../../components/service/service.window.controller";
+import {OfferService} from "../../services/offer.service";
+import {RequestService} from "../../services/request.service";
+import {BidService} from "../../services/bid.service";
 
 
 @Component({
   selector: 'main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
-  providers: [MapService]
+  providers: [MapService, OfferService, RequestService, BidService]
 })
 export class MainComponent extends ConversionMethods implements OnInit, OnDestroy, AfterViewChecked, MainSearchListener {
   private PAGE_ANIM: string = 'page';
@@ -43,13 +49,22 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   private pageAnim1: string = '';
   private pageAnim2: string = '';
   public tabAnimation = '';
+
   public pagerMargin: number = 0;
   public searchVisibility: boolean = false;
   private swipeEnabled: boolean = true;
 
-  constructor(private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
+  //ServiceDialog
+  private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
+  public blur: boolean = false;
+
+  //BidDialog
+  public showBid: boolean = false;
+  bid: any = {price: 0, description: '', sid: 0, type: false};
+
+  constructor(private bidService: BidService, private offerService: OfferService, private requestService: RequestService, private serviceDialogController: ServiceDialogController, private router: Router, private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
     super();
-    searchController.onClickSearchButton$.subscribe((value) => {
+    searchController.onClickSearchButton$.subscribe(() => {
       this.searchVisibility = true;
     });
 
@@ -109,10 +124,12 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       }
       this.el2.addEventListener('transitionend', function (e) {
         e.preventDefault();
-        if (t.pagerMargin > 25) {
-          t.pagerMargin = 50;
-        } else {
-          t.pagerMargin = 0;
+        if (t.pagerMargin != 0 && t.pagerMargin != 50) {
+          if (t.pagerMargin > 25) {
+            t.pagerMargin = 50;
+          } else {
+            t.pagerMargin = 0;
+          }
         }
       });
     }
@@ -150,7 +167,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
               break;
             case 1:
               t.pageMargin = 0;
-              t.pagerMargin = 0;
               t.mapController.enableSwipe$.emit(true);
               break;
             case 2:
@@ -168,7 +184,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
           let touchZone = t.width * 0.15;
-          t.swipeEnabled = (t.page == 2) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone);
+          t.swipeEnabled = !t.blur && ((t.page == 2) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone));
           if (t.page == 1 && t.swipeEnabled) {
             t.mapController.enableSwipe$.emit(false);
           }
@@ -359,7 +375,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           this.pageAnim0 = this.PAGE_ANIM + 0;
           this.pageAnim1 = this.PAGE_ANIM + 1;
           this.pageAnim2 = this.PAGE_ANIM + 2;
-          this.pagerMargin = 0;
           break;
         case 2:
           this.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
@@ -367,6 +382,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           this.pageAnim1 = this.PAGE_ANIM + 0;
           this.pageAnim2 = this.PAGE_ANIM + 1;
       }
+      this.pagerMargin = 0;
       this.tabAnimation = this.TAB_ANIM + pageIndex;
       this.searchController.onChangeSearchButtonVisibility$.emit(this.page != 2);
 
@@ -526,4 +542,191 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.pagerMargin = 0;
     }
   }
+
+  onClickService(id: number, type: boolean, location: string) {
+    let coordinate = this.getCoordinates(location)
+    this.elementCoordinates.lat = coordinate.lat;
+    this.elementCoordinates.lng = coordinate.lng;
+    this.elementCoordinates.dist = 0;
+    this.loadDialog(type, id);
+  }
+
+//Service dialog methods
+  private loadDialog(type: boolean, id: number) {
+    this.serviceDialogController.loading$.emit(true);
+    if (type) {
+      this.offerService.getOfferDialogData(id).subscribe(
+        value => {
+          this.blur = true;
+          let data: any = {service: value.offer, user: value.user};
+          this.serviceDialogController.setData$.emit(data);
+        },
+        error => {
+          this.blur = false;
+          this.serviceDialogController.setData$.emit(null);
+          this.dialog.notifyError(error)
+        }
+      );
+    } else {
+      this.requestService.getRequestDialogData(id).subscribe(
+        value => {
+          this.blur = true;
+          let data: any = {service: value.request, user: value.user};
+          this.serviceDialogController.setData$.emit(data);
+        },
+        error => {
+          this.blur = false;
+          this.serviceDialogController.setData$.emit(null);
+          this.dialog.notifyError(error)
+        }
+      );
+    }
+  }
+
+  public onClickNext(value: any) {
+    let t = this.searchElement(true);
+    if (t != null) {
+      let type: boolean = value.oid;
+      let id = !type ? value.rid : value.oid;
+      if ((type != t.type || id != t.id) && t.dist >= this.elementCoordinates.dist) {
+        this.elementCoordinates.dist = t.dist;
+        this.loadDialog(t.type, t.id);
+      } else {
+        this.serviceDialogController.setData$.emit(null);
+      }
+    } else {
+      this.serviceDialogController.setData$.emit(null);
+    }
+  }
+
+  public onClickPrevious(value: any) {
+    let t = this.searchElement(false);
+    if (t != null) {
+      let type: boolean = value.oid;
+      let id = !type ? value.rid : value.oid;
+      if ((type != t.type || id != t.id) && t.dist <= this.elementCoordinates.dist) {
+        this.elementCoordinates.dist = t.dist;
+        this.loadDialog(t.type, t.id);
+      } else {
+        this.serviceDialogController.setData$.emit(null);
+      }
+    } else {
+      this.serviceDialogController.setData$.emit(null);
+    }
+  }
+
+  public onClickOpen(element: any) {
+    let type: boolean = element.rid;
+    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
+  }
+
+  public onClickClose() {
+    this.blur = false;
+  }
+
+  private searchElement(direction: boolean): any {
+    let req = this.calculateMinDistance(this.mapData.requestsWindow, direction);
+    let off = this.calculateMinDistance(this.mapData.offersWindow, direction);
+
+    if (req == null) {
+      if (off == null) {
+        return null;
+      }
+      return {id: off[0], type: true, dist: off[1]}
+    }
+    if (off == null) {
+      if (req == null) {
+        return null;
+      }
+      return {id: req[0], type: false, dist: req[1]}
+    }
+    if (direction) {
+      let type: boolean = req[1] > off[1];
+      return {id: type ? off[0] : req[0], type: type, dist: !type ? req[1] : off[1]}
+    } else {
+      let type = req[1] < off[1];
+      return {id: type ? off[0] : req[0], type: type, dist: !type ? req[1] : off[1]}
+    }
+  }
+
+  private calculateMinDistance(list: any[], direction: boolean): any {
+    let closest = -1;
+    let R = 6371; // radius of earth in km
+
+    let distance: number = direction ? Number.MAX_VALUE : 0;
+    for (let i = 0; i < list.length; i++) {
+      let coordinate = this.getCoordinates(list[i].location);
+      if (coordinate != null) {
+        let dLat = this.rad(coordinate.lat - this.elementCoordinates.lat);
+        let dLong = this.rad(coordinate.lng - this.elementCoordinates.lng);
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(this.rad(this.elementCoordinates.lat)) * Math.cos(this.rad(this.elementCoordinates.lat)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c;
+        if (direction) {
+          if (d < distance && d > this.elementCoordinates.dist && d != 0) {
+            closest = i;
+            distance = d;
+          }
+        } else {
+          if (d > distance && d < this.elementCoordinates.dist && d != 0) {
+            closest = i;
+            distance = d;
+          }
+        }
+      }
+    }
+    if (closest == -1) {
+      return null;
+    }
+    return [list[closest].oid ? list[closest].oid : list[closest].rid, distance];
+  }
+
+  private rad(x) {
+    return x * Math.PI / 180;
+  }
+
+  public getCoordinates(location: string) {
+    if (!location.match('address') && !location.match('coordinate')) {
+      return null;
+    }
+    return JSON.parse(location).coordinate;
+  }
+
+  //Bid Dialog
+  onBidClickClose() {
+    this.showBid = false;
+  }
+
+  onClickServiceDialogSendBid(event) {
+    this.onBidClickSendOffer(event.oid, event.oid ? event.oid : event.rid)
+  }
+
+  onBidClickSendOffer(type: boolean, id: number) {
+    this.showBid = true;
+    this.bid.type = type;
+    this.bid.sid = id;
+    this.bid.price = '';
+    this.bid.description = '';
+
+  }
+
+  onBidClickSend() {
+    this.bidService.savePid(this.bid).subscribe(
+      data => {
+        this.dialog.sendMessage("Bid sent!");
+      },
+      error => {
+        this.dialog.notifyError(error);
+      });
+  }
+
+  onBidKeyPrice(event) {
+    this.bid.price = event;
+  }
+
+  onBidKeyDescription(event) {
+    this.bid.description = event;
+  }
+
 }

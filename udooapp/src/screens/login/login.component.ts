@@ -202,8 +202,6 @@ export class LoginComponent implements OnInit {
         this.accessToken = data.access_token;
         // alert(accessToken);
         // $loginStatus.html('Access Token: ' + data.access_token);
-        console.log('data token:' + data.access_token);
-        console.log('data: ' + JSON.stringify(data));
         this.getDataProfile();
 
       });
@@ -215,7 +213,6 @@ export class LoginComponent implements OnInit {
     this.http.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + this.accessToken).subscribe(
       response => {
         let data = response.json();
-        console.log(JSON.stringify(data));
       },
       error => {
         console.log(error)

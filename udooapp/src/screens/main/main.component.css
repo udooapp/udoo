@@ -10,6 +10,7 @@
   box-shadow: 1px 1px 1px #CACACA;
   -webkit-flex-direction: row;
   font-size: 14pt;
+  transition-delay: 1s;
   -webkit-transition: margin-top 500ms; /* Safari */
   transition: margin-top 500ms;
   z-index: 5;
@@ -56,6 +57,13 @@
   height:100%;
   display: inline-block;
   animation-duration: 250ms;
+}
+.element-blur{
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
 }
 @keyframes page1{
   to {margin-left: 0;}

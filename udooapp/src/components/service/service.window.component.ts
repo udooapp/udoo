@@ -9,12 +9,13 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../gallery/gallery.component";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ServiceDetailComponent} from "../../screens/servicedetail/servicedetail.component";
+import {ContactService} from "../../services/contact.service";
 
 @Component({
   selector: 'service-dialog',
   templateUrl: './service.window.component.html',
   styleUrls: ['./service.window.component.css'],
-  providers: [BidService]
+  providers: [BidService, ContactService]
 })
 
 export class ServiceDialogComponent implements AfterViewChecked {
@@ -37,13 +38,14 @@ export class ServiceDialogComponent implements AfterViewChecked {
   imageClose: number = 0;
   pictureOpen: number = -1;
   added: boolean = false;
+  contactAdded: boolean = false;
   showBid: boolean = false;
-  bid: any = {price: 0, description: '', sid: 0, type: false};
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() scroll: EventEmitter<number> = new EventEmitter();
+  @Output() sendOffer: EventEmitter<any> = new EventEmitter();
 
   ngAfterViewChecked(): void {
 
@@ -60,11 +62,16 @@ export class ServiceDialogComponent implements AfterViewChecked {
             }
           });
         }
-        let buttonText = document.getElementById('service-dialog-more-button');
-        if (buttonText != null) {
-          let th = this;
-          buttonText.addEventListener('touchend', function (event) {
-            th.onClickOpen();
+        let buttonMore = document.getElementById('service-dialog-more-button');
+        if (buttonMore != null) {
+          buttonMore.addEventListener('touchend', function (event) {
+            t.onClickOpen();
+          })
+        }
+        let buttonContact = document.getElementById('service-dialog-add-to-contact');
+        if (buttonContact != null) {
+          buttonContact.addEventListener('touchend', function (event) {
+            t.onClickAddToContact();
           })
         }
         el.scrollTop = 0;
@@ -128,9 +135,10 @@ export class ServiceDialogComponent implements AfterViewChecked {
         }, false);
       }
     }
+
   }
 
-  constructor(private controller: ServiceDialogController, private bidService: BidService, private dialog: DialogController, private notifier: NotifierController) {
+  constructor(private controller: ServiceDialogController, private bidService: BidService, private dialog: DialogController, private notifier: NotifierController, private contactService: ContactService) {
     notifier.pageChanged$.subscribe(action => {
       if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
@@ -158,10 +166,6 @@ export class ServiceDialogComponent implements AfterViewChecked {
         this.service = value.service;
         this.user = value.user;
         this.movedCoordX = 0;
-        this.bid.type = this.service.oid;
-        this.bid.sid = this.bid.type ? this.service.oid : this.service.rid;
-        this.bid.price = '';
-        this.bid.description = '';
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
         if (star == 0) {
@@ -273,7 +277,9 @@ export class ServiceDialogComponent implements AfterViewChecked {
       return '';
     }
   }
-
+  onClickSendOffer(){
+    this.sendOffer.emit(this.service);
+  }
   onClickOpen() {
     this.open.emit(this.service);
   }
@@ -296,43 +302,32 @@ export class ServiceDialogComponent implements AfterViewChecked {
     }
   }
 
-  onClickBidClose() {
-    this.showBid = false;
-    this.visible = true;
-  }
-
-  onClickSendOffer() {
-    this.visible = false;
-    this.showBid = true;
-  }
-
-  onClickSend() {
-    this.bidService.savePid(this.bid).subscribe(
-      data => {
-        this.dialog.sendMessage("Bid sent!");
-      },
-      error => {
-        this.dialog.notifyError(error);
-      });
-  }
-
-  onKeyPrice(event) {
-    this.bid.price = event;
-  }
-
-  onKeyDescription(event) {
-    this.bid.description = event;
-  }
 
   containerScroll() {
     let e: HTMLElement = document.getElementById("service-container");
-    this.scrollTop = e.scrollTop;
-    if (this.scrollTop > 50) {
-      this.scrollTop = 50;
-    } else if (this.scrollTop < 0) {
-      this.scrollTop = 0;
+    if (e != null) {
+      this.scrollTop = e.scrollTop;
+      if (this.scrollTop > 50) {
+        this.scrollTop = 50;
+      } else if (this.scrollTop < 0) {
+        this.scrollTop = 0;
+      }
+      this.scroll.emit(this.scrollTop);
     }
-    this.scroll.emit(e.scrollTop);
+  }
+
+  public onClickAddToContact() {
+    if (!this.contactAdded) {
+      this.contactService.addContact(this.user.uid).subscribe(
+        message => {
+          this.dialog.sendMessage(message);
+          this.contactAdded = true;
+        },
+        error => {
+          this.dialog.sendMessage(error);
+        }
+      )
+    }
   }
 
   public convertMillisToDate(millis: number): string {
