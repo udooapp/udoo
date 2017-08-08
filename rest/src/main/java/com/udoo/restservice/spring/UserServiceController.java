@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -174,6 +175,9 @@ public class UserServiceController implements IUserServiceController {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
         if (user != null) {
             UserResponse resp = new UserResponse();
+            user.setFacebookid(0);
+            user.setGoogleid("");
+            user.setPassword("");
             resp.setUser(user);
             resp.setNotifications(notificationRepository.findAllByUid(user.getUid()));
             for(Notification notification : resp.getNotifications()){
@@ -182,6 +186,16 @@ public class UserServiceController implements IUserServiceController {
                     notificationRepository.save(notification);
                     notification.setChecked(false);
                 }
+            }
+            if(user.getActive() < 15){
+                List<String> systemNotification = new ArrayList<>();
+                if(((user.getActive() >> 3) & 1) == 0){
+                    systemNotification.add("Please, activate your email address");
+                }
+                if(((user.getActive() >> 3) & 3) == 0){
+                    systemNotification.add("Please, activate your phone number");
+                }
+                resp.setSystemNotification(systemNotification);
             }
             resp.setReminders(bidResult.getUserReminders((long) user.getUid()));
             return new ResponseEntity<>(resp, HttpStatus.OK);

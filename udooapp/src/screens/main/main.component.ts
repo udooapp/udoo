@@ -89,9 +89,10 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           case 2:
             t.pageMargin = -3 * t.width;
         }
-        t.pageContainerHeight = window.innerHeight - 110;
+        t.pageContainerHeight = document.getElementById('content-container').offsetHeight - 45;
       }
     });
+
     window.addEventListener("resize", function () {
       let el = document.getElementById("tab-pager");
       if (el != null) {
@@ -107,11 +108,20 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           case 2:
             t.pageMargin = -3 * t.width;
         }
-        t.pageContainerHeight = window.innerHeight - 110;
+        t.pageContainerHeight = document.getElementById('content-container').offsetHeight - 45;
       }
     });
-    this.pageContainerHeight = window.innerHeight - 110;
-
+    this.pageContainerHeight = document.getElementById('content-container').offsetHeight - 45;
+    let contentContainer = document.getElementById('app-system-notification-container');
+    if (contentContainer) {
+      contentContainer.addEventListener('DOMSubtreeModified', function () {
+        if (contentContainer) {
+          t.pageContainerHeight = window.innerHeight - contentContainer.offsetHeight - 110;
+        } else {
+          t.pageContainerHeight = window.innerHeight - 110;
+        }
+      });
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -207,7 +217,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
               } else if (t.pageMargin > t.width * 3) {
                 t.pageMargin = t.width * 3;
               }
-              if (t.margin < t.width + t.width / 2){
+              if (t.margin < t.width + t.width / 2) {
                 t.page = 1;
                 t.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
               }
@@ -251,7 +261,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.page = 2;
       this.tabAnimation += 2;
     }
-    console.log('PAGE: ' + this.page);
     this.tokenService.setPageState(this.page);
     switch (this.page) {
       case 0:

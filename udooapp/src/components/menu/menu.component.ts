@@ -86,7 +86,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if(!this.disableSwipe){
+    if (!this.disableSwipe) {
       this.attachSwipeToMenu();
     } else {
       this.swipeAttached = false;
@@ -102,7 +102,8 @@ export class MenuComponent implements OnInit, AfterViewChecked {
     this.attachSwipeToMenu();
     this.checkUser(false);
   }
-  public attachSwipeToMenu(){
+
+  public attachSwipeToMenu() {
     let t = this;
     let el = document.getElementById('swipe-area');
     if (el != null && !this.swipeAttached) {
@@ -142,6 +143,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
       }, false);
     }
   }
+
   public checkUser(send: boolean) {
     let token = this.tokenService.getToken();
     if (token != null && token.length > 0) {
@@ -182,7 +184,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
           this.notifications.offer = 0;
           this.notifications.request = 0;
 
-          if(data.notifications && data.notifications.length > 0) {
+          if (data.notifications && data.notifications.length > 0) {
             for (let i = 0; i < data.notifications.length; ++i) {
               switch (data.notifications[i].type) {
                 case 0:
@@ -196,6 +198,9 @@ export class MenuComponent implements OnInit, AfterViewChecked {
                   break;
               }
             }
+          }
+          if (data.systemNotification) {
+            this.notifier.systemNotification$.emit(data.systemNotification);
           }
           this.notifier.notification$.emit(data.notifications.length);
           if (data.notifications != null && data.notifications.length > 0) {

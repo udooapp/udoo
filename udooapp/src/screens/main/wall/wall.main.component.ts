@@ -5,7 +5,6 @@ import {DialogController} from "../../../controllers/dialog.controller";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {Router} from "@angular/router";
 import {CONTACT, DETAIL} from "../../../app/app.routing.module";
-import {type} from "os";
 
 
 @Component({
@@ -41,7 +40,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
         this.loadMoreElement();
       }
     });
-    notifier.userLogOut$.subscribe(value => {
+    notifier.userLogOut$.subscribe(() => {
       this.ngOnInit();
     });
   }

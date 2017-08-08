@@ -10,11 +10,17 @@ dialog{
     margin-left: 35%;
     width: 20%;
   }
+  .dialog-window-height{
+    height: 30%;
+  }
 }
 @media (min-width: 961px) {
   .dialog-window{
     margin-left: 35%;
     width: 20%;
+  }
+  .dialog-window-height{
+    height: 40%;
   }
 }
 
@@ -23,12 +29,18 @@ dialog{
     width: 40%;
     margin-left: 25%;
   }
+  .dialog-window-height{
+    height: 55%;
+  }
 }
 
 @media (max-width: 641px) {
   .dialog-window{
     width: 70%;
     margin-left: 10%;
+  }
+  .dialog-window-height{
+    height: 75%;
   }
 }
 .dialog-button-container{
@@ -48,27 +60,32 @@ dialog{
 }
 
 .dialog-window{
-  position: absolute;
-  top:0;
   background-color: #FAFAFA;
+  position: relative;
   border-radius: 5px;
   padding: 2% 3%;
   min-height: 150px;
-  margin-top: 150px;
+  overflow: hidden;
+  max-height: 75%;
+  margin-top: 120px;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
   text-align: center;
 }
-.error-title{
-  font-weight: bolder;
-  font-size: 20pt;
+.dialog-window-height{
+  text-align: left;
 }
-.error-message{
+.dialog-error-message{
   color: #2B6665;
   margin-top: 5%;
+  height: auto;
   margin-bottom: 5%;
-  font-size: 18pt;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100% - 120px);
+  word-wrap: break-word;
+  font-size: 16pt;
 }
-.error-button{
+.dialog-error-button{
   cursor: pointer;
   padding: 10px 5px;
   border-radius: 5px;
@@ -84,4 +101,41 @@ dialog{
 }
 .error-button:hover{
   opacity: 0.8;
+}
+.service-dialog-close-background {
+  float: right;
+  right: 10px;
+  top: 10px;
+  position: absolute;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.dialog-close-background:hover {
+  background-color: #E5E5E5;
+}
+.dialog-close {
+  background: #378281;
+  height: 25px;
+  position: relative;
+  width: 4px;
+  float: right;
+  margin-top: 5px;
+  margin-right: 16px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.dialog-close:after {
+  background: #378281;
+  content: "";
+  height: 4px;
+  left: -10px;
+  position: absolute;
+  border-radius: 1px;
+  top: 10px;
+  width: 25px;
 }

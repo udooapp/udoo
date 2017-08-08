@@ -1,8 +1,6 @@
 import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
 import {MapService} from "../../../services/map.service";
 import {Offer} from "../../../entity/offer";
-import {DETAIL} from "../../../app/app.routing.module";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {NotifierController} from "../../../controllers/notify.controller";
 import {OfferService} from "../../../services/offer.service";
@@ -62,13 +60,12 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     }
   }
 
-  constructor(private router: Router, private notifier: NotifierController, private listController: ListMainController) {
+  constructor(private notifier: NotifierController, private listController: ListMainController) {
     super();
     this.swipeWidth = window.innerWidth * 0.85;
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
-
         this.searchListener.loadMoreElementMap();
       }
     });

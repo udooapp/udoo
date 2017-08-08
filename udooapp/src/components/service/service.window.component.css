@@ -346,7 +346,7 @@ dialog {
   display: -webkit-flex;
   display: flex;
   position: absolute;
-  margin-top: -49px;
+  bottom: 0;
   animation-duration: 250ms;
   flex-direction: row;
   background-color: #FFFFFF;

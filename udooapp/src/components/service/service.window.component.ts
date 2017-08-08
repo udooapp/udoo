@@ -4,18 +4,16 @@ import {
 
 import 'rxjs/add/operator/switchMap';
 import {ServiceDialogController} from "./service.window.controller";
-import {BidService} from "../../services/bid.service";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../gallery/gallery.component";
 import {NotifierController} from "../../controllers/notify.controller";
-import {ServiceDetailComponent} from "../../screens/servicedetail/servicedetail.component";
 import {ContactService} from "../../services/contact.service";
 
 @Component({
   selector: 'service-dialog',
   templateUrl: './service.window.component.html',
   styleUrls: ['./service.window.component.css'],
-  providers: [BidService, ContactService]
+  providers: [ContactService]
 })
 
 export class ServiceDialogComponent implements AfterViewChecked {
@@ -87,6 +85,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
             let touch = e.touches[0];
             t.startCoordX = touch.pageX;
             t.coordY = touch.pageY;
+            t.coordStartY = t.coordY;
             t.scrollDirection = 0;
           }
         }, false);
@@ -116,7 +115,8 @@ export class ServiceDialogComponent implements AfterViewChecked {
             let touch = e.touches[0];
             if (t.scrollDirection == 0 || t.scrollDirection == 1) {
 
-              el.scrollTop = el.scrollTop + (-1 * (touch.pageY - t.coordStartY));
+              el.scrollTop = el.scrollTop -(touch.pageY - t.coordStartY);
+              console.log(el.scrollTop);
               t.coordStartY = touch.pageY;
             }
             if (t.scrollDirection == 0 || t.scrollDirection == -1) {
@@ -138,7 +138,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   }
 
-  constructor(private controller: ServiceDialogController, private bidService: BidService, private dialog: DialogController, private notifier: NotifierController, private contactService: ContactService) {
+  constructor(private controller: ServiceDialogController, private dialog: DialogController, private notifier: NotifierController, private contactService: ContactService) {
     notifier.pageChanged$.subscribe(action => {
       if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
@@ -146,14 +146,14 @@ export class ServiceDialogComponent implements AfterViewChecked {
       }
     });
     let t = this;
-    this.maxHeight = window.innerHeight - 150;
+    this.maxHeight = document.getElementById('content-container').clientHeight - 95;;
     window.addEventListener("orientationchange", function () {
-      t.maxHeight = window.innerHeight - 150;
+      t.maxHeight = document.getElementById('content-container').clientHeight - 95;
       t.containerScroll();
     });
     window.addEventListener("resize", function () {
       t.containerScroll();
-      t.maxHeight = window.innerHeight - 150;
+      t.maxHeight = document.getElementById('content-container').clientHeight - 95;;
     });
     controller.setData$.subscribe(value => {
       this.scrollTop = 0;
@@ -309,7 +309,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
       this.scrollTop = e.scrollTop;
       if (this.scrollTop > 50) {
         this.scrollTop = 50;
-      } else if (this.scrollTop < 0) {
+      } else if (this.scrollTop < 25) {
         this.scrollTop = 0;
       }
       this.scroll.emit(this.scrollTop);

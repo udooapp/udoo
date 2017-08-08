@@ -1,10 +1,13 @@
-<div class="dialog-background" *ngIf="error.length > 0 || message.length > 0 || question.length > 0">
-  <div class="dialog-window">
-    <div class="error-message">{{error ||message||question}}</div>
+<div class="dialog-background" *ngIf="error.length > 0 || message.length > 0 || question.length > 0 || closable.length > 0">
+  <div class="dialog-window" [ngClass]="{'dialog-window-height' : closable.length > 100}">
+    <div class="dialog-close-background" (click)="onClickClose()">
+      <div class="dialog-close"></div>
+    </div>
+    <div class="dialog-error-message">{{error ||message||question||closable}}</div>
     <div class="dialog-button-container">
-      <div *ngIf="question.length > 0" class="error-button button-light double" (click)="onClickCancel()">No</div>
-      <div class="error-button button-dark simple" (click)="onClickDialogButton()">{{question.length > 0 ? "Yes" :
-        message.length > 0 ? 'Ok' : 'Try Again'}}
+      <div *ngIf="question.length > 0" class="dialog-error-button button-light double" (click)="onClickCancel()">No</div>
+      <div class="dialog-error-button button-dark simple" (click)="onClickDialogButton()">{{question.length > 0 ? "Yes" :
+        message.length > 0 || closable.length > 0 ? 'Ok' : 'Try Again'}}
       </div>
     </div>
   </div>

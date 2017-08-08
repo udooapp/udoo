@@ -3,7 +3,9 @@
 <div class="header">
   <div class="header-button" id="menu-button"
        [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
-       (click)="onClickMenu()"><div *ngIf="menuButton && notificationCounter > 0" class="header-notification-counter">{{notificationCounter}}</div></div>
+       (click)="onClickMenu()">
+    <div *ngIf="menuButton && notificationCounter > 0" class="header-notification-counter">{{notificationCounter}}</div>
+  </div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>
@@ -12,8 +14,11 @@
 <div class="content">
   <side-menu [showMenu]="visibleMenu" (menuItemClicked)="menuItemClicked($event)"
              (activatedUser)="activated = $event"></side-menu>
-  <div (scroll)="onScroll()" id="content-container">
+  <div (scroll)="onScroll()" id="content-container" [style.height.px]="contentContainerHeight">
     <router-outlet></router-outlet>
+  </div>
+  <div id="app-system-notification-container" class="app-system-notification-container">
+    <div *ngFor="let item of systemNotification; let i = index" class="app-system-notification" (click)="onClickMore(i)">{{item.length > 30 ? item.substring(0, 27) + '...' : item}}</div>
   </div>
 </div>
 <message-dialog></message-dialog>

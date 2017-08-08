@@ -14,8 +14,9 @@ export class NotifierController {
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<string>;
   public notification$: EventEmitter<number>;
-
+  public systemNotification$: EventEmitter<any>;
   public userModification$: EventEmitter<number>;
+  public userNotification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
   public userScrolledToTheBottom$: EventEmitter<boolean>;
   public userLogOut$: EventEmitter<boolean>;
@@ -30,6 +31,8 @@ export class NotifierController {
     this.userScrolledToTheBottom$ = new EventEmitter();
     this.userLogOut$ = new EventEmitter();
     this.notification$ = new EventEmitter();
+    this.systemNotification$ = new EventEmitter();
+    this.userNotification$ = new EventEmitter();
   }
 
   public sendVerification() {

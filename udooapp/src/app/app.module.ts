@@ -90,7 +90,7 @@ import {MenuController} from "../controllers/menu.controller";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, SearchController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController, MenuController],
+  providers: [AuthGuard, TokenService, NotifierController, UserService, SearchController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController, MenuController],
   bootstrap: [AppComponent]
 })
 export class AppModule {
