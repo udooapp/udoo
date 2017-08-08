@@ -17,11 +17,11 @@
   <a *ngIf="user.active < 15 && login" routerLink="/activation" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image" src="./assets/activation.png" i18n>Account activation</a>
   <a routerLink="/bids" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/bids.png">Bids</a>
+    class="menu-link-image" src="./assets/bids.png"><div *ngIf="notifications.bids > 0" class="menu-button-notification-counter">{{notifications.bids}}</div>Bids</a>
   <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/request.png" i18n>My service request</a>
+    class="menu-link-image" src="./assets/request.png" i18n><div *ngIf="notifications.request > 0" class="menu-button-notification-counter">{{notifications.request}}</div>My service request</a>
   <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/offers.png" i18n>My service
+    class="menu-link-image" src="./assets/offers.png" i18n><div *ngIf="notifications.offer > 0" class="menu-button-notification-counter">{{notifications.offer}}</div>My service
     offer</a>
   <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"

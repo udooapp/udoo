@@ -11,5 +11,5 @@ public interface ICommentServiceController {
 
     ResponseEntity<?> saveComment(ServletRequest req, Comment comment);
 
-    ResponseEntity<?>  getServiceComment(int oid, int pos, boolean type);
+    ResponseEntity<?> getServiceComments(int oid, int pos, boolean type);
 }

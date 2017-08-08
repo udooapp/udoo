@@ -13,6 +13,8 @@ export class NotifierController {
   private user: User;
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<string>;
+  public notification$: EventEmitter<number>;
+
   public userModification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<User>;
   public userScrolledToTheBottom$: EventEmitter<boolean>;
@@ -27,6 +29,7 @@ export class NotifierController {
     this.userDataPipe$ = new EventEmitter();
     this.userScrolledToTheBottom$ = new EventEmitter();
     this.userLogOut$ = new EventEmitter();
+    this.notification$ = new EventEmitter();
   }
 
   public sendVerification() {
@@ -52,7 +55,7 @@ export class NotifierController {
     }
   }
 
-  sendNotification(router: Router, route: string, data: any[]) {
+  sendReminderNotification(router: Router, route: string, data: any[]) {
     if (navigator != null && config.mobile) {
       this.route = route;
       this.router = router;

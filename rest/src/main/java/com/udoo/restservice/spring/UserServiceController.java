@@ -4,6 +4,7 @@ package com.udoo.restservice.spring;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udoo.dal.dao.IBidResult;
+import com.udoo.dal.entities.Notification;
 import com.udoo.dal.entities.Token;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
 
@@ -49,6 +51,9 @@ public class UserServiceController implements IUserServiceController {
 
     @Resource
     private IHistoryElementRepository historyElementRepository;
+
+    @Resource
+    private INotificationRepository notificationRepository;
 
     @Autowired
     private EmailService emailService;
@@ -170,7 +175,14 @@ public class UserServiceController implements IUserServiceController {
         if (user != null) {
             UserResponse resp = new UserResponse();
             resp.setUser(user);
-            resp.setBids(bidResult.getBids((long) user.getUid()));
+            resp.setNotifications(notificationRepository.findAllByUid(user.getUid()));
+            for(Notification notification : resp.getNotifications()){
+                if(!notification.isChecked()){
+                    notification.setChecked(true);
+                    notificationRepository.save(notification);
+                    notification.setChecked(false);
+                }
+            }
             resp.setReminders(bidResult.getUserReminders((long) user.getUid()));
             return new ResponseEntity<>(resp, HttpStatus.OK);
         } else {

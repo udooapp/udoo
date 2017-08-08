@@ -3,6 +3,7 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.entities.Comment;
 import com.udoo.dal.entities.CommentResponse;
+import com.udoo.dal.entities.Notification;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
@@ -34,24 +35,27 @@ import static com.udoo.restservice.spring.RestServiceController.USERID;
 public class CommentServiceController implements ICommentServiceController{
 
     @Resource
-    ICommentRepository commentRepository;
+    private ICommentRepository commentRepository;
 
     @Resource
-    IUserRepository userRepository;
+    private IUserRepository userRepository;
 
     @Resource
-    IRequestRepository requestRepository;
+    private IRequestRepository requestRepository;
 
     @Resource
-    IOfferRepository offerRepository;
+    private IOfferRepository offerRepository;
 
     @Resource
-    IContactRepository contactRepository;
+    private IContactRepository contactRepository;
+
+    @Resource
+    private INotificationRepository notificationRepository;
 
     @Override
     @RequestMapping(value="/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveComment(ServletRequest req,@RequestBody Comment comment) {
-        long uid = Long.parseLong(req.getAttribute(USERID).toString());
+        int uid = Integer.parseInt(req.getAttribute(USERID).toString());
         if(comment.getComment().isEmpty()){
             return new ResponseEntity<>("The comment message is empty", HttpStatus.UNAUTHORIZED);
         }
@@ -66,7 +70,7 @@ public class CommentServiceController implements ICommentServiceController{
                 return new ResponseEntity<>("Invalid parameters", HttpStatus.UNAUTHORIZED);
             }
         }
-        if(uid != comment.getUid() && contactRepository.getAllByUidAndCid(uid, comment.getUid()) == null){
+        if(uid != comment.getUid() && contactRepository.getAllByUidAndCid(uid, (int)comment.getUid()) == null){
             return new ResponseEntity<>("First, add to the contacts", HttpStatus.UNAUTHORIZED);
         } else{
             comment.setComment(comment.getComment());
@@ -80,13 +84,28 @@ public class CommentServiceController implements ICommentServiceController{
             comm.setCommentMessage(comment.getComment());
             comm.setDate(comment.getDate());
             comm.setUid((int)comment.getUid());
+            int id = 0;
+            if(comment.isType()){
+                id = offerRepository.findByOid((int)comment.getSid()).getUid();
+            } else {
+
+                id = requestRepository.findByRid((int)comment.getSid()).getUid();
+            }
+            if(id != uid) {
+                Notification notification = new Notification();
+                notification.setId(uid);
+                notification.setUid(id);
+                notification.setType(comment.isType() ? 1 : 2);
+                notification.setChecked(false);
+                notificationRepository.save(notification);
+            }
             return new ResponseEntity<>(comm, HttpStatus.OK);
         }
     }
 
     @Override
     @RequestMapping(value="/", method = RequestMethod.GET)
-    public ResponseEntity<?> getServiceComment(@RequestParam("sid") int oid, @RequestParam("pos")int pos, @RequestParam("type") boolean type) {
+    public ResponseEntity<?> getServiceComments(@RequestParam("sid") int oid, @RequestParam("pos")int pos, @RequestParam("type") boolean type) {
         Pageable page = new PageRequest(pos / 5, 5, Sort.Direction.DESC, "creatingdate");
         List<Comment> comments = commentRepository.findAllBySidAndType(oid, type, page);
         List<CommentResponse> list = new ArrayList<>();

@@ -1,0 +1,9 @@
+CREATE TABLE Notifications(
+  nid INT NOT NULL AUTO_INCREMENT,
+  uid INT NOT NULL,
+  type INT NOT NULL,
+  id INT NOT NULL,
+  checked BOOLEAN,
+  PRIMARY KEY (nid),
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid)
+)

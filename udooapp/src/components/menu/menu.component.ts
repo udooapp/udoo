@@ -30,6 +30,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
   visibleMenu: number = -1;
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
+  notifications = {bids: 0, request: 0, offer: 0};
   login: boolean = false;
   image: string = '';
   menuLoaded: boolean = false;
@@ -177,12 +178,31 @@ export class MenuComponent implements OnInit, AfterViewChecked {
           if (!this.activated && this.checkLogin) {
             this.router.navigate([CREATE]);
           }
+          this.notifications.bids = 0;
+          this.notifications.offer = 0;
+          this.notifications.request = 0;
 
-          if (data.bid != null && data.bid.length > 0) {
-            this.notifier.sendNotification(this.router, REQUEST_LIST, data.bid);
+          if(data.notifications && data.notifications.length > 0) {
+            for (let i = 0; i < data.notifications.length; ++i) {
+              switch (data.notifications[i].type) {
+                case 0:
+                  ++this.notifications.bids;
+                  break;
+                case 1:
+                  ++this.notifications.offer;
+                  break;
+                case 2:
+                  ++this.notifications.request;
+                  break;
+              }
+            }
+          }
+          this.notifier.notification$.emit(data.notifications.length);
+          if (data.notifications != null && data.notifications.length > 0) {
+
           }
           if (data.reminders != null && data.reminders.length > 0) {
-            this.notifier.sendNotification(this.router, REQUEST_LIST, data.reminders);
+            this.notifier.sendReminderNotification(this.router, REQUEST_LIST, data.reminders);
           }
         },
         error => {

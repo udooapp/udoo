@@ -3,7 +3,7 @@
 <div class="header">
   <div class="header-button" id="menu-button"
        [ngClass]="{'header-button-menu' : menuButton, 'header-button-back' : !menuButton}"
-       (click)="onClickMenu()"></div>
+       (click)="onClickMenu()"><div *ngIf="menuButton && notificationCounter > 0" class="header-notification-counter">{{notificationCounter}}</div></div>
   <div class="header-title"><a routerLink="/" routerLinkActive="active" (click)="changeButton()">
     <img class="header-logo" src="./assets/logo.png"></a>
   </div>

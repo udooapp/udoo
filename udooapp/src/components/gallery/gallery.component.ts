@@ -161,21 +161,19 @@ export class GalleryComponent implements AfterViewChecked {
       let t = this;
       if (el != null) {
         this.imageElements.push(el);
-        let coord = {x: 0, y: 0};
+        let coord = 0;
         el.addEventListener('touchstart', function (e) {
           e.preventDefault();
-          coord.x = 0;
-          coord.y = 0;
+          coord = 0;
           t.clicked = false;
         });
         el.addEventListener('touchmove', function (e) {
           e.preventDefault();
-          ++coord.x;
-          ++coord.y;
+          ++coord;
         });
         el.addEventListener('touchend', function (e) {
           e.preventDefault();
-          if (!t.clicked && coord.x < 10 && coord.y < 10) {
+          if (!t.clicked && coord < 5) {
             t.clicked = true;
             t.onClickPicture(i);
           }

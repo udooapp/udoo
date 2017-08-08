@@ -207,6 +207,10 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
               } else if (t.pageMargin > t.width * 3) {
                 t.pageMargin = t.width * 3;
               }
+              if (t.margin < t.width + t.width / 2){
+                t.page = 1;
+                t.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
+              }
               if (t.page == 2 && t.pageMargin > 0) {
                 t.pageMargin = 0;
                 t.margin = t.width;
@@ -247,6 +251,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.page = 2;
       this.tabAnimation += 2;
     }
+    console.log('PAGE: ' + this.page);
     this.tokenService.setPageState(this.page);
     switch (this.page) {
       case 0:

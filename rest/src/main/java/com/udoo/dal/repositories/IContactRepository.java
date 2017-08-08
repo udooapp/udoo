@@ -20,7 +20,7 @@ public interface IContactRepository extends Repository<Contact, Integer> {
 
     Contact save(Contact contact);
 
-    Contact getAllByUidAndCid(long uid, long cid);
+    Contact getAllByUidAndCid(int uid, int cid);
 
     @Modifying
     @Transactional

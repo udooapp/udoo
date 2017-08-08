@@ -20,7 +20,7 @@ export class AppComponent {
   activated: boolean = true;
   public searchVisibility: boolean = false;
   private clickedPage: boolean = false;
-
+  public notificationCounter: number = 0;
   constructor(private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
     MAP;
     tokenService.clearSearchData();
@@ -36,6 +36,9 @@ export class AppComponent {
     searchController.onChangeSearchButtonVisibility$.subscribe(value=>{
       this.searchButton = value;
     });
+    notifier.notification$.subscribe(value=>{
+      this.notificationCounter = value;
+    })
 
   }
   public onClickSearchButton(){

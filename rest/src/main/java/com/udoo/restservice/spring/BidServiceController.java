@@ -43,6 +43,9 @@ public class BidServiceController implements IBidServiceController {
     @Resource
     private IRequestRepository requestRepository;
 
+    @Resource
+    private INotificationRepository notificationRepository;
+
     @Autowired
     private IPaymentService paymentService;
 
@@ -53,6 +56,17 @@ public class BidServiceController implements IBidServiceController {
         bid.setUid(uid);
         bid = bidRepository.save(bid);
         if (bid != null) {
+            Notification notification = new Notification();
+            notification.setChecked(false);
+
+            if (bid.isType()) {
+                notification.setUid(offerRepository.findByOid((int) bid.getSid()).getUid());
+            } else {
+                notification.setUid(offerRepository.findByOid((int) bid.getSid()).getUid());
+            }
+            notification.setType(bid.isType() ? 1 : 2);
+            notification.setId((int) bid.getUid());
+            notificationRepository.save(notification);
             return new ResponseEntity<>("Saved", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Something wrong", HttpStatus.BAD_REQUEST);
@@ -65,7 +79,7 @@ public class BidServiceController implements IBidServiceController {
         Bid bd = bidRepository.findAllByBid(result.getId());
         bd.setAccepted((int) result.getResult());
         bidRepository.save(bd);
-        if(bd.getAccepted()  == 1) {
+        if (bd.getAccepted() == 1) {
             paymentService.reserveSumFromUserToService((int) bd.getUid(), (int) bd.getSid(), bd.isType(), bd.getPrice());
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -87,8 +101,8 @@ public class BidServiceController implements IBidServiceController {
                     resp.setDescription(bid.getDescription());
                     resp.setType(bid.isType());
                     resp.setSid(bid.getSid());
-                    Payment payment = paymentService.getStatusServicePayment((int)bid.getUid(), (int)bid.getSid(), bid.isType());
-                    if(payment != null){
+                    Payment payment = paymentService.getStatusServicePayment((int) bid.getUid(), (int) bid.getSid(), bid.isType());
+                    if (payment != null) {
                         resp.setDate(payment.getDate());
                         resp.setPaymentState(payment.getState());
                     }
@@ -120,7 +134,7 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> deleteBid(ServletRequest req, @RequestParam("bid") long bid) {
         Bid bd = bidRepository.findAllByBid((int) bid);
         if (bd != null) {
-            bidRepository.deleteByBid((int)bid);
+            bidRepository.deleteByBid((int) bid);
             return new ResponseEntity<>("Deleted", HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
@@ -131,10 +145,10 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> confirmBid(ServletRequest req, @RequestParam("bid") int bid) {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
-            if(bd.getAccepted() == 1) {
+            if (bd.getAccepted() == 1) {
                 bd.setAccepted(2);
                 bidRepository.save(bd);
-                paymentService.setConfirmed((int)bd.getUid(), (int)bd.getSid(), bd.isType());
+                paymentService.setConfirmed((int) bd.getUid(), (int) bd.getSid(), bd.isType());
                 return new ResponseEntity<>("Confirmed", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Your bid is not accepted", HttpStatus.UNAUTHORIZED);
@@ -148,11 +162,21 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> sendReminder(ServletRequest req, @RequestParam("bid") int bid) {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
-                if(this.paymentService.sendPaymentReminder((int)bd.getUid(), (int)bd.getSid(), bd.isType(), Integer.parseInt(req.getAttribute(USERID).toString()))) {
-                    return new ResponseEntity<>("Reminder sent", HttpStatus.OK);
+            if (this.paymentService.sendPaymentReminder((int) bd.getUid(), (int) bd.getSid(), bd.isType(), Integer.parseInt(req.getAttribute(USERID).toString()))) {
+                Notification notification = new Notification();
+                notification.setChecked(false);
+                if (bd.isType()) {
+                    notification.setId(offerRepository.findByOid((int) bd.getSid()).getUid());
                 } else {
-                    return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+                    notification.setId(offerRepository.findByOid((int) bd.getSid()).getUid());
                 }
+                notification.setType(0);
+                notification.setUid((int) bd.getUid());
+                notificationRepository.save(notification);
+                return new ResponseEntity<>("Reminder sent", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
+            }
         }
         return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
     }
@@ -162,8 +186,18 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> sendMoney(ServletRequest req, @RequestParam("bid") int bid) {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
-            if(bd.getAccepted() > 1) {
+            if (bd.getAccepted() > 1) {
                 if (this.paymentService.sendMoney((int) bd.getUid(), (int) bd.getSid(), bd.isType())) {
+                    Notification notification = new Notification();
+                    notification.setChecked(false);
+                    if (bd.isType()) {
+                        notification.setUid(offerRepository.findByOid((int) bd.getSid()).getUid());
+                    } else {
+                        notification.setUid(offerRepository.findByOid((int) bd.getSid()).getUid());
+                    }
+                    notification.setType(bd.isType() ? 1 : 2);
+                    notification.setUid((int) bd.getUid());
+                    notificationRepository.save(notification);
                     return new ResponseEntity<>("Money send", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Invalid bid", HttpStatus.NOT_FOUND);
@@ -180,7 +214,7 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> sendBackMoney(ServletRequest req, @RequestParam("bid") int bid) {
         Bid bd = bidRepository.findAllByBid(bid);
         if (bd != null && Integer.parseInt(req.getAttribute(USERID).toString()) == bd.getUid()) {
-            if(bd.getAccepted() == 1) {
+            if (bd.getAccepted() == 1) {
                 if (this.paymentService.sendBackMoney((int) bd.getUid(), (int) bd.getSid(), bd.isType())) {
                     return new ResponseEntity<>("Success", HttpStatus.OK);
                 } else {

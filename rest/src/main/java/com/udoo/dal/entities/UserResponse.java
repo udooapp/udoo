@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class UserResponse {
     private User user;
-    private List<BidResult> bids;
+    private List<Notification> notifications;
     private List<BidResult> reminders;
 
     public User getUser() {
@@ -19,12 +19,12 @@ public class UserResponse {
         this.user = user;
     }
 
-    public List<BidResult> getBids() {
-        return bids;
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
-    public void setBids(List<BidResult> bids) {
-        this.bids = bids;
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     public List<BidResult> getReminders() {
