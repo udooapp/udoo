@@ -28,15 +28,20 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   private TAB_ANIM: string = 'tabPage';
   public page: number = 1;
   public margin: number = 0;
-  public type = 0;
+
   private scriptLoadingPromise: Promise<void>;
-  public categories: any[] = [{cid: -1, name: ''}];
   private error: string;
+
+  //Search Data
   private category: number = -1;
   private searchString = '';
+
+  //Page data
   public mapData: any = {requestsWindow: [], offersWindow: [], mapInit: false};
   public listData: any = {services: [], offerSize: 0, requestSize: 0, more: true};
+
   public searchListener: MainSearchListener = this;
+
   public result: any[];
   public pageMargin: number = 0;
   public pageContainerHeight: number = 0;
@@ -66,6 +71,57 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     super();
     searchController.onClickSearchButton$.subscribe(() => {
       this.searchVisibility = true;
+    });
+    searchController.onClickSearchResult$.subscribe(searchText => {
+      this.searchString = searchText;
+      this.category = -1;
+      this.loadAvailableServices();
+      // this.searchString = value.target.value;
+      // if (value.which === 13) {
+      //   this.loadAvailableServices();
+      // } else {
+      //   this.searchString = value.target.value;
+      //   if (this.searchString.length > 0) {
+      //     this.mapService.getAvailableResults(this.searchString, this.type).subscribe(
+      //       result => {
+      //         this.result = [];
+      //         for (let i = 0; i < result.length; ++i) {
+      //           this.result.push({
+      //             category: this.findCatName(result[i].id),
+      //             result: result[i].result,
+      //             id: result[i].id
+      //           })
+      //         }
+      //       },
+      //       error => console.log(error)
+      //     );
+      //   }
+      // }
+    });
+    this.searchController.onClickCategoryResult$.subscribe(category => {
+      this.category = category.id;
+      this.searchString = category.searchResult;
+      this.loadAvailableServices();
+    });
+    this.searchController.onKeySearchText$.subscribe(searchText => {
+      this.category = -1;
+      this.searchString = searchText.target.value;
+      if(searchText.which == 13){
+        this.loadAvailableServices();
+      } else {
+        if(this.searchString.length > 0) {
+          this.mapService.getAvailableResults(this.searchString).subscribe(
+            data => {
+              this.searchController.searchResult$.emit(data);
+            },
+            error => {
+              this.dialog.notifyError(error);
+            }
+          );
+        } else {
+          this.searchController.searchResult$.emit(null);
+        }
+      }
     });
 
     let t = this;
@@ -295,7 +351,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     this.initMap();
     let data = this.tokenService.getSearchData();
     this.searchString = data.text == null || data.text.length == 0 ? '' : data.text;
-    this.type = data.type == null ? 0 : data.type;
     this.category = data.category == null ? -1 : data.category;
     this.page = this.tokenService.getPageState();
     this.searchController.onChangeSearchButtonVisibility$.emit(this.page != 2);
@@ -313,16 +368,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       case 2:
         this.pageMargin = -3 * this.width;
     }
-    this.mapService.getCategories().subscribe(
-      data => {
-        data.splice(0, 0, {cid: "-1", name: 'Select category'});
-        this.categories = data;
-      },
-      error => {
-        this.error = <any>error;
-        this.checkError();
-      }
-    );
+
     this.loadAvailableServices();
 
   }
@@ -333,7 +379,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   public loadAvailableServices() {
-    this.mapService.getAvailableServices(this.category, this.searchString, this.type).subscribe(
+    this.mapService.getAvailableServices(this.category, this.searchString).subscribe(
       result => {
         this.listData = {services: [], offerSize: 0, requestSize: 0, more: true};
         if (result.elementsRequest) {
@@ -403,53 +449,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     }
   }
 
-  onTypeChangeId(index) {
-    if (index != this.type) {
-      this.type = index;
-      this.loadAvailableServices();
-    }
-  }
-
-  onKey(value) {
-    this.searchString = value.target.value;
-    if (value.which === 13) {
-      this.loadAvailableServices();
-    } else {
-      this.searchString = value.target.value;
-      if (this.searchString.length > 0) {
-        this.mapService.getAvailableResults(this.searchString, this.type).subscribe(
-          result => {
-            this.result = [];
-            for (let i = 0; i < result.length; ++i) {
-              this.result.push({
-                category: this.findCatName(result[i].id),
-                result: result[i].result,
-                id: result[i].id
-              })
-            }
-          },
-          error => console.log(error)
-        );
-      }
-    }
-  }
-
-  onCategoryChange(id) {
-    if (id != this.category) {
-      this.category = id;
-      this.loadAvailableServices();
-    }
-  }
-
-  public findCatName(catID: number): string {
-    for (let i = 0; i < this.categories.length; ++i) {
-      if (catID == this.categories[i].cid) {
-        return this.categories[i].name;
-      }
-    }
-    return 'Unknown category';
-  }
-
   private load(): Promise<void> {
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
@@ -478,7 +477,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   loadMoreElementMap() {
-    this.mapService.getMoreAvailableServices(this.category, this.searchString, this.type, this.listData.offerSize, this.listData.requestSize).subscribe(
+    this.mapService.getMoreAvailableServices(this.category, this.searchString, this.listData.offerSize, this.listData.requestSize).subscribe(
       result => {
         let more = 0;
         if (this.listData.requestSize > -1 && result.requests) {
@@ -516,17 +515,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         this.dialog.notifyError(error);
       }
     );
-  }
-
-  onClickResultDropdown(index) {
-    if (this.categories != index) {
-      this.category = index;
-      this.loadAvailableServices();
-    }
-  }
-
-  getSearchData(): any {
-    return {text: this.searchString, type: this.type, category: this.category};
   }
 
   getData(page: number): any {
@@ -742,5 +730,4 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   onBidKeyDescription(event) {
     this.bid.description = event;
   }
-
 }

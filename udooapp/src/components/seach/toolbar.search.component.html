@@ -1,11 +1,17 @@
 <div class="toolbar-search-background" *ngIf="visible">
   <div class="toolbar-search-toolbar">
-    <input class="toolbar-search-input" placeholder="Search">
+    <input class="toolbar-search-input" placeholder="Search" (keyup)="onKeySearch($event)">
     <img class="toolbar-search-close" src="./assets/close.png" (click)="onClickClose()">
   </div>
   <div class="toolbar-search-result">
-    <div class="toolbar-search-type toolbar-search-result-box"><b>babysitting</b> in Categories</div>
-    <div class="toolbar-search-type-result toolbar-search-result-box"><b>Part-time babysitting</b> in Babysitting (view all)</div>
-    <div class="toolbar-search-type-result toolbar-search-result-box"><b>Babysitting</b> in House Services (view all)</div>
+    <div *ngIf="searchOffer.length > 0" class="toolbar-search-type toolbar-search-result-box"
+         (click)="onClickShowAllCategory(searchOffer)"><b>{{searchOffer}}</b> in Categories
+    </div>
+    <div class="toolbar-search-type-result-container"
+         [ngClass]="{'toolbar-search-type-result-container-full': searchOffer.length == 0, 'toolbar-search-type-result-container-part': searchOffer.length > 0}">
+      <div *ngFor="let item of categoryOffer" class="toolbar-search-type-result toolbar-search-result-box"
+           (click)="onClickCategory(item.id, item.searchResult)"><b>{{item.searchResult}}</b> in {{item.categoryName}} (view all)
+      </div>
+    </div>
   </div>
 </div>

@@ -1,13 +1,11 @@
 package com.udoo.dal.dao;
 
-import com.udoo.dal.entities.CategoryResult;
-import org.springframework.data.util.Pair;
-
+import com.udoo.dal.entities.search.SearchElement;
 import java.util.List;
 
 public interface ICategoryResult {
 
-    List<CategoryResult> getAllOffer(String text);
+    List<SearchElement> getAllOffer(String text);
 
-    List<CategoryResult> getAllRequest(String text);
+    List<SearchElement> getAllRequest(String text);
 }

@@ -2,8 +2,8 @@ package com.udoo.dal.entities;
 
 
 public class CategoryResult {
-    int id;
-    long result;
+    private int id;
+    private long result;
 
     public void setId(int id) {
         this.id = id;

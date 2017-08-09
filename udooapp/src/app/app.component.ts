@@ -76,7 +76,9 @@ export class AppComponent {
   }
 
   public onKeySearch(event) {
-
+      if(event.which == 13){
+        this.searchVisibility = !this.searchVisibility;
+      }
   }
 
   public changeButton() {

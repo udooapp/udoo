@@ -1,5 +1,4 @@
 import {Component, Input, NgZone, OnInit} from '@angular/core';
-import {Offer} from "../../../entity/offer";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {OfferService} from "../../../services/offer.service";
 import {RequestService} from "../../../services/request.service";
@@ -19,12 +18,7 @@ declare let google: any;
 })
 export class MainMapComponent extends ConversionMethods implements OnInit {
 
-  public types: string[] = ['Select', 'Offer', 'Request'];
-  public showSearch = true;
   private map;
-  public category = -1;
-  public type = 0;
-  public search: string = '';
   private markers = [];
   private requestsWindow: any[] = [];
   private icon = {};
@@ -433,10 +427,6 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
         }
         this.loaded = true;
       }
-      let data = this.searchListener.getSearchData();
-      this.search = data.text;
-      this.type = data.type;
-      this.category = data.category
     }
   }
 
@@ -469,7 +459,6 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
         this.markers.push(marker);
       }
     }
-
   }
 
   private loadOffers() {
@@ -503,41 +492,10 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
     }
   }
 
-
   public getCoordinates(location: string) {
     if (!location.match('address') && !location.match('coordinate')) {
       return null;
     }
     return JSON.parse(location).coordinate;
   }
-
-
-  public onClickSearchPanel() {
-    this.showSearch = !this.showSearch;
-  }
-
-  public onKey(event: any): void {
-    this.searchListener.onKey(event);
-  }
-
-  public onChangeTypeSelect(event: any) {
-    this.searchListener.onTypeChangeId(event);
-  }
-
-  public onChangeCategorySelect(event: any) {
-    this.searchListener.onCategoryChange(event);
-  }
-
-  public getCategory(category: number): string {
-    let cat = this.categories.find(cat => cat.cid == category);
-    return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
-  }
-
-  public onClickResultDropDown(index: number) {
-    this.category = index;
-    this.searchListener.onClickResultDropdown(index);
-  }
-
-
-
 }

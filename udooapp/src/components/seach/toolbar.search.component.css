@@ -79,6 +79,20 @@
 .toolbar-search-type-result {
   color: #4A4A4A;
 }
-.toolbar-search-type-result:hover{
+
+.toolbar-search-type-result:hover {
   background-color: rgba(255, 255, 255, 1);
+}
+
+.toolbar-search-type-result-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.toolbar-search-type-result-container-full {
+  height: 100%;
+}
+
+.toolbar-search-type-result-container-part {
+  height: calc(100% - 60px);
 }

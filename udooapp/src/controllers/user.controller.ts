@@ -13,6 +13,10 @@ import {NotifierController} from "./notify.controller";
 @Injectable()
 export class UserController {
 
+  public static LANGUAGE_GERMAN: number = 0;
+  public static LANGUAGE_ENGLISH: number = 1;
+  public static REFRESH_USER_DATA: number = 4;
+
   public userNotification$: EventEmitter<number>;
   public userDataPipe$: EventEmitter<any>;
   public logoutDataPipe$: EventEmitter<any>;
@@ -23,7 +27,7 @@ export class UserController {
     this.userDataPipe$ = new EventEmitter();
     let before: string = '';
     router.events.subscribe((event) => {
-      if (event.url === MAP && (before === LOGIN || before === '')) {
+      if (event.url === MAP && (before === LOGIN )) {
         this.checkLogin = event.url === MAP && before === LOGIN;
         this.refreshUser();
       } else {
@@ -41,6 +45,7 @@ export class UserController {
         this.router.navigate([LOGIN]);
         this.userDataPipe$.emit(null);
       } else {
+        console.log('RefreshUserMainRefresh');
         this.refreshUser();
       }
     });
@@ -101,14 +106,15 @@ export class UserController {
   }
 
   public sendUserModification(verify: number) {
-    if (verify == NotifierController.LANGUAGE_ENGLISH || verify == NotifierController.LANGUAGE_GERMAN) {
+    if (verify == UserController.LANGUAGE_ENGLISH || verify == UserController.LANGUAGE_GERMAN) {
       // this.user.language = verify === 0 ? 'en' : 'de';
       // document['locale'] = this.user.language;
       // getTranslationProviders().then(value => {
       // }).catch(err => {
       // });
 
-    } else if (verify == NotifierController.REFRESH_USER_DATA) {
+    } else if (verify == UserController.REFRESH_USER_DATA) {
+      console.log('RefreshUserModificationa');
       this.refreshUser();
     }
   }

@@ -1,6 +1,5 @@
 import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
 import {MapService} from "../../../services/map.service";
-import {Offer} from "../../../entity/offer";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {NotifierController} from "../../../controllers/notify.controller";
 import {OfferService} from "../../../services/offer.service";
@@ -17,10 +16,6 @@ import {ListMainController} from "./list.main.controller";
 })
 export class MainListComponent extends ConversionMethods implements OnInit, AfterViewChecked {
 
-  public types: string[] = ['Select', 'Offer', 'Request'];
-  public category = -1;
-  public type: number = 0;
-  public search: string = '';
   public services: any[] = [];
   public scrolledDown: boolean = false;
   private loaded = false;
@@ -47,16 +42,11 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     }
   }
 
-
   ngOnInit(): void {
     if (this.searchListener != null) {
       let data = this.searchListener.getData(1);
       this.services = data.services;
       this.loaded = true;
-      data = this.searchListener.getSearchData();
-      this.search = data.text;
-      this.type = data.type;
-      this.category = data.category
     }
   }
 
@@ -104,7 +94,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     return '';
   }
 
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
     let el = document.getElementById('main-list-service');
     if(el != null){
       this.swipeWidth = el.clientWidth * 0.85
@@ -154,32 +144,8 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   public onClickOpen(element: any) {
     this.searchListener.onClickService(element.id, element.type, element.location);
   }
+
   public onClickSendOffer(element: any) {
     this.searchListener.onBidClickSendOffer(element.type, element.id);
-  }
-
-  public onKey(event: any): void {
-    this.noMoreElement = false;
-    this.searchListener.onKey(event);
-  }
-
-  public onChangeTypeSelect(event: any) {
-    this.searchListener.onTypeChangeId(event);
-  }
-
-  public onChangeCategorySelect(event: any) {
-    this.noMoreElement = false;
-    this.searchListener.onCategoryChange(event);
-  }
-
-  public getCategory(category: number): string {
-    let cat = this.categories.find(cat => cat.cid == category);
-    return cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
-  }
-
-  public onClickResultDropDown(index: number) {
-    this.category = index;
-    this.noMoreElement = false;
-    this.searchListener.onClickResultDropdown(index);
   }
 }

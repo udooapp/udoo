@@ -11,6 +11,7 @@ import com.udoo.dal.entities.offer.PicturesOffer;
 import com.udoo.dal.entities.request.PicturesRequest;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.entities.request.RequestLite;
+import com.udoo.dal.entities.search.SearchElement;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
@@ -312,46 +313,43 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type) {
+    public ResponseEntity<?> getAllService(@RequestParam("category") int category, @RequestParam("search") String searchText) {
         SearchResult result = new SearchResult();
         boolean empty = searchText != null && !searchText.isEmpty();
-        if (type == 0 || type == 2) {
-            List<Request> requests = empty ? (category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
-                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual());
-            result.setRequestLite(getRequestLiteList(requests));
-            int size = requests.size();
-            result.setElementsRequest(changeRequestImage(requests.subList(0 ,size > 5 ? 5 : size)));
-        }
-        if (type == 0 || type == 1) {
-            List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual());
-            result.setOfferLite(getOfferLiteList(offers));
-            int size = offers.size();
-            result.setElementsOffer(changeOfferImage(offers).subList(0 ,size > 5 ? 5 : size));
-        }
+
+        List<Request> requests = empty ? (category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
+                requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual());
+        result.setRequestLite(getRequestLiteList(requests));
+        int sizeRequest = requests.size();
+        result.setElementsRequest(changeRequestImage(requests.subList(0, sizeRequest > 5 ? 5 : sizeRequest)));
+        List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual());
+        result.setOfferLite(getOfferLiteList(offers));
+        int sizeOffer = offers.size();
+        result.setElementsOffer(changeOfferImage(offers).subList(0, sizeOffer > 5 ? 5 : sizeOffer));
+
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
 
 
     @Override
     @RequestMapping(value = "/more", method = RequestMethod.GET)
-    public ResponseEntity<?> getMoreService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("type") int type, @RequestParam("oCount") int oCount, @RequestParam("rCount") int rCount) {
+    public ResponseEntity<?> getMoreService(@RequestParam("category") int category, @RequestParam("search") String searchText, @RequestParam("oCount") int oCount, @RequestParam("rCount") int rCount) {
         MoreService more = new MoreService();
         boolean empty = searchText == null || searchText.isEmpty();
-        if (type == 0 || type == 2) {
-            if (rCount >= 5) {
-                Pageable page = new PageRequest(rCount / 5, 5);
-                List<Request> requests = empty ? (category > 0 ?
-                        requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page)) : (category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
-                more.setRequests(changeRequestImage(requests));
-            }
+
+        if (rCount >= 5) {
+            Pageable page = new PageRequest(rCount / 5, 5);
+            List<Request> requests = empty ? (category > 0 ?
+                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page)) : (category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+            more.setRequests(changeRequestImage(requests));
         }
-        if (type == 0 || type == 1) {
-            if (oCount >= 5) {
-                Pageable page = new PageRequest(oCount / 5, 5);
-                List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page)) : (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
-                more.setOffers(changeOfferImage(offers));
-            }
+
+        if (oCount >= 5) {
+            Pageable page = new PageRequest(oCount / 5, 5);
+            List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page)) : (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+            more.setOffers(changeOfferImage(offers));
         }
+
         return new ResponseEntity<>(more, HttpStatus.OK);
     }
 
@@ -413,31 +411,23 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/result", method = RequestMethod.GET)
-    public ResponseEntity<?> getResults(@RequestParam("search") String searchText, @RequestParam("type") int type) throws JSONException {
-        switch (type) {
-            case 0:
-                List<CategoryResult> listOffers = categoryResultRepository.getAllOffer(searchText);
-                List<CategoryResult> listRequest = categoryResultRepository.getAllRequest(searchText);
-                for (CategoryResult res : listOffers) {
-                    for (int i = 0; i < listRequest.size(); ++i) {
-                        if (res.getId() == listRequest.get(i).getId()) {
-                            res.setResult(res.getResult() + listRequest.get(i).getResult());
-                            listRequest.remove(i);
-                            break;
-                        }
-                    }
-                }
-                if(!listRequest.isEmpty()){
-                    listOffers.addAll(listRequest);
-                }
-                return new ResponseEntity<Object>(listOffers, HttpStatus.OK);
-            case 1:
-                return new ResponseEntity<Object>(categoryResultRepository.getAllOffer(searchText), HttpStatus.OK);
-            case 2:
-                return new ResponseEntity<Object>(categoryResultRepository.getAllRequest(searchText), HttpStatus.OK);
-        }
-        List<CategoryResult> list = categoryResultRepository.getAllOffer(searchText);
+    public ResponseEntity<?> getResults(@RequestParam("search") String searchText) throws JSONException {
 
-        return new ResponseEntity<Object>(list, HttpStatus.OK);
+        List<SearchElement> listOffers = categoryResultRepository.getAllOffer(searchText);
+        List<SearchElement> listRequest = categoryResultRepository.getAllRequest(searchText);
+        for (SearchElement res : listOffers) {
+            for (int i = 0; i < listRequest.size(); ++i) {
+                if (res.getId() == listRequest.get(i).getId()) {
+                    listRequest.remove(i);
+                    break;
+                }
+            }
+        }
+        if (!listRequest.isEmpty()) {
+            listOffers.addAll(listRequest);
+        }
+        com.udoo.dal.entities.search.SearchResult searchResult = new com.udoo.dal.entities.search.SearchResult();
+        searchResult.setCategoryOffer(listOffers);
+        return new ResponseEntity<Object>(searchResult, HttpStatus.OK);
     }
 }
