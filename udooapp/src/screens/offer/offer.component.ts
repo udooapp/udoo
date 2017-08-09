@@ -12,6 +12,7 @@ import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
+import {UserController} from "../../controllers/user.controller";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -40,7 +41,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   imageError: number[] = [];
   private reload: boolean = false;
 
-  constructor(private offerService: OfferService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private userController: UserController, private offerService: OfferService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action === OfferComponent.NAME) {
         if (this.modification[0] <= 0) {
@@ -49,7 +50,7 @@ export class OfferComponent implements OnInit, IServiceForm {
           this.modification[2] = -1;
           router.navigate([OFFER_LIST]);
           if (this.reload) {
-            this.notifier.refreshMainData();
+            this.userController.refreshUser();
           }
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
@@ -150,7 +151,7 @@ export class OfferComponent implements OnInit, IServiceForm {
             this.notifier.pageChanged$.emit(' ');
             this.router.navigate([OFFER_LIST]);
             if (this.reload) {
-              this.notifier.refreshMainData();
+              this.userController.refreshUser();
             }
           },
           error => {

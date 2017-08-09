@@ -7,6 +7,7 @@ import {LOGIN, MAP} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {TokenService} from "../../services/token.service";
 import {DialogController} from "../../controllers/dialog.controller";
+import {UserController} from "../../controllers/user.controller";
 
 @Component({
   templateUrl: './verification.component.html',
@@ -18,7 +19,7 @@ export class VerificationComponent implements OnInit {
   message: string = '';
   error = '';
 
-  constructor(private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute, private tokenService: TokenService, private dialog: DialogController) {
+  constructor(private userController: UserController, private reminderService: EmailService, private notifier: NotifierController, private router: Router, private route: ActivatedRoute, private tokenService: TokenService, private dialog: DialogController) {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {
@@ -35,7 +36,7 @@ export class VerificationComponent implements OnInit {
           this.reminderService.checkVerification(token).subscribe(
             message =>{
               this.message="Your account is active!";
-              this.notifier.refreshMainData();
+              this.userController.refreshUser();
             },
             error => {
               this.dialog.notifyError(error);

@@ -1,5 +1,4 @@
 import {EventEmitter} from "@angular/core";
-import {User} from "../entity/user";
 import {Router} from "@angular/router";
 import {config} from "../environments/url.config";
 
@@ -10,38 +9,24 @@ export class NotifierController {
   public static LANGUAGE_ENGLISH: number = 1;
   public static REFRESH_USER_DATA: number = 4;
 
-  private user: User;
   private pageList: string[] = [];
   public pageChanged$: EventEmitter<string>;
   public notification$: EventEmitter<number>;
   public systemNotification$: EventEmitter<any>;
-  public userModification$: EventEmitter<number>;
-  public userNotification$: EventEmitter<number>;
-  public userDataPipe$: EventEmitter<User>;
+
   public userScrolledToTheBottom$: EventEmitter<boolean>;
-  public userLogOut$: EventEmitter<boolean>;
   private route: string = '';
   private router: Router;
 
 
   constructor() {
     this.pageChanged$ = new EventEmitter();
-    this.userModification$ = new EventEmitter();
-    this.userDataPipe$ = new EventEmitter();
     this.userScrolledToTheBottom$ = new EventEmitter();
-    this.userLogOut$ = new EventEmitter();
     this.notification$ = new EventEmitter();
     this.systemNotification$ = new EventEmitter();
-    this.userNotification$ = new EventEmitter();
   }
 
-  public sendVerification() {
-    this.userModification$.emit(-1);
-  }
 
-  public sendUserModification(modification: number) {
-    this.userModification$.emit(modification)
-  }
 
   public back(): string {
     if (this.pageList.length > 0) {
@@ -73,22 +58,7 @@ export class NotifierController {
   }
 
   public isEmpty(): boolean {
-
     return this.pageList.length == 0;
-  }
-
-  public setUser(user: User) {
-    this.user = user;
-  }
-
-  public getUser(): User {
-    let us: User = this.user;
-    this.user = null;
-    return us;
-  }
-
-  public refreshMainData() {
-    this.pageChanged$.emit('refresh');
   }
 
   public notify(action: string) {

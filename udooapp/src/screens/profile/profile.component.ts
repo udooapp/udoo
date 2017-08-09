@@ -15,6 +15,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {MAP} from "../../app/app.routing.module";
 import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
+import {UserController} from "../../controllers/user.controller";
 
 
 @Component({
@@ -41,7 +42,7 @@ export class ProfileComponent implements OnInit, IFormInput {
   valid = [false, false, false];
   lastPicture: string = '';
 
-  constructor(private userService: UserService, private notifier: NotifierController, private router: Router,  private dialog: DialogController) {
+  constructor(private userController: UserController, private userService: UserService, private notifier: NotifierController, private router: Router,  private dialog: DialogController) {
     this.passwordVerification = '';
 
 
@@ -57,16 +58,15 @@ export class ProfileComponent implements OnInit, IFormInput {
   }
 
   ngOnInit() {
-    this.notifier.userDataPipe$.subscribe(user => {
-      this.user = user;
-      if (user.picture.length > 4) {
+    this.userController.userDataPipe$.subscribe(data => {
+      this.user = data.user;
+      if (data.user.picture.length > 4) {
         this.first = false;
       }
-      this.user = user;
       this.lastPicture = this.user.picture;
       this.error = '';
     });
-    this.notifier.sendUserModification(NotifierController.REFRESH_USER_DATA);
+    this.userController.refreshUser();
   }
 
   public getPictureUrl() {
@@ -143,7 +143,7 @@ export class ProfileComponent implements OnInit, IFormInput {
         message => {
           this.error = '';
           this.message = message;
-          this.notifier.refreshMainData();
+          this.userController.refreshUser();
         },
         error => {
           this.message = '';

@@ -15,6 +15,7 @@ import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
+import {UserController} from "../../controllers/user.controller";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -46,7 +47,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   imageError: number[] = [];
   imageLoading: number[] = [];
 
-  constructor(private requestService: RequestService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
+  constructor(private userController: UserController, private requestService: RequestService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
@@ -56,7 +57,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           this.modification[2] = -1;
           router.navigate([REQUEST_LIST]);
           if (this.reload) {
-            this.notifier.refreshMainData();
+            this.userController.refreshUser();
           }
         } else {
           this.dialog.sendQuestion('Unsaved data will be lost! Do you want to go back?');
@@ -157,7 +158,7 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.notifier.back();
             this.router.navigate([REQUEST_LIST]);
             if (this.reload) {
-              this.notifier.refreshMainData();
+              this.userController.refreshUser();
             }
           },
           error => {
@@ -311,7 +312,7 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   onClickBid(bid, state) {
     this.bidService.sendPidResponse(bid.bid, state).subscribe(
-      data => {
+      () => {
         bid.accepted = state;
         if (state) {
           this.reload = true;
@@ -324,7 +325,7 @@ export class RequestComponent implements OnInit, IServiceForm {
 
   onClickPaymentReminder(bid) {
     this.bidService.sendPaymentReminder(bid.bid).subscribe(
-      data => {
+      () => {
         this.dialog.sendMessage("Payment reminder sent!");
       },
       error => {

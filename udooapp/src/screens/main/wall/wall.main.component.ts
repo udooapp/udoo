@@ -5,6 +5,7 @@ import {DialogController} from "../../../controllers/dialog.controller";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {Router} from "@angular/router";
 import {CONTACT, DETAIL} from "../../../app/app.routing.module";
+import {UserController} from "../../../controllers/user.controller";
 
 
 @Component({
@@ -32,7 +33,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   public scrolledDown: boolean = true;
   private noMoreElement: boolean = false;
 
-  constructor(private dialog: DialogController, private wallService: WallService, private notifier: NotifierController, private router: Router) {
+  constructor(private userController: UserController, private dialog: DialogController, private wallService: WallService, private notifier: NotifierController, private router: Router) {
     super();
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
@@ -40,7 +41,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
         this.loadMoreElement();
       }
     });
-    notifier.userLogOut$.subscribe(() => {
+    userController.logoutDataPipe$.subscribe(() => {
       this.ngOnInit();
     });
   }

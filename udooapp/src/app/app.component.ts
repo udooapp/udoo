@@ -5,6 +5,7 @@ import {MAP} from "./app.routing.module";
 import {TokenService} from "../services/token.service";
 import {SearchController} from "../controllers/search.controller";
 import {DialogController} from "../controllers/dialog.controller";
+import {UserController} from "../controllers/user.controller";
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,7 @@ export class AppComponent {
   public systemNotification: any[] = [];
   public contentContainerHeight: number = 0;
 
-  constructor(private dialog: DialogController, private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
+  constructor(private userController: UserController, private dialog: DialogController, private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
     MAP;
     tokenService.clearSearchData();
     document['locale'] = 'en';
@@ -40,7 +41,7 @@ export class AppComponent {
     searchController.onChangeSearchButtonVisibility$.subscribe(value => {
       this.searchButton = value;
     });
-    this.notifier.userNotification$.subscribe(value => {
+    this.userController.userNotification$.subscribe(value => {
       this.notificationCounter = value;
     });
     notifier.systemNotification$.subscribe(value => {

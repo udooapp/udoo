@@ -47,6 +47,7 @@ import {ListMainController} from "../screens/main/list/list.main.controller";
 import {SearchController} from "../controllers/search.controller";
 import {ToolbarSearchComponent} from "../components/seach/toolbar.search.component";
 import {MenuController} from "../controllers/menu.controller";
+import {UserController} from "../controllers/user.controller";
 
 @NgModule({
   declarations: [
@@ -90,7 +91,7 @@ import {MenuController} from "../controllers/menu.controller";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, TokenService, NotifierController, UserService, SearchController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController, MenuController],
+  providers: [UserController, AuthGuard, TokenService, NotifierController, UserService, SearchController, DialogController, UserService, ServiceDialogController, MapMainController, ListMainController, MenuController],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -9,6 +9,7 @@ import {EmailService} from "../../services/email.service";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {IValidator} from "../../validator/validator.interface";
 import {DialogController} from "../../controllers/dialog.controller";
+import {UserController} from "../../controllers/user.controller";
 
 @Component({
   templateUrl: './activation.component.html',
@@ -27,7 +28,7 @@ export class ActivationComponent implements OnInit {
   type: boolean[] = [false, false];
   activation: number = 0;
 
-  constructor(private dialog: DialogController,private notifier: NotifierController, private router: Router, private emailService: EmailService) {
+  constructor(private userController: UserController, private dialog: DialogController,private notifier: NotifierController, private router: Router, private emailService: EmailService) {
     this.emptyValidator = new EmptyValidator();
   }
 
@@ -83,9 +84,9 @@ export class ActivationComponent implements OnInit {
         this.router.navigate([MAP]);
       }
     });
-    this.notifier.userDataPipe$.subscribe(user => {
+    this.userController.userDataPipe$.subscribe(data => {
 
-      this.activation = user.active;
+      this.activation = data.user.active;
       if(this.activation>= 15){
         this.router.navigate([MAP]);
       } else {
@@ -94,6 +95,6 @@ export class ActivationComponent implements OnInit {
         }
       }
     });
-    this.notifier.userModification$.emit(4);
+    this.userController.refreshUser();
   }
 }
