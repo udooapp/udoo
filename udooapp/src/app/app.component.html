@@ -18,7 +18,7 @@
     <router-outlet></router-outlet>
   </div>
   <div id="app-system-notification-container" class="app-system-notification-container">
-    <div *ngFor="let item of systemNotification; let i = index" class="app-system-notification" (click)="onClickMore(i)">{{item.length > 30 ? item.substring(0, 27) + '...' : item}}</div>
+    <div *ngFor="let item of systemNotification; let i = index" class="app-system-notification" (click)="onClickMore(i)">{{item.length > 35 ? item.substring(0, 32) + '...' : item}}</div>
   </div>
 </div>
 <message-dialog></message-dialog>

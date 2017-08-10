@@ -27,7 +27,6 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   private swipeWidth;
   @Input() result: any[] = [];
   @Input() searchListener: MainSearchListener;
-  @Input() categories: any[] = [{cid: -1, name: ''}];
 
   @Input()
   set service(data: any) {

@@ -27,7 +27,6 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   private UPDATED_PHONE_NUMBER = 10;
   private UPDATED_EMAIL_ADDRESS = 11;
 
-  @Input() categories: any[] = [];
   public data: any[] = [];
   private lastId: number = 0;
   public scrolledDown: boolean = true;
@@ -84,11 +83,6 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
         this.dialog.notifyError(error);
       }
     );
-  }
-
-  public getCategory(category: number): string {
-    let cat = this.categories.find(cat => cat.cid == category);
-    return cat != null && cat.name ? cat.name : 'Category with ' + category + ' id is not exist!';
   }
 
   public getPicture(picture: string) {
@@ -194,7 +188,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     if (!this.isUpdate(item.content)) {
       title = item.type == 0 ? 'registered on the site' : ('create a new ' + (item.type == 1 ? 'offer ' : 'request ') + "with title " + item.serviceName);
     } else {
-      let typeName: string = item.type == 0 ? 'profile' : item.type == 1 ? 'offer' : 'request';
+      let typeName: string = item.type == 0 ? 'profile' : item.type == 1 ? 'offer ' : 'request ';
       title = 'updated his ' + (item.type == 0 ? (item.content.lenght > 1 ? typeName : this.getUpdateType(0, item.content[0].type)) : (item.serviceName + (item.content.length > 1 ? ' ' + typeName : ' ' + typeName + this.getUpdateType(item.type, item.content[0].type))));
     }
     return title;
@@ -216,13 +210,13 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
       case this.UPDATED_EMAIL_ADDRESS:
         return content;
       case this.UPDATED_DESCRIPTION:
-        return content.substr(0, 200);
+        return content.length > 203 ? content.substr(0, 200) + '...' : content;
       case this.UPDATED_EXPIRATION_DATE:
         return this.convertNumberToDateTime(Number.parseInt(content));
       case this.UPDATED_LOCATION:
         return this.getCoordinates(content);
       case this.UPDATED_CATEGORY:
-        return this.getCategory(Number.parseInt(content));
+        return content;
       case this.UPDATED_AVAILABILITY:
         return content;
       case this.UPDATED_JOB_DATE:

@@ -99,11 +99,13 @@ public class OfferServiceController implements IOfferServiceController {
                 if (offerRepository.findByOid(delete).getUid() == uid) {
                     offerRepository.deleteByOid(delete);
                     offerPictureRepository.deleteAllByOid(delete);
+                    this.deleteHistoryElements(delete);
                 }
             }
             if (offerRepository.findByOid(id).getUid() == uid) {
                 int success = offerRepository.deleteByOid(id);
                 offerPictureRepository.deleteAllByOid(id);
+                this.deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
                 } else {
@@ -116,7 +118,13 @@ public class OfferServiceController implements IOfferServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-
+    private void deleteHistoryElements(int id){
+        List<History> histories = historyRepository.findAllByTidAndType(id, 1);
+        for(History hist : histories){
+            historyElementRepository.deleteByHid(hist.getHid());
+            historyRepository.deleteByHid(hist.getHid());
+        }
+    }
     @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserOffer(@PathVariable("id") int id) {

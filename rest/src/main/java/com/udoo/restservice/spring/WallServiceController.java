@@ -52,6 +52,9 @@ public class WallServiceController implements IWallServiceController {
     private IUserRepository userRepository;
 
     @Resource
+    private ICategoryRepository categoryRepository;
+
+    @Resource
     private IOfferPictureRepository offerPictureRepository;
 
     @Resource
@@ -76,7 +79,7 @@ public class WallServiceController implements IWallServiceController {
     private List<ResponseHistory> merge(List<History> list) {
         List<ResponseHistory> history = new ArrayList<>();
         for (History obj : list) {
-            if(obj.getHistoryElements() != null && obj.getHistoryElements().size() > 0) {
+            if (obj.getHistoryElements() != null && obj.getHistoryElements().size() > 0) {
                 ResponseHistory hist = new ResponseHistory();
                 hist.setId(obj.getTid());
                 hist.setType(obj.getType());
@@ -93,21 +96,25 @@ public class WallServiceController implements IWallServiceController {
                         break;
                     case 1:
                         Offer off = offerRepository.findByOid(hist.getId());
-                        User usro = userRepository.findByUid(off.getUid());
-                        hist.setPicture(usro.getPicture());
-                        hist.setUserName(usro.getName());
-                        hist.setServiceName(off.getTitle());
-                        hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
-                        history.add(hist);
+                        if (off != null) {
+                            User usro = userRepository.findByUid(off.getUid());
+                            hist.setPicture(usro.getPicture());
+                            hist.setUserName(usro.getName());
+                            hist.setServiceName(off.getTitle());
+                            hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
+                            history.add(hist);
+                        }
                         break;
                     case 2:
                         Request req = requestRepository.findByRid(hist.getId());
-                        User usrr = userRepository.findByUid(req.getUid());
-                        hist.setServiceName(req.getTitle());
-                        hist.setPicture(usrr.getPicture());
-                        hist.setUserName(usrr.getName());
-                        hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
-                        history.add(hist);
+                        if(req != null) {
+                            User usrr = userRepository.findByUid(req.getUid());
+                            hist.setServiceName(req.getTitle());
+                            hist.setPicture(usrr.getPicture());
+                            hist.setUserName(usrr.getName());
+                            hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
+                            history.add(hist);
+                        }
                         break;
                 }
             }
@@ -163,7 +170,7 @@ public class WallServiceController implements IWallServiceController {
                     wallContent.setContent(element.getChanges());
                     break;
                 case UPDATED_CATEGORY:
-                    wallContent.setContent(offer.getCategory() + "");
+                    wallContent.setContent(categoryRepository.findByCid(offer.getCategory()).getName());
                     break;
                 case UPDATED_AVAILABILITY:
                     wallContent.setContent(offer.getAvailability());
@@ -194,7 +201,7 @@ public class WallServiceController implements IWallServiceController {
                     wallContent.setContent(request.getLocation());
                     break;
                 case UPDATED_CATEGORY:
-                    wallContent.setContent(request.getCategory() + "");
+                    wallContent.setContent(categoryRepository.findByCid(request.getCategory()).getName());
                     break;
                 case UPDATED_JOB_DATE:
                     wallContent.setContent(request.getJobdate());

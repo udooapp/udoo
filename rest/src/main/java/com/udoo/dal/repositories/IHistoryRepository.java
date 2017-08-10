@@ -18,6 +18,8 @@ public interface IHistoryRepository extends Repository<History, Integer> {
 
     History save(History history);
 
+    List<History> findAllByTidAndType(int tid, int type);
+
     @Query("Select h From History h, HistoryElement he Where he.hid = h.hid and he.action = :action and h.hid > :hid order by h.date DESC ")
     List<History> findAllByActionAndDateLessThanOrderByDateDesc(@Param("action") int action, @Param("hid") int hid, Pageable page);
 

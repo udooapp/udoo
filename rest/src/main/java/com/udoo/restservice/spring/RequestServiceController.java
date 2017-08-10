@@ -191,11 +191,13 @@ public class RequestServiceController implements IRequestServiceController {
                 if (requestRepository.findByRid(delete).getUid() == uid) {
                     requestRepository.deleteByRid(delete);
                     requestPictureRepository.deleteAllByRid(delete);
+                    deleteHistoryElements(delete);
                 }
             }
             if (requestRepository.findByRid(id).getUid() == uid) {
                 int success = requestRepository.deleteByRid(id);
                 requestPictureRepository.deleteAllByRid(id);
+                deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Request deleted", HttpStatus.OK);
                 } else {
@@ -207,7 +209,13 @@ public class RequestServiceController implements IRequestServiceController {
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
-
+    private void deleteHistoryElements(int id){
+        List<History> histories = historyRepository.findAllByTidAndType(id, 1);
+        for(History hist : histories){
+            historyElementRepository.deleteByHid(hist.getHid());
+            historyRepository.deleteByHid(hist.getHid());
+        }
+    }
     @Override
     @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRequest(ServletRequest req, @RequestBody String image) {

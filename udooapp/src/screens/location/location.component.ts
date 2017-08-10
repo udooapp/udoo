@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NotifierController} from "../../controllers/notify.controller";
 import {DialogController} from "../../controllers/dialog.controller";
+import {mapconfig} from "../../environments/map.config";
 
 declare let google: any;
 
@@ -33,7 +34,8 @@ export class LocationComponent implements OnInit {
       const loc = this;
       const map = new google.maps.Map(document.getElementById('location'), {
         center: {lat: 48.211029, lng: 16.373990},
-        zoom: 14
+        zoom: 14,
+        styles: mapconfig.style
       });
       let input = document.getElementById('search-input');
       let searchBox = new google.maps.places.SearchBox(input);

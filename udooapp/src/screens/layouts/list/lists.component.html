@@ -11,7 +11,7 @@
       <div class="service-all-content"
            [routerLink]="getServiceRouteText(i)"
            routerLinkActive="active">
-        <div class="service-picture"><img class="service-image" [src]="getImage(i)"></div>
+        <div class="service-picture"><img *ngIf="getImage(i).length > 0" class="service-image" [src]="getImage(i)"></div>
         <div class="service-content">
           <div class="service-title">{{item.title}}</div>
           <div class="service-description">{{item.description}}</div>

@@ -58,6 +58,7 @@ export class UserController {
       () => {
         this.router.navigate([MAP]);
         this.tokenService.clearToken();
+        this.notifier.systemNotification$.emit([]);
         this.userNotification$.emit(0);
         this.logoutDataPipe$.emit(null);
       },

@@ -40,8 +40,8 @@
 
 .location-dialog {
   width: 100%;
-  height: 160%;
-  position: absolute;
+  height: 100%;
+  position: fixed;
   z-index: 7;
   background-color: white;
 }

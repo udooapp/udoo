@@ -530,9 +530,11 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   public onMainScroll() {
     let e: HTMLElement = document.getElementById("page-container");
-    this.notifyScrollTo(e.scrollTop);
-    if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
-      this.notifier.userScrolledToTheBottom$.emit(true);
+    if(e != null) {
+      this.notifyScrollTo(e.scrollTop);
+      if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
+        this.notifier.userScrolledToTheBottom$.emit(true);
+      }
     }
   }
 

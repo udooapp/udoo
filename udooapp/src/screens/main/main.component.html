@@ -21,16 +21,14 @@
               (price)="onBidKeyPrice($event)"></bid-dialog>
   <div [style.overflow-y]=" blur ? 'hidden' : 'auto' " id="page-container" (scroll)="onMainScroll()">
     <main-list [ngClass]="{'element-blur': blur}" *ngIf="pageMargin > 0" class="main-content-element"
-               [style.min-width.px]="3*width"
-               [style.margin-left.px]="pageMargin - 3 * width" [style.animation-name]="pageAnim0"
-               [categories]="categories" [searchListener]="searchListener" [result]="result"></main-list>
+               [style.min-width.px]="3*width" [style.margin-left.px]="pageMargin - 3 * width"
+               [style.animation-name]="pageAnim0" [searchListener]="searchListener" [result]="result"></main-list>
     <main-map [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 3 * width && pageMargin > -3 * width"
               class="main-map-container main-content-element"
-              [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [categories]="categories"
-              [searchListener]="searchListener" [result]="result"></main-map>
+              [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [searchListener]="searchListener"
+              [result]="result"></main-map>
     <main-wall [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 0" class="main-content-element wall-content"
                [style.min-width.px]="3*width"
-               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"
-               [categories]="categories"></main-wall>
+               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"></main-wall>
   </div>
 </div>
