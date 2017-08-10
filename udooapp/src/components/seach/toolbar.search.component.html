@@ -4,13 +4,16 @@
     <img class="toolbar-search-close" src="./assets/close.png" (click)="onClickClose()">
   </div>
   <div class="toolbar-search-result">
-    <div *ngIf="searchOffer.length > 0" class="toolbar-search-type toolbar-search-result-box"
-         (click)="onClickShowAllCategory(searchOffer)"><b>{{searchOffer}}</b> in Categories
+    <div class="toolbar-search-type toolbar-search-result-box">
+      <div *ngIf="searchOffer.length > 0" (click)="onClickShowAllCategory(searchOffer)">
+        <b>{{searchOffer}}</b> in Categories
+      </div>
     </div>
     <div class="toolbar-search-type-result-container"
          [ngClass]="{'toolbar-search-type-result-container-full': searchOffer.length == 0, 'toolbar-search-type-result-container-part': searchOffer.length > 0}">
       <div *ngFor="let item of categoryOffer" class="toolbar-search-type-result toolbar-search-result-box"
-           (click)="onClickCategory(item.id, item.searchResult)"><b>{{item.searchResult}}</b> in {{item.categoryName}} (view all)
+           (click)="onClickCategory(item.id, item.searchResult)"><b>{{item.searchResult}}</b> in {{item.categoryName}}
+        (view all)
       </div>
     </div>
   </div>

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ICategoryResult {
 
-    List<SearchElement> getAllOffer(String text);
+    List<SearchElement> getAllCategories(String text);
 
-    List<SearchElement> getAllRequest(String text);
+    String getWordMatch(String text);
 }

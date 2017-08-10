@@ -61,10 +61,8 @@ export class LoginComponent implements OnInit {
     let t = this;
     FB.login(function (result) {
       if (result.status === 'connected') {
-        console.log("RESULT1: " + JSON.stringify(result));
         FB.api('/me', {locale: 'en_US', fields: 'id,name,birthday,email,picture'}, function (response) {
           if (!response.error) {
-            console.log("RESULT2: " + JSON.stringify(response));
             t.userService.loginFacebook({
               name: response.name,
               email: response.email,
@@ -171,7 +169,6 @@ export class LoginComponent implements OnInit {
                 grant_type: 'authorization_code'
               }).subscribe(data => {
                   deferred.resolve = data;
-                  console.log("Google init success: " + JSON.stringify(data));
                   },
               error => {
                   deferred.reject = error.toJson();

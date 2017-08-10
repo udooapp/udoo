@@ -116,7 +116,6 @@ export class ServiceDialogComponent implements AfterViewChecked {
             if (t.scrollDirection == 0 || t.scrollDirection == 1) {
 
               el.scrollTop = el.scrollTop -(touch.pageY - t.coordStartY);
-              console.log(el.scrollTop);
               t.coordStartY = touch.pageY;
             }
             if (t.scrollDirection == 0 || t.scrollDirection == -1) {

@@ -412,22 +412,6 @@ public class RestServiceController implements IRestServiceController {
     @Override
     @RequestMapping(value = "/result", method = RequestMethod.GET)
     public ResponseEntity<?> getResults(@RequestParam("search") String searchText) throws JSONException {
-
-        List<SearchElement> listOffers = categoryResultRepository.getAllOffer(searchText);
-        List<SearchElement> listRequest = categoryResultRepository.getAllRequest(searchText);
-        for (SearchElement res : listOffers) {
-            for (int i = 0; i < listRequest.size(); ++i) {
-                if (res.getId() == listRequest.get(i).getId()) {
-                    listRequest.remove(i);
-                    break;
-                }
-            }
-        }
-        if (!listRequest.isEmpty()) {
-            listOffers.addAll(listRequest);
-        }
-        com.udoo.dal.entities.search.SearchResult searchResult = new com.udoo.dal.entities.search.SearchResult();
-        searchResult.setCategoryOffer(listOffers);
-        return new ResponseEntity<Object>(searchResult, HttpStatus.OK);
+        return new ResponseEntity<Object>(new com.udoo.dal.entities.search.SearchResult(categoryResultRepository.getWordMatch(searchText), categoryResultRepository.getAllCategories(searchText)), HttpStatus.OK);
     }
 }

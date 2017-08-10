@@ -45,7 +45,6 @@ export class UserController {
         this.router.navigate([LOGIN]);
         this.userDataPipe$.emit(null);
       } else {
-        console.log('RefreshUserMainRefresh');
         this.refreshUser();
       }
     });
@@ -115,7 +114,6 @@ export class UserController {
       // });
 
     } else if (verify == UserController.REFRESH_USER_DATA) {
-      console.log('RefreshUserModificationa');
       this.refreshUser();
     }
   }

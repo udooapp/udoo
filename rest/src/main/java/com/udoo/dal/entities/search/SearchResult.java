@@ -6,6 +6,10 @@ public class SearchResult {
     private String searchOffer;
     private List<SearchElement> categoryOffer;
 
+    public SearchResult(String searchOffer, List<SearchElement> categoryOffer){
+        this.searchOffer = searchOffer;
+        this.categoryOffer = categoryOffer;
+    }
     public String getSearchOffer() {
         return searchOffer;
     }
