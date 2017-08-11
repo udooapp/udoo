@@ -1,11 +1,17 @@
 package com.udoo.dal.entities.request;
 
 
+
+import javax.persistence.*;
 import java.util.Date;
 
-//For maps infoWindow
+@Entity
+@Table(name = "request")
 public class RequestLite {
+    @Id
     private Integer rid;
+
+    private Integer uid;
 
     private String title = "";
 
@@ -13,24 +19,17 @@ public class RequestLite {
 
     private String location = "";
 
-    private String jobdate = "";
-
     private Date expirydate = new Date();
 
     private int category = -1;
 
-    public RequestLite(){}
-
-    public RequestLite(Request request){
-        this.rid = request.getRid();
-        this.title = request.getTitle();
-        this.description = request.getDescription();
-        this.location = request.getLocation();
-        this.jobdate = request.getJobdate();
-        this.expirydate = request.getExpirydate();
-        this.category = request.getCategory();
+    public Integer getUid() {
+        return uid;
     }
 
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
 
     public String getTitle() {
         return title;
@@ -56,14 +55,6 @@ public class RequestLite {
         this.location = location;
     }
 
-    public String getJobdate() {
-        return jobdate;
-    }
-
-    public void setJobdate(String jobdate) {
-        this.jobdate = jobdate;
-    }
-
     public Date getExpirydate() {
         return expirydate;
     }
@@ -84,7 +75,9 @@ public class RequestLite {
         this.category = category;
     }
 
+
     public void setRid(Integer rid) {
         this.rid = rid;
     }
+
 }

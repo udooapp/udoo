@@ -5,13 +5,10 @@ import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
-import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.offer.OfferLite;
-import com.udoo.dal.entities.offer.PicturesOffer;
-import com.udoo.dal.entities.request.PicturesRequest;
-import com.udoo.dal.entities.request.Request;
+import com.udoo.dal.entities.offer.OfferMap;
 import com.udoo.dal.entities.request.RequestLite;
-import com.udoo.dal.entities.search.SearchElement;
+import com.udoo.dal.entities.request.RequestMap;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IRestServiceController;
@@ -80,16 +77,18 @@ public class RestServiceController implements IRestServiceController {
     private IHistoryElementRepository historyElementRepository;
 
     @Resource
-    private IRequestRepository requestRepository;
+    private IRequestLiteRepository requestLiteRepository;
 
-    @Resource
-    private IOfferRepository offerRepository;
 
     @Resource
     private IHistoryRepository historyRepository;
 
+    @Resource
+    private IOfferLiteRepository offerLiteRepository;
+
     @Autowired
     private ICategoryResult categoryResultRepository;
+
 
     @Override
     @RequestMapping(value = "social/registration", method = RequestMethod.POST)
@@ -138,6 +137,7 @@ public class RestServiceController implements IRestServiceController {
                 if (user.getLanguage() == null) {
                     user.setLanguage("en");
                 }
+                user.setStars(0);
                 user.setUid(-1);
                 user = userRepository.save(user);
                 if (emailService.sendEmailVerification(user)) {
@@ -209,7 +209,7 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> loginUser(@RequestBody User user) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginData user) {
         User user2 = userRepository.getByEmail(user.getEmail());
         if (user2 != null) {
             if (user2.getPassword().equals(user.getPassword())) {
@@ -317,15 +317,15 @@ public class RestServiceController implements IRestServiceController {
         SearchResult result = new SearchResult();
         boolean empty = searchText != null && !searchText.isEmpty();
 
-        List<Request> requests = empty ? (category > 0 ? requestRepository.findAllMatches(category, searchText) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
-                requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual());
+        List<RequestLite> requests = empty ? (category > 0 ? requestLiteRepository.findAllMatches(category, searchText) : requestLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
+                requestLiteRepository.findAllActualByCategory(category) : requestLiteRepository.findAllActual());
         result.setRequestLite(getRequestLiteList(requests));
         int sizeRequest = requests.size();
         result.setElementsRequest(changeRequestImage(requests.subList(0, sizeRequest > 5 ? 5 : sizeRequest)));
-        List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerRepository.findAllActualByCategory(category) : offerRepository.findAllActual());
+        List<OfferLite> offers = empty ? (category > 0 ? offerLiteRepository.findAllMatches(category, searchText) : offerLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerLiteRepository.findAllActualByCategory(category) : offerLiteRepository.findAllActual());
         result.setOfferLite(getOfferLiteList(offers));
         int sizeOffer = offers.size();
-        result.setElementsOffer(changeOfferImage(offers).subList(0, sizeOffer > 5 ? 5 : sizeOffer));
+        result.setElementsOffer(changeOfferImage(offers.subList(0, sizeOffer > 5 ? 5 : sizeOffer)));
 
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
@@ -339,42 +339,43 @@ public class RestServiceController implements IRestServiceController {
 
         if (rCount >= 5) {
             Pageable page = new PageRequest(rCount / 5, 5);
-            List<Request> requests = empty ? (category > 0 ?
-                    requestRepository.findAllActualByCategory(category) : requestRepository.findAllActual(page)) : (category > 0 ? requestRepository.findAllMatches(category, searchText, page) : requestRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+            List<RequestLite> requests = empty ? (category > 0 ?
+                    requestLiteRepository.findAllActualByCategory(category) : requestLiteRepository.findAllActual(page)) : (category > 0 ? requestLiteRepository.findAllMatches(category, searchText, page) : requestLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
             more.setRequests(changeRequestImage(requests));
         }
 
         if (oCount >= 5) {
             Pageable page = new PageRequest(oCount / 5, 5);
-            List<Offer> offers = empty ? (category > 0 ? offerRepository.findAllActualByCategory(category, page) : offerRepository.findAllActual(page)) : (category > 0 ? offerRepository.findAllMatches(category, searchText) : offerRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
+            List<OfferLite> offers = empty ? (category > 0 ? offerLiteRepository.findAllActualByCategory(category, page) : offerLiteRepository.findAllActual(page)) : (category > 0 ? offerLiteRepository.findAllMatches(category, searchText) : offerLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
             more.setOffers(changeOfferImage(offers));
         }
 
         return new ResponseEntity<>(more, HttpStatus.OK);
     }
 
-    private List<RequestLite> getRequestLiteList(List<Request> list) {
-        List<RequestLite> requestLites = new ArrayList<>();
-        for (Request req : list) {
-            requestLites.add(new RequestLite(req));
+    private List<RequestMap> getRequestLiteList(List<RequestLite> list) {
+        List<RequestMap> requestLites = new ArrayList<>();
+        for (RequestLite req : list) {
+            requestLites.add(new RequestMap(req));
         }
 
         return requestLites;
     }
 
-    private List<OfferLite> getOfferLiteList(List<Offer> list) {
-        List<OfferLite> offerLites = new ArrayList<>();
-        for (Offer off : list) {
-            offerLites.add(new OfferLite(off));
+    private List<OfferMap> getOfferLiteList(List<OfferLite> list) {
+        List<OfferMap> offerLites = new ArrayList<>();
+        for (OfferLite off : list) {
+            offerLites.add(new OfferMap(off));
         }
 
         return offerLites;
     }
 
-    private List<ListElement> changeOfferImage(List<Offer> offers) {
+    private List<ListElement> changeOfferImage(List<OfferLite> offers) {
         User usr;
+        System.out.println("OfferSIZE: " + offers.size());
         List<ListElement> list = new ArrayList<>();
-        for (Offer offer : offers) {
+        for (OfferLite offer : offers) {
             usr = userRepository.findByUid(offer.getUid());
             if (usr != null && usr.getPicture() != null) {
                 ListElement element = new ListElement();
@@ -390,10 +391,10 @@ public class RestServiceController implements IRestServiceController {
         return list;
     }
 
-    private List<ListElement> changeRequestImage(List<Request> requests) {
+    private List<ListElement> changeRequestImage(List<RequestLite> requests) {
         User usr;
         List<ListElement> list = new ArrayList<>();
-        for (Request request : requests) {
+        for (RequestLite request : requests) {
             usr = userRepository.findByUid(request.getUid());
             if (usr != null && usr.getPicture() != null) {
                 ListElement element = new ListElement();

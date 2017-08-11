@@ -26,6 +26,7 @@ export class ToolbarSearchComponent {
 
   public visible: boolean = false;
   public animation: string = '';
+  private searchText = '';
 
   @Output() public search: EventEmitter<string> = new EventEmitter();
   @Output() public close: EventEmitter<boolean> = new EventEmitter();
@@ -40,6 +41,9 @@ export class ToolbarSearchComponent {
       } else {
         this.searchOffer = value.searchOffer ? value.searchOffer : '';
         this.categoryOffer = value.categoryOffer ? value.categoryOffer : [];
+      }
+      if(this.searchOffer.length == 0){
+        this.searchOffer = this.searchText;
       }
     });
   }
@@ -79,6 +83,7 @@ export class ToolbarSearchComponent {
 
   public onKeySearch(event) {
     this.search.emit(event);
+    this.searchText = event.target.value;
     this.searchController.onKeySearchText$.emit(event);
   }
 

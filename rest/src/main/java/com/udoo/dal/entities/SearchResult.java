@@ -1,15 +1,15 @@
 package com.udoo.dal.entities;
 
-import com.udoo.dal.entities.offer.OfferLite;
-import com.udoo.dal.entities.request.RequestLite;
+import com.udoo.dal.entities.offer.OfferMap;
+import com.udoo.dal.entities.request.RequestMap;
 
 import java.util.List;
 
 public class SearchResult {
     private List<ListElement> elementsOffer;
     private List<ListElement> elementsRequest;
-    private List<OfferLite> offerLite;
-    private List<RequestLite> requestLite;
+    private List<OfferMap> offerLite;
+    private List<RequestMap> requestLite;
 
     public List<ListElement> getElementsOffer() {
         return elementsOffer;
@@ -28,19 +28,19 @@ public class SearchResult {
     }
 
 
-    public List<OfferLite> getOfferLite() {
+    public List<OfferMap> getOfferLite() {
         return offerLite;
     }
 
-    public void setOfferLite(List<OfferLite> offerLite) {
+    public void setOfferLite(List<OfferMap> offerLite) {
         this.offerLite = offerLite;
     }
 
-    public List<RequestLite> getRequestLite() {
+    public List<RequestMap> getRequestLite() {
         return requestLite;
     }
 
-    public void setRequestLite(List<RequestLite> requestLite) {
+    public void setRequestLite(List<RequestMap> requestLite) {
         this.requestLite = requestLite;
     }
 }

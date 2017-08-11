@@ -13,36 +13,6 @@ import java.util.List;
 /**
  */
 public interface IRequestRepository extends Repository<Request, Integer> {
-
-    List<Request> findAll();
-
-    @Query("SELECT r FROM Request r WHERE r.category = :category AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllActualByCategory(@Param("category") int category);
-
-    @Query("SELECT r FROM Request r WHERE r.expirydate >= CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllActual();
-
-    @Query("SELECT r FROM Request r WHERE r.category = :category AND (LOWER(r.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(r.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllMatches(@Param("category") int category,@Param("searchText") String searchText);
-
-    @Query("SELECT r FROM Request r WHERE (LOWER(r.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(r.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText);
-
-
-    @Query("SELECT r FROM Request r WHERE r.category = :category AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllActualByCategory(@Param("category") int category, Pageable page);
-
-    @Query("SELECT r FROM Request r WHERE r.expirydate >= CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllActual(Pageable page);
-
-    @Query("SELECT r FROM Request r WHERE r.category = :category AND (LOWER(r.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(r.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllMatches(@Param("category") int category,@Param("searchText") String searchText, Pageable page);
-
-    @Query("SELECT r FROM Request r WHERE (LOWER(r.description) LIKE CONCAT('%',LOWER(:searchText),'%') OR LOWER(r.title) LIKE CONCAT('%',LOWER(:searchText),'%')) AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0)")
-    List<Request> findAllByTitleContainingOrDescriptionContaining(@Param("searchText") String searchText, Pageable page);
-
-
-
     List<Request> findByUid(int uid);
     List<Request> findByUid(int uid, Pageable page);
 

@@ -149,6 +149,7 @@ public class UserServiceController implements IUserServiceController {
                     if(!update){
                         historyRepository.deleteByHid(history.getHid());
                     }
+                    userUpdated.setPassword(user2.getPassword());
                     userRepository.save(userUpdated);
                     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
                 }
@@ -214,7 +215,7 @@ public class UserServiceController implements IUserServiceController {
             String currentpassword = mapper.convertValue(node.get("cpass"), String.class);
             String newpassword = mapper.convertValue(node.get("npass"), String.class);
             if (user != null && currentpassword != null && newpassword != null) {
-                if (user.getPassword().equals(currentpassword)) {
+                if (user.getPassword().equals(currentpassword) && newpassword.length() > 0) {
                     user.setPassword(newpassword);
                     userRepository.save(user);
                     return new ResponseEntity<>("Password changed", HttpStatus.OK);

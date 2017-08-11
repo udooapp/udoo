@@ -1,38 +1,36 @@
 package com.udoo.dal.entities.offer;
 
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-//for maps InfoWindow
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+
+@Entity
+@Table(name = "offer")
 public class OfferLite {
-    private Integer oid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer oid = -1;
+
+    private Integer uid;
 
     private String title = "";
-
-    private String description = "";
 
     private int category = -1;
 
     private String location = "";
 
-    private String availability = "";
-
-    private Date expirydate = new Date();
+    private String description = "";
 
     private boolean realTime;
 
-    public OfferLite(){}
-
-    public OfferLite(Offer offer){
-        this.oid = offer.getOid();
-        this.title = offer.getTitle();
-        this.description = offer.getDescription();
-        this.category = offer.getCategory();
-        this.location = offer.getLocation();
-        this.availability = offer.getAvailability();
-        this.expirydate = offer.getExpirydate();
-        this.realTime = offer.isRealTime();
-    }
+    private Date expirydate = new Date();
 
     public Integer getOid() {
         return oid;
@@ -42,6 +40,13 @@ public class OfferLite {
         this.oid = oid;
     }
 
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
 
     public String getTitle() {
         return title;
@@ -51,13 +56,6 @@ public class OfferLite {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getLocation() {
         return location;
@@ -67,21 +65,7 @@ public class OfferLite {
         this.location = location;
     }
 
-    public String getAvailability() {
-        return availability;
-    }
 
-    public void setAvailability(String availability) {
-        this.availability = availability;
-    }
-
-    public Date getExpirydate() {
-        return expirydate;
-    }
-
-    public void setExpirydate(Date expirydate) {
-        this.expirydate = expirydate;
-    }
 
     public int getCategory() {
         return category;
@@ -100,16 +84,30 @@ public class OfferLite {
         this.realTime = realTime;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getExpirydate() {
+        return expirydate;
+    }
+
+    public void setExpirydate(Date expirydate) {
+        this.expirydate = expirydate;
+    }
+
     @Override
     public String toString() {
         return "Offer{" +
                 "oid=" + oid +
+                ", uid=" + uid +
                 ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
                 ", category=" + category +
                 ", location='" + location + '\'' +
-                ", availability='" + availability + '\'' +
-                ", expirydate=" + expirydate +
                 ", realTime=" + realTime +
                 '}';
     }

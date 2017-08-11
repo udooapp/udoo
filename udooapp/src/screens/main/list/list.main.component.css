@@ -176,7 +176,7 @@
   position: absolute;
   width: 85%;
   height: 100%;
-  left: 100%;
+  left: calc(100% + 1px);
   top: 0;
   display: -webkit-flex;
   display: flex;

@@ -12,7 +12,7 @@ describe('OfferPage', function () {
     page.setText('udooTest@udoo.com', 'email-input');
     page.setText('password', 'password-input');
     page.setButtonClick('login-button');
-    page.isPresent('map').then(() => {
+    page.isPresent('tab-pager').then(() => {
       let date: Date = new Date();
       page.navigateTo('/offer');
       page.waitingForAngular();

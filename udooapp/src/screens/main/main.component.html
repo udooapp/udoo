@@ -25,7 +25,7 @@
                [style.animation-name]="pageAnim0" [searchListener]="searchListener" [result]="result"></main-list>
     <main-map [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 3 * width && pageMargin > -3 * width"
               class="main-map-container main-content-element"
-              [style.margin-left.px]="pageMargin" [style.animation-name]="pageAnim1" [searchListener]="searchListener"
+              [style.margin-left.px]="pageMargin <= 0 ? pageMargin : 0" [style.animation-name]="pageAnim1" [searchListener]="searchListener"
               [result]="result"></main-map>
     <main-wall [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 0" class="main-content-element wall-content"
                [style.min-width.px]="3*width"

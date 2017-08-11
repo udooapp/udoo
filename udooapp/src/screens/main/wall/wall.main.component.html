@@ -1,6 +1,6 @@
 <div class="wall-data-container">
   <div class="main-wall-service" *ngFor="let item of data">
-    <div class="main-wall-service-picture"><img class="main-wall-service-image" [src]="getPicture(item.picture)"></div>
+    <div class="main-wall-service-picture"><img class="main-wall-service-image" *ngIf="getPicture(item.picture).length > 0" [src]="getPicture(item.picture)"></div>
     <div class="main-wall-service-content" (click)="onClickContent(item)">
       <div class="main-wall-service-title"><b>{{item.userName}} </b>{{getTitle(item)}}</div>
       <div *ngIf="isUpdate(item.content)">

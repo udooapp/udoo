@@ -27,7 +27,7 @@ declare let window;
 })
 export class LoginComponent implements OnInit {
   message: String;
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
+  user: any = {email: '', password: ''};
   error: string;
   emptyValidator: IValidator = new EmptyValidator();
   emailValidator: IValidator = new EmailValidator();

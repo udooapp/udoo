@@ -42,9 +42,9 @@ export class UserService extends HeaderService{
       .catch(HandlerService.handleText);
   }
 
-  public loginUser(user: User): Observable<string> {
+  public loginUser(login: any): Observable<string> {
 
-    return this.http.post(config.server + '/login', JSON.stringify(user), new RequestOptions({headers: this.getHeader()}))
+    return this.http.post(config.server + '/login', JSON.stringify(login), new RequestOptions({headers: this.getHeader()}))
       .map((response: Response) => {
         let token = response.text();
         if (token) {
