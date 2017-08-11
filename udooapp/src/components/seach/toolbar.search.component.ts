@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 import {SearchController} from "../../controllers/search.controller";
@@ -62,6 +62,13 @@ export class ToolbarSearchComponent {
     } else {
       this.searchOffer = value.searchOffer ? value.searchOffer : '';
       this.categoryOffer = value.categoryOffer ? value.categoryOffer : [];
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  keypress(e: KeyboardEvent) {
+    if (e.keyCode == 27) {
+      this.onClickClose();
     }
   }
 

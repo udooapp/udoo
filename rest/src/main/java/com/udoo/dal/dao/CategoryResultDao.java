@@ -18,22 +18,23 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
         private String categoryName;
         private Map<String, Integer> map;
 
-        public String getCategoryName() {
+        private String getCategoryName() {
             return categoryName;
         }
 
-        public void setCategoryName(String categoryName) {
+        private void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
         }
 
-        public Map<String, Integer> getMap() {
+        private Map<String, Integer> getMap() {
             return map;
         }
 
-        public void setMap(Map<String, Integer> map) {
+        private void setMap(Map<String, Integer> map) {
             this.map = map;
         }
     }
+
     @Override
     public List<SearchElement> getAllCategories(String text) {
         String sqlO1 = "SELECT distinct c.cid as cid, c.name as name, o.title as text FROM Offer o, Categories c WHERE c.cid = o.category AND  LOWER(o.title) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND o.expirydate > CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0) Group By c.cid, c.name, o.title";
@@ -59,48 +60,57 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
             return "";
         }
     }
-    private List<SearchElement> getCategories( Map<Integer, ResultElement> result, String searchText){
+
+    private List<SearchElement> getCategories(Map<Integer, ResultElement> result, String searchText) {
         List<SearchElement> list = new ArrayList<>();
-        for(HashMap.Entry<Integer, ResultElement> entry : result.entrySet()){
+        for (HashMap.Entry<Integer, ResultElement> entry : result.entrySet()) {
             SearchElement element = new SearchElement();
             element.setId(entry.getKey());
             element.setCategoryName(entry.getValue().getCategoryName());
             int max = 0;
             String word = "";
             Map<String, Integer> map = entry.getValue().getMap();
-            for(HashMap.Entry<String, Integer> entryWord : map.entrySet()){
-                if(entryWord.getValue() > max){
+            for (HashMap.Entry<String, Integer> entryWord : map.entrySet()) {
+                if (entryWord.getValue() > max) {
                     max = entryWord.getValue();
                     word = entryWord.getKey();
                 }
             }
-            if(!word.isEmpty()){
+            if (!word.isEmpty()) {
                 element.setSearchResult(word);
             }
             list.add(element);
         }
         return list;
     }
+
     private void mapping(List<Map<String, Object>> rows, Map<Integer, ResultElement> map, String searchText) {
-        Pattern p = Pattern.compile("([a-z]*\\s)?(" + searchText.toLowerCase() + "[a-z]*)(\\s[a-z]*)?");
+        Pattern p = Pattern.compile("([-'a-z]{3,}\\s)?((" + searchText.toLowerCase() + ")[a-z-']{3,})(\\s[a-z]*)?");
         for (Map row : rows) {
             String text = "";
             Matcher m = p.matcher(row.get("text").toString().toLowerCase());
             if (m.find()) {
                 text = m.group();
             }
-            if(!text.isEmpty()) {
-                System.out.println("TEXT: " + text);
-                int id = (Integer)row.get("cid");
+            if (!text.isEmpty()) {
+                int id = (Integer) row.get("cid");
                 String s[] = text.split("\\s");
                 if (!map.containsKey(id)) {
                     ResultElement categoryResult = new ResultElement();
                     categoryResult.setCategoryName(row.get("name").toString());
                     Map<String, Integer> wordMap = new HashMap<>();
-                    wordMap.put(s[0], 1);
-                    if(s.length == 2){
+                    if (s.length == 1) {
+                        wordMap.put(s[0], 1);
+                    } else if (s.length == 2) {
+                        Matcher m2 = p.matcher(s[0]);
+                        if (m2.find()) {
+                            wordMap.put(s[0], 1);
+                        } else {
+                            wordMap.put(s[1], 1);
+                        }
                         wordMap.put(s[0] + " " + s[1], 1);
-                    } else if(s.length == 3){
+                    } else if (s.length == 3) {
+                        wordMap.put(s[0], 1);
                         wordMap.put(s[0] + " " + s[1], 1);
                         wordMap.put(s[1] + " " + s[2], 1);
                     }
@@ -108,11 +118,49 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
                     map.put(id, categoryResult);
                 } else {
                     Map<String, Integer> wordMap = map.get(id).getMap();
-                    if(s.length == 2){
-                        wordMap.put(s[0] + " " + s[1], 1);
-                    } else if(s.length == 3){
-                        wordMap.put(s[0] + " " + s[1], 1);
-                        wordMap.put(s[1] + " " + s[2], 1);
+                    if (s.length == 1) {
+                        if (wordMap.containsKey(s[0])) {
+                            wordMap.put(s[0], wordMap.get(s[0]) + 1);
+                        } else {
+                            wordMap.put(s[0], 1);
+                        }
+                    } else if (s.length == 2) {
+                        Matcher m2 = p.matcher(s[0]);
+                        if (m2.find()) {
+                            if (wordMap.containsKey(s[0])) {
+                                wordMap.put(s[0], wordMap.get(s[0]) + 1);
+                            } else {
+                                wordMap.put(s[0], 1);
+                            }
+                        } else {
+                            if (wordMap.containsKey(s[1])) {
+                                wordMap.put(s[1], wordMap.get(s[0]) + 1);
+                            } else {
+                                wordMap.put(s[1], 1);
+                            }
+                        }
+                        if (wordMap.containsKey(s[0] + " " + s[1])) {
+                            wordMap.put(s[0] + " " + s[1], wordMap.get(s[0] + " " + s[1]) + 1);
+                        } else {
+                            wordMap.put(s[0] + " " + s[1], 1);
+                        }
+                    } else if (s.length == 3) {
+                        wordMap.put(s[1], 1);
+                        if (wordMap.containsKey(s[1])) {
+                            wordMap.put(s[1], wordMap.get(s[1]) + 1);
+                        } else {
+                            wordMap.put(s[1], 1);
+                        }
+                        if (wordMap.containsKey(s[0] + s[1])) {
+                            wordMap.put(s[0], wordMap.get(s[0] + s[1]) + 1);
+                        } else {
+                            wordMap.put(s[0] + s[1], 1);
+                        }
+                        if (wordMap.containsKey(s[1] + " " + s[2])) {
+                            wordMap.put(s[1] + " " + s[2], wordMap.get(s[1] + " " + s[2]) + 1);
+                        } else {
+                            wordMap.put(s[1] + " " + s[2], 1);
+                        }
                     }
                 }
             }
@@ -138,7 +186,6 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
         }
         return result;
     }
-
 
 
     private String getResult(Map<String, Integer> map1, Map<String, Integer> map2) {

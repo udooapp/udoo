@@ -76,27 +76,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.searchString = searchText;
       this.category = -1;
       this.loadAvailableServices();
-      // this.searchString = value.target.value;
-      // if (value.which === 13) {
-      //   this.loadAvailableServices();
-      // } else {
-      //   this.searchString = value.target.value;
-      //   if (this.searchString.length > 0) {
-      //     this.mapService.getAvailableResults(this.searchString, this.type).subscribe(
-      //       result => {
-      //         this.result = [];
-      //         for (let i = 0; i < result.length; ++i) {
-      //           this.result.push({
-      //             category: this.findCatName(result[i].id),
-      //             result: result[i].result,
-      //             id: result[i].id
-      //           })
-      //         }
-      //       },
-      //       error => console.log(error)
-      //     );
-      //   }
-      // }
     });
     this.searchController.onClickCategoryResult$.subscribe(category => {
       this.category = category.id;
@@ -104,22 +83,24 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.loadAvailableServices();
     });
     this.searchController.onKeySearchText$.subscribe(searchText => {
-      this.category = -1;
-      this.searchString = searchText.target.value;
-      if(searchText.which == 13){
-        this.loadAvailableServices();
-      } else {
-        if(this.searchString.length > 0) {
-          this.mapService.getAvailableResults(this.searchString).subscribe(
-            data => {
-              this.searchController.searchResult$.emit(data);
-            },
-            error => {
-              this.dialog.notifyError(error);
-            }
-          );
+      if (this.searchString != searchText || searchText.which == 13) {
+        this.category = -1;
+        this.searchString = searchText.target.value;
+        if (searchText.which == 13) {
+          this.loadAvailableServices();
         } else {
-          this.searchController.searchResult$.emit(null);
+          if (this.searchString.length > 0) {
+            this.mapService.getAvailableResults(this.searchString).subscribe(
+              data => {
+                this.searchController.searchResult$.emit(data);
+              },
+              error => {
+                this.dialog.notifyError(error);
+              }
+            );
+          } else {
+            this.searchController.searchResult$.emit(null);
+          }
         }
       }
     });
@@ -530,7 +511,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   public onMainScroll() {
     let e: HTMLElement = document.getElementById("page-container");
-    if(e != null) {
+    if (e != null) {
       this.notifyScrollTo(e.scrollTop);
       if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
         this.notifier.userScrolledToTheBottom$.emit(true);
