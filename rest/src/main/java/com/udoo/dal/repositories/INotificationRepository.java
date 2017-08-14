@@ -18,6 +18,8 @@ public interface INotificationRepository extends Repository<Notification, Intege
 
     List<Notification> findAllByUid(int uid);
 
+    List<Notification> findAllByUidAndChecked(int uid, boolean checked);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Notification n WHERE n.nid= :nid")
