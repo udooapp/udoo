@@ -424,16 +424,26 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   private load(): Promise<void> {
+    const callbackName = 'initMap';
+    const scriptSrc ='https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
+    let scripts: any = document.getElementsByTagName('script');
+    for(let i = 0; i < scripts.length; ++i){
+      if(scripts[i].src == scriptSrc){
+        this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
+            resolve();
+        });
+        return this.scriptLoadingPromise;
+      }
+    }
     if (this.scriptLoadingPromise) {
       return this.scriptLoadingPromise;
-    }
 
+    }
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
     script.defer = true;
-    const callbackName = 'initMap';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
+    script.src = scriptSrc;
 
     this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
       (<any>window)[callbackName] = () => {
