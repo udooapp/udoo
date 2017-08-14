@@ -103,7 +103,8 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
       origin: new google.maps.Point(0, 0), // origin
       anchor: new google.maps.Point(0, 0) // anchor
     };
-
+    this.markerCluster = new MarkerClusterer(this.map, this.markers,
+      {imagePath: 'assets/maps/m'});
     this.markers = [];
     this.loadServiceMarkers(this.requestsWindow, false);
     this.loadServiceMarkers(this.offersWindow, true);
@@ -154,6 +155,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   }
 
   private loadServiceMarkers(serviceList: any[], type: boolean) {
+
     let mk = this;
     for (let i = 0; i < serviceList.length; ++i) {
       let service: any = serviceList[i];
@@ -174,8 +176,8 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
       }
     }
     if(type){
-      this.markerCluster = new MarkerClusterer(this.map, this.markers,
-        {imagePath: 'assets/maps/m'});
+      this.markerCluster.clearMarkers();
+      this.markerCluster.addMarkers(this.markers, false);
     }
   }
 

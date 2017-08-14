@@ -1,6 +1,6 @@
 <div class="toolbar-search-background" *ngIf="visible">
   <div class="toolbar-search-toolbar">
-    <input class="toolbar-search-input" placeholder="Search" (keyup)="onKeySearch($event)">
+    <input class="toolbar-search-input" placeholder="Search" (keyup)="onKeySearch($event)" autofocus>
     <img class="toolbar-search-close" src="./assets/close.png" (click)="onClickClose()">
   </div>
   <div class="toolbar-search-result">

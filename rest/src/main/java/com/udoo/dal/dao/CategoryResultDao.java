@@ -89,9 +89,7 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
         Pattern pattern2 = Pattern.compile("(" + searchText.toLowerCase() + ")[\\-a-z']*");
         for (Map row : rows) {
             String text = "";
-
             Matcher m = pattern.matcher(row.get("text").toString().toLowerCase());
-
             if (m.find()) {
                 text = m.group();
             }
@@ -100,49 +98,52 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
                 Matcher m2 = pattern2.matcher(text);
                 if (m2.find()) {
                     String match = m2.group();
-                    String s[] = text.replace(match, "*").split("\\s");
-                    if (!map.containsKey(id)) {
-                        ResultElement categoryResult = new ResultElement();
-                        categoryResult.setCategoryName(row.get("name").toString());
-                        Map<String, Integer> wordMap = new HashMap<>();
-                        wordMap.put(match, 1);
-                        if (s.length == 2) {
-                            if (s[0].equals("*")) {
-                                wordMap.put(match + s[1], 1);
-                            } else {
-                                wordMap.put(s[0] + match, 1);
-                            }
-                        } else if (s.length == 3) {
-                            wordMap.put(s[0] + " " + match, 1);
-                            wordMap.put(match + " " + s[2], 1);
-                        }
-                        categoryResult.setMap(wordMap);
-                        map.put(id, categoryResult);
-                    } else {
-                        Map<String, Integer> wordMap = map.get(id).getMap();
-
-                        if (wordMap.containsKey(match)) {
-                            wordMap.put(match, wordMap.get(match) + 1);
-                        } else {
+                    String matchWords[] = match.split("\\s");
+                    if (matchWords[matchWords.length - 1].length() > 2) {
+                        String s[] = text.replace(match, "*").split("\\s");
+                        if (!map.containsKey(id)) {
+                            ResultElement categoryResult = new ResultElement();
+                            categoryResult.setCategoryName(row.get("name").toString());
+                            Map<String, Integer> wordMap = new HashMap<>();
                             wordMap.put(match, 1);
-                        }
-                        if (s.length == 2) {
-                            String part = s[0].equals("*") ? match + " " + s[0] : s[1] + " " + match;
-                            if (wordMap.containsKey(part)) {
-                                wordMap.put(part, wordMap.get(part) + 1);
-                            } else {
-                                wordMap.put(part, 1);
-                            }
-                        } else if (s.length == 3) {
-                            if (wordMap.containsKey(s[0] + " " + match)) {
-                                wordMap.put(s[0], wordMap.get(s[0] + " " + match) + 1);
-                            } else {
+                            if (s.length == 2) {
+                                if (s[0].equals("*")) {
+                                    wordMap.put(match + s[1], 1);
+                                } else {
+                                    wordMap.put(s[0] + match, 1);
+                                }
+                            } else if (s.length == 3) {
                                 wordMap.put(s[0] + " " + match, 1);
-                            }
-                            if (wordMap.containsKey(match + " " + s[2])) {
-                                wordMap.put(match + " " + s[2], wordMap.get(match + " " + s[2]) + 1);
-                            } else {
                                 wordMap.put(match + " " + s[2], 1);
+                            }
+                            categoryResult.setMap(wordMap);
+                            map.put(id, categoryResult);
+                        } else {
+                            Map<String, Integer> wordMap = map.get(id).getMap();
+
+                            if (wordMap.containsKey(match)) {
+                                wordMap.put(match, wordMap.get(match) + 1);
+                            } else {
+                                wordMap.put(match, 1);
+                            }
+                            if (s.length == 2) {
+                                String part = s[0].equals("*") ? match + " " + s[0] : s[1] + " " + match;
+                                if (wordMap.containsKey(part)) {
+                                    wordMap.put(part, wordMap.get(part) + 1);
+                                } else {
+                                    wordMap.put(part, 1);
+                                }
+                            } else if (s.length == 3) {
+                                if (wordMap.containsKey(s[0] + " " + match)) {
+                                    wordMap.put(s[0], wordMap.get(s[0] + " " + match) + 1);
+                                } else {
+                                    wordMap.put(s[0] + " " + match, 1);
+                                }
+                                if (wordMap.containsKey(match + " " + s[2])) {
+                                    wordMap.put(match + " " + s[2], wordMap.get(match + " " + s[2]) + 1);
+                                } else {
+                                    wordMap.put(match + " " + s[2], 1);
+                                }
                             }
                         }
                     }
