@@ -86,7 +86,6 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   }
 
   initMap() {
-    console.log('Init Map');
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 48.211029, lng: 16.373990},
       zoom: 14,
