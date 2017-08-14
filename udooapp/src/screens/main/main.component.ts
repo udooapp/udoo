@@ -289,32 +289,25 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.tabAnimation += 0;
       this.page = 0;
       this.menuController.disableMenuSwipe$.emit(MenuController.MENU_ENABLE);
+      this.pageAnim0 = this.PAGE_ANIM + 1;
+      this.pageAnim1 = this.PAGE_ANIM + 2;
+      this.pageAnim2 = this.PAGE_ANIM + 2;
     } else if (this.margin < this.width + this.width / 2) {
       this.tabAnimation += 1;
       this.page = 1;
       this.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
+      this.pageAnim0 = this.PAGE_ANIM + 0;
+      this.pageAnim1 = this.PAGE_ANIM + 1;
+      this.pageAnim2 = this.PAGE_ANIM + 2;
     } else {
       this.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
       this.page = 2;
       this.tabAnimation += 2;
+      this.pageAnim0 = this.PAGE_ANIM + 0;
+      this.pageAnim1 = this.PAGE_ANIM + 0;
+      this.pageAnim2 = this.PAGE_ANIM + 1;
     }
     this.tokenService.setPageState(this.page);
-    switch (this.page) {
-      case 0:
-        this.pageAnim0 = this.PAGE_ANIM + 1;
-        this.pageAnim1 = this.PAGE_ANIM + 2;
-        this.pageAnim2 = this.PAGE_ANIM + 2;
-        break;
-      case 1:
-        this.pageAnim0 = this.PAGE_ANIM + 0;
-        this.pageAnim1 = this.PAGE_ANIM + 1;
-        this.pageAnim2 = this.PAGE_ANIM + 2;
-        break;
-      case 2:
-        this.pageAnim0 = this.PAGE_ANIM + 0;
-        this.pageAnim1 = this.PAGE_ANIM + 0;
-        this.pageAnim2 = this.PAGE_ANIM + 1;
-    }
   }
 
   initMap() {

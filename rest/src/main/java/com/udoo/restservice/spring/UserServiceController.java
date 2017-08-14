@@ -114,7 +114,7 @@ public class UserServiceController implements IUserServiceController {
                     history.setType(0);
                     history = historyRepository.save(history);
                     boolean update = false;
-                    if(userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())){
+                    if (userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())) {
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getPicture());
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
@@ -122,7 +122,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
-                    if(!userUpdated.getName().equals(userSaved.getName())){
+                    if (!userUpdated.getName().equals(userSaved.getName())) {
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getName());
                         historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
@@ -130,7 +130,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
-                    if(!userUpdated.getPhone().equals(userSaved.getPhone())){
+                    if (!userUpdated.getPhone().equals(userSaved.getPhone())) {
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
@@ -138,7 +138,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
-                    if(!userUpdated.getEmail().equals(userSaved.getEmail())){
+                    if (!userUpdated.getEmail().equals(userSaved.getEmail())) {
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setChanges(userSaved.getEmail());
                         historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
@@ -146,7 +146,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
-                    if(!update){
+                    if (!update) {
                         historyRepository.deleteByHid(history.getHid());
                     }
                     userUpdated.setPassword(user2.getPassword());
@@ -180,20 +180,20 @@ public class UserServiceController implements IUserServiceController {
             user.setGoogleid("");
             user.setPassword("");
             resp.setUser(user);
-            resp.setNotifications(notificationRepository.findAllByUid(user.getUid()));
-            for(Notification notification : resp.getNotifications()){
-                if(!notification.isChecked()){
+            resp.setNotifications(notificationRepository.findAllByUidAndChecked(user.getUid(), false));
+            for (Notification notification : resp.getNotifications()) {
+                if (!notification.isChecked()) {
                     notification.setChecked(true);
                     notificationRepository.save(notification);
                     notification.setChecked(false);
                 }
             }
-            if(user.getActive() < 15){
+            if (user.getActive() < 15) {
                 List<String> systemNotification = new ArrayList<>();
-                if(((user.getActive() >> 3) & 1) == 0){
+                if (((user.getActive() >> 3) & 1) == 0) {
                     systemNotification.add("Please, activate your email address");
                 }
-                if(((user.getActive() >> 3) & 3) == 0){
+                if (((user.getActive() >> 3) & 3) == 0) {
                     systemNotification.add("Please, activate your phone number");
                 }
                 resp.setSystemNotification(systemNotification);
