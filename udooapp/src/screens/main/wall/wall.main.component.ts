@@ -162,7 +162,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
       case this.UPDATED_DESCRIPTION:
         return 'updated description ';
       case this.UPDATED_EXPIRATION_DATE:
-        return 'updated description ';
+        return 'updated expiration date ';
       case this.UPDATED_LOCATION:
         return 'updated location ';
       case this.UPDATED_CATEGORY:

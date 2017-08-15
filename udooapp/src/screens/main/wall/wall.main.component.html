@@ -5,10 +5,10 @@
     </div>
     <div class="main-wall-box-content">
       <div class="main-wall-service-user">{{item.userName}}</div>
+      <div class="main-wall-service-date">{{item.date}}</div>
 
       <!--UserModification-->
       <div class="main-wall-user-info" *ngIf="isUserUpdate(item)">
-        <div class="main-wall-service-date">{{item.date}}</div>
         <div class="main-wall-user-buttons">
           <img class="main-wall-user-profile-action" src="./assets/call.png">
           <img class="main-wall-user-profile-action" src="./assets/message2.png">
@@ -32,16 +32,14 @@
             <div class="main-wall-service-content-changes">{{item.content[0].before}}</div>
           </div>
           <div *ngIf="item.content[0].type != 0 " class="min-wall-service-content-text">{{getServiceModificationText(item.content[0])}}
-            <div class="main-wall-service-content-changes">&nbsp;{{getContent(item.content[0].before)}}</div>
+            <a class="main-wall-service-content-changes">&nbsp;{{getContent(item.content[0].before)}}</a>
             &nbsp;to&nbsp;
-            <div class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</div>
+            <a class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</a>
           </div>
-          <div class="main-wall-service-date">{{item.date}}</div>
         </div>
         <!--JustPictures-->
         <div *ngIf="countPicture(item.content) == item.content.length" class="main-wall-service-content">
           {{pictureText(item.content.length)}} to <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
-          <div class="main-wall-service-date">{{item.date}}</div>
           <div class="main-wall-picture-container">
             <div class="main-wall-service-update-pictures" *ngFor="let img of getPictures(item.content); let i = index">
               <img class="main-wall-service-update-images" [src]="getPicture(img)">
@@ -52,11 +50,10 @@
         <div *ngIf="countPicture(item.content) < item.content.length && item.content.length > 1"
              class="main-wall-service-content">
           updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
-          <div class="main-wall-service-date">{{item.date}}</div>
           <div *ngFor="let element of item.content">
             <div *ngIf="element.type != 3 " class="min-wall-service-content-text">{{getServiceModificationText(element)}}
-              <div class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </div>&nbsp;to&nbsp;
-              <div class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </div>
+              <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;
+              <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>
             </div>
           </div>
           <div *ngIf="countPicture(item.content) > 0">
