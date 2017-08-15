@@ -46,7 +46,7 @@
 .wall-data-container {
   width: 100%;
   display: block;
-  padding: 5% 0;
+  padding-bottom: 50px;
 }
 
 .wall-data-container h1 {

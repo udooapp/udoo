@@ -167,6 +167,10 @@ function MarkerClusterer(map, opt_markers, opt_options) {
 
   // Add the map event listeners
   var that = this;
+  google.maps.event.addListener(map,'dragstart',function(){
+    that.zoomOnClick_=false;});
+  google.maps.event.addListener(map,'mouseup',function(){setTimeout(function(){
+    that.zoomOnClick_=true;},50);});
   google.maps.event.addListener(this.map_, 'zoom_changed', function () {
     // Determines map type and prevent illegal zoom levels
     var zoom = that.map_.getZoom();
@@ -706,6 +710,7 @@ MarkerClusterer.prototype.resetViewport = function (opt_hide) {
  *
  */
 MarkerClusterer.prototype.repaint = function () {
+
   var oldClusters = this.clusters_.slice();
   this.clusters_.length = 0;
   this.resetViewport();
