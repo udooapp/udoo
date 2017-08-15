@@ -167,3 +167,30 @@
     width: 30%;
   }
 }
+.main-scroll-up-button{
+  background-color: #378281;
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: 24px;
+  z-index: 3;
+  right: 24px;
+  transition: opacity 250ms;
+}
+.main-scroll-up-arrow{
+  background: #F7F7F7;
+  height: 15px;
+  width: 2px;
+  margin: 11px 23px;
+  transform: rotate(135deg);
+}
+
+.main-scroll-up-arrow:after {
+  background: #F7F7F7;
+  content: "";
+  height: 2px;
+  position: absolute;
+  top: 13px;
+  width: 15px;
+}

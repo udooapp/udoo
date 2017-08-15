@@ -25,10 +25,16 @@
                [style.animation-name]="pageAnim0" [searchListener]="searchListener" [result]="result"></main-list>
     <main-map [ngClass]="{'element-blur': blur}"
               class="main-map-container main-content-element"
-              [style.margin-left.px]="pageMargin <= 0 ? pageMargin : 0" [style.animation-name]="pageAnim1" [searchListener]="searchListener"
+              [style.margin-left.px]="pageMargin <= 0 ? pageMargin : 0" [style.animation-name]="pageAnim1"
+              [searchListener]="searchListener"
               [result]="result"></main-map>
     <main-wall [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 0" class="main-content-element wall-content"
                [style.min-width.px]="3*width - 50"
-               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2" [searchListener]="searchListener"></main-wall>
+               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"
+               [searchListener]="searchListener"></main-wall>
+  </div>
+  <div class="main-scroll-up-button" [style.opacity]="scrollUpVisibility ? 1 : 0"
+       [style.width.px]="scrollUpVisibility ? 40 : 0" (click)="onClickScrollUp()">
+    <div class="main-scroll-up-arrow"></div>
   </div>
 </div>

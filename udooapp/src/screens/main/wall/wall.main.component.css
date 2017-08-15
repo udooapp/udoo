@@ -78,6 +78,9 @@
   color: #4A4A4A;
   font-weight: 700;
 }
+.main-wall-service-user-width {
+  width: calc(100% - 75px);
+}
 .main-wall-user-content{
   padding-bottom: 5px;
 }

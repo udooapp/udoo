@@ -67,6 +67,9 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   public showBid: boolean = false;
   bid: any = {price: 0, description: '', sid: 0, type: false};
 
+  //ScrollUp button
+  public scrollUpVisibility: boolean = false;
+
   constructor(private bidService: BidService, private offerService: OfferService, private requestService: RequestService, private serviceDialogController: ServiceDialogController, private router: Router, private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
     super();
     searchController.onClickSearchButton$.subscribe(() => {
@@ -425,12 +428,12 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   private load(): Promise<void> {
     const callbackName = 'initMap';
-    const scriptSrc ='https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
+    const scriptSrc = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCvn27CPRnDIm_ROE-Q8U-x2pUYep7yCmU&callback=' + callbackName;
     let scripts: any = document.getElementsByTagName('script');
-    for(let i = 0; i < scripts.length; ++i){
-      if(scripts[i].src == scriptSrc){
+    for (let i = 0; i < scripts.length; ++i) {
+      if (scripts[i].src == scriptSrc) {
         this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
-            resolve();
+          resolve();
         });
         return this.scriptLoadingPromise;
       }
@@ -461,7 +464,8 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   loadMoreElementMap() {
-    if(this.page == 0){}
+    if (this.page == 0) {
+    }
     this.mapService.getMoreAvailableServices(this.category, this.searchString, this.listData.offerSize, this.listData.requestSize).subscribe(
       result => {
         let more = 0;
@@ -516,10 +520,33 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   public onMainScroll() {
     let e: HTMLElement = document.getElementById("page-container");
     if (e != null) {
+      this.scrollUpVisibility = e.scrollTop > window.innerHeight * 3;
       this.notifyScrollTo(e.scrollTop);
       if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
         this.notifier.userScrolledToTheBottom$.emit(true);
       }
+    }
+  }
+
+  public onClickScrollUp() {
+    let e: HTMLElement = document.getElementById("page-container");
+    if (e != null) {
+
+      this.notifyScrollTo(0);
+      let cosParameter = e.scrollTop / 2,
+        scrollCount = 0,
+        oldTimestamp = performance.now();
+
+      let step = function(newTimestamp) {
+        scrollCount += Math.PI / (500 / (newTimestamp - oldTimestamp));
+        if (scrollCount >= Math.PI) e.scrollTop = 0;
+        if (e.scrollTop === 0) return;
+        e.scrollTop = Math.round(cosParameter + cosParameter * Math.cos(scrollCount));
+        oldTimestamp = newTimestamp;
+        window.requestAnimationFrame(step);
+      }
+
+      window.requestAnimationFrame(step);
     }
   }
 
@@ -533,7 +560,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   onClickService(id: number, type: boolean, location: string) {
-    if(location != null) {
+    if (location != null) {
       let coordinate = this.getCoordinates(location);
       this.elementCoordinates.lat = coordinate.lat;
       this.elementCoordinates.lng = coordinate.lng;
