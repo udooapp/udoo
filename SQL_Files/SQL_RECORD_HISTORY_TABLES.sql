@@ -11,7 +11,8 @@ Create TABLE History(
 Create Table HistoryElements(
  heid int AUTO_INCREMENT,
  action int,
- changes text,
+ before text,
+ after text,
  hid int not null,
  Primary Key(heid),
  Constraint foreign key (hid) REFERENCES History(hid)

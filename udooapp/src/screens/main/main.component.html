@@ -29,6 +29,6 @@
               [result]="result"></main-map>
     <main-wall [ngClass]="{'element-blur': blur}" *ngIf="pageMargin < 0" class="main-content-element wall-content"
                [style.min-width.px]="3*width"
-               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"></main-wall>
+               [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2" [searchListener]="searchListener"></main-wall>
   </div>
 </div>

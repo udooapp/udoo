@@ -106,6 +106,7 @@ public class RequestServiceController implements IRequestServiceController {
                     } else {
                         HistoryElement histElement = new HistoryElement();
                         histElement.setAction(WallServiceController.NEW);
+                        histElement.setBefore(requestNew.getCategory() + "");
                         histElement.setHid(hist.getHid());
                         historyElementRepository.save(histElement);
                     }
@@ -168,6 +169,7 @@ public class RequestServiceController implements IRequestServiceController {
                     hist = historyRepository.save(hist);
                     HistoryElement histElement = new HistoryElement();
                     histElement.setAction(WallServiceController.NEW);
+                    histElement.setBefore(requestNew.getCategory() + "");
                     histElement.setHid(hist.getHid());
                     historyElementRepository.save(histElement);
                     return new ResponseEntity<>("Request saved", HttpStatus.OK);
@@ -349,7 +351,7 @@ public class RequestServiceController implements IRequestServiceController {
                 update = true;
                 HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
-                histElement.setChanges(pic.getPrid() + "");
+                histElement.setBefore(pic.getPrid() + "");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
             }
@@ -358,7 +360,8 @@ public class RequestServiceController implements IRequestServiceController {
             update = true;
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
-            histElement.setChanges(requestSaved.getTitle());
+            histElement.setBefore(requestSaved.getTitle());
+            histElement.setAfter(requestNew.getTitle());
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
         }
@@ -367,6 +370,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
             histElement.setHid(hid);
+            histElement.setBefore(requestSaved.getDescription());
+            histElement.setAfter(requestNew.getDescription());
             historyElementRepository.save(histElement);
         }
         if (requestNew.getExpirydate().compareTo(requestSaved.getExpirydate()) != 0) {
@@ -374,6 +379,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
             histElement.setHid(hid);
+            histElement.setAfter(requestSaved.getExpirydate().getTime() + "");
+            histElement.setBefore(requestNew.getExpirydate().getTime() + "");
             historyElementRepository.save(histElement);
         }
         if (!requestNew.getLocation().equals(requestSaved.getLocation())) {
@@ -381,6 +388,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_LOCATION);
             histElement.setHid(hid);
+            histElement.setBefore(requestSaved.getLocation());
+            histElement.setAfter(requestNew.getLocation());
             historyElementRepository.save(histElement);
         }
         if (!requestNew.getJobdate().equals(requestSaved.getJobdate())) {
@@ -388,6 +397,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_JOB_DATE);
             histElement.setHid(hid);
+            histElement.setBefore(requestSaved.getJobdate());
+            histElement.setAfter(requestNew.getJobdate());
             historyElementRepository.save(histElement);
         }
         if (requestNew.getCategory() != requestSaved.getCategory()) {
@@ -395,6 +406,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
             histElement.setHid(hid);
+            histElement.setBefore(requestSaved.getCategory()+"");
+            histElement.setAfter(requestNew.getCategory()+"");
             historyElementRepository.save(histElement);
         }
         return update;

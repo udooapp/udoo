@@ -1,66 +1,158 @@
-.wall-data-container{
+@media (min-width: 961px) {
+  .main-wall-service-update-pictures {
+    width: 152px;
+    height: 95px;
+  }
+
+  .main-wall-service-update-images {
+    width: auto;
+    height: 95px;
+  }
+}
+
+@media (max-width: 960px) {
+  .main-wall-service-update-pictures {
+    width: 128px;
+    height: 80px;
+  }
+
+  .main-wall-service-update-images {
+    width: auto;
+    height: 80px;
+  }
+}
+
+@media (max-width: 641px) {
+  .main-wall-service-update-pictures {
+    width: 104px;
+    height: 65px;
+  }
+
+  .main-wall-service-update-images {
+    width: auto;
+    height: 65px;
+  }
+}
+
+.main-wall-service-update-images {
+  margin: auto;
+  display: block;
+}
+
+.main-wall-service-update-pictures {
+  overflow: hidden;
+}
+
+.wall-data-container {
   width: 100%;
   display: block;
-  padding: 5%;
+  padding: 5% 0;
 }
-.wall-data-container h1{
-  color:#378281;
+
+.wall-data-container h1 {
+  color: #378281;
   width: 100%;
   text-align: center;
   font-weight: 200;
 }
+
 .main-wall-service-picture {
   height: 80px;
   width: 80px;
   margin: 10px 10px 10px 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 2px;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
   overflow: hidden;
 }
 
 .main-wall-service-image {
-  height: 94px;
-  width: 94px;
-  margin-left: -2px;
-  margin-top: -2px;
+  height: 100%;
+  width: 100%;
   background-color: #FAFAFA;
   object-fit: cover;
+}
+
+.main-wall-service-user {
+  padding-bottom: 5px;
+  color: #4A4A4A;
+  font-weight: 700;
+}
+.main-wall-user-content{
+  padding-bottom: 5px;
+}
+.main-wall-user-content span{
+  color: #378281;
+}
+.main-wall-user-profile-action {
+  width: 25px;
+  height: 25px;
+  margin: 2px 5px;
+}
+
+.main-wall-user-buttons{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: -webkit-flex;
+  display: inline-flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
 }
 .main-wall-service-title {
   color: #378281;
   font-weight: lighter;
   font-size: 18pt;
 }
+
 .main-wall-service {
   min-height: 150px;
-  width: 90%;
+  width: 100%;
   height: auto;
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  border-top: 2px solid #378281;
+  padding: 10px 0;
 }
 
 .main-wall-service:hover {
   background-color: #FAFAFA;
 }
+
 .main-wall-service-description {
   word-wrap: break-word;
-  font-size: 14pt;
+  font-size: 12pt;
   padding-top: 2px;
   padding-bottom: 2px;
+  color: #4A4A4A;
 }
-.main-wall-service-content {
-  margin-left: 90px;
+
+.main-wall-box-content {
+  margin-left: 100px;
   padding: 10px 10px 10px 10px;
   margin-right: 10px;
   margin-top: -100px;
   color: dimgrey;
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
 }
-.main-wall-service-date{
-  padding-top: 10px;
+.min-wall-service-content-text{
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  padding: 2px 0;
 }
+.main-wall-service-date {
+  color: #9C9C9C;
+  padding: 5px 0;
+  font-size: 11pt;
+}
+
 .main-wall-picture-container {
   width: 100%;
   margin: 5px 0;
@@ -77,19 +169,15 @@
   -webkit-align-items: flex-start;
   align-items: flex-start;
 }
-.image-item {
-  overflow: hidden;
-  width: 140px;
-  height: 140px;
-  position: relative;
-  margin: 5px;
-  display: block;
-  align-items: center;
-  background-color: #EAEAEA;
-  border-radius: 26px;
+
+.main-wall-service-content{
+  color: #4A4A4A;
 }
-.image-content {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.main-wall-service-content-changes{
+  color: #378281;
+}
+.main-wall-service-content span{
+  color: #378281;
+  font-weight: 800;
+  cursor: pointer;
 }

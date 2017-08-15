@@ -78,30 +78,30 @@ public class UserServiceController implements IUserServiceController {
             if (userSaved == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
-                User user2 = userRepository.getByEmail(userUpdated.getEmail());
-                if (user2 != null && user2.getUid() != userUpdated.getUid()) {
+                User userEmail= userRepository.getByEmail(userUpdated.getEmail());
+                if (userEmail != null && userEmail.getUid() != userUpdated.getUid()) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
                     if (userUpdated.getLocation() == null) {
                         userUpdated.setLocation("");
                     }
-                    user2 = userRepository.findByUid(userUpdated.getUid());
+
                     String responseMessage = "Profile updated";
-                    if (!userUpdated.getEmail().equals(user2.getEmail())) {
+                    if (!userUpdated.getEmail().equals(userSaved.getEmail())) {
                         responseMessage = "Check your email address";
-                        int activated = user2.getActive();
+                        int activated = userSaved.getActive();
                         verificationRepository.deleteByUid(userUpdated.getUid(), false);
                         emailService.sendEmailVerification(userUpdated);
                         activated &= ~0b10;
                         userUpdated.setActive(activated);
                     }
-                    if (!userUpdated.getPhone().equals(user2.getPhone())) {
+                    if (!userUpdated.getPhone().equals(userSaved.getPhone())) {
                         if (responseMessage.equals("Check your email address")) {
                             responseMessage += " and phone";
                         } else {
                             responseMessage = "Check your phone";
                         }
-                        int activated = user2.getActive();
+                        int activated = userSaved.getActive();
                         verificationRepository.deleteByUid(userUpdated.getUid(), false);
                         smsService.sendVerificationMessage(userUpdated);
                         activated &= ~0b1000;
@@ -116,7 +116,7 @@ public class UserServiceController implements IUserServiceController {
                     boolean update = false;
                     if (userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setChanges(userSaved.getPicture());
+                        historyElement.setBefore(userUpdated.getPicture());
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -124,7 +124,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getName().equals(userSaved.getName())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setChanges(userSaved.getName());
+                        historyElement.setBefore(userUpdated.getName());
                         historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -132,7 +132,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getPhone().equals(userSaved.getPhone())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setChanges(userSaved.getPhone());
+                        historyElement.setBefore(userUpdated.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -140,7 +140,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getEmail().equals(userSaved.getEmail())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setChanges(userSaved.getEmail());
+                        historyElement.setBefore(userUpdated.getEmail());
                         historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -149,7 +149,7 @@ public class UserServiceController implements IUserServiceController {
                     if (!update) {
                         historyRepository.deleteByHid(history.getHid());
                     }
-                    userUpdated.setPassword(user2.getPassword());
+                    userUpdated.setPassword(userSaved.getPassword());
                     userRepository.save(userUpdated);
                     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
                 }

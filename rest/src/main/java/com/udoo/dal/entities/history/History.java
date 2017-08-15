@@ -45,6 +45,14 @@ public class History {
         return historyElements;
     }
 
+    public void setHid(int hid) {
+        this.hid = hid;
+    }
+
+    public void setHistoryElements(List<HistoryElements> historyElements) {
+        this.historyElements = historyElements;
+    }
+
     public int getHid() {
         return hid;
     }

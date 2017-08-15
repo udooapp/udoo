@@ -2,7 +2,8 @@ package com.udoo.dal.entities;
 
 public class WallContent {
     private int type;
-    private String content;
+    private String before;
+    private String after;
 
     public int getType() {
         return type;
@@ -12,11 +13,19 @@ public class WallContent {
         this.type = type;
     }
 
-    public String getContent() {
-        return content;
+    public String getBefore() {
+        return before;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setBefore(String before) {
+        this.before = before;
+    }
+
+    public String getAfter() {
+        return after;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
     }
 }

@@ -2,11 +2,15 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.entities.WallContent;
 import com.udoo.dal.entities.history.*;
+import com.udoo.dal.entities.offer.OfferPictures;
+import com.udoo.dal.entities.request.RequestPictures;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
 import com.udoo.restservice.IWallServiceController;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +43,6 @@ public class WallServiceController implements IWallServiceController {
     public static final int UPDATED_CATEGORY = 9;
     public static final int UPDATED_PHONE_NUMBER = 10;
     public static final int UPDATED_EMAIL_ADDRESS = 11;
-
     @Resource
     private IHistoryRepository historyRepository;
 
@@ -64,6 +68,9 @@ public class WallServiceController implements IWallServiceController {
     @RequestMapping(value = "/public", method = RequestMethod.GET)
     public ResponseEntity<?> getOfflineWall(@RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
+        if (lastId == 0) {
+            lastId = Integer.MAX_VALUE;
+        }
         return new ResponseEntity<>(this.merge(historyRepository.findAllByActionAndDateLessThanOrderByDateDesc(0, lastId, page)), HttpStatus.OK);
     }
 
@@ -72,7 +79,10 @@ public class WallServiceController implements IWallServiceController {
     public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
         int uid = Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString());
-        return new ResponseEntity<>(this.merge(historyRepository.findAllUidAndDateLessThan(uid, lastId, page)), HttpStatus.OK);
+        if (lastId == 0) {
+            lastId = Integer.MAX_VALUE;
+        }
+        return new ResponseEntity<>(this.merge(historyRepository.findAllUidAndHidGreaterThan(uid, lastId, page)), HttpStatus.OK);
 
     }
 
@@ -83,7 +93,7 @@ public class WallServiceController implements IWallServiceController {
                 ResponseHistory hist = new ResponseHistory();
                 hist.setId(obj.getTid());
                 hist.setType(obj.getType());
-                hist.setDate(obj.getDate());
+                hist.setDate(getDateTime(obj.getDate()));
                 hist.setHid(obj.getHid());
 
                 switch (obj.getType()) {
@@ -91,7 +101,7 @@ public class WallServiceController implements IWallServiceController {
                         User usr = userRepository.findByUid(hist.getId());
                         hist.setUserName(usr.getName());
                         hist.setPicture(usr.getPicture());
-                        hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
+                        hist.setContent(getUserActionType(obj.getHistoryElements()));
                         history.add(hist);
                         break;
                     case 1:
@@ -101,18 +111,18 @@ public class WallServiceController implements IWallServiceController {
                             hist.setPicture(usro.getPicture());
                             hist.setUserName(usro.getName());
                             hist.setServiceName(off.getTitle());
-                            hist.setContent(getOfferActionType(obj.getHistoryElements(), off));
+                            hist.setContent(getOfferActionType(obj.getHistoryElements()));
                             history.add(hist);
                         }
                         break;
                     case 2:
                         Request req = requestRepository.findByRid(hist.getId());
-                        if(req != null) {
+                        if (req != null) {
                             User usrr = userRepository.findByUid(req.getUid());
                             hist.setServiceName(req.getTitle());
                             hist.setPicture(usrr.getPicture());
                             hist.setUserName(usrr.getName());
-                            hist.setContent(getRequestActionType(obj.getHistoryElements(), req));
+                            hist.setContent(getRequestActionType(obj.getHistoryElements()));
                             history.add(hist);
                         }
                         break;
@@ -122,7 +132,21 @@ public class WallServiceController implements IWallServiceController {
         return history;
     }
 
-    private List<WallContent> getUserActionType(List<HistoryElements> list, User user) {
+    private String getDateTime(Date date) {
+        long diff = new Date().getTime() - date.getTime();
+        if (diff < 60000) {
+            return "just now";
+        } else if (diff < 3600000) {
+            return diff / 60000 + " minutes ago";
+        } else if (diff < 86400000) {
+            return diff / 3600000 + " hours ago";
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("MMM. dd, HH:mm");
+            return format.format(date);
+        }
+    }
+
+    private List<WallContent> getUserActionType(List<HistoryElements> list) {
         List<WallContent> content = new ArrayList<>();
         for (HistoryElements element : list) {
             int action = element.getAction();
@@ -130,16 +154,16 @@ public class WallServiceController implements IWallServiceController {
             wallContent.setType(action);
             switch (action) {
                 case UPDATED_PICTURE:
-                    wallContent.setContent(user.getPicture());
+                    wallContent.setBefore(element.getBefore());
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setContent(element.getChanges() + " to " + user.getName());
+                    wallContent.setBefore(element.getBefore());
                     break;
                 case UPDATED_PHONE_NUMBER:
-                    wallContent.setContent(user.getPhone());
+                    wallContent.setBefore(element.getBefore());
                     break;
                 case UPDATED_EMAIL_ADDRESS:
-                    wallContent.setContent(user.getEmail());
+                    wallContent.setBefore(element.getBefore());
                     break;
             }
             content.add(wallContent);
@@ -147,33 +171,52 @@ public class WallServiceController implements IWallServiceController {
         return content;
     }
 
-    private List<WallContent> getOfferActionType(List<HistoryElements> list, Offer offer) {
+    private List<WallContent> getOfferActionType(List<HistoryElements> list) {
         List<WallContent> content = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("MMM. dd, HH:mm");
         for (HistoryElements element : list) {
             int action = element.getAction();
             WallContent wallContent = new WallContent();
             wallContent.setType(action);
             switch (action) {
+                case NEW:
+                    if(element.getBefore() != null) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    }
+                    break;
                 case UPDATED_DESCRIPTION:
-                    wallContent.setContent(offer.getDescription());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
                 case UPDATED_PICTURE:
-                    wallContent.setContent(offerPictureRepository.findByPoid(Integer.parseInt(element.getChanges())).getSrc());
+                    OfferPictures offerPictures = offerPictureRepository.findByPoid(Integer.parseInt(element.getBefore()));
+                    if (offerPictures != null) {
+                        wallContent.setBefore(offerPictures.getSrc());
+                    }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setContent(offer.getExpirydate().getTime() + "");
+                    wallContent.setBefore(format.format(new Date(element.getBefore() == null || element.getBefore().length() == 0 ? 0 : Long.parseLong(element.getBefore()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfter() == null || element.getAfter().length() == 0 ? 0 : Long.parseLong(element.getAfter()))));
                     break;
                 case UPDATED_LOCATION:
-                    wallContent.setContent(offer.getLocation());
+                    wallContent.setBefore(getLocation(element.getBefore()));
+                    wallContent.setAfter(getLocation(element.getAfter()));
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setContent(element.getChanges());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
                 case UPDATED_CATEGORY:
-                    wallContent.setContent(categoryRepository.findByCid(offer.getCategory()).getName());
+                    if(element.getBefore() != null && element.getBefore().length() > 0) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    }
+                    if(element.getAfter() != null && element.getAfter().length() > 0) {
+                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfter())).getName());
+                    }
                     break;
                 case UPDATED_AVAILABILITY:
-                    wallContent.setContent(offer.getAvailability());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
             }
             content.add(wallContent);
@@ -181,37 +224,68 @@ public class WallServiceController implements IWallServiceController {
         return content;
     }
 
-    private List<WallContent> getRequestActionType(List<HistoryElements> list, Request request) {
+    private List<WallContent> getRequestActionType(List<HistoryElements> list) {
         List<WallContent> content = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("MMM. dd, HH:mm");
         for (HistoryElements element : list) {
             int action = element.getAction();
             WallContent wallContent = new WallContent();
             wallContent.setType(action);
             switch (action) {
+                case NEW:
+                    if(element.getBefore() != null) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    }
+                    break;
                 case UPDATED_DESCRIPTION:
-                    wallContent.setContent(request.getDescription());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
                 case UPDATED_PICTURE:
-                    wallContent.setContent(requestPictureRepository.findByPrid(Integer.parseInt(element.getChanges())).getSrc());
+                    RequestPictures requestPictures = requestPictureRepository.findByPrid(Integer.parseInt(element.getBefore()));
+                    if (requestPictures != null) {
+                        wallContent.setBefore(requestPictures.getSrc());
+                    }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setContent(request.getExpirydate().getTime() + "");
+                    wallContent.setBefore(format.format(new Date(element.getBefore() == null || element.getBefore().length() == 0 ? 0 : Long.parseLong(element.getBefore()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfter() == null || element.getAfter().length() == 0 ? 0 : Long.parseLong(element.getAfter()))));
                     break;
                 case UPDATED_LOCATION:
-                    wallContent.setContent(request.getLocation());
+                    wallContent.setBefore(getLocation(element.getBefore()));
+                    wallContent.setAfter(getLocation(element.getAfter()));
                     break;
                 case UPDATED_CATEGORY:
-                    wallContent.setContent(categoryRepository.findByCid(request.getCategory()).getName());
+                    if(element.getBefore() != null && element.getBefore().length() > 0) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    }
+                    if(element.getAfter() != null && element.getAfter().length() > 0) {
+                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfter())).getName());
+                    }
                     break;
                 case UPDATED_JOB_DATE:
-                    wallContent.setContent(request.getJobdate());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setContent(element.getChanges());
+                    wallContent.setBefore(element.getBefore());
+                    wallContent.setAfter(element.getAfter());
                     break;
             }
             content.add(wallContent);
         }
         return content;
+    }
+
+    private String getLocation(String location) {
+        if (location != null) {
+            try {
+                JSONObject obj = new JSONObject(location);
+                return obj.getString("location");
+            } catch (JSONException e) {
+                System.err.print("JSON Parse error" + e);
+            }
+        }
+        return null;
     }
 }

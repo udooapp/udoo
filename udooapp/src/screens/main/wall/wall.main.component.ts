@@ -6,6 +6,7 @@ import {ConversionMethods} from "../../layouts/conversion.methods";
 import {Router} from "@angular/router";
 import {CONTACT, DETAIL} from "../../../app/app.routing.module";
 import {UserController} from "../../../controllers/user.controller";
+import {MainSearchListener} from "../main.search.listener";
 
 
 @Component({
@@ -31,6 +32,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   private lastId: number = 0;
   public scrolledDown: boolean = true;
   private noMoreElement: boolean = false;
+  @Input() searchListener: MainSearchListener;
 
   constructor(private userController: UserController, private dialog: DialogController, private wallService: WallService, private notifier: NotifierController, private router: Router) {
     super();
@@ -92,26 +94,25 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     return '';
   }
 
-  public onClickContent(item: any) {
-    if (item != null) {
-      this.router.navigate([item.type == 0 ? CONTACT : DETAIL + "/" + item.id + "/" + (item.type == 1 ? "1" : "0") + "/0"]);
-    }
+  public pictureText(count: number): string {
+    return 'added ' + (count == 1 ? 'a new photo' : count + ' new photos');
   }
 
-  public cointainPicture(items: any[]): boolean {
+  public countPicture(items: any[]): number {
+    let count: number = 0
     for (let i = 0; i < items.length; ++i) {
       if (items[i].type == 3) {
-        return true;
+        ++count;
       }
     }
-    return false;
+    return count;
   }
 
   public getPictures(items: any[]): string[] {
     let pictures: string[] = [];
     for (let i = 0; i < items.length; ++i) {
       if (items[i].type == 3) {
-        pictures.push(items[i].content);
+        pictures.push(items[i].before);
       }
     }
     return pictures;
@@ -128,100 +129,58 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     return true;
   }
 
-  public getUpdateType(contentType: number, action: number): string {
-    switch (contentType) {
-      case 0:
-        switch (action) {
-          case this.UPDATED_PICTURE:
-            return 'profile picture';
-          case this.UPDATED_TITLE_OR_NAME:
-            return 'name';
-          case this.UPDATED_PHONE_NUMBER:
-            return 'phone number';
-          case this.UPDATED_EMAIL_ADDRESS:
-            return 'email address';
-        }
-        break;
-      case 1:
-        switch (action) {
-          case this.UPDATED_DESCRIPTION:
-            return 'description';
-          case this.UPDATED_PICTURE:
-            return 'picture';
-          case this.UPDATED_EXPIRATION_DATE:
-            return 'expiration date';
-          case this.UPDATED_LOCATION:
-            return 'location';
-          case this.UPDATED_TITLE_OR_NAME:
-            return 'title';
-          case this.UPDATED_CATEGORY:
-            return 'category';
-          case this.UPDATED_AVAILABILITY:
-            return 'availability'
-        }
-        break;
-      case 2:
-        switch (action) {
-          case this.UPDATED_DESCRIPTION:
-            return 'description';
-          case this.UPDATED_PICTURE:
-            return 'picture';
-          case this.UPDATED_EXPIRATION_DATE:
-            return 'expiration date';
-          case this.UPDATED_LOCATION:
-            return 'location';
-          case this.UPDATED_CATEGORY:
-            return 'category';
-          case this.UPDATED_JOB_DATE:
-            return 'job date';
-          case this.UPDATED_TITLE_OR_NAME:
-            return 'title';
-
-        }
-        break;
-    }
-    return '';
-  }
-
-  public getTitle(item: any): string {
-    let title: string = '';
-    if (!this.isUpdate(item.content)) {
-      title = item.type == 0 ? 'registered on the site' : ('create a new ' + (item.type == 1 ? 'offer ' : 'request ') + "with title " + item.serviceName);
-    } else {
-      let typeName: string = item.type == 0 ? 'profile' : item.type == 1 ? 'offer ' : 'request ';
-      title = 'updated his ' + (item.type == 0 ? (item.content.lenght > 1 ? typeName : this.getUpdateType(0, item.content[0].type)) : (item.serviceName + (item.content.length > 1 ? ' ' + typeName : ' ' + typeName + this.getUpdateType(item.type, item.content[0].type))));
-    }
-    return title;
-  }
-
-  public getCoordinates(location: string) {
-    if (!location.match('address') && !location.match('coordinate')) {
-      return null;
-    }
-    return JSON.parse(location).address;
-  }
-
-  public getUpdateText(item: any, type: number, content: string): string {
-    switch (type) {
+  public getUpdateType(action: number): string {
+    switch (action) {
+      case this.UPDATED_PICTURE:
+        return 'profile picture';
       case this.UPDATED_TITLE_OR_NAME:
-        return item.type > 0 ? item.serviceName : item.userName;
+        return 'name';
       case this.UPDATED_PHONE_NUMBER:
-        return content;
+        return 'phone number';
       case this.UPDATED_EMAIL_ADDRESS:
-        return content;
-      case this.UPDATED_DESCRIPTION:
-        return content.length > 203 ? content.substr(0, 200) + '...' : content;
-      case this.UPDATED_EXPIRATION_DATE:
-        return this.convertNumberToDateTime(Number.parseInt(content));
-      case this.UPDATED_LOCATION:
-        return this.getCoordinates(content);
-      case this.UPDATED_CATEGORY:
-        return content;
-      case this.UPDATED_AVAILABILITY:
-        return content;
-      case this.UPDATED_JOB_DATE:
-        return content;
+        return 'email address';
     }
     return '';
+  }
+
+  public isUserUpdate(item: any) {
+    return item.type == 0;
+  }
+
+  public getUserModification(item: any): string {
+    return item.type == 0 ? 'registered on the site' : 'updated his ' + this.getUpdateType(item.type) + ' to ';
+  }
+
+  public getServiceModificationText(item: any) {
+    switch (item.type) {
+      case this.UPDATED_TITLE_OR_NAME:
+        return 'updated title ';
+      case this.UPDATED_PHONE_NUMBER:
+        return 'updated title ';
+      case this.UPDATED_EMAIL_ADDRESS:
+        return 'updated address ';
+      case this.UPDATED_DESCRIPTION:
+        return 'updated description ';
+      case this.UPDATED_EXPIRATION_DATE:
+        return 'updated description ';
+      case this.UPDATED_LOCATION:
+        return 'updated location ';
+      case this.UPDATED_CATEGORY:
+        return 'updated category ';
+      case this.UPDATED_AVAILABILITY:
+        return 'updated availability ';
+      case this.UPDATED_JOB_DATE:
+        return 'updated job date ';
+    }
+  }
+
+  public getContent(content) {
+    return ' ' + (content == null ? ' ' : (content.length > 203 ? content.substr(0, 200) + '...' : content)) + ' ';
+  }
+
+  public onClickServiceName(type: number, id: number) {
+    if(this.searchListener != null) {
+      this.searchListener.onClickService(id, type == 1, null);
+    }
   }
 }

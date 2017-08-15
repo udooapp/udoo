@@ -10,7 +10,7 @@ public class ResponseHistory {
     private int type;
     private int hid;
     private String userName;
-    private Date date;
+    private String date;
     private String picture;
     private String serviceName;
     private List<WallContent> content;
@@ -32,11 +32,11 @@ public class ResponseHistory {
     }
 
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

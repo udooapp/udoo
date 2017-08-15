@@ -13,7 +13,9 @@ public class HistoryElement {
 
     private int action;
 
-    private String changes;
+    private String before;
+
+    private String after;
 
     private int hid = -1;
 
@@ -33,13 +35,22 @@ public class HistoryElement {
         this.action = action;
     }
 
-    public String getChanges() {
-        return changes;
+    public String getBefore() {
+        return before;
     }
 
-    public void setChanges(String changes) {
-        this.changes = changes;
+    public void setBefore(String before) {
+        this.before = before;
     }
+
+    public String getAfter() {
+        return after;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
+    }
+
 
     public int getHid() {
         return hid;

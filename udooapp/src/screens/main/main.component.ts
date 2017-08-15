@@ -461,6 +461,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   loadMoreElementMap() {
+    if(this.page == 0){}
     this.mapService.getMoreAvailableServices(this.category, this.searchString, this.listData.offerSize, this.listData.requestSize).subscribe(
       result => {
         let more = 0;
@@ -532,10 +533,12 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   onClickService(id: number, type: boolean, location: string) {
-    let coordinate = this.getCoordinates(location)
-    this.elementCoordinates.lat = coordinate.lat;
-    this.elementCoordinates.lng = coordinate.lng;
-    this.elementCoordinates.dist = 0;
+    if(location != null) {
+      let coordinate = this.getCoordinates(location);
+      this.elementCoordinates.lat = coordinate.lat;
+      this.elementCoordinates.lng = coordinate.lng;
+      this.elementCoordinates.dist = 0;
+    }
     this.loadDialog(type, id);
   }
 
