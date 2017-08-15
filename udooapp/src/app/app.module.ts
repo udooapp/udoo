@@ -48,6 +48,7 @@ import {SearchController} from "../controllers/search.controller";
 import {ToolbarSearchComponent} from "../components/seach/toolbar.search.component";
 import {MenuController} from "../controllers/menu.controller";
 import {UserController} from "../controllers/user.controller";
+import {ChatComponent} from "../screens/chat/chat.component";
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import {UserController} from "../controllers/user.controller";
     MainListComponent,
     MainMapComponent,
     MainWallComponent,
-    ToolbarSearchComponent
+    ToolbarSearchComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

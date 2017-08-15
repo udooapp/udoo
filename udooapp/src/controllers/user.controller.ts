@@ -6,7 +6,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {TokenService} from "../services/token.service";
 import {getTranslationProviders} from "../localization/i18n-providers";
-import {CREATE, LOGIN, MAP, REQUEST_LIST} from "../app/app.routing.module";
+import {CREATE, LOGIN, MAIN, REQUEST_LIST} from "../app/app.routing.module";
 import {DialogController} from "./dialog.controller";
 import {NotifierController} from "./notify.controller";
 
@@ -27,8 +27,8 @@ export class UserController {
     this.userDataPipe$ = new EventEmitter();
     let before: string = '';
     router.events.subscribe((event) => {
-      if (event.url === MAP && (before === LOGIN )) {
-        this.checkLogin = event.url === MAP && before === LOGIN;
+      if (event.url === MAIN && (before === LOGIN )) {
+        this.checkLogin = event.url === MAIN && before === LOGIN;
         this.refreshUser();
       } else {
         this.checkLogin = false;
@@ -55,7 +55,7 @@ export class UserController {
   public logOut() {
     this.userService.logout().subscribe(
       () => {
-        this.router.navigate([MAP]);
+        this.router.navigate([MAIN]);
         this.tokenService.clearToken();
         this.notifier.systemNotification$.emit([]);
         this.userNotification$.emit(0);

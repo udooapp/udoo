@@ -6,7 +6,7 @@ import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {TokenService} from "../../services/token.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAP} from "../../app/app.routing.module";
+import {MAIN} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
 import {DialogController} from "../../controllers/dialog.controller";
@@ -52,7 +52,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
             });
           }
           this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
-          this.router.navigate([MAP]);
+          this.router.navigate([MAIN]);
           this.tokenService.clearToken();
           this.notifications = {bids: 0, request: 0, offer: 0};
         } else {

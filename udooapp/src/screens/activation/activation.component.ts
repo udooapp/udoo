@@ -4,7 +4,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
-import {MAP} from "../../app/app.routing.module";
+import {MAIN} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {IValidator} from "../../validator/validator.interface";
@@ -81,14 +81,14 @@ export class ActivationComponent implements OnInit {
     this.notifier.notify(ActivationComponent.NAME);
     this.notifier.pageChanged$.subscribe(action => {
       if (action == ActivationComponent.NAME) {
-        this.router.navigate([MAP]);
+        this.router.navigate([MAIN]);
       }
     });
     this.userController.userDataPipe$.subscribe(data => {
 
       this.activation = data.user.active;
       if(this.activation>= 15){
-        this.router.navigate([MAP]);
+        this.router.navigate([MAIN]);
       } else {
         for(let i = 0; i < 2; ++i){
           this.type[i] = ((this.activation >>(i * 2 + 1))&1) != 0;

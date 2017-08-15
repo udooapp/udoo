@@ -9,7 +9,7 @@ import {IValidator} from "../../validator/validator.interface";
 import {EmailValidator} from "../../validator/email.validator";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {SOCIALREGISTRATION, MAP} from "../../app/app.routing.module";
+import {SOCIALREGISTRATION, MAIN} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {TokenService} from "../../services/token.service";
 import {config} from "../../environments/url.config";
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.tokenService.getToken()) {
-      this.router.navigate([MAP]);
+      this.router.navigate([MAIN]);
     }
     this.facebookInit(document, 'script', 'facebook-jssdk');
     this.initGoogle();
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
             }).subscribe(
               value => {
                 if (value == null) {
-                  t.router.navigate([MAP]);
+                  t.router.navigate([MAIN]);
                 } else {
                   localStorage.setItem("registration", JSON.stringify(value));
                   t.router.navigate([SOCIALREGISTRATION]);
@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit {
             }).subscribe(
               value => {
                 if (value == null) {
-                  t.router.navigate([MAP]);
+                  t.router.navigate([MAIN]);
                 } else {
                   localStorage.setItem("registration", JSON.stringify(value));
                   t.router.navigate([SOCIALREGISTRATION]);
@@ -244,7 +244,7 @@ export class LoginComponent implements OnInit {
       this.userService.loginUser(this.user)
         .subscribe(
           message =>
-            this.router.navigate([MAP]),
+            this.router.navigate([MAIN]),
           error => {
             this.dialog.notifyError(error);
             this.error = error;

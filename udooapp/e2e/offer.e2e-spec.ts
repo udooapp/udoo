@@ -1,4 +1,5 @@
 import {InputPage} from './input.po';
+import {LOGIN, OFFER} from "../src/app/app.routing.module";
 
 describe('OfferPage', function () {
   let page: InputPage;
@@ -8,13 +9,13 @@ describe('OfferPage', function () {
   });
 
   it('Login and create Offer with valid data', () => {
-    page.navigateTo('/login');
+    page.navigateTo(LOGIN);
     page.setText('udooTest@udoo.com', 'email-input');
     page.setText('password', 'password-input');
     page.setButtonClick('login-button');
     page.isPresent('tab-pager').then(() => {
       let date: Date = new Date();
-      page.navigateTo('/offer');
+      page.navigateTo(OFFER);
       page.waitingForAngular();
       page.setText('TestOffer' + date.toDateString(), 'title-input');
       page.setSelectOption('category-select', 2);
@@ -29,7 +30,7 @@ describe('OfferPage', function () {
 
   it('Login and create Offer with empty input', () => {
       let date: Date = new Date();
-      page.navigateTo('/offer');
+      page.navigateTo(OFFER);
       page.waitingForAngular();
       page.setText('TestOffer' + date.toDateString(), 'title-input');
       page.setSelectOption('category-select', 2);

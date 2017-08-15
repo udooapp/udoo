@@ -3,7 +3,7 @@ import {Component, OnInit} from '@angular/core';
 
 import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {LOGIN, MAP} from "../../app/app.routing.module";
+import {LOGIN, MAIN} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {TokenService} from "../../services/token.service";
 import {DialogController} from "../../controllers/dialog.controller";
@@ -23,7 +23,7 @@ export class VerificationComponent implements OnInit {
     notifier.notify(VerificationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == VerificationComponent.NAME) {
-        router.navigate([tokenService.getToken() ? MAP : LOGIN]);
+        router.navigate([tokenService.getToken() ? MAIN : LOGIN]);
       }
     })
   }

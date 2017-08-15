@@ -1,4 +1,5 @@
 import { InputPage } from './input.po';
+import {REGISTRATION} from "../src/app/app.routing.module";
 
 describe('RegistrationPage', function() {
   let page: InputPage;
@@ -9,7 +10,7 @@ describe('RegistrationPage', function() {
 
   it('User Registration with valid data', () => {
     let date: Date = new Date();
-    page.navigateTo('/registration');
+    page.navigateTo(REGISTRATION);
     page.setChecked('personal');
     page.setText('test' + date.toDateString(), 'name-input');
     page.setText('test' + date.getFullYear()+ "_" + date.getMonth() + "_" + date.getDay() + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getMilliseconds() + '@udoo.com', 'email-input');
@@ -23,7 +24,7 @@ describe('RegistrationPage', function() {
 
   it('User Registration with invalid data', () => {
     let date: Date = new Date();
-    page.navigateTo('/registration');
+    page.navigateTo(REGISTRATION);
     page.setChecked('personal');
     page.setText('test' + date.toDateString(), 'name-input');
     page.setText('test' + date.getFullYear()+ "_" + date.getMonth() + "_" + date.getDay() + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getMilliseconds() + '@udoo.com', 'email-input');
@@ -37,7 +38,7 @@ describe('RegistrationPage', function() {
 
   it('Organization Registration with valid data', () => {
     let date: Date= new Date();
-    page.navigateTo('/registration');
+    page.navigateTo(REGISTRATION);
     page.setChecked('organization');
     page.setText('test' + date.toDateString(), 'name-input');
     page.setText('test' + date.getFullYear()+ "_" + date.getMonth() + "_" + date.getDay() + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getMilliseconds() + '@udoo.com', 'email-input');
@@ -50,7 +51,7 @@ describe('RegistrationPage', function() {
 
   it('Organization Registration with invalid data', () => {
     let date: Date = new Date();
-    page.navigateTo('/registration');
+    page.navigateTo(REGISTRATION);
     page.setChecked('organization');
     page.setText('test' + date.toDateString(), 'name-input');
     page.setText('test' + date.getFullYear()+ "_" + date.getMonth() + "_" + date.getDay() + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getMilliseconds() + '@udoo.com', 'email-input');

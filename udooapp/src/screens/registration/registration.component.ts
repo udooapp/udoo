@@ -9,7 +9,7 @@ import {EmailValidator} from "../../validator/email.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NotifierController} from "../../controllers/notify.controller";
-import {LOGIN, MAP} from "../../app/app.routing.module";
+import {LOGIN, MAIN} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
@@ -151,7 +151,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
             .subscribe(
               () => {
                 this.notifier.pageChanged$.emit(' ');
-                this.router.navigate([MAP]);
+                this.router.navigate([MAIN]);
               },
               error => {
                 this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;

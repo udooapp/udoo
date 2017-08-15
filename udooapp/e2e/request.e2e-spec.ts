@@ -1,4 +1,5 @@
 import {InputPage} from './input.po';
+import {LOGIN, REQUEST} from "../src/app/app.routing.module";
 
 describe('RequestPage', function () {
   let page: InputPage;
@@ -8,13 +9,13 @@ describe('RequestPage', function () {
   });
 
   it('Login and create Request with valid data', () => {
-    page.navigateTo('/login');
+    page.navigateTo(LOGIN);
     page.setText('udooTest@udoo.com', 'email-input');
     page.setText('password', 'password-input');
     page.setButtonClick('login-button');
     page.isPresent('tab-pager').then(message => {
       let date: Date = new Date();
-      page.navigateTo('/request');
+      page.navigateTo(REQUEST);
       page.waitingForAngular();
       page.setText('TestRequest' + date.toDateString(), 'title-input');
       page.setSelectOption('category-select', 2);
@@ -31,7 +32,7 @@ describe('RequestPage', function () {
 
   it('Login and create Request with empty input', () => {
       let date: Date = new Date();
-      page.navigateTo('/request');
+      page.navigateTo(REQUEST);
       page.waitingForAngular();
       page.setText('TestRequest' + date.toDateString(), 'title-input');
       page.setSelectOption('category-select', 2);

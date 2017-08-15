@@ -9,7 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAP, USER_BIDS} from "../../app/app.routing.module";
+import {MAIN, USER_BIDS} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
@@ -48,7 +48,7 @@ export class ServiceDetailComponent implements OnInit {
       if (action == ServiceDetailComponent.NAME) {
         switch (this.page) {
           case 0:
-            this.router.navigate([MAP]);
+            this.router.navigate([MAIN]);
             break;
           case 1:
             this.router.navigate([USER_BIDS]);

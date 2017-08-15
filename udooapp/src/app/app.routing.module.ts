@@ -18,9 +18,9 @@ import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
 import {BidComponent} from "../screens/bids/bids.component";
+import {ChatComponent} from "../screens/chat/chat.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: '/map', pathMatch: 'full'},
   {path: 'registration', component: RegistrationComponent},
   {path: 'registration/:facebook', component: RegistrationComponent},
   {path: 'login', component: LoginComponent},
@@ -33,7 +33,7 @@ const routes: Routes = [
   {path: 'request/:id/:type', component: RequestComponent, canActivate: [AuthGuard]},
   {path: 'requestlist', component: RequestListComponent, canActivate: [AuthGuard]},
   {path: 'offerlist', component: OfferListComponent, canActivate: [AuthGuard]},
-  {path: 'map', component: MainComponent},
+  {path: '', component: MainComponent},
   {path: 'reminder', component: ReminderComponent},
   {path: 'reminder/:token', component: ReminderComponent},
   {path: 'verification/:token', component: VerificationComponent},
@@ -45,7 +45,8 @@ const routes: Routes = [
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: 'bids', component: BidComponent, canActivate: [AuthGuard]},
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
-  {path: '**', redirectTo:'/map'}
+  {path: 'chat', component: ChatComponent, canActivate: [AuthGuard]},
+  {path: '**', redirectTo:''}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
@@ -65,7 +66,7 @@ export const OFFER_TYPE: string = '/offer/';
 export const REQUEST_TYPE: string = '/request/';
 export const REQUEST_LIST: string = '/requestlist';
 export const OFFER_LIST: string = '/offerlist';
-export const MAP: string = '/map';
+export const MAIN: string = '/';
 export const CONTACT: string = '/contact';
 export const DETAIL: string = '/detail/';
 export const REMINDER: string = '/reminder';

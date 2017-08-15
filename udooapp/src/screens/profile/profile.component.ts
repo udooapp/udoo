@@ -12,7 +12,7 @@ import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {PhoneValidator} from "../../validator/phone.validator";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAP} from "../../app/app.routing.module";
+import {MAIN} from "../../app/app.routing.module";
 import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {UserController} from "../../controllers/user.controller";
@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit, IFormInput {
     this.notifier.notify(ProfileComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == ProfileComponent.NAME) {
-        router.navigate([MAP])
+        router.navigate([MAIN])
       }
     });
   }
