@@ -1,0 +1,99 @@
+@media (min-width: 961px) {
+
+  .data-container {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+  }
+
+  .conversation-container {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+@media (max-width: 960px) {
+  .conversation-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 641px) {
+
+  .conversation-container {
+    width: 100%;
+  }
+}
+.conversation-container{
+  margin-bottom: 50px;
+}
+.data-container {
+  padding: 0;
+}
+
+.conversation {
+  min-height: 120px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.conversation:hover {
+  background-color: #FAFAFA;
+}
+
+.conversation-picture {
+  height: 80px;
+  width: 80px;
+  margin: 10px 0 10px 10px;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  overflow: hidden;
+  float: left;
+}
+
+.conversation-image {
+  height: 115%;
+  width: 115%;
+  margin: -5px 0 0 -5px;
+  background-color: #FAFAFA;
+  object-fit: cover;
+}
+
+.conversation-content {
+  padding: 10px 10px 10px 10px;
+  color: dimgrey;
+  margin-left: 90px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.conversation-content-bold {
+  font-weight: 600;
+}
+
+.conversation-name {
+  color: #378281;
+  font-size: 14pt;
+  padding-top: 5px;
+}
+
+.conversation-last-message {
+  word-wrap: break-word;
+  font-size: 11pt;
+  padding: 5px 0;
+}
+
+.conversation-last-date {
+  word-wrap: break-word;
+  font-size: 10pt;
+  padding: 5px 0;
+  color: #9C9C9C;
+}
+.conversation-not-found{
+  margin-top: 100px;
+  color:#ACACAC;
+  width: 100%;
+  font-size: 16pt;
+  font-weight: 700;
+  text-align: center;
+}

@@ -1,0 +1,14 @@
+<div class="data-container">
+  <div class="conversation-container">
+    <div class="conversation" *ngFor="let item of data" (click)="onClickConversation(item)">
+      <div class="conversation-picture"><img class="conversation-image" [src]="getPictureUrl(item.picture)"></div>
+      <div class="conversation-content" [ngClass]="{'conversation-content-bold' : item.newMessage}">
+        <div class="conversation-name">{{item.name}}</div>
+        <div class="conversation-last-message"> {{item.message}}</div>
+        <div class="conversation-last-date"> {{item.date}}</div>
+      </div>
+    </div>
+    <div *ngIf="loading" class="loader"></div>
+  </div>
+  <div *ngIf="data.length == 0 && !loading" class="conversation-not-found">Not found conversation</div>
+</div>

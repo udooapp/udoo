@@ -18,6 +18,7 @@ import {FirstLoginComponent} from "../screens/firstlogin/firstlogin.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
 import {BidComponent} from "../screens/bids/bids.component";
+import {ConversationComponent} from "../screens/conversations/conversations.component";
 import {ChatComponent} from "../screens/chat/chat.component";
 
 const routes: Routes = [
@@ -45,7 +46,8 @@ const routes: Routes = [
   {path: 'create', component: FirstLoginComponent, canActivate: [AuthGuard]},
   {path: 'bids', component: BidComponent, canActivate: [AuthGuard]},
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
-  {path: 'chat', component: ChatComponent, canActivate: [AuthGuard]},
+  {path: 'chat', component: ConversationComponent, canActivate: [AuthGuard]},
+  {path: 'chat/:id', component: ChatComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo:''}
 ];
 @NgModule({
@@ -73,3 +75,6 @@ export const REMINDER: string = '/reminder';
 export const VERIFICATION: string = '/verification';
 export const CREATE: string = '/create';
 export const SETTINGS: string = '/settings';
+export const CONVERSATIONS: string = '/chat';
+export const CHAT: string = '/chat/';
+

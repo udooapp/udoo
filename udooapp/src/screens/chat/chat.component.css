@@ -1,0 +1,123 @@
+.data-container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.input-button {
+  width: 24%;
+  height: 62px;
+  margin: 0 0 0 3%;
+  padding: 0;
+  float: right;
+}
+
+.chat-user-message-box-container {
+  position: absolute;
+  background-color: #FFFFFF;
+  bottom: 0;
+  left: 0;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 65px;
+  padding: 5px 3%;
+  box-shadow: 1px -1px 5px #ACACAC;
+  z-index: 2;
+}
+
+.chat-user-message-box {
+  width: 67%;
+  height: 55px;
+  color: #378281;
+  font-size: 12pt;
+  border: 1px solid #ACACAC;
+  border-radius: 5px;
+  resize: none;
+}
+
+.chat-container {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: calc(100% - 75px);
+  display: inline-block;
+}
+
+.chat-messages {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.chat-user-message {
+  background-color: #CACACA;
+}
+
+.chat-partner-message {
+  background-color: #4A9594;
+  color: #FFFFFF
+}
+
+.chat-message {
+  font-size: 13pt;
+  width: calc(100% - 160px);
+  height: auto;
+  min-height: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 5px;
+  word-wrap: break-word;
+}
+
+.chat-message-container {
+  width: calc(100% - 10px);
+  height: auto;
+  margin: 10px 5px;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.chat-partner-message-container {
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+.chat-user-message-container {
+  flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+}
+
+.chat-profile-picture {
+  display: block;
+  width: 50px;
+  margin: 5px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+.chat-user-profile-picture {
+  background-color: #CACACA;
+}
+
+.chat-partner-profile-picture {
+  background-color: #4A9594;
+}
+
+.chat-bottom-space {
+  display: block;
+  height: 60px;
+  width: 100%;
+}
