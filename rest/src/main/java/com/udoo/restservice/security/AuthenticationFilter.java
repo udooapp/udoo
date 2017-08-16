@@ -11,11 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
-
 @WebFilter("/AuthenticationFilter")
 public class AuthenticationFilter implements Filter {
 
+    public static final String USERID = "UID";
     private static final String AUTHORIZATION = "authorization";
 
     private ServletContext context;

@@ -2,10 +2,17 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.bid.Bid;
+import com.udoo.dal.entities.bid.BidResponse;
+import com.udoo.dal.entities.category.CategoryResult;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.entities.user.User;
-import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.IBidRepository;
+import com.udoo.dal.repositories.INotificationRepository;
+import com.udoo.dal.repositories.IUserRepository;
+import com.udoo.dal.repositories.offer.IOfferRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 import com.udoo.restservice.IBidServiceController;
 import com.udoo.restservice.payment.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +28,7 @@ import javax.servlet.ServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
+import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 
 
 /**

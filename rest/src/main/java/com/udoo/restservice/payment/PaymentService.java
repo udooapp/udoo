@@ -1,9 +1,9 @@
 package com.udoo.restservice.payment;
 
 import com.udoo.dal.entities.Payment;
-import com.udoo.dal.repositories.IOfferRepository;
+import com.udoo.dal.repositories.offer.IOfferRepository;
 import com.udoo.dal.repositories.IPaymentRepository;
-import com.udoo.dal.repositories.IRequestRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 
 import javax.annotation.Resource;
 import java.util.Date;

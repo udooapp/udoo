@@ -3,6 +3,7 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.dao.ICategoryResult;
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.category.Category;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.offer.OfferLite;
@@ -11,6 +12,10 @@ import com.udoo.dal.entities.request.RequestLite;
 import com.udoo.dal.entities.request.RequestMap;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.history.IHistoryElementRepository;
+import com.udoo.dal.repositories.history.IHistoryRepository;
+import com.udoo.dal.repositories.offer.IOfferLiteRepository;
+import com.udoo.dal.repositories.request.IRequestLiteRepository;
 import com.udoo.restservice.IRestServiceController;
 
 import com.udoo.restservice.email.EmailService;
@@ -48,8 +53,6 @@ import java.util.*;
 @CrossOrigin
 @PropertySource("classpath:app.properties")
 public class RestServiceController implements IRestServiceController {
-
-    public static final String USERID = "UID";
 
     @Autowired
     private ServletContext context;

@@ -1,7 +1,7 @@
 package com.udoo.restservice;
 
-import com.udoo.dal.entities.Bid;
-import com.udoo.dal.entities.CategoryResult;
+import com.udoo.dal.entities.bid.Bid;
+import com.udoo.dal.entities.category.CategoryResult;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.ServletRequest;

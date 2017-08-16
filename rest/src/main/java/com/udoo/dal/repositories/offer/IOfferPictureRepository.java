@@ -1,4 +1,4 @@
-package com.udoo.dal.repositories;
+package com.udoo.dal.repositories.offer;
 
 
 

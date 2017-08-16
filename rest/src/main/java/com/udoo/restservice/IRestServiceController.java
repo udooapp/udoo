@@ -1,7 +1,7 @@
 package com.udoo.restservice;
 
 
-import com.udoo.dal.entities.Category;
+import com.udoo.dal.entities.category.Category;
 import com.udoo.dal.entities.LoginData;
 import com.udoo.dal.entities.Social;
 import com.udoo.dal.entities.user.User;

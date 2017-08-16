@@ -8,7 +8,13 @@ import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.history.IHistoryRepository;
+import com.udoo.dal.repositories.offer.IOfferPictureRepository;
+import com.udoo.dal.repositories.offer.IOfferRepository;
+import com.udoo.dal.repositories.request.IRequestPictureRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 import com.udoo.restservice.IWallServiceController;
+import com.udoo.restservice.security.AuthenticationFilter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
@@ -78,7 +84,7 @@ public class WallServiceController implements IWallServiceController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
         Pageable page = new PageRequest(0, 5);
-        int uid = Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString());
+        int uid = Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString());
         if (lastId == 0) {
             lastId = Integer.MAX_VALUE;
         }
@@ -132,7 +138,7 @@ public class WallServiceController implements IWallServiceController {
         return history;
     }
 
-    private String getDateTime(Date date) {
+    public static String getDateTime(Date date) {
         long diff = new Date().getTime() - date.getTime();
         if (diff < 60000) {
             return "just now";

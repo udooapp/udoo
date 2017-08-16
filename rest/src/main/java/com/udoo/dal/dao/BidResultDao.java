@@ -1,6 +1,6 @@
 package com.udoo.dal.dao;
 
-import com.udoo.dal.entities.BidResult;
+import com.udoo.dal.entities.bid.BidResult;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.ArrayList;

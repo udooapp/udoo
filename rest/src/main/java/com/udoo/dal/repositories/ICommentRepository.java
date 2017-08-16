@@ -1,6 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.Comment;
+import com.udoo.dal.entities.comment.Comment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 

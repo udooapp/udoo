@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import java.util.Date;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
+import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 
 
 /**

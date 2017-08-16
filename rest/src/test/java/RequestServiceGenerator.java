@@ -1,7 +1,5 @@
-import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
-import com.udoo.dal.repositories.IOfferRepository;
-import com.udoo.dal.repositories.IRequestRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 import com.udoo.dal.spring.PersistenceConfig;
 import org.junit.Assert;
 import org.junit.Test;

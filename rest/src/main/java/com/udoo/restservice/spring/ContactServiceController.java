@@ -3,13 +3,9 @@ package com.udoo.restservice.spring;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.udoo.dal.entities.Contact;
-import com.udoo.dal.entities.history.History;
-import com.udoo.dal.entities.history.HistoryElement;
+import com.udoo.dal.entities.contact.Contact;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.IContactRepository;
-import com.udoo.dal.repositories.IHistoryElementRepository;
-import com.udoo.dal.repositories.IHistoryRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IContactServiceController;
 import org.json.JSONException;
@@ -25,10 +21,9 @@ import javax.servlet.ServletRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
+import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 
 
 /**

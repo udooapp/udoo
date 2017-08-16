@@ -1,4 +1,4 @@
-package com.udoo.dal.entities;
+package com.udoo.dal.entities.contact;
 
 
 import javax.persistence.Embeddable;

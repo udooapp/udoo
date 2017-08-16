@@ -2,11 +2,18 @@ package com.udoo.restservice.spring;
 
 
 import com.udoo.dal.entities.*;
+import com.udoo.dal.entities.bid.Bid;
+import com.udoo.dal.entities.comment.Comment;
+import com.udoo.dal.entities.comment.CommentResponse;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.request.*;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.history.IHistoryElementRepository;
+import com.udoo.dal.repositories.history.IHistoryRepository;
+import com.udoo.dal.repositories.request.IRequestPictureRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 import com.udoo.restservice.IRequestServiceController;
 import com.udoo.restservice.payment.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
+import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 
 
 /**

@@ -1,8 +1,7 @@
-package com.udoo.dal.repositories;
+package com.udoo.dal.repositories.offer;
 
 
 import com.udoo.dal.entities.offer.Offer;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +13,6 @@ import java.util.List;
 /**
  */
 public interface IOfferRepository extends Repository<Offer, Integer> {
-
-    List<Offer> findByUid(int uid);
-
-    List<Offer> findByUid(int uid, Page page);
 
     List<Offer> findByUid(int uid, Pageable page);
 

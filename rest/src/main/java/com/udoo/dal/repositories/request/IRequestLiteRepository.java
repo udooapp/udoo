@@ -1,4 +1,4 @@
-package com.udoo.dal.repositories;
+package com.udoo.dal.repositories.request;
 
 import com.udoo.dal.entities.request.RequestLite;
 import org.springframework.data.domain.Pageable;

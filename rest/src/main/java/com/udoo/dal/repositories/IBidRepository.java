@@ -1,6 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.Bid;
+import com.udoo.dal.entities.bid.Bid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,13 +1,15 @@
 package com.udoo.restservice.spring;
 
 
-import com.udoo.dal.entities.Comment;
-import com.udoo.dal.entities.CommentResponse;
+import com.udoo.dal.entities.comment.Comment;
+import com.udoo.dal.entities.comment.CommentResponse;
 import com.udoo.dal.entities.Notification;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.offer.IOfferRepository;
+import com.udoo.dal.repositories.request.IRequestRepository;
 import com.udoo.restservice.ICommentServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.udoo.restservice.spring.RestServiceController.USERID;
+import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 
 
 /**

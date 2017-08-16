@@ -11,8 +11,11 @@ import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.UserResponse;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.history.IHistoryElementRepository;
+import com.udoo.dal.repositories.history.IHistoryRepository;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
+import com.udoo.restservice.security.AuthenticationFilter;
 import com.udoo.restservice.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,7 +77,7 @@ public class UserServiceController implements IUserServiceController {
             if (userUpdated.getBirthdate() != null && (userUpdated.getBirthdate().isEmpty() || userUpdated.getBirthdate().equals("null"))) {
                 userUpdated.setBirthdate(null);
             }
-            User userSaved = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
+            User userSaved = userRepository.findByUid(Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString()));
             if (userSaved == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
@@ -173,7 +176,7 @@ public class UserServiceController implements IUserServiceController {
     @Override
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ResponseEntity<?> getUserData(ServletRequest request) {
-        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
+        User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString()));
         if (user != null) {
             UserResponse resp = new UserResponse();
             user.setFacebookid(0);
@@ -211,7 +214,7 @@ public class UserServiceController implements IUserServiceController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(req);
-            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(RestServiceController.USERID).toString()));
+            User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString()));
             String currentpassword = mapper.convertValue(node.get("cpass"), String.class);
             String newpassword = mapper.convertValue(node.get("npass"), String.class);
             if (user != null && currentpassword != null && newpassword != null) {

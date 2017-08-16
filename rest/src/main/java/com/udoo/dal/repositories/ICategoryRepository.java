@@ -1,6 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.Category;
+import com.udoo.dal.entities.category.Category;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

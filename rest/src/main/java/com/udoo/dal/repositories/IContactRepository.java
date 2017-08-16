@@ -1,6 +1,6 @@
 package com.udoo.dal.repositories;
 
-import com.udoo.dal.entities.Contact;
+import com.udoo.dal.entities.contact.Contact;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

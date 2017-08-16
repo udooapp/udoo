@@ -1,4 +1,4 @@
-package com.udoo.dal.repositories;
+package com.udoo.dal.repositories.history;
 
 
 import com.udoo.dal.entities.history.HistoryElement;

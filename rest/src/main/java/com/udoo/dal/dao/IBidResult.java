@@ -1,8 +1,7 @@
 package com.udoo.dal.dao;
 
 
-import com.udoo.dal.entities.BidResult;
-import org.springframework.data.util.Pair;
+import com.udoo.dal.entities.bid.BidResult;
 
 import java.util.List;
 

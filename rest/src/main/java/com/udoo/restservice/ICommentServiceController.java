@@ -1,6 +1,6 @@
 package com.udoo.restservice;
 
-import com.udoo.dal.entities.Comment;
+import com.udoo.dal.entities.comment.Comment;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.ServletRequest;

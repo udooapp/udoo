@@ -49,13 +49,6 @@
   padding-bottom: 50px;
 }
 
-.wall-data-container h1 {
-  color: #378281;
-  width: 100%;
-  text-align: center;
-  font-weight: 200;
-}
-
 .main-wall-service-picture {
   height: 80px;
   width: 80px;
@@ -78,22 +71,26 @@
   color: #4A4A4A;
   font-weight: 700;
 }
+
 .main-wall-service-user-width {
   width: calc(100% - 75px);
 }
-.main-wall-user-content{
+
+.main-wall-user-content {
   padding-bottom: 5px;
 }
-.main-wall-user-content span{
+
+.main-wall-user-content span {
   color: #378281;
 }
+
 .main-wall-user-profile-action {
   width: 25px;
   height: 25px;
   margin: 2px 5px;
 }
 
-.main-wall-user-buttons{
+.main-wall-user-buttons {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -101,11 +98,6 @@
   display: inline-flex;
   -webkit-flex-direction: row;
   flex-direction: row;
-}
-.main-wall-service-title {
-  color: #378281;
-  font-weight: lighter;
-  font-size: 18pt;
 }
 
 .main-wall-service {
@@ -121,14 +113,6 @@
   background-color: #FAFAFA;
 }
 
-.main-wall-service-description {
-  word-wrap: break-word;
-  font-size: 12pt;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  color: #4A4A4A;
-}
-
 .main-wall-box-content {
   margin-left: 100px;
   padding: 10px 10px 10px 10px;
@@ -142,12 +126,14 @@
   -webkit-flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
 }
-.min-wall-service-content-text{
+
+.min-wall-service-content-text {
   padding: 3px 0;
   width: 100%;
   height: auto;
   word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
+
 .main-wall-service-date {
   color: #9C9C9C;
   padding: 5px 0;
@@ -171,14 +157,16 @@
   align-items: flex-start;
 }
 
-.main-wall-service-content{
+.main-wall-service-content {
   color: #4A4A4A;
 }
-.main-wall-service-content-changes{
+
+.main-wall-service-content-changes {
   color: #378281;
   text-decoration: none;
 }
-.main-wall-service-content span{
+
+.main-wall-service-content span {
   color: #378281;
   font-weight: 700;
   cursor: pointer;

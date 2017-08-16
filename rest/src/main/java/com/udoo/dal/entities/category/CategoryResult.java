@@ -1,4 +1,4 @@
-package com.udoo.dal.entities;
+package com.udoo.dal.entities.category;
 
 
 public class CategoryResult {

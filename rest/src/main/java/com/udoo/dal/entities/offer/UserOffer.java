@@ -1,7 +1,7 @@
 package com.udoo.dal.entities.offer;
 
-import com.udoo.dal.entities.Bid;
-import com.udoo.dal.entities.Category;
+import com.udoo.dal.entities.bid.Bid;
+import com.udoo.dal.entities.category.Category;
 
 import java.util.List;
 
