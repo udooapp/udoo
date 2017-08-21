@@ -12,11 +12,7 @@ public interface IUserConversationRepository extends Repository<UserConversation
 
     UserConversation save(UserConversation conversation);
 
-    UserConversation getTopByUidAndFromId(int sender, int receiver);
-
-    UserConversation findByUcid(int ucid);
-
-    UserConversation findByUidAndCid(int uid, int cid);
+    UserConversation getByUidAndFromId(int uid, int cid);
 
 
     List<UserConversation> findByUid(int uid, Pageable page);

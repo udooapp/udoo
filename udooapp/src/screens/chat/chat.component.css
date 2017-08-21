@@ -15,6 +15,7 @@
     max-width: calc(100% - 170px);
   }
 }
+
 @media (max-width: 321px) {
   .chat-message {
     max-width: calc(100% - 160px);
@@ -107,7 +108,12 @@
 .chat-message-container {
   width: calc(100% - 10px);
   height: auto;
-  margin: 10px 5px;
+  margin: 5px;
+}
+
+.chat-message-content-container {
+  width: auto;
+  height: auto;
   display: -webkit-flex;
   display: flex;
 }
@@ -139,9 +145,33 @@
 }
 
 .chat-bottom-space {
+  text-align: center;
+  color: #ACACAC;
+  font-size: 10pt;
   display: block;
-  height: 60px;
-  width: 100%;
+  margin: 50px 20%;
+  padding: 5px;
+  width: calc(60% - 10px);
+}
+.chat-bottom-space-border{
+  border-top: 1px solid #ACACAC;
+}
+
+.chat-message-date {
+  text-align: right;
+  margin-right: 80px;
+  color: #ACACAC;
+  overflow: hidden;
+  font-size: 10pt;
+  transition: height 250ms;
+}
+.chat-message-date-user {
+  text-align: right;
+  margin-right: 80px;
+}
+.chat-message-date-partner {
+  text-align: left;
+  margin-left: 80px;
 }
 
 .loader {

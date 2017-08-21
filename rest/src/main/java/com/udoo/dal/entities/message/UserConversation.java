@@ -61,4 +61,15 @@ public class UserConversation {
     public void setFromId(int fromId) {
         this.fromId = fromId;
     }
+
+    @Override
+    public String toString() {
+        return "UserConversation{" +
+                "ucid=" + ucid +
+                ", cid=" + cid +
+                ", checked=" + checked +
+                ", uid=" + uid +
+                ", fromId=" + fromId +
+                '}';
+    }
 }

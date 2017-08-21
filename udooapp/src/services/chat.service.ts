@@ -44,7 +44,7 @@ export class ChatService extends HeaderService {
       .catch(HandlerService.handleText);
   }
 
-  public getUserMessages(count: number, uid: number): Observable<any[]> {
+  public getUserMessages(uid: number, count: number): Observable<any[]> {
     let param: URLSearchParams = new URLSearchParams();
     param.append('count', count.toString());
     param.append('uid', uid.toString());

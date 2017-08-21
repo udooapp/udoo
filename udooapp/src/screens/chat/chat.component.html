@@ -2,13 +2,21 @@
   <div id="chat-container" (scroll)="containerScrolling()">
     <div class="chat-messages">
       <div class="loader" *ngIf="loading">Loading...</div>
-      <div class="chat-message-container" *ngFor="let item of data"
-           [ngClass]="{'chat-user-message-container': item.sender, 'chat-partner-message-container': !item.sender}">
-        <div class="chat-profile-picture"><img [src]="item.sender ? userPicture : partnerPicture"></div>
-        <div class="chat-message" [ngClass]="{'chat-user-message': item.sender, 'chat-partner-message': !item.sender}">{{item.message}}
+      <div class="chat-message-container" *ngFor="let item of data; let ind = index">
+        <div class="chat-message-content-container"
+             [ngClass]="{'chat-user-message-container': item.sender, 'chat-partner-message-container': !item.sender}">
+          <div class="chat-profile-picture"><img [src]="item.sender ? userPicture : partnerPicture"></div>
+          <div class="chat-message"
+               [ngClass]="{'chat-user-message': item.sender, 'chat-partner-message': !item.sender}"
+               (click)="onClickMessageBox(ind)">{{item.message}}
+          </div>
+        </div>
+        <div class="chat-message-date" [style.height]="showMessageBoxDate == ind ? 'auto' : 0"
+             [ngClass]="{'chat-message-date-user': item.sender, 'chat-message-date-partner': !item.sender}">
+          {{item.date}}
         </div>
       </div>
-      <div class="chat-bottom-space"></div>
+      <div class="chat-bottom-space" [ngClass]="{'chat-bottom-space-border' : data.length > 0}">{{data.length > 0 ? data[data.length - 1].date : ''}}</div>
     </div>
   </div>
   <div class="chat-user-message-box-container">

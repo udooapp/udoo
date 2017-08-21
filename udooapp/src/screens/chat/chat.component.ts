@@ -11,7 +11,7 @@ import {CONVERSATIONS} from "../../app/app.routing.module";
   styleUrls: ['./chat.component.css'],
   providers: [ChatService]
 })
-export class ChatComponent implements OnInit, AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked{
   private RESPONSE_DATA_SIZE: number = 5;
   private PAGE_NAME: string = 'CHAT_WINDOW';
   public userPicture: string = '';
@@ -22,6 +22,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private isScroll: boolean = false;
   private partnerId: number = -1;
   private partnerPicture: string = '';
+  private showMessageBoxDate: number = -1;
+  private scrollHeight: number = 0;
 
   constructor(private userController: UserController, private route: ActivatedRoute, private chatService: ChatService, private dialog: DialogController, private notifier: NotifierController, private router: Router) {
     dialog.errorResponse$.subscribe(() => {
@@ -42,27 +44,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     })
   }
 
-  private userScrollDown() {
-    if (!this.loading && !this.noMore) {
-      this.loading = true;
-      this.chatService.getUserConversations(this.data.length).subscribe(
-        data => {
-          for (let i = 0; i < data.length; ++i) {
-            this.data.push(data[i]);
-          }
-          if (data.length < this.RESPONSE_DATA_SIZE) {
-            this.noMore = true;
-          }
-          this.loading = false;
-        },
-        error => {
-          this.loading = false;
-        });
-    }
-  }
-
   public ngOnInit() {
-    this.loadElements(false);
     this.userController.refreshUser();
     this.route.params
       .subscribe((params: Params) => {
@@ -71,10 +53,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           this.partnerPicture = value.picture;
           this.data = value.messages;
         });
-        this.chatService.setChecked(this.partnerId).subscribe(
-          ()=>{},
-          error2 => {this.dialog.notifyError(error2)}
-        );
         this.loading = false;
       });
   }
@@ -86,6 +64,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         e.scrollTop = e.scrollHeight;
       }
     }
+
   }
 
   public containerScrolling() {
@@ -93,18 +72,35 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     let e = document.getElementById('chat-container');
     if (e != null) {
       if (e.scrollTop < 50) {
-        this.loadElements(true);
-      }
-    }
-  }
-
-  private loadElements(scrollTop: boolean) {
-    let scrollHeight = 0;
-    if (scrollTop) {
-      let e = document.getElementById('chat-container');
-      if (e != null) {
-        scrollHeight = e.scrollHeight;
-        this.loading = true;
+        let e = document.getElementById('chat-container');
+        if (e != null) {
+          this.scrollHeight = e.scrollHeight;
+          if (!this.loading && !this.noMore) {
+            this.loading = true;
+            this.chatService.getUserMessages(this.partnerId, this.data.length).subscribe(
+              data => {
+                for (let i = 0; i < data.length; ++i) {
+                  this.data.splice(i, 0, data[i]);
+                }
+                if (data.length < this.RESPONSE_DATA_SIZE) {
+                  this.noMore = true;
+                }
+                this.loading = false;
+                if (this.scrollHeight != 0) {
+                  let e = document.getElementById('chat-container');
+                  if (e != null) {
+                    console.log(e.scrollHeight + " " + this.scrollHeight);
+                    e.scrollTop = e.scrollHeight - this.scrollHeight;
+                  }
+                  this.scrollHeight = 0;
+                }
+              },
+              error => {
+                this.dialog.notifyError(error);
+                this.loading = false;
+              });
+          }
+        }
       }
     }
   }
@@ -119,6 +115,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           this.dialog.notifyError(error);
         }
       )
+    }
+  }
+
+  public onClickMessageBox(index: number) {
+    if (this.showMessageBoxDate == index) {
+      this.showMessageBoxDate = -1;
+    } else {
+      this.showMessageBoxDate = index;
     }
   }
 }
