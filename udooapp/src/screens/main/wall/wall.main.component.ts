@@ -183,4 +183,16 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
       this.searchListener.onClickService(id, type == 1, null);
     }
   }
+  public isContainValidData(type: number, content: any[]){
+    if(type > 0) {
+      for (let item of content) {
+        if (item.before && item.before.length > 0 && item.after && item.after.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

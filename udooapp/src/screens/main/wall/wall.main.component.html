@@ -1,66 +1,56 @@
 <div class="wall-data-container">
-  <div class="main-wall-service" *ngFor="let item of data">
-    <div class="main-wall-service-picture">
-      <img class="main-wall-service-image" *ngIf="getPicture(item.picture).length > 0" [src]="getPicture(item.picture)">
-    </div>
-    <div class="main-wall-box-content">
-
-
-      <!--UserModification-->
-      <div class="main-wall-user-info" *ngIf="isUserUpdate(item)">
-        <div class="main-wall-service-user main-wall-service-user-width">{{item.userName}}</div>
-        <div class="main-wall-service-date">{{item.date}}</div>
-        <div class="main-wall-user-buttons">
-          <img class="main-wall-user-profile-action" src="./assets/call.png">
-          <img class="main-wall-user-profile-action" src="./assets/message2.png">
-        </div>
-        <div *ngFor="let content of item.content" class="main-wall-user-content">{{getUserModification(content)}}
-          <span *ngIf="content.type != 3">{{content.before}}</span>
-          <div *ngIf="content.type == 3" class="main-wall-picture-container">
-            <div class="main-wall-service-update-pictures">
-              <img class="main-wall-service-update-images" [src]="getPicture(content.before)">
-            </div>
-          </div>
-        </div>
+  <div *ngFor="let item of data">
+    <div class="main-wall-service" *ngIf="isContainValidData(item.type, item.content)">
+      <div class="main-wall-service-picture">
+        <img class="main-wall-service-image" *ngIf="getPicture(item.picture).length > 0"
+             [src]="getPicture(item.picture)">
       </div>
+      <div class="main-wall-box-content">
 
-      <!--Service Modification-->
-      <div *ngIf="!isUserUpdate(item)">
-        <div class="main-wall-service-user">{{item.userName}}</div>
-        <div class="main-wall-service-date">{{item.date}}</div>
-        <!--1 modification-->
-        <div *ngIf="item.content.length == 1 && item.content[0].type != 3" class="main-wall-service-content">
-          <div *ngIf="item.content[0].type == 0">added <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
-            in
-            <div class="main-wall-service-content-changes">{{item.content[0].before}}</div>
+        <!--UserModification-->
+        <div class="main-wall-user-info" *ngIf="isUserUpdate(item)">
+          <div class="main-wall-service-user main-wall-service-user-width">{{item.userName}}</div>
+          <div class="main-wall-service-date">{{item.date}}</div>
+          <div class="main-wall-user-buttons">
+            <img class="main-wall-user-profile-action" src="./assets/call.png">
+            <img class="main-wall-user-profile-action" src="./assets/message2.png">
           </div>
-          <div *ngIf="item.content[0].type != 0 " class="min-wall-service-content-text">{{getServiceModificationText(item.content[0])}}
-            <a class="main-wall-service-content-changes">&nbsp;{{getContent(item.content[0].before)}}</a>
-            &nbsp;to&nbsp;
-            <a class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</a>
-          </div>
-        </div>
-        <!--JustPictures-->
-        <div *ngIf="countPicture(item.content) == item.content.length" class="main-wall-service-content">
-          {{pictureText(item.content.length)}} to <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
-          <div class="main-wall-picture-container">
-            <div class="main-wall-service-update-pictures" *ngFor="let img of getPictures(item.content); let i = index">
-              <img class="main-wall-service-update-images" [src]="getPicture(img)">
+          <div *ngFor="let content of item.content" class="main-wall-user-content">{{getUserModification(content)}}
+            <div *ngIf="content.before && content.before.length > 0 ">
+              <span *ngIf="content.type != 3">{{content.before}}</span>
+              <div *ngIf="content.type == 3" class="main-wall-picture-container">
+                <div class="main-wall-service-update-pictures">
+                  <img class="main-wall-service-update-images" [src]="getPicture(content.before)">
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <!--Many modification-->
-        <div *ngIf="countPicture(item.content) < item.content.length && item.content.length > 1"
-             class="main-wall-service-content">
-          updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
-          <div *ngFor="let element of item.content">
-            <div *ngIf="element.type != 3 " class="min-wall-service-content-text">{{getServiceModificationText(element)}}
-              <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;
-              <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>
+
+        <!--Service Modification-->
+        <div *ngIf="!isUserUpdate(item)">
+          <div class="main-wall-service-user">{{item.userName}}</div>
+          <div class="main-wall-service-date">{{item.date}}</div>
+
+          <!--1 modification-->
+          <div
+            *ngIf="item.content.length == 1 && item.content[0].type != 3 && item.content.before && element.before.length > 0 && item.content.after && element.after.length > 0"
+            class="main-wall-service-content">
+            <div *ngIf="item.content[0].type == 0">added <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
+              in
+              <div class="main-wall-service-content-changes">{{item.content[0].before}}</div>
+            </div>
+            <div *ngIf="item.content[0].type != 0 " class="min-wall-service-content-text">
+              {{getServiceModificationText(item.content[0])}}
+              <a class="main-wall-service-content-changes">&nbsp;{{getContent(item.content[0].before)}}</a>
+              &nbsp;to&nbsp;
+              <a class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</a>
             </div>
           </div>
-          <div *ngIf="countPicture(item.content) > 0">
-            {{pictureText(countPicture(item.content))}}
+
+          <!--JustPictures-->
+          <div *ngIf="countPicture(item.content) == item.content.length" class="main-wall-service-content">
+            {{pictureText(item.content.length)}} to <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
             <div class="main-wall-picture-container">
               <div class="main-wall-service-update-pictures"
                    *ngFor="let img of getPictures(item.content); let i = index">
@@ -68,8 +58,32 @@
               </div>
             </div>
           </div>
-        </div>
 
+          <!--Many modification-->
+          <div *ngIf="countPicture(item.content) < item.content.length && item.content.length > 1"
+               class="main-wall-service-content">
+            updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
+            <div *ngFor="let element of item.content">
+              <div
+                *ngIf="element.type != 3 && element.before && element.before.length > 0 && element.after && element.after.length > 0"
+                class="min-wall-service-content-text">
+                {{getServiceModificationText(element)}}
+                <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;
+                <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>
+              </div>
+            </div>
+            <div *ngIf="countPicture(item.content) > 0">
+              {{pictureText(countPicture(item.content))}}
+              <div class="main-wall-picture-container">
+                <div class="main-wall-service-update-pictures"
+                     *ngFor="let img of getPictures(item.content); let i = index">
+                  <img class="main-wall-service-update-images" [src]="getPicture(img)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
