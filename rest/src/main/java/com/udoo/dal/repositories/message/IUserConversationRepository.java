@@ -16,6 +16,9 @@ public interface IUserConversationRepository extends Repository<UserConversation
 
     UserConversation findByUcid(int ucid);
 
+    UserConversation findByUidAndCid(int uid, int cid);
+
+
     List<UserConversation> findByUid(int uid, Pageable page);
 
     List<UserConversation> findByFromId(int uid, Pageable page);

@@ -8,13 +8,15 @@ import javax.servlet.ServletRequest;
 
 /**
  */
-public interface IMessageServiceController {
+public interface IChatServiceController {
 
     ResponseEntity<?> setChecked(ServletRequest request, int uid);
 
     ResponseEntity<?> sendMessage(ServletRequest request, MessageRequest messageRequest);
 
     ResponseEntity<?> getWallMessages(ServletRequest request, int count);
+
+    ResponseEntity<?> geConversation(ServletRequest request, int uid);
 
     ResponseEntity<?> geConversation(ServletRequest request, int uid, int count);
 

@@ -18,16 +18,16 @@ export class ChatService extends HeaderService {
     super();
   }
 
-  public setChecked(ucid: number): Observable<string> {
-    return this.http.post(config.server + this.URL_NAME + '/checked', ucid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
+  public setChecked(uid: number): Observable<string> {
+    return this.http.post(config.server + this.URL_NAME + '/checked', uid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
   }
 
   public sendMessage(message: string, uid: number): Observable<any> {
     return this.http.post(config.server + this.URL_NAME + '/send', JSON.stringify({
-      message: message,
-      uid: uid
+      uid: uid,
+      message: message
     }), new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);
@@ -49,6 +49,16 @@ export class ChatService extends HeaderService {
     param.append('count', count.toString());
     param.append('uid', uid.toString());
     return this.http.get(config.server + this.URL_NAME + '/messages', new RequestOptions({
+      headers: this.getTokenHeaders(this.tokenService.getToken()),
+      search: param
+    }))
+      .map(HandlerService.extractData)
+      .catch(HandlerService.handleText);
+  }
+  public getMessagesData(uid: number): Observable<any> {
+    let param: URLSearchParams = new URLSearchParams();
+    param.append('uid', uid.toString());
+    return this.http.get(config.server + this.URL_NAME + '/data', new RequestOptions({
       headers: this.getTokenHeaders(this.tokenService.getToken()),
       search: param
     }))

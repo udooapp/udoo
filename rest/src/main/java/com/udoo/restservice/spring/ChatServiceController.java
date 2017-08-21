@@ -7,7 +7,7 @@ import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.message.IConversationRepository;
 import com.udoo.dal.repositories.message.IMessageRepository;
 import com.udoo.dal.repositories.message.IUserConversationRepository;
-import com.udoo.restservice.IMessageServiceController;
+import com.udoo.restservice.IChatServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ import static com.udoo.restservice.security.AuthenticationFilter.USERID;
 @Controller
 @CrossOrigin
 @RequestMapping("/message")
-public class MessagesServiceController implements IMessageServiceController {
+public class ChatServiceController implements IChatServiceController {
 
     @Resource
     private IUserConversationRepository userConversationRepository;
@@ -45,9 +45,9 @@ public class MessagesServiceController implements IMessageServiceController {
 
     @Override
     @RequestMapping(value = "/checked", method = RequestMethod.POST)
-    public ResponseEntity<?> setChecked(ServletRequest request, @RequestBody int ucid) {
+    public ResponseEntity<?> setChecked(ServletRequest request, @RequestBody int uid) {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
-        UserConversation userConversation = userConversationRepository.findByUcid(ucid);
+        UserConversation userConversation = userConversationRepository.findByUidAndCid(userId, uid);
         if (userConversation != null && userConversation.getUid() == userId) {
             userConversation.setChecked(true);
             userConversationRepository.save(userConversation);
@@ -58,7 +58,7 @@ public class MessagesServiceController implements IMessageServiceController {
 
     @Override
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-    public ResponseEntity<?> sendMessage(ServletRequest request, MessageRequest messageRequest) {
+    public ResponseEntity<?> sendMessage(ServletRequest request,@RequestBody MessageRequest messageRequest) {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
         User user = userRepository.findByUid(messageRequest.getUid());
         if (user != null && messageRequest.getMessage() != null && !messageRequest.getMessage().isEmpty()) {
@@ -100,7 +100,11 @@ public class MessagesServiceController implements IMessageServiceController {
             userMessage.setMessage(messageRequest.getMessage());
             userMessage.setUcid(userConversation.getUcid());
             userMessage = messageRepository.save(userMessage);
-            return new ResponseEntity<>(userMessage, HttpStatus.OK);
+            MessageResponse messageResponse = new MessageResponse();
+            messageResponse.setSender(true);
+            messageResponse.setMessage(userMessage.getMessage());
+            messageResponse.setDate(WallServiceController.getDateTime(userMessage.getDate()));
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -133,6 +137,22 @@ public class MessagesServiceController implements IMessageServiceController {
     }
 
     @Override
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    public ResponseEntity<?> geConversation(ServletRequest request, @RequestParam("uid") int uid) {
+        int userId = Integer.parseInt(request.getAttribute(USERID).toString());
+        UserConversation userConversation = userConversationRepository.getTopByUidAndFromId(userId, uid);
+        User user = userRepository.findByUid(uid);
+        MessageData messageData = new MessageData();
+        if(user != null){
+            messageData.setPicture(user.getPicture());
+        }
+        if (userConversation != null) {
+            messageData.setMessages(createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(0, 10)), userConversation.getUcid()));
+        }
+        return new ResponseEntity<>(messageData, HttpStatus.OK);
+    }
+
+    @Override
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     public ResponseEntity<?> geConversation(ServletRequest request, @RequestParam("uid") int uid, @RequestParam("count") int count) {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
@@ -140,17 +160,22 @@ public class MessagesServiceController implements IMessageServiceController {
         if (userConversation != null) {
             List<MessageResponse> messageResponses = new ArrayList<>();
             if (count % 10 == 0) {
-                List<Message> messages = messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(count / 10, 10));
-                for (Message msg : messages) {
-                    MessageResponse messageResponse = new MessageResponse();
-                    messageResponse.setDate(WallServiceController.getDateTime(msg.getDate()));
-                    messageResponse.setMessage(msg.getMessage());
-                    messageResponse.setSender(userConversation.getUcid() == msg.getUcid());
-                    messageResponses.add(messageResponse);
-                }
+                messageResponses = createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(count / 10, 10)), userConversation.getUcid());
             }
             new ResponseEntity<>(messageResponses, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    private List<MessageResponse> createMessageList(List<Message> messages, int ucid) {
+        List<MessageResponse> messageResponses = new ArrayList<>();
+        for (Message msg : messages) {
+            MessageResponse messageResponse = new MessageResponse();
+            messageResponse.setDate(WallServiceController.getDateTime(msg.getDate()));
+            messageResponse.setMessage(msg.getMessage());
+            messageResponse.setSender(ucid == msg.getUcid());
+            messageResponses.add(messageResponse);
+        }
+        return messageResponses;
     }
 }

@@ -1,43 +1,18 @@
 <div class="data-container">
-  <div class="chat-container">
+  <div id="chat-container" (scroll)="containerScrolling()">
     <div class="chat-messages">
-      <div class="chat-message-container chat-user-message-container">
-        <div class="chat-profile-picture chat-user-profile-picture"></div>
-        <div class="chat-user-message chat-message"> asdnasd askjdh aksdka</div>
-      </div>
-      <div class="chat-message-container chat-partner-message-container">
-        <div class="chat-profile-picture chat-partner-profile-picture"></div>
-        <div class="chat-partner-message chat-message"> a sdkjh aksdhsada as asd jas as djkas dhkasdhkas hdkjas hd kjass dhaskdj ashdkjas djkas</div>
-      </div>
-      <div class="chat-message-container chat-user-message-container">
-        <div class="chat-profile-picture chat-user-profile-picture"></div>
-        <div class="chat-user-message chat-message"> asdnasd askjdh aksdka</div>
-      </div>
-      <div class="chat-message-container chat-partner-message-container">
-        <div class="chat-profile-picture chat-partner-profile-picture"></div>
-        <div class="chat-partner-message chat-message"> a sdkjh aksdhj ashdkjas djkas</div>
-      </div>
-      <div class="chat-message-container chat-user-message-container">
-        <div class="chat-profile-picture chat-user-profile-picture"></div>
-        <div class="chat-user-message chat-message"> asdnasd askjdh aksdka</div>
-      </div>
-      <div class="chat-message-container chat-partner-message-container">
-        <div class="chat-profile-picture chat-partner-profile-picture"></div>
-        <div class="chat-partner-message chat-message"> a sdkjh aksdhj ashdkjas djkas</div>
-      </div>
-      <div class="chat-message-container chat-user-message-container">
-        <div class="chat-profile-picture chat-user-profile-picture"></div>
-        <div class="chat-user-message chat-message"> asdnasd askasd asda aldask dlkjdlkjasdakdieduhaowdjawijdalwkwdmlaknwdlawndajdnawdnjwal wjdjdh aksdka</div>
-      </div>
-      <div class="chat-message-container chat-partner-message-container">
-        <div class="chat-profile-picture chat-partner-profile-picture"></div>
-        <div class="chat-partner-message chat-message"> a sdkjh aksdhj ashdkjas djkas</div>
+      <div class="loader" *ngIf="loading">Loading...</div>
+      <div class="chat-message-container" *ngFor="let item of data"
+           [ngClass]="{'chat-user-message-container': item.sender, 'chat-partner-message-container': !item.sender}">
+        <div class="chat-profile-picture"><img [src]="item.sender ? userPicture : partnerPicture"></div>
+        <div class="chat-message" [ngClass]="{'chat-user-message': item.sender, 'chat-partner-message': !item.sender}">{{item.message}}
+        </div>
       </div>
       <div class="chat-bottom-space"></div>
     </div>
   </div>
   <div class="chat-user-message-box-container">
-    <textarea class="chat-user-message-box" autofocus></textarea>
-    <button class="input-button button-dark">Send</button>
+    <textarea [(ngModel)]="message" class="chat-user-message-box" autofocus></textarea>
+    <button class="input-button button-dark" (click)="onClickSend()">Send</button>
   </div>
 </div>

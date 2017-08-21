@@ -21,4 +21,12 @@ public class MessageRequest {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "MessageRequest{" +
+                "uid=" + uid +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

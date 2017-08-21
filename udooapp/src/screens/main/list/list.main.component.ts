@@ -17,7 +17,7 @@ import {ListMainController} from "./list.main.controller";
 export class MainListComponent extends ConversionMethods implements OnInit, AfterViewChecked {
 
   public services: any[] = [];
-  public scrolledDown: boolean = false;
+  public scrolledDown: boolean = true;
   private loaded = false;
   private noMoreElement: boolean = false;
   public serviceMargin: number = 0;
@@ -44,6 +44,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   ngOnInit(): void {
     if (this.searchListener != null) {
       let data = this.searchListener.getData(1);
+      this.scrolledDown = false;
       this.services = data.services;
       this.loaded = true;
     }
