@@ -8,11 +8,13 @@ import com.udoo.dal.entities.Notification;
 import com.udoo.dal.entities.Token;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
+import com.udoo.dal.entities.message.UserConversation;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.UserResponse;
 import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.history.IHistoryElementRepository;
 import com.udoo.dal.repositories.history.IHistoryRepository;
+import com.udoo.dal.repositories.message.IUserConversationRepository;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
 import com.udoo.restservice.security.AuthenticationFilter;
@@ -59,6 +61,9 @@ public class UserServiceController implements IUserServiceController {
     @Resource
     private INotificationRepository notificationRepository;
 
+    @Resource
+    private IUserConversationRepository userConversationRepository;
+
     @Autowired
     private EmailService emailService;
 
@@ -81,7 +86,7 @@ public class UserServiceController implements IUserServiceController {
             if (userSaved == null) {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             } else {
-                User userEmail= userRepository.getByEmail(userUpdated.getEmail());
+                User userEmail = userRepository.getByEmail(userUpdated.getEmail());
                 if (userEmail != null && userEmail.getUid() != userUpdated.getUid()) {
                     return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
                 } else {
@@ -184,6 +189,12 @@ public class UserServiceController implements IUserServiceController {
             user.setPassword("");
             resp.setUser(user);
             resp.setNotifications(notificationRepository.findAllByUidAndChecked(user.getUid(), false));
+            List<UserConversation> userConversationList = userConversationRepository.findAllByFromIdAndChecked(user.getUid(), true);
+            for (UserConversation userConversation : userConversationList) {
+                Notification notification = new Notification();
+                notification.setType(3);
+                resp.getNotifications().add(notification);
+            }
             for (Notification notification : resp.getNotifications()) {
                 if (!notification.isChecked()) {
                     notification.setChecked(true);

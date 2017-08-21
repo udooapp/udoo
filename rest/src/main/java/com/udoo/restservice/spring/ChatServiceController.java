@@ -49,7 +49,7 @@ public class ChatServiceController implements IChatServiceController {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
         UserConversation userConversation = userConversationRepository.getByUidAndFromId(userId, uid);
         if (userConversation != null && userConversation.getUid() == userId) {
-            userConversation.setChecked(true);
+            userConversation.setChecked(false);
             userConversationRepository.save(userConversation);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -91,8 +91,8 @@ public class ChatServiceController implements IChatServiceController {
                 conversation.setLastMessage(messageRequest.getMessage());
                 conversation.setLastDate(date);
                 conversationRepository.save(conversation);
-                UserConversation userConversation2 = userConversationRepository.getByUidAndFromId(messageRequest.getUid(), userId);
-                userConversation2.setChecked(false);
+                UserConversation userConversation2 = userConversationRepository.getByUidAndFromId(userId, messageRequest.getUid());
+                userConversation2.setChecked(true);
                 userConversationRepository.save(userConversation2);
             }
             Message userMessage = new Message();
@@ -140,7 +140,7 @@ public class ChatServiceController implements IChatServiceController {
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ResponseEntity<?> geConversation(ServletRequest request, @RequestParam("uid") int uid) {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
-        UserConversation userConversation = userConversationRepository.getByUidAndFromId(userId, uid);
+        UserConversation userConversation = userConversationRepository.getByUidAndFromId(uid, userId);
 
         User user = userRepository.findByUid(uid);
         MessageData messageData = new MessageData();
@@ -148,8 +148,8 @@ public class ChatServiceController implements IChatServiceController {
             messageData.setPicture(user.getPicture());
         }
         if (userConversation != null) {
-            if(!userConversation.isChecked()){
-                userConversation.setChecked(true);
+            if(userConversation.isChecked()){
+                userConversation.setChecked(false);
                 userConversationRepository.save(userConversation);
             }
             messageData.setMessages(createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(0, 10)), userConversation.getUcid()));
@@ -178,7 +178,7 @@ public class ChatServiceController implements IChatServiceController {
             MessageResponse messageResponse = new MessageResponse();
             messageResponse.setDate(WallServiceController.getDateTime(msg.getDate()));
             messageResponse.setMessage(msg.getMessage());
-            messageResponse.setSender(ucid == msg.getUcid());
+            messageResponse.setSender(ucid != msg.getUcid());
             messageResponses.add(0, messageResponse);
         }
         return messageResponses;

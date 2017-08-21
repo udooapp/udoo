@@ -4,6 +4,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {ChatService} from "../../services/chat.service";
 import {Router} from "@angular/router";
 import {CHAT} from "../../app/app.routing.module";
+import {UserController} from "../../controllers/user.controller";
 
 @Component({
   templateUrl: './conversations.component.html',
@@ -19,7 +20,7 @@ export class ConversationComponent implements OnInit {
   public loading: boolean = false;
   public noMore: boolean = false;
 
-  constructor(private chatService: ChatService, private dialog: DialogController, private notifier: NotifierController, private router: Router) {
+  constructor(private userController: UserController, private chatService: ChatService, private dialog: DialogController, private notifier: NotifierController, private router: Router) {
     dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
@@ -76,6 +77,9 @@ export class ConversationComponent implements OnInit {
   }
   public onClickConversation(item: any){
     if(item != null){
+      if(item.newMessage){
+        this.userController.refreshUser();
+      }
       this.router.navigate([CHAT + item.uid]);
     }
   }

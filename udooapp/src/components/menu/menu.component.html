@@ -1,9 +1,12 @@
 <div class="menu-container-background" *ngIf="visibleMenu == 1" (click)="onClickPlaceHolder()"></div>
-<div *ngIf="!disableSwipe" id="swipe-area" [ngClass]="{'swipe-area-right' : visibleMenu == 1, 'swipe-area-left' : visibleMenu == 0 || visibleMenu == -1}" ></div>
-<div class="menu-container" [ngClass]="{'menu-slide-in' : visibleMenu == 1, 'menu-slide-out' : visibleMenu == 0, 'hide-menu' : visibleMenu == -1}">
+<div *ngIf="!disableSwipe" id="swipe-area"
+     [ngClass]="{'swipe-area-right' : visibleMenu == 1, 'swipe-area-left' : visibleMenu == 0 || visibleMenu == -1}"></div>
+<div class="menu-container"
+     [ngClass]="{'menu-slide-in' : visibleMenu == 1, 'menu-slide-out' : visibleMenu == 0, 'hide-menu' : visibleMenu == -1}">
   <div class="menu-profile">
     <div class="menu-profile-picture">
-      <img class="menu-profile-image" [ngClass]="{'menu-picture-image' : (login && user.picture != undefined && user.picture.length > 3)}"
+      <img class="menu-profile-image"
+           [ngClass]="{'menu-picture-image' : (login && user.picture != undefined && user.picture.length > 3)}"
            [src]="image">
     </div>
     <div class="menu-profile-name" *ngIf="login">{{user.name}}</div>
@@ -14,24 +17,34 @@
     <a routerLink="/login" routerLinkActive="active" id="login-menu-button" class="login-button button-dark"
        (click)="clickMenuButton()" *ngIf="!login" i18n>Login</a>
   </div>
-  <a *ngIf="user.active < 15 && login" routerLink="/activation" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+  <a *ngIf="user.active < 15 && login" routerLink="/activation" routerLinkActive="active" class="menu-link"
+     (click)="clickMenuButton()"><img
     class="menu-link-image" src="./assets/activation.png" i18n>Account activation</a>
   <a routerLink="/bids" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/bids.png"><div *ngIf="notifications.bids > 0" class="menu-button-notification-counter">{{notifications.bids}}</div>Bids</a>
+    class="menu-link-image" src="./assets/bids.png">
+    <div *ngIf="notifications.bids > 0" class="menu-button-notification-counter">{{notifications.bids}}</div>
+    Bids</a>
   <a routerLink="/requestlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/request.png" i18n><div *ngIf="notifications.request > 0" class="menu-button-notification-counter">{{notifications.request}}</div>My service request</a>
+    class="menu-link-image" src="./assets/request.png" i18n>
+    <div *ngIf="notifications.request > 0" class="menu-button-notification-counter">{{notifications.request}}</div>
+    My service request</a>
   <a routerLink="/offerlist" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
-    class="menu-link-image" src="./assets/offers.png" i18n><div *ngIf="notifications.offer > 0" class="menu-button-notification-counter">{{notifications.offer}}</div>My service
+    class="menu-link-image" src="./assets/offers.png" i18n>
+    <div *ngIf="notifications.offer > 0" class="menu-button-notification-counter">{{notifications.offer}}</div>
+    My service
     offer</a>
   <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
     src="./assets/contacts.png" i18n>Contacts</a>
   <a routerLink="/chat" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
-    src="./assets/chat.png" i18n>Chat</a>
+    src="./assets/chat.png" i18n>
+    <div *ngIf="notifications.chat > 0" class="menu-button-notification-counter">{{notifications.chat}}</div>
+    Chat</a>
   <div class="menu-placeholder">&nbsp;</div>
-  <a routerLink="/settings" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img class="menu-link-image"
-                                                        src="./assets/settings.png" i18n>Settings</a>
+  <a routerLink="/settings" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+    class="menu-link-image"
+    src="./assets/settings.png" i18n>Settings</a>
   <a routerLink="/profile" routerLinkActive="active" class="menu-link"
      (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png" i18n>Profile</a>
   <a class="menu-link" id="logout-button" *ngIf="login" (click)="logOut()"><img class="menu-link-image"

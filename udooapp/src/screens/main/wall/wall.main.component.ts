@@ -4,7 +4,7 @@ import {NotifierController} from "../../../controllers/notify.controller";
 import {DialogController} from "../../../controllers/dialog.controller";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {Router} from "@angular/router";
-import {CONTACT, DETAIL} from "../../../app/app.routing.module";
+import {CHAT, CONTACT, DETAIL} from "../../../app/app.routing.module";
 import {UserController} from "../../../controllers/user.controller";
 import {MainSearchListener} from "../main.search.listener";
 
@@ -194,5 +194,8 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     } else {
       return true;
     }
+  }
+  public onClickMessage(uid: number){
+    this.router.navigate([CHAT + uid]);
   }
 }

@@ -57,9 +57,9 @@ export class AppComponent {
     window.addEventListener('orientationchange', function (e) {
       t.contentContainerHeight = window.innerHeight - 60 - (48.5 * t.systemNotification.length);
     });
-    this.dialog.closableResponse$.subscribe(response=>{
-      if(!response.value && response.index > -1){
-        this.systemNotification.splice(response.index,  1);
+    this.dialog.closableResponse$.subscribe(response => {
+      if (!response.value && response.index > -1) {
+        this.systemNotification.splice(response.index, 1);
         this.contentContainerHeight = window.innerHeight - 60 - (48.5 * this.systemNotification.length);
       }
     });
@@ -76,9 +76,9 @@ export class AppComponent {
   }
 
   public onKeySearch(event) {
-      if(event.which == 13){
-        this.searchVisibility = !this.searchVisibility;
-      }
+    if (event.which == 13) {
+      this.searchVisibility = !this.searchVisibility;
+    }
   }
 
   public changeButton() {
@@ -126,7 +126,7 @@ export class AppComponent {
 
   public onClickMore(index: number) {
     if (this.systemNotification != null && this.systemNotification[index].length > 0) {
-      this.dialog.sendClosable({index:index, content: this.systemNotification[index]});
+      this.dialog.sendClosable({index: index, content: this.systemNotification[index]});
     }
   }
 }

@@ -1,7 +1,7 @@
 <div class="data-container">
   <h1 i18n>Contacts</h1>
   <div class="contact-container">
-    <div class="contact" *ngFor="let item of data;  let i = index">
+    <div class="contact" *ngFor="let item of data;  let i = index" (click)="onClickContact(item.uid)">
       <img class="contact-button-container" src="./assets/trash.png" (click)="onClickDelete(item.uid, i)">
       <div class="contact-picture"><img class="contact-image" [src]="getPictureUrl(item.picture)"></div>
       <div class="contact-content">

@@ -14,6 +14,7 @@ public interface IUserConversationRepository extends Repository<UserConversation
 
     UserConversation getByUidAndFromId(int uid, int cid);
 
+    List<UserConversation> findAllByFromIdAndChecked(int uid, boolean checked);
 
     List<UserConversation> findByUid(int uid, Pageable page);
 

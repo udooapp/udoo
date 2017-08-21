@@ -13,7 +13,7 @@
           <div class="main-wall-service-date">{{item.date}}</div>
           <div class="main-wall-user-buttons">
             <img class="main-wall-user-profile-action" src="./assets/call.png">
-            <img class="main-wall-user-profile-action" src="./assets/message2.png">
+            <img class="main-wall-user-profile-action" src="./assets/message2.png" (click)="onClickMessage(item.id)">
           </div>
           <div *ngFor="let content of item.content" class="main-wall-user-content">{{getUserModification(content)}}
             <div *ngIf="content.before && content.before.length > 0 ">

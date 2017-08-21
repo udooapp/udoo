@@ -3,6 +3,8 @@ import {ContactService} from "../../services/contact.service";
 import {User} from "../../entity/user";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
+import {Router} from "@angular/router";
+import {CHAT} from "../../app/app.routing.module";
 
 @Component({
   templateUrl: './contact.component.html',
@@ -19,7 +21,7 @@ export class ContactsComponent implements OnInit {
   loading: boolean = false;
   noMore: boolean = false;
 
-  constructor(private contactService: ContactService, private dialog: DialogController, private notifier: NotifierController) {
+  constructor(private contactService: ContactService, private dialog: DialogController, private notifier: NotifierController, private router: Router) {
     dialog.errorResponse$.subscribe(() => {
       if (this.error.length > 0) {
         this.ngOnInit();
@@ -79,14 +81,17 @@ export class ContactsComponent implements OnInit {
       });
   }
 
-  getPictureUrl(url: string) {
+  public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
       return '';
     }
     return url;
   }
+  public onClickContact(uid: number){
+    this.router.navigate([CHAT + uid]);
+  }
 
-  onClickDelete(id: number, index: number) {
+  public onClickDelete(id: number, index: number) {
     this.id = id;
     this.index = index;
     this.dialog.sendQuestion('Do you want to delete ' + this.data[index].name + '?');

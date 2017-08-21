@@ -30,7 +30,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
   visibleMenu: number = -1;
   stars: number[] = [0, 0, 0, 0, 0];
   user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
-  notifications = {bids: 0, request: 0, offer: 0};
+  notifications = {bids: 0, request: 0, offer: 0, chat: 0};
   login: boolean = false;
   image: string = '';
   menuLoaded: boolean = false;
@@ -44,20 +44,20 @@ export class MenuComponent implements OnInit, AfterViewChecked {
     menuController.disableMenuSwipe$.subscribe(value => {
       this.disableSwipe = value;
     });
-    userController.logoutDataPipe$.subscribe(message =>{
-        if(message == null){
-          this.login = false;
-          if (this.user.socialID) {
-            FB.logout(function (response) {
-            });
-          }
-          this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
-          this.router.navigate([MAIN]);
-          this.tokenService.clearToken();
-          this.notifications = {bids: 0, request: 0, offer: 0};
-        } else {
-          console.log("Error:" + message);
+    userController.logoutDataPipe$.subscribe(message => {
+      if (message == null) {
+        this.login = false;
+        if (this.user.socialID) {
+          FB.logout(function (response) {
+          });
         }
+        this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
+        this.router.navigate([MAIN]);
+        this.tokenService.clearToken();
+        this.notifications = {bids: 0, request: 0, offer: 0, chat: 0};
+      } else {
+        console.log("Error:" + message);
+      }
     });
     userController.userDataPipe$.subscribe(data => {
       if (data != null) {
@@ -87,6 +87,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
         this.notifications.bids = 0;
         this.notifications.offer = 0;
         this.notifications.request = 0;
+        this.notifications.chat = 0;
 
         if (data.notifications && data.notifications.length > 0) {
           for (let i = 0; i < data.notifications.length; ++i) {
@@ -99,6 +100,9 @@ export class MenuComponent implements OnInit, AfterViewChecked {
                 break;
               case 2:
                 ++this.notifications.request;
+                break;
+              case 3:
+                ++this.notifications.chat;
                 break;
             }
           }

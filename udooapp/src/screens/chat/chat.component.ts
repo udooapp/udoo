@@ -51,7 +51,9 @@ export class ChatComponent implements OnInit, AfterViewChecked{
         this.partnerId = +params['id'];
         this.chatService.getMessagesData(this.partnerId).subscribe(value => {
           this.partnerPicture = value.picture;
-          this.data = value.messages;
+          if(value.messages) {
+            this.data = value.messages;
+          }
         });
         this.loading = false;
       });
@@ -89,7 +91,6 @@ export class ChatComponent implements OnInit, AfterViewChecked{
                 if (this.scrollHeight != 0) {
                   let e = document.getElementById('chat-container');
                   if (e != null) {
-                    console.log(e.scrollHeight + " " + this.scrollHeight);
                     e.scrollTop = e.scrollHeight - this.scrollHeight;
                   }
                   this.scrollHeight = 0;
