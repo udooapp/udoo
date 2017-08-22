@@ -115,7 +115,7 @@ public class ChatServiceController implements IChatServiceController {
         int userId = Integer.parseInt(request.getAttribute(USERID).toString());
         List<ConversationResponse> conversations = new ArrayList<>();
         if (count % 10 == 0) {
-            List<UserConversation> userConversations = userConversationRepository.findByFromId(userId, new PageRequest(count / 10, 10));
+            List<UserConversation> userConversations = userConversationRepository.findByFromId(userId, new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE));
             for (UserConversation userConversation : userConversations) {
                 ConversationResponse conversationResponse = new ConversationResponse();
                 conversationResponse.setNewMessage(userConversation.isChecked());
@@ -152,7 +152,7 @@ public class ChatServiceController implements IChatServiceController {
                 userConversation.setChecked(false);
                 userConversationRepository.save(userConversation);
             }
-            messageData.setMessages(createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(0, 10)), userConversation.getUcid()));
+            messageData.setMessages(createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(0, WallServiceController.PAGE_SIZE)), userConversation.getUcid()));
         }
         return new ResponseEntity<>(messageData, HttpStatus.OK);
     }
@@ -165,7 +165,7 @@ public class ChatServiceController implements IChatServiceController {
         if (userConversation != null) {
             List<MessageResponse> messageResponses = new ArrayList<>();
             if (count % 10 == 0) {
-                messageResponses = createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(count / 10, 10)), userConversation.getUcid());
+                messageResponses = createMessageList(messageRepository.findAllByCidOrderByDateDesc(userId, uid, new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE)), userConversation.getUcid());
             }
             return new ResponseEntity<>(messageResponses, HttpStatus.OK);
         }

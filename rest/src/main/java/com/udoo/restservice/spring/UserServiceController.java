@@ -124,7 +124,7 @@ public class UserServiceController implements IUserServiceController {
                     boolean update = false;
                     if (userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setBefore(userUpdated.getPicture());
+                        historyElement.setBeforeState(userUpdated.getPicture());
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -132,7 +132,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getName().equals(userSaved.getName())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setBefore(userUpdated.getName());
+                        historyElement.setBeforeState(userUpdated.getName());
                         historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -140,7 +140,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getPhone().equals(userSaved.getPhone())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setBefore(userUpdated.getPhone());
+                        historyElement.setBeforeState(userUpdated.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);
@@ -148,7 +148,7 @@ public class UserServiceController implements IUserServiceController {
                     }
                     if (!userUpdated.getEmail().equals(userSaved.getEmail())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setBefore(userUpdated.getEmail());
+                        historyElement.setBeforeState(userUpdated.getEmail());
                         historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
                         historyElement.setHid(history.getHid());
                         historyElementRepository.save(historyElement);

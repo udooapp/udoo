@@ -97,7 +97,7 @@ public class BidServiceController implements IBidServiceController {
     public ResponseEntity<?> getUserBids(ServletRequest req, @RequestParam("count") int count, @RequestParam("last") int last) {
         User currentUser = userRepository.findByUid(Integer.parseInt(req.getAttribute(USERID).toString()));
         if (currentUser != null && currentUser.getUid() > 0) {
-            List<Bid> bids = bidRepository.findAllByUidOrderByBidDesc(currentUser.getUid(), new PageRequest(count / 5, 5));
+            List<Bid> bids = bidRepository.findAllByUidOrderByBidDesc(currentUser.getUid(), new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE));
             List<BidResponse> response = new ArrayList<>();
             if (last == -1 || (bids.size() > 0 && bids.get(bids.size() - 1).getBid() != last)) {
                 for (Bid bid : bids) {

@@ -34,7 +34,7 @@
 
           <!--1 modification-->
           <div
-            *ngIf="item.content.length == 1 && item.content[0].type != 3 && item.content.before && element.before.length > 0 && item.content.after && element.after.length > 0"
+            *ngIf="item.content.length == 1 && item.content[0].type != 3 && isContainData(item.content[0])"
             class="main-wall-service-content">
             <div *ngIf="item.content[0].type == 0">added <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
               in
@@ -65,7 +65,7 @@
             updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
             <div *ngFor="let element of item.content">
               <div
-                *ngIf="element.type != 3 && element.before && element.before.length > 0 && element.after && element.after.length > 0"
+                *ngIf="element.type != 3 && isContainData(element)"
                 class="min-wall-service-content-text">
                 {{getServiceModificationText(element)}}
                 <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;

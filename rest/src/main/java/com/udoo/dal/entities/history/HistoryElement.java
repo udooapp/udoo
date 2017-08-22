@@ -13,9 +13,9 @@ public class HistoryElement {
 
     private int action;
 
-    private String before;
+    private String beforeState;
 
-    private String after;
+    private String afterState;
 
     private int hid = -1;
 
@@ -35,20 +35,20 @@ public class HistoryElement {
         this.action = action;
     }
 
-    public String getBefore() {
-        return before;
+    public String getBeforeState() {
+        return beforeState;
     }
 
-    public void setBefore(String before) {
-        this.before = before;
+    public void setBeforeState(String before) {
+        this.beforeState = before;
     }
 
-    public String getAfter() {
-        return after;
+    public String getAfterState() {
+        return afterState;
     }
 
-    public void setAfter(String after) {
-        this.after = after;
+    public void setAfterState(String after) {
+        this.afterState = after;
     }
 
 

@@ -6,6 +6,7 @@ import {REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -53,7 +54,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
     this.requestService.getUserRequests(0, -1).subscribe(
       data => {
         this.data = data;
-        if (data.length < 5) {
+        if (data.length < MainComponent.PAGE_SIZE) {
           this.noMore = true;
         }
         this.loading = false;
@@ -81,7 +82,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
           }
-          if (data.length < 5) {
+          if (data.length < MainComponent.PAGE_SIZE) {
             this.noMore = true;
           }
           this.loading = false;

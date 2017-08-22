@@ -4,6 +4,7 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BidService} from "../../services/bid.service";
 import {DETAIL} from "../../app/app.routing.module";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: './bids.component.html',
@@ -65,7 +66,7 @@ export class BidComponent implements OnInit {
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
           }
-          if (data.length < 5) {
+          if (data.length < MainComponent.PAGE_SIZE) {
             this.noMore = true;
           }
           this.loading = false;
@@ -84,7 +85,7 @@ export class BidComponent implements OnInit {
       data => {
         this.loading = false;
         this.data = data;
-        if (data.length < 5) {
+        if (data.length < MainComponent.PAGE_SIZE) {
           this.noMore = true;
         }
       },

@@ -14,8 +14,8 @@ public class HistoryElements {
 
     private int action;
 
-    private String before;
-    private String after;
+    private String beforeState;
+    private String afterState;
 
     @JsonBackReference
     @ManyToOne(optional = false, fetch=FetchType.LAZY)
@@ -38,20 +38,20 @@ public class HistoryElements {
         this.action = action;
     }
 
-    public String getBefore() {
-        return before;
+    public String getBeforeState() {
+        return beforeState;
     }
 
-    public void setBefore(String before) {
-        this.before = before;
+    public void setBeforeState(String before) {
+        this.beforeState = before;
     }
 
-    public String getAfter() {
-        return after;
+    public String getAfterState() {
+        return afterState;
     }
 
-    public void setAfter(String after) {
-        this.after = after;
+    public void setAfterState(String after) {
+        this.afterState = after;
     }
 
     public com.udoo.dal.entities.history.History getHistory() {

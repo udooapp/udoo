@@ -72,7 +72,7 @@ public class ContactServiceController implements IContactServiceController {
     public ResponseEntity<?> getContacts(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) throws JSONException {
         User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (currentUser != null && currentUser.getUid() > 0) {
-            Pageable page = new PageRequest(count / 5, 5);
+            Pageable page = new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
 
             List<Contact> contact = contactRepository.findByUid(currentUser.getUid(), page);
             List<User> users = new ArrayList<>();

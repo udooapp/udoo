@@ -14,6 +14,7 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
 import {BidService} from "../../services/bid.service";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -83,7 +84,7 @@ export class ServiceDetailComponent implements OnInit {
             for (; i >= 0; --i) {
               this.comments.push(t[i])
             }
-            this.hasMore = this.comments.length % 5 == 0 && this.comments.length > 0;
+            this.hasMore = this.comments.length % MainComponent.PAGE_SIZE == 0 && this.comments.length > 0;
             this.loadUser(data.user);
           },
           error => this.error = <any>error
@@ -204,7 +205,7 @@ export class ServiceDetailComponent implements OnInit {
     }).subscribe(
       data => {
         this.clearArea = !this.clearArea;
-        if (this.comments.length % 5 > 0 || this.comments.length == 0) {
+        if (this.comments.length % MainComponent.PAGE_SIZE > 0 || this.comments.length == 0) {
           this.comments.push(data);
 
         } else {
@@ -220,7 +221,7 @@ export class ServiceDetailComponent implements OnInit {
   public showMoreComments() {
     this.commentService.getComments(this.type ? this.data.oid : this.data.rid, this.comments.length, this.type).subscribe(
       result => {
-        this.hasMore = result.length % 5 == 0 && result.length > 0;
+        this.hasMore = result.length % MainComponent.PAGE_SIZE == 0 && result.length > 0;
         let i: number = result.length - 1;
         let res: any[] = [];
         for (; i >= 0; --i) {

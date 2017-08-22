@@ -49,6 +49,7 @@ public class WallServiceController implements IWallServiceController {
     public static final int UPDATED_CATEGORY = 9;
     public static final int UPDATED_PHONE_NUMBER = 10;
     public static final int UPDATED_EMAIL_ADDRESS = 11;
+    public static final int PAGE_SIZE = 15;
     @Resource
     private IHistoryRepository historyRepository;
 
@@ -73,7 +74,7 @@ public class WallServiceController implements IWallServiceController {
     @Override
     @RequestMapping(value = "/public", method = RequestMethod.GET)
     public ResponseEntity<?> getOfflineWall(@RequestParam("last") int lastId) {
-        Pageable page = new PageRequest(0, 5);
+        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE);
         if (lastId == 0) {
             lastId = Integer.MAX_VALUE;
         }
@@ -83,7 +84,7 @@ public class WallServiceController implements IWallServiceController {
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
-        Pageable page = new PageRequest(0, 5);
+        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE);
         int uid = Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString());
         if (lastId == 0) {
             lastId = Integer.MAX_VALUE;
@@ -160,16 +161,16 @@ public class WallServiceController implements IWallServiceController {
             wallContent.setType(action);
             switch (action) {
                 case UPDATED_PICTURE:
-                    wallContent.setBefore(element.getBefore());
+                    wallContent.setBefore(element.getBeforeState());
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setBefore(element.getBefore());
+                    wallContent.setBefore(element.getBeforeState());
                     break;
                 case UPDATED_PHONE_NUMBER:
-                    wallContent.setBefore(element.getBefore());
+                    wallContent.setBefore(element.getBeforeState());
                     break;
                 case UPDATED_EMAIL_ADDRESS:
-                    wallContent.setBefore(element.getBefore());
+                    wallContent.setBefore(element.getBeforeState());
                     break;
             }
             content.add(wallContent);
@@ -186,43 +187,43 @@ public class WallServiceController implements IWallServiceController {
             wallContent.setType(action);
             switch (action) {
                 case NEW:
-                    if(element.getBefore() != null) {
-                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    if(element.getBeforeState() != null) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBeforeState())).getName());
                     }
                     break;
                 case UPDATED_DESCRIPTION:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
                 case UPDATED_PICTURE:
-                    OfferPictures offerPictures = offerPictureRepository.findByPoid(Integer.parseInt(element.getBefore()));
+                    OfferPictures offerPictures = offerPictureRepository.findByPoid(Integer.parseInt(element.getBeforeState()));
                     if (offerPictures != null) {
                         wallContent.setBefore(offerPictures.getSrc());
                     }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setBefore(format.format(new Date(element.getBefore() == null || element.getBefore().length() == 0 ? 0 : Long.parseLong(element.getBefore()))));
-                    wallContent.setAfter(format.format(new Date(element.getAfter() == null || element.getAfter().length() == 0 ? 0 : Long.parseLong(element.getAfter()))));
+                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || element.getBeforeState().length() == 0 ? 0 : Long.parseLong(element.getBeforeState()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || element.getAfterState().length() == 0 ? 0 : Long.parseLong(element.getAfterState()))));
                     break;
                 case UPDATED_LOCATION:
-                    wallContent.setBefore(getLocation(element.getBefore()));
-                    wallContent.setAfter(getLocation(element.getAfter()));
+                    wallContent.setBefore(getLocation(element.getBeforeState()));
+                    wallContent.setAfter(getLocation(element.getAfterState()));
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
                 case UPDATED_CATEGORY:
-                    if(element.getBefore() != null && element.getBefore().length() > 0) {
-                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    if(element.getBeforeState() != null && element.getBeforeState().length() > 0) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBeforeState())).getName());
                     }
-                    if(element.getAfter() != null && element.getAfter().length() > 0) {
-                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfter())).getName());
+                    if(element.getAfterState() != null && element.getAfterState().length() > 0) {
+                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfterState())).getName());
                     }
                     break;
                 case UPDATED_AVAILABILITY:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
             }
             content.add(wallContent);
@@ -239,43 +240,43 @@ public class WallServiceController implements IWallServiceController {
             wallContent.setType(action);
             switch (action) {
                 case NEW:
-                    if(element.getBefore() != null) {
-                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    if(element.getBeforeState() != null) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBeforeState())).getName());
                     }
                     break;
                 case UPDATED_DESCRIPTION:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
                 case UPDATED_PICTURE:
-                    RequestPictures requestPictures = requestPictureRepository.findByPrid(Integer.parseInt(element.getBefore()));
+                    RequestPictures requestPictures = requestPictureRepository.findByPrid(Integer.parseInt(element.getBeforeState()));
                     if (requestPictures != null) {
                         wallContent.setBefore(requestPictures.getSrc());
                     }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setBefore(format.format(new Date(element.getBefore() == null || element.getBefore().length() == 0 ? 0 : Long.parseLong(element.getBefore()))));
-                    wallContent.setAfter(format.format(new Date(element.getAfter() == null || element.getAfter().length() == 0 ? 0 : Long.parseLong(element.getAfter()))));
+                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || element.getBeforeState().length() == 0 ? 0 : Long.parseLong(element.getBeforeState()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || element.getAfterState().length() == 0 ? 0 : Long.parseLong(element.getAfterState()))));
                     break;
                 case UPDATED_LOCATION:
-                    wallContent.setBefore(getLocation(element.getBefore()));
-                    wallContent.setAfter(getLocation(element.getAfter()));
+                    wallContent.setBefore(getLocation(element.getBeforeState()));
+                    wallContent.setAfter(getLocation(element.getAfterState()));
                     break;
                 case UPDATED_CATEGORY:
-                    if(element.getBefore() != null && element.getBefore().length() > 0) {
-                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBefore())).getName());
+                    if(element.getBeforeState() != null && element.getBeforeState().length() > 0) {
+                        wallContent.setBefore(categoryRepository.findByCid(Integer.parseInt(element.getBeforeState())).getName());
                     }
-                    if(element.getAfter() != null && element.getAfter().length() > 0) {
-                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfter())).getName());
+                    if(element.getAfterState() != null && element.getAfterState().length() > 0) {
+                        wallContent.setAfter(categoryRepository.findByCid(Integer.parseInt(element.getAfterState())).getName());
                     }
                     break;
                 case UPDATED_JOB_DATE:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
                 case UPDATED_TITLE_OR_NAME:
-                    wallContent.setBefore(element.getBefore());
-                    wallContent.setAfter(element.getAfter());
+                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setAfter(element.getAfterState());
                     break;
             }
             content.add(wallContent);

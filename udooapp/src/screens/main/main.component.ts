@@ -26,6 +26,8 @@ import {BidService} from "../../services/bid.service";
 export class MainComponent extends ConversionMethods implements OnInit, OnDestroy, AfterViewChecked, MainSearchListener {
   private PAGE_ANIM: string = 'page';
   private TAB_ANIM: string = 'tabPage';
+  public static PAGE_SIZE: number = 15;
+
   public page: number = 1;
   public margin: number = 0;
 
@@ -474,7 +476,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           for (let i = 0; i < rlength; ++i) {
             this.listData.services.push(result.requests[i]);
           }
-          if (rlength >= 5) {
+          if (rlength >= MainComponent.PAGE_SIZE) {
             this.listData.requestSize += rlength;
           } else {
             this.listData.requestSize = -1;
@@ -488,7 +490,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           for (let i = 0; i < olength; ++i) {
             this.listData.services.push(result.offers[i]);
           }
-          if (olength >= 5) {
+          if (olength >= MainComponent.PAGE_SIZE) {
             this.listData.offerSize += olength;
           } else {
             this.listData.offerSize = -1;

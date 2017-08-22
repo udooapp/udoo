@@ -324,11 +324,11 @@ public class RestServiceController implements IRestServiceController {
                 requestLiteRepository.findAllActualByCategory(category) : requestLiteRepository.findAllActual());
         result.setRequestLite(getRequestLiteList(requests));
         int sizeRequest = requests.size();
-        result.setElementsRequest(changeRequestImage(requests.subList(0, sizeRequest > 5 ? 5 : sizeRequest)));
+        result.setElementsRequest(changeRequestImage(requests.subList(0, sizeRequest > WallServiceController.PAGE_SIZE ? WallServiceController.PAGE_SIZE : sizeRequest)));
         List<OfferLite> offers = empty ? (category > 0 ? offerLiteRepository.findAllMatches(category, searchText) : offerLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ? offerLiteRepository.findAllActualByCategory(category) : offerLiteRepository.findAllActual());
         result.setOfferLite(getOfferLiteList(offers));
         int sizeOffer = offers.size();
-        result.setElementsOffer(changeOfferImage(offers.subList(0, sizeOffer > 5 ? 5 : sizeOffer)));
+        result.setElementsOffer(changeOfferImage(offers.subList(0, sizeOffer > WallServiceController.PAGE_SIZE ? WallServiceController.PAGE_SIZE : sizeOffer)));
 
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
@@ -341,14 +341,14 @@ public class RestServiceController implements IRestServiceController {
         boolean empty = searchText == null || searchText.isEmpty();
 
         if (rCount >= 5) {
-            Pageable page = new PageRequest(rCount / 5, 5);
+            Pageable page = new PageRequest(rCount / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
             List<RequestLite> requests = empty ? (category > 0 ?
                     requestLiteRepository.findAllActualByCategory(category) : requestLiteRepository.findAllActual(page)) : (category > 0 ? requestLiteRepository.findAllMatches(category, searchText, page) : requestLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
             more.setRequests(changeRequestImage(requests));
         }
 
         if (oCount >= 5) {
-            Pageable page = new PageRequest(oCount / 5, 5);
+            Pageable page = new PageRequest(oCount / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
             List<OfferLite> offers = empty ? (category > 0 ? offerLiteRepository.findAllActualByCategory(category, page) : offerLiteRepository.findAllActual(page)) : (category > 0 ? offerLiteRepository.findAllMatches(category, searchText) : offerLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText, page));
             more.setOffers(changeOfferImage(offers));
         }

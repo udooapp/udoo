@@ -5,6 +5,7 @@ import {ChatService} from "../../services/chat.service";
 import {Router} from "@angular/router";
 import {CHAT} from "../../app/app.routing.module";
 import {UserController} from "../../controllers/user.controller";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: './conversations.component.html',
@@ -12,7 +13,6 @@ import {UserController} from "../../controllers/user.controller";
   providers: [ChatService]
 })
 export class ConversationComponent implements OnInit {
-  private RESPONSE_DATA_SIZE: number = 5;
 
   public data: any = [];
   public error: string;
@@ -39,7 +39,7 @@ export class ConversationComponent implements OnInit {
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
           }
-          if (data.length < this.RESPONSE_DATA_SIZE) {
+          if (data.length < MainComponent.PAGE_SIZE) {
             this.noMore = true;
           }
           this.loading = false;
@@ -58,7 +58,7 @@ export class ConversationComponent implements OnInit {
       data => {
         this.loading = false;
         this.data = data;
-        if (data.length < this.RESPONSE_DATA_SIZE) {
+        if (data.length < MainComponent.PAGE_SIZE) {
           this.noMore = true;
         }
       },

@@ -74,7 +74,7 @@ public class OfferServiceController implements IOfferServiceController {
     public ResponseEntity<List<Offer>> getAllUserOffer(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            Pageable page = new PageRequest(count / 5, 5);
+            Pageable page = new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
             List<Offer> offers = offerRepository.findByUid(user.getUid(), page);
             if (last == -1 || (offers.size() > 0 && offers.get(offers.size() - 1).getOid() != last)) {
                 for (Offer offer : offers) {
@@ -168,7 +168,7 @@ public class OfferServiceController implements IOfferServiceController {
             offer.setBids(-1);
             response.setOffer(offer);
             response.setUser(userRepository.findByUid(offer.getUid()));
-            List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, 5, Sort.Direction.DESC, "creatingdate"));
+            List<Comment> comments = commentRepository.findAllBySidAndType(id, true, new PageRequest(0, WallServiceController.PAGE_SIZE, Sort.Direction.DESC, "creatingdate"));
             List<CommentResponse> list = new ArrayList<>();
             if (comments != null && !comments.isEmpty()) {
                 User usr;
@@ -275,7 +275,7 @@ public class OfferServiceController implements IOfferServiceController {
                         HistoryElement histElement = new HistoryElement();
                         histElement.setAction(WallServiceController.NEW);
                         histElement.setHid(hist.getHid());
-                        histElement.setBefore(offerNew.getCategory() + "");
+                        histElement.setBeforeState(offerNew.getCategory() + "");
                         historyElementRepository.save(histElement);
                     }
                     for (OfferPictures pic : picturesSaved) {
@@ -340,7 +340,7 @@ public class OfferServiceController implements IOfferServiceController {
                     hist = historyRepository.save(hist);
                     HistoryElement histElement = new HistoryElement();
                     histElement.setAction(WallServiceController.NEW);
-                    histElement.setBefore(offerNew.getCategory() + "");
+                    histElement.setBeforeState(offerNew.getCategory() + "");
                     histElement.setHid(hist.getHid());
                     historyElementRepository.save(histElement);
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
@@ -363,7 +363,7 @@ public class OfferServiceController implements IOfferServiceController {
             if (i >= picturesSaved.size()) {
                 HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
-                histElement.setBefore(pic.getPoid() + "");
+                histElement.setBeforeState(pic.getPoid() + "");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
                 update = true;
@@ -372,8 +372,8 @@ public class OfferServiceController implements IOfferServiceController {
         if (!offerNew.getTitle().equals(offerSaved.getTitle())) {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
-            histElement.setBefore(offerSaved.getTitle());
-            histElement.setAfter(offerNew.getTitle());
+            histElement.setBeforeState(offerSaved.getTitle());
+            histElement.setAfterState(offerNew.getTitle());
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
             update = true;
@@ -382,8 +382,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
             histElement.setHid(hid);
-            histElement.setBefore(offerSaved.getDescription());
-            histElement.setAfter(offerNew.getDescription());
+            histElement.setBeforeState(offerSaved.getDescription());
+            histElement.setAfterState(offerNew.getDescription());
             historyElementRepository.save(histElement);
             update = true;
         }
@@ -391,8 +391,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_AVAILABILITY);
             histElement.setHid(hid);
-            histElement.setBefore(offerSaved.getAvailability());
-            histElement.setAfter(offerNew.getAvailability());
+            histElement.setBeforeState(offerSaved.getAvailability());
+            histElement.setAfterState(offerNew.getAvailability());
             historyElementRepository.save(histElement);
             update = true;
         }
@@ -400,8 +400,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
             histElement.setHid(hid);
-            histElement.setBefore(offerSaved.getExpirydate().getTime() +"");
-            histElement.setAfter(offerNew.getExpirydate().getTime() +"");
+            histElement.setBeforeState(offerSaved.getExpirydate().getTime() +"");
+            histElement.setAfterState(offerNew.getExpirydate().getTime() +"");
             historyElementRepository.save(histElement);
             update = true;
         }
@@ -409,8 +409,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_LOCATION);
             histElement.setHid(hid);
-            histElement.setBefore(offerSaved.getLocation());
-            histElement.setAfter(offerNew.getLocation());
+            histElement.setBeforeState(offerSaved.getLocation());
+            histElement.setAfterState(offerNew.getLocation());
             historyElementRepository.save(histElement);
             update = true;
         }
@@ -418,8 +418,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
             histElement.setHid(hid);
-            histElement.setBefore(offerSaved.getCategory() + "");
-            histElement.setAfter(offerNew.getCategory() + "");
+            histElement.setBeforeState(offerSaved.getCategory() + "");
+            histElement.setAfterState(offerNew.getCategory() + "");
             historyElementRepository.save(histElement);
             update = true;
         }

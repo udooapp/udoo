@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {CHAT, CONTACT, DETAIL} from "../../../app/app.routing.module";
 import {UserController} from "../../../controllers/user.controller";
 import {MainSearchListener} from "../main.search.listener";
+import {MainComponent} from "../main.component";
 
 
 @Component({
@@ -54,7 +55,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
         if (data.length > 0) {
           this.lastId = data[data.length - 1].hid;
         }
-        if (data.length < 5) {
+        if (data.length < MainComponent.PAGE_SIZE) {
           this.noMoreElement = true;
         }
         this.scrolledDown = false;
@@ -69,7 +70,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   private loadMoreElement() {
     this.wallService.getWall(this.lastId).subscribe(
       data => {
-        if (data.length < 5) {
+        if (data.length < MainComponent.PAGE_SIZE) {
           this.noMoreElement = true;
         }
         if (data.length > 0) {
@@ -182,6 +183,9 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     if(this.searchListener != null) {
       this.searchListener.onClickService(id, type == 1, null);
     }
+  }
+  public isContainData(element: any){
+    return element.before && element.before.length > 0 && element.after && element.after.length > 0
   }
   public isContainValidData(type: number, content: any[]){
     if(type > 0) {

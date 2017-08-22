@@ -113,7 +113,7 @@ public class RequestServiceController implements IRequestServiceController {
                     } else {
                         HistoryElement histElement = new HistoryElement();
                         histElement.setAction(WallServiceController.NEW);
-                        histElement.setBefore(requestNew.getCategory() + "");
+                        histElement.setBeforeState(requestNew.getCategory() + "");
                         histElement.setHid(hist.getHid());
                         historyElementRepository.save(histElement);
                     }
@@ -176,7 +176,7 @@ public class RequestServiceController implements IRequestServiceController {
                     hist = historyRepository.save(hist);
                     HistoryElement histElement = new HistoryElement();
                     histElement.setAction(WallServiceController.NEW);
-                    histElement.setBefore(requestNew.getCategory() + "");
+                    histElement.setBeforeState(requestNew.getCategory() + "");
                     histElement.setHid(hist.getHid());
                     historyElementRepository.save(histElement);
                     return new ResponseEntity<>("Request saved", HttpStatus.OK);
@@ -253,7 +253,7 @@ public class RequestServiceController implements IRequestServiceController {
     public ResponseEntity<List<Request>> getAllUserRequest(ServletRequest request, @RequestParam("count") int count, @RequestParam("last") int last) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            Pageable page = new PageRequest(count / 5, 5);
+            Pageable page = new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
             List<Request> requests = requestRepository.findByUid(user.getUid(), page);
             if (last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
                 for (Request req : requests) {
@@ -285,7 +285,7 @@ public class RequestServiceController implements IRequestServiceController {
             RequestResponse response = new RequestResponse();
             response.setRequest(request);
             response.setUser(userRepository.findByUid(request.getUid()));
-            List<Comment> comments = commentRepository.findAllBySidAndType(rid, false, new PageRequest(0, 5, Sort.Direction.ASC, "creatingdate"));
+            List<Comment> comments = commentRepository.findAllBySidAndType(rid, false, new PageRequest(0, WallServiceController.PAGE_SIZE, Sort.Direction.ASC, "creatingdate"));
             List<CommentResponse> list = new ArrayList<>();
             if (comments != null && !comments.isEmpty()) {
                 User usr;
@@ -358,7 +358,7 @@ public class RequestServiceController implements IRequestServiceController {
                 update = true;
                 HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
-                histElement.setBefore(pic.getPrid() + "");
+                histElement.setBeforeState(pic.getPrid() + "");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
             }
@@ -367,8 +367,8 @@ public class RequestServiceController implements IRequestServiceController {
             update = true;
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
-            histElement.setBefore(requestSaved.getTitle());
-            histElement.setAfter(requestNew.getTitle());
+            histElement.setBeforeState(requestSaved.getTitle());
+            histElement.setAfterState(requestNew.getTitle());
             histElement.setHid(hid);
             historyElementRepository.save(histElement);
         }
@@ -377,8 +377,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_DESCRIPTION);
             histElement.setHid(hid);
-            histElement.setBefore(requestSaved.getDescription());
-            histElement.setAfter(requestNew.getDescription());
+            histElement.setBeforeState(requestSaved.getDescription());
+            histElement.setAfterState(requestNew.getDescription());
             historyElementRepository.save(histElement);
         }
         if (requestNew.getExpirydate().compareTo(requestSaved.getExpirydate()) != 0) {
@@ -386,8 +386,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
             histElement.setHid(hid);
-            histElement.setAfter(requestSaved.getExpirydate().getTime() + "");
-            histElement.setBefore(requestNew.getExpirydate().getTime() + "");
+            histElement.setAfterState(requestSaved.getExpirydate().getTime() + "");
+            histElement.setBeforeState(requestNew.getExpirydate().getTime() + "");
             historyElementRepository.save(histElement);
         }
         if (!requestNew.getLocation().equals(requestSaved.getLocation())) {
@@ -395,8 +395,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_LOCATION);
             histElement.setHid(hid);
-            histElement.setBefore(requestSaved.getLocation());
-            histElement.setAfter(requestNew.getLocation());
+            histElement.setBeforeState(requestSaved.getLocation());
+            histElement.setAfterState(requestNew.getLocation());
             historyElementRepository.save(histElement);
         }
         if (!requestNew.getJobdate().equals(requestSaved.getJobdate())) {
@@ -404,8 +404,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_JOB_DATE);
             histElement.setHid(hid);
-            histElement.setBefore(requestSaved.getJobdate());
-            histElement.setAfter(requestNew.getJobdate());
+            histElement.setBeforeState(requestSaved.getJobdate());
+            histElement.setAfterState(requestNew.getJobdate());
             historyElementRepository.save(histElement);
         }
         if (requestNew.getCategory() != requestSaved.getCategory()) {
@@ -413,8 +413,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
             histElement.setHid(hid);
-            histElement.setBefore(requestSaved.getCategory()+"");
-            histElement.setAfter(requestNew.getCategory()+"");
+            histElement.setBeforeState(requestSaved.getCategory()+"");
+            histElement.setAfterState(requestNew.getCategory()+"");
             historyElementRepository.save(histElement);
         }
         return update;

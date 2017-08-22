@@ -5,6 +5,7 @@ import {ChatService} from "../../services/chat.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserController} from "../../controllers/user.controller";
 import {CONVERSATIONS} from "../../app/app.routing.module";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: './chat.component.html',
@@ -12,7 +13,6 @@ import {CONVERSATIONS} from "../../app/app.routing.module";
   providers: [ChatService]
 })
 export class ChatComponent implements OnInit, AfterViewChecked{
-  private RESPONSE_DATA_SIZE: number = 5;
   private PAGE_NAME: string = 'CHAT_WINDOW';
   public userPicture: string = '';
   public data: any = [];
@@ -84,7 +84,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
                 for (let i = 0; i < data.length; ++i) {
                   this.data.splice(i, 0, data[i]);
                 }
-                if (data.length < this.RESPONSE_DATA_SIZE) {
+                if (data.length < MainComponent.PAGE_SIZE) {
                   this.noMore = true;
                 }
                 this.loading = false;

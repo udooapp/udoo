@@ -5,6 +5,7 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
 import {CHAT} from "../../app/app.routing.module";
+import {MainComponent} from "../main/main.component";
 
 @Component({
   templateUrl: './contact.component.html',
@@ -53,7 +54,7 @@ export class ContactsComponent implements OnInit {
           for (let i = 0; i < data.length; ++i) {
             this.data.push(data[i]);
           }
-          if(data.length < 5){
+          if(data.length < MainComponent.PAGE_SIZE){
             this.noMore = true;
           }
           this.loading = false;
@@ -70,7 +71,7 @@ export class ContactsComponent implements OnInit {
       data => {
         this.loading = false;
         this.data = data;
-        if(data.length < 5){
+        if(data.length < MainComponent.PAGE_SIZE){
           this.noMore = true;
         }
       },
