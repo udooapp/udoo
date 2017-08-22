@@ -6,10 +6,10 @@ import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {LOGIN} from "../../app/app.routing.module";
 import {EmailValidator} from "../../validator/email.validator";
 import {EmailService} from "../../services/email.service";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './reminder.component.html',
@@ -33,7 +33,7 @@ export class ReminderComponent implements OnInit {
     notifier.notify(ReminderComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == ReminderComponent.NAME) {
-        router.navigate([LOGIN]);
+        router.navigate([ROUTES.LOGIN]);
       }
     })
   }
@@ -77,7 +77,7 @@ export class ReminderComponent implements OnInit {
         } else {
           this.reminderService.sendNewPassword(this.data, this.token).subscribe(
             () => {
-              this.router.navigate([LOGIN]);
+              this.router.navigate([ROUTES.LOGIN]);
               this.error = '';
             },
             error => {

@@ -9,8 +9,8 @@ import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
 import {config} from "../environments/url.config";
 import {Router} from "@angular/router";
-import {LOGIN} from "../app/app.routing.module";
 import {HeaderService} from "./header.service";
+import {ROUTES} from "../app/app.routing";
 
 @Injectable()
 export class BidService extends HeaderService {
@@ -21,7 +21,7 @@ export class BidService extends HeaderService {
 
   public savePid(pid): Observable<any> {
     if (!this.tokenService.getToken()) {
-      this.router.navigate([LOGIN]);
+      this.router.navigate([ROUTES.LOGIN]);
       return Observable.throw('First, login');
     } else {
       return this.http.post(config.server + '/bid/save', pid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))

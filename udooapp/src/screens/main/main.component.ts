@@ -9,12 +9,12 @@ import {ListMainController} from "./list/list.main.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {SearchController} from "../../controllers/search.controller";
 import {MenuController} from "../../controllers/menu.controller";
-import {DETAIL} from "../../app/app.routing.module";
 import {Router} from "@angular/router";
 import {ServiceDialogController} from "../../components/service/service.window.controller";
 import {OfferService} from "../../services/offer.service";
 import {RequestService} from "../../services/request.service";
 import {BidService} from "../../services/bid.service";
+import {ROUTES} from "../../app/app.routing";
 
 
 @Component({
@@ -637,7 +637,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   public onClickOpen(element: any) {
     let type: boolean = element.rid;
-    this.router.navigate([DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
+    this.router.navigate([ROUTES.DETAIL + (type ? element.rid : element.oid) + '/' + (type ? 0 : 1) + '/' + 0]);
   }
 
   public onClickClose() {

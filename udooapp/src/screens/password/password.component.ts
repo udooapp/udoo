@@ -7,8 +7,8 @@ import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
-import {PROFILE} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './password.component.html',
@@ -29,7 +29,7 @@ export class PasswordComponent {
     notifier.notify(PasswordComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == PasswordComponent.NAME) {
-        router.navigate([PROFILE]);
+        router.navigate([ROUTES.PROFILE]);
       }
     })
   }

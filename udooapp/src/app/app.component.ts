@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
-import {MAIN} from "./app.routing.module";
 import {TokenService} from "../services/token.service";
 import {SearchController} from "../controllers/search.controller";
 import {DialogController} from "../controllers/dialog.controller";
@@ -27,7 +26,6 @@ export class AppComponent {
   public contentContainerHeight: number = 0;
 
   constructor(private userController: UserController, private dialog: DialogController, private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
-    MAIN;
     tokenService.clearSearchData();
     document['locale'] = 'en';
     notifier.pageChanged$.subscribe(action => {
@@ -64,7 +62,6 @@ export class AppComponent {
       }
     });
   }
-
 
   public onClickSearchButton() {
     this.searchVisibility = true;

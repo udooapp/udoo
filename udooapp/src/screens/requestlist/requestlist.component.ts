@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {RequestService} from "../../services/request.service";
 import {MapService} from "../../services/map.service";
 import {IList} from "../layouts/list/lists.interface";
-import {REQUEST, REQUEST_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -111,7 +111,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
   }
 
   public getButtonRouteText(): string {
-    return REQUEST;
+    return ROUTES.REQUEST;
   }
 
   public getTitle(): string {
@@ -124,7 +124,7 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
 
   public getServiceRouteText(index: number): string {
     if (index >= 0 && index < this.data.length) {
-      return REQUEST_TYPE + this.data[index].rid + '/1';
+      return ROUTES.REQUEST_TYPE + this.data[index].rid + '/1';
     }
     return '';
   }

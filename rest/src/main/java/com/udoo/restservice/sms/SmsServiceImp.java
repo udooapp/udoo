@@ -31,8 +31,9 @@ public class SmsServiceImp implements SmsService {
     public String sendVerificationMessage(User user) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
-        Verification verification = new Verification(user.getUid(), Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
-                MacProvider.generateKey()).compact().substring(0, 6)
+        String token = Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
+                MacProvider.generateKey()).compact();
+        Verification verification = new Verification(user.getUid(), token.substring(token.length() - 6)
                 , cal.getTime(), false);
         if (verificationRepository.save(verification) != null) {
             return smsProvider.sendMessage(user.getPhone(), "Hi"+ user.getName() + ", \n User Phone verification token is: " + verification.getToken()) ? verification.getToken() : "";

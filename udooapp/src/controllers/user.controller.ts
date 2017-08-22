@@ -6,9 +6,9 @@ import {NavigationEnd, Router} from "@angular/router";
 import {UserService} from "../services/user.service";
 import {TokenService} from "../services/token.service";
 import {getTranslationProviders} from "../localization/i18n-providers";
-import {CREATE, LOGIN, MAIN, REQUEST_LIST} from "../app/app.routing.module";
 import {DialogController} from "./dialog.controller";
 import {NotifierController} from "./notify.controller";
+import {ROUTES} from "../app/app.routing";
 
 @Injectable()
 export class UserController {
@@ -27,8 +27,8 @@ export class UserController {
     this.userDataPipe$ = new EventEmitter();
     let before: string = '';
     router.events.subscribe((event) => {
-      if (event.url === MAIN && (before === LOGIN )) {
-        this.checkLogin = event.url === MAIN && before === LOGIN;
+      if (event.url === ROUTES.MAIN && (before === ROUTES.LOGIN )) {
+        this.checkLogin = event.url === ROUTES.MAIN && before === ROUTES.LOGIN;
         this.refreshUser();
       } else {
         this.checkLogin = false;
@@ -37,15 +37,11 @@ export class UserController {
         before = event.url;
       }
     });
-
-
-    dialog.mainRefresh$.subscribe(token => {
-      if (token) {
+    dialog.invalidToken$.subscribe(value => {
+      if (value) {
         this.tokenService.clearToken();
-        this.router.navigate([LOGIN]);
+        this.router.navigate([ROUTES.LOGIN]);
         this.userDataPipe$.emit(null);
-      } else {
-        this.refreshUser();
       }
     });
     this.userNotification$ = new EventEmitter();
@@ -55,7 +51,7 @@ export class UserController {
   public logOut() {
     this.userService.logout().subscribe(
       () => {
-        this.router.navigate([MAIN]);
+        this.router.navigate([ROUTES.MAIN]);
         this.tokenService.clearToken();
         this.notifier.systemNotification$.emit([]);
         this.userNotification$.emit(0);
@@ -81,19 +77,21 @@ export class UserController {
 
           let activated = data.user.active >= 15;
           if (!activated && this.checkLogin) {
-            this.router.navigate([CREATE]);
+            this.router.navigate([ROUTES.CREATE]);
           }
 
           this.userDataPipe$.emit(data);
           if (data.systemNotification) {
             this.notifier.systemNotification$.emit(data.systemNotification);
+          } else {
+            this.notifier.systemNotification$.emit([]);
           }
           this.userNotification$.emit(data.notifications.length);
           if (data.notifications != null && data.notifications.length > 0) {
 
           }
           if (data.reminders != null && data.reminders.length > 0) {
-            this.notifier.sendReminderNotification(this.router, REQUEST_LIST, data.reminders);
+            this.notifier.sendReminderNotification(this.router, ROUTES.REQUEST_LIST, data.reminders);
           }
         },
         error => {

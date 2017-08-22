@@ -1,0 +1,23 @@
+export const ROUTES = {
+  LOGIN : '/login',
+  REGISTRATION : '/registration',
+  SOCIALREGISTRATION : '/registration/facebook',
+  PROFILE : '/profile',
+  PASSWORD : '/password',
+  USER_BIDS : "/bids",
+  OFFER : '/offer',
+  REQUEST : '/request',
+  OFFER_TYPE : '/offer/',
+  REQUEST_TYPE : '/request/',
+  REQUEST_LIST : '/requestlist',
+  OFFER_LIST : '/offerlist',
+  MAIN : '/',
+  CONTACT : '/contact',
+  DETAIL : '/detail/',
+  REMINDER : '/reminder',
+  VERIFICATION : '/verification',
+  CREATE : '/create',
+  SETTINGS : '/settings',
+  CONVERSATIONS : '/chat',
+  CHAT : '/chat/'
+};

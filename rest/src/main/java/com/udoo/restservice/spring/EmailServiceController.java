@@ -88,7 +88,7 @@ public class EmailServiceController implements IEmailServiceController {
     public ResponseEntity<String> sendEmailVerification(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            if (verificationRepository.getByUidAndType(user.getUid(), false) != null) {
+            if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), false) != null) {
 
                 if(emailService.sendEmailVerification(user)) {
                     int activate = user.getActive();
@@ -112,10 +112,10 @@ public class EmailServiceController implements IEmailServiceController {
     public ResponseEntity<String> sendSmsVerification(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            if (verificationRepository.getByUidAndType(user.getUid(), true) != null) {
+            if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), false) != null) {
                 int activate = user.getActive();
-                activate |= 0b100;
-                activate &= ~0b1000;
+                activate = (activate |(1 << 2));
+                activate = (activate |(1 << 3));
                 user.setActive(activate);
                 userRepository.save(user);
                 smsService.sendVerificationMessage(user);
@@ -132,7 +132,7 @@ public class EmailServiceController implements IEmailServiceController {
     public ResponseEntity<String> checkUserVerification(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            if (verificationRepository.getByUidAndType(user.getUid(), false) == null) {
+            if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), false) == null) {
                 return new ResponseEntity<>("Ok", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Verify", HttpStatus.OK);
@@ -145,7 +145,7 @@ public class EmailServiceController implements IEmailServiceController {
     @RequestMapping(value = "/verification/valid", method = RequestMethod.POST)
     public ResponseEntity<String> checkEmailVerification(@RequestBody String token) {
         if (token != null && token.startsWith("{\"token\":\"")) {
-            Verification verification = verificationRepository.getByToken(token.substring(10, token.length() - 2));
+            Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token.substring(10, token.length() - 2));
             if (verification != null) {
                 User user = userRepository.findByUid(verification.getUid());
                 int active = user.getActive();
@@ -168,7 +168,7 @@ public class EmailServiceController implements IEmailServiceController {
     @RequestMapping(value = "user/verification/valid", method = RequestMethod.POST)
     public ResponseEntity<String> checkSmsVerification(@RequestBody String token) {
         if (token != null && token.startsWith("{\"key\":\"")) {
-            Verification verification = verificationRepository.getByToken(token.substring(8, token.length() - 2));
+            Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token.substring(8, token.length() - 2));
             if (verification != null) {
                 User user = userRepository.findByUid(verification.getUid());
                 int active = user.getActive();

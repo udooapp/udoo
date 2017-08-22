@@ -3,9 +3,9 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ChatService} from "../../services/chat.service";
 import {Router} from "@angular/router";
-import {CHAT} from "../../app/app.routing.module";
 import {UserController} from "../../controllers/user.controller";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './conversations.component.html',
@@ -80,7 +80,7 @@ export class ConversationComponent implements OnInit {
       if(item.newMessage){
         this.userController.refreshUser();
       }
-      this.router.navigate([CHAT + item.uid]);
+      this.router.navigate([ROUTES.CHAT + item.uid]);
     }
   }
 }

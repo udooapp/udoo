@@ -112,7 +112,8 @@ public class UserServiceController implements IUserServiceController {
                         int activated = userSaved.getActive();
                         verificationRepository.deleteByUid(userUpdated.getUid(), false);
                         smsService.sendVerificationMessage(userUpdated);
-                        activated &= ~0b1000;
+                        activated = (activated |(1 << 2));
+                        activated = (activated & ~(1 << 3));
                         userUpdated.setActive(activated);
                     }
 
@@ -127,6 +128,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElement.setBeforeState(userUpdated.getPicture());
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
                         historyElement.setHid(history.getHid());
+                        historyElement.setAfterState("");
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
@@ -135,6 +137,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElement.setBeforeState(userUpdated.getName());
                         historyElement.setAction(WallServiceController.UPDATED_TITLE_OR_NAME);
                         historyElement.setHid(history.getHid());
+                        historyElement.setAfterState("");
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
@@ -143,6 +146,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElement.setBeforeState(userUpdated.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
                         historyElement.setHid(history.getHid());
+                        historyElement.setAfterState("");
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
@@ -151,6 +155,7 @@ public class UserServiceController implements IUserServiceController {
                         historyElement.setBeforeState(userUpdated.getEmail());
                         historyElement.setAction(WallServiceController.UPDATED_EMAIL_ADDRESS);
                         historyElement.setHid(history.getHid());
+                        historyElement.setAfterState("");
                         historyElementRepository.save(historyElement);
                         update = true;
                     }
@@ -204,10 +209,10 @@ public class UserServiceController implements IUserServiceController {
             }
             if (user.getActive() < 15) {
                 List<String> systemNotification = new ArrayList<>();
-                if (((user.getActive() >> 3) & 1) == 0) {
+                if (((user.getActive() >> 1) & 1) == 0) {
                     systemNotification.add("Please, activate your email address");
                 }
-                if (((user.getActive() >> 3) & 3) == 0) {
+                if (((user.getActive() >> 3) & 1) == 0) {
                     systemNotification.add("Please, activate your phone number");
                 }
                 resp.setSystemNotification(systemNotification);

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions, URLSearchParams} from '@angular/http';
+import {Http, RequestOptions, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -9,8 +9,8 @@ import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
 import {config} from "../environments/url.config";
 import {Router} from "@angular/router";
-import {LOGIN} from "../app/app.routing.module";
 import {HeaderService} from "./header.service";
+import {ROUTES} from "../app/app.routing";
 
 @Injectable()
 export class CommentService extends HeaderService{
@@ -20,7 +20,7 @@ export class CommentService extends HeaderService{
   }
   public saveComment(comment): Observable<any> {
     if (!this.tokenService.getToken()) {
-      this.router.navigate([LOGIN]);
+      this.router.navigate([ROUTES.LOGIN]);
       return Observable.throw('First, login');
     } else {
       return this.http.post(config.server + '/comment/save', comment, new RequestOptions({headers:  this.getTokenHeaders(this.tokenService.getToken())}))

@@ -9,10 +9,10 @@ import {EmailValidator} from "../../validator/email.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NotifierController} from "../../controllers/notify.controller";
-import {LOGIN, MAIN} from "../../app/app.routing.module";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
+import {ROUTES} from "../../app/app.routing";
 
 
 @Component({
@@ -45,7 +45,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
     this.notifier.notify(RegistrationComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RegistrationComponent.NAME) {
-        router.navigate([LOGIN]);
+        router.navigate([ROUTES.LOGIN]);
       }
     })
   }
@@ -151,7 +151,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
             .subscribe(
               () => {
                 this.notifier.pageChanged$.emit(' ');
-                this.router.navigate([MAIN]);
+                this.router.navigate([ROUTES.MAIN]);
               },
               error => {
                 this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;
@@ -162,7 +162,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
             .subscribe(
               ()=> {
                 this.notifier.pageChanged$.emit(' ');
-                this.router.navigate([LOGIN]);
+                this.router.navigate([ROUTES.LOGIN]);
               },
               error => {
                 this.error = error.toString() === 'Unauthorized' ? 'Email address is exist!' : <any>error;

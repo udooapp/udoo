@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface IVerificationRepository extends Repository<Verification, Integer> {
 
-    Verification getByToken(String token);
+    Verification getTopByTokenOrderByExpiryDateDesc(String token);
 
-    Verification getByUidAndType(int uid, boolean type);
+    Verification getTopByUidAndTypeOrderByExpiryDateDesc(int uid, boolean type);
 
     Verification save(Verification reminder);
 

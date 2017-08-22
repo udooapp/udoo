@@ -4,8 +4,8 @@ import {User} from "../../entity/user";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
-import {CHAT} from "../../app/app.routing.module";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './contact.component.html',
@@ -89,7 +89,7 @@ export class ContactsComponent implements OnInit {
     return url;
   }
   public onClickContact(uid: number){
-    this.router.navigate([CHAT + uid]);
+    this.router.navigate([ROUTES.CHAT + uid]);
   }
 
   public onClickDelete(id: number, index: number) {

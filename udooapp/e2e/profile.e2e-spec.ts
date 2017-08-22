@@ -1,5 +1,5 @@
 import {InputPage} from './input.po';
-import {MAIN, PROFILE} from "../src/app/app.routing.module";
+import {ROUTES} from "../src/app/app.routing";
 
 describe('ProfilePage', function () {
   let page: InputPage;
@@ -10,7 +10,7 @@ describe('ProfilePage', function () {
 
   it('Login and Updating profile with valid data', () => {
     let date: Date = new Date();
-    page.navigateTo(PROFILE);
+    page.navigateTo(ROUTES.PROFILE);
     page.waitingForAngular();
     page.clearText('name-input');
     page.setText('UdooTest' + date.toDateString(), 'name-input');
@@ -19,7 +19,7 @@ describe('ProfilePage', function () {
 
   it('Login and Updating profile with invalid data', () => {
     let date: Date = new Date();
-    page.navigateTo(PROFILE);
+    page.navigateTo(ROUTES.PROFILE);
     page.waitingForAngular();
     page.clearText('name-input');
     page.setText('Udoo' + date.toDateString(), 'phone-input');
@@ -28,7 +28,7 @@ describe('ProfilePage', function () {
   });
 
   it('Login and Updating password with valid data', () => {
-    page.navigateTo(PROFILE);
+    page.navigateTo(ROUTES.PROFILE);
     page.waitingForAngular();
     page.setButtonClick('password-button');
     page.setText('password', 'current-password-input');
@@ -38,14 +38,14 @@ describe('ProfilePage', function () {
   });
 
   it('Login and Updating password with invalid data', () => {
-    page.navigateTo(PROFILE);
+    page.navigateTo(ROUTES.PROFILE);
     page.waitingForAngular();
     page.setButtonClick('password-button');
     page.setText('password1', 'current-password-input');
     page.setText('password', 'new-password-input');
     page.setButtonClick('save-button');
     expect(page.getElementText('error-message')).toEqual('Unauthorized');
-    page.navigateTo(MAIN);
+    page.navigateTo(ROUTES.MAIN);
     page.setButtonClick('menu-button');
     page.setButtonClick('logout-button');
     page.setButtonClick('menu-button');

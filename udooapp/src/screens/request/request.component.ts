@@ -10,12 +10,12 @@ import {NumberValidator} from "../../validator/number.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {REQUEST_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
 import {UserController} from "../../controllers/user.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -55,7 +55,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           this.modification[0] = -1;
           this.modification[1] = 0;
           this.modification[2] = -1;
-          router.navigate([REQUEST_LIST]);
+          router.navigate([ROUTES.REQUEST_LIST]);
           if (this.reload) {
             this.userController.refreshUser();
           }
@@ -156,7 +156,7 @@ export class RequestComponent implements OnInit, IServiceForm {
             this.data = new Request(null, '', '', -1, -1, '', '', 0, []);
             this.notifier.pageChanged$.emit(' ');
             this.notifier.back();
-            this.router.navigate([REQUEST_LIST]);
+            this.router.navigate([ROUTES.REQUEST_LIST]);
             if (this.reload) {
               this.userController.refreshUser();
             }

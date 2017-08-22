@@ -376,7 +376,6 @@ public class RestServiceController implements IRestServiceController {
 
     private List<ListElement> changeOfferImage(List<OfferLite> offers) {
         User usr;
-        System.out.println("OfferSIZE: " + offers.size());
         List<ListElement> list = new ArrayList<>();
         for (OfferLite offer : offers) {
             usr = userRepository.findByUid(offer.getUid());

@@ -5,14 +5,12 @@ import {Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
 import {User} from "../../entity/user";
 import {TokenService} from "../../services/token.service";
-import {NotifierController} from "../../controllers/notify.controller";
-import {MAIN} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {document} from "@angular/platform-browser/src/facade/browser";
-import {DialogController} from "../../controllers/dialog.controller";
 import {BidService} from "../../services/bid.service";
 import {MenuController} from "../../controllers/menu.controller";
 import {UserController} from "../../controllers/user.controller";
+import {ROUTES} from "../../app/app.routing";
 
 declare let FB;
 
@@ -52,7 +50,7 @@ export class MenuComponent implements OnInit, AfterViewChecked {
           });
         }
         this.user = new User(null, '', '', '', '', '', 0, 0, '', this.user.language, 0, 0);
-        this.router.navigate([MAIN]);
+        this.router.navigate([ROUTES.MAIN]);
         this.tokenService.clearToken();
         this.notifications = {bids: 0, request: 0, offer: 0, chat: 0};
       } else {

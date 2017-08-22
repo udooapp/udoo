@@ -9,12 +9,12 @@ import {RequestService} from "../../services/request.service";
 import {ContactService} from "../../services/contact.service";
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {MAIN, USER_BIDS} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {CommentService} from "../../services/comment.service";
 import {BidService} from "../../services/bid.service";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './servicedeteail.component.html',
@@ -49,10 +49,10 @@ export class ServiceDetailComponent implements OnInit {
       if (action == ServiceDetailComponent.NAME) {
         switch (this.page) {
           case 0:
-            this.router.navigate([MAIN]);
+            this.router.navigate([ROUTES.MAIN]);
             break;
           case 1:
-            this.router.navigate([USER_BIDS]);
+            this.router.navigate([ROUTES.USER_BIDS]);
             break;
         }
       } else if (action == GalleryComponent.IMAGE) {

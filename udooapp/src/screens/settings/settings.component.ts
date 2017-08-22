@@ -4,8 +4,8 @@ import {Component} from '@angular/core';
 import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
-import {MAIN} from "../../app/app.routing.module";
 import {UserController} from "../../controllers/user.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './settings.component.html',
@@ -21,7 +21,7 @@ export class SettingsComponent {
     notifier.notify(SettingsComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == SettingsComponent.NAME) {
-        router.navigate([MAIN]);
+        router.navigate([ROUTES.MAIN]);
       }
     })
   }

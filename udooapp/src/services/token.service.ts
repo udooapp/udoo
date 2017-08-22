@@ -25,7 +25,7 @@ export class TokenService {
   }
   getPageState() : number {
     let ref : string = localStorage.getItem(this.PAGE_STATE);
-    let num = Number.parseInt(ref);
+    let num = +ref;
     if(num == null || num < 0 || num > 2){
       return 1;
     } else {

@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {OfferService} from "../../services/offer.service";
 import {MapService} from "../../services/map.service";
-import {OFFER, OFFER_TYPE} from "../../app/app.routing.module";
 import {ConversionMethods} from "../layouts/conversion.methods";
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: '../layouts/list/lists.component.html',
@@ -112,7 +112,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
 
 
   public getButtonRouteText(): string {
-    return OFFER;
+    return ROUTES.OFFER;
   }
 
   public getTitle(): string {
@@ -125,7 +125,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
 
   public getServiceRouteText(index: number): string {
     if (index >= 0 && index < this.data.length) {
-      return OFFER_TYPE + this.data[index].oid + '/0';
+      return ROUTES.OFFER_TYPE + this.data[index].oid + '/0';
     }
     return '';
   }

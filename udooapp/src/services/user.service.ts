@@ -29,7 +29,7 @@ export class UserService extends HeaderService{
   public loginFacebook(socialData: any): Observable<any> {
     return this.http.post(config.server + '/social', JSON.stringify(socialData), new RequestOptions({headers: this.getHeader()}))
       .map((response: Response)=>{
-        if(response.text().startsWith("{")){
+        if(response.text()[0] == '{'){
           return response.json();
         } else {
           let token = response.text();

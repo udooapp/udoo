@@ -1,15 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 
 
-import {UserService} from "../../services/user.service";
 import {NotifierController} from "../../controllers/notify.controller";
 import {Router} from "@angular/router";
-import {MAIN} from "../../app/app.routing.module";
 import {EmailService} from "../../services/email.service";
 import {EmptyValidator} from "../../validator/empty.validator";
 import {IValidator} from "../../validator/validator.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {UserController} from "../../controllers/user.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './activation.component.html',
@@ -28,14 +27,14 @@ export class ActivationComponent implements OnInit {
   type: boolean[] = [false, false];
   activation: number = 0;
 
-  constructor(private userController: UserController, private dialog: DialogController,private notifier: NotifierController, private router: Router, private emailService: EmailService) {
+  constructor(private userController: UserController, private dialog: DialogController, private notifier: NotifierController, private router: Router, private emailService: EmailService) {
     this.emptyValidator = new EmptyValidator();
   }
 
   onClickSend(type) {
-    if(type == 0){
+    if (type == 0) {
       this.emailService.sendVerificationEmail().subscribe(
-        message => {
+        () => {
           this.dialog.sendMessage("Email sent");
         },
         error => this.errorMessage = error
@@ -66,7 +65,7 @@ export class ActivationComponent implements OnInit {
         message => {
           this.type[1] = true;
           this.okMessage = message;
-          this.dialog.sendRefreshRequest();
+          this.userController.refreshUser();
         },
         error => this.errorMessage = error
       );
@@ -81,20 +80,22 @@ export class ActivationComponent implements OnInit {
     this.notifier.notify(ActivationComponent.NAME);
     this.notifier.pageChanged$.subscribe(action => {
       if (action == ActivationComponent.NAME) {
-        this.router.navigate([MAIN]);
+        this.router.navigate([ROUTES.MAIN]);
       }
     });
     this.userController.userDataPipe$.subscribe(data => {
-
-      this.activation = data.user.active;
-      if(this.activation>= 15){
-        this.router.navigate([MAIN]);
-      } else {
-        for(let i = 0; i < 2; ++i){
-          this.type[i] = ((this.activation >>(i * 2 + 1))&1) != 0;
+      if (this.activation == 0) {
+        this.activation = data.user.active;
+        if (this.activation >= 15) {
+          this.router.navigate([ROUTES.MAIN]);
+        } else {
+          this.type[0] = ((this.activation >> 1) & 1) != 0;
+          this.type[1] = ((this.activation >> 3) & 1) != 0;
         }
       }
     });
-    this.userController.refreshUser();
+    if (this.activation == 0) {
+      this.userController.refreshUser();
+    }
   }
 }

@@ -8,7 +8,7 @@ export class DialogController {
   public questionResponse$: EventEmitter<boolean>;
   public errorResponse$: EventEmitter<boolean>;
   public closableResponse$: EventEmitter<any>;
-  public mainRefresh$: EventEmitter<boolean>;
+  public invalidToken$: EventEmitter<boolean>;
 
   constructor() {
     this.errorMessage$ = new EventEmitter();
@@ -16,16 +16,16 @@ export class DialogController {
     this.simpleMessage$ = new EventEmitter();
     this.questionResponse$ = new EventEmitter();
     this.errorResponse$ = new EventEmitter();
-    this.mainRefresh$ = new EventEmitter();
     this.closableMessage$ = new EventEmitter();
     this.closableResponse$ = new EventEmitter();
+    this.invalidToken$ = new EventEmitter();
   }
 
   public notifyError(errorMessage: string) {
     if (errorMessage === 'Server error' || errorMessage === 'No internet connection' || errorMessage === 'Service Unavailable' || errorMessage === 'Invalid token') {
       this.errorMessage$.emit(errorMessage);
       if (errorMessage === 'Invalid token') {
-        this.mainRefresh$.emit(true);
+        this.invalidToken$.emit(true);
       }
     }
   }
@@ -54,9 +54,5 @@ export class DialogController {
 
   public sendClosableResponse(index: number, value: boolean) {
     this.closableResponse$.emit({index: index, value: value});
-  }
-
-  public sendRefreshRequest() {
-    this.mainRefresh$.emit(false);
   }
 }

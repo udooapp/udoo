@@ -4,10 +4,10 @@ import {NotifierController} from "../../../controllers/notify.controller";
 import {DialogController} from "../../../controllers/dialog.controller";
 import {ConversionMethods} from "../../layouts/conversion.methods";
 import {Router} from "@angular/router";
-import {CHAT, CONTACT, DETAIL} from "../../../app/app.routing.module";
 import {UserController} from "../../../controllers/user.controller";
 import {MainSearchListener} from "../main.search.listener";
 import {MainComponent} from "../main.component";
+import {ROUTES} from "../../../app/app.routing";
 
 
 @Component({
@@ -200,6 +200,6 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     }
   }
   public onClickMessage(uid: number){
-    this.router.navigate([CHAT + uid]);
+    this.router.navigate([ROUTES.CHAT + uid]);
   }
 }

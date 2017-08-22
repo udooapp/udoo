@@ -7,12 +7,12 @@ import {EmptyValidator} from "../../validator/empty.validator";
 import {DateValidator} from "../../validator/date.validator";
 import {MapService} from "../../services/map.service";
 import {NotifierController} from "../../controllers/notify.controller";
-import {OFFER_LIST} from "../../app/app.routing.module";
 import {IServiceForm} from "../layouts/serviceform/serviceform.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
 import {UserController} from "../../controllers/user.controller";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -48,7 +48,7 @@ export class OfferComponent implements OnInit, IServiceForm {
           this.modification[0] = -1;
           this.modification[1] = 0;
           this.modification[2] = -1;
-          router.navigate([OFFER_LIST]);
+          router.navigate([ROUTES.OFFER_LIST]);
           if (this.reload) {
             this.userController.refreshUser();
           }
@@ -149,7 +149,7 @@ export class OfferComponent implements OnInit, IServiceForm {
             this.modification[2] = -1;
             this.notifier.back();
             this.notifier.pageChanged$.emit(' ');
-            this.router.navigate([OFFER_LIST]);
+            this.router.navigate([ROUTES.OFFER_LIST]);
             if (this.reload) {
               this.userController.refreshUser();
             }

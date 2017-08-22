@@ -48,33 +48,13 @@ const routes: Routes = [
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
   {path: 'chat', component: ConversationComponent, canActivate: [AuthGuard]},
   {path: 'chat/:id', component: ChatComponent, canActivate: [AuthGuard]},
-  {path: '**', redirectTo:''}
+  {path: '**', redirectTo: ''}
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
 }
-export const LOGIN: string = '/login';
-export const REGISTRATION: string = '/registration';
-export const SOCIALREGISTRATION: string = '/registration/facebook';
-export const PROFILE: string = '/profile';
-export const PASSWORD: string = '/password';
-export const USER_BIDS: string = "/bids";
-export const OFFER: string = '/offer';
-export const REQUEST: string = '/request';
-export const OFFER_TYPE: string = '/offer/';
-export const REQUEST_TYPE: string = '/request/';
-export const REQUEST_LIST: string = '/requestlist';
-export const OFFER_LIST: string = '/offerlist';
-export const MAIN: string = '/';
-export const CONTACT: string = '/contact';
-export const DETAIL: string = '/detail/';
-export const REMINDER: string = '/reminder';
-export const VERIFICATION: string = '/verification';
-export const CREATE: string = '/create';
-export const SETTINGS: string = '/settings';
-export const CONVERSATIONS: string = '/chat';
-export const CHAT: string = '/chat/';
 

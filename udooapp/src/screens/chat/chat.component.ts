@@ -4,8 +4,8 @@ import {NotifierController} from "../../controllers/notify.controller";
 import {ChatService} from "../../services/chat.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserController} from "../../controllers/user.controller";
-import {CONVERSATIONS} from "../../app/app.routing.module";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './chat.component.html',
@@ -39,7 +39,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     notifier.notify(this.PAGE_NAME);
     notifier.pageChanged$.subscribe(value => {
       if (value == this.PAGE_NAME) {
-        this.router.navigate([CONVERSATIONS]);
+        this.router.navigate([ROUTES.CONVERSATIONS]);
       }
     })
   }

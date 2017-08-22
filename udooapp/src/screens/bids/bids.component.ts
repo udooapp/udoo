@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {DialogController} from "../../controllers/dialog.controller";
 import {NotifierController} from "../../controllers/notify.controller";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {BidService} from "../../services/bid.service";
-import {DETAIL} from "../../app/app.routing.module";
 import {MainComponent} from "../main/main.component";
+import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './bids.component.html',
@@ -154,7 +154,7 @@ export class BidComponent implements OnInit {
 
   public onClickBid(index: number) {
     if (index >= 0 && index < this.data.length) {
-      this.router.navigate([DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
+      this.router.navigate([ROUTES.DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
     }
   }
 

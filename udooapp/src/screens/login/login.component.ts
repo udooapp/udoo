@@ -1,19 +1,18 @@
-import {Component, EventEmitter, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 
-import {User} from '../../entity/user';
 import {UserService} from "../../services/user.service";
 import {Router} from "@angular/router";
 import {IValidator} from "../../validator/validator.interface";
 import {EmailValidator} from "../../validator/email.validator";
 import {PasswordValidator} from "../../validator/password.validator";
 import {EmptyValidator} from "../../validator/empty.validator";
-import {SOCIALREGISTRATION, MAIN} from "../../app/app.routing.module";
 import {DialogController} from "../../controllers/dialog.controller";
 import {TokenService} from "../../services/token.service";
 import {config} from "../../environments/url.config";
 import {Http} from "@angular/http";
+import {ROUTES} from "../../app/app.routing";
 
 
 declare let FB: any;
@@ -41,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.tokenService.getToken()) {
-      this.router.navigate([MAIN]);
+      this.router.navigate([ROUTES.MAIN]);
     }
     this.facebookInit(document, 'script', 'facebook-jssdk');
     this.initGoogle();
@@ -73,10 +72,10 @@ export class LoginComponent implements OnInit {
             }).subscribe(
               value => {
                 if (value == null) {
-                  t.router.navigate([MAIN]);
+                  t.router.navigate([ROUTES.MAIN]);
                 } else {
                   localStorage.setItem("registration", JSON.stringify(value));
-                  t.router.navigate([SOCIALREGISTRATION]);
+                  t.router.navigate([ROUTES.SOCIALREGISTRATION]);
                 }
               },
               error => {
@@ -113,10 +112,10 @@ export class LoginComponent implements OnInit {
             }).subscribe(
               value => {
                 if (value == null) {
-                  t.router.navigate([MAIN]);
+                  t.router.navigate([ROUTES.MAIN]);
                 } else {
                   localStorage.setItem("registration", JSON.stringify(value));
-                  t.router.navigate([SOCIALREGISTRATION]);
+                  t.router.navigate([ROUTES.SOCIALREGISTRATION]);
                 }
               },
               error => {
@@ -244,7 +243,7 @@ export class LoginComponent implements OnInit {
       this.userService.loginUser(this.user)
         .subscribe(
           message =>
-            this.router.navigate([MAIN]),
+            this.router.navigate([ROUTES.MAIN]),
           error => {
             this.dialog.notifyError(error);
             this.error = error;

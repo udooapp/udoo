@@ -9,8 +9,8 @@ import {TokenService} from "./token.service";
 import {HandlerService} from "./handler.service";
 import {config} from "../environments/url.config";
 import {Router} from "@angular/router";
-import {LOGIN} from "../app/app.routing.module";
 import {HeaderService} from "./header.service";
+import {ROUTES} from "../app/app.routing";
 
 @Injectable()
 export class ContactService extends HeaderService {
@@ -21,7 +21,7 @@ export class ContactService extends HeaderService {
 
   public addContact(uid: number): Observable<string> {
     if (!this.tokenService.getToken()) {
-      this.router.navigate([LOGIN]);
+      this.router.navigate([ROUTES.LOGIN]);
       return Observable.throw('First, login');
     }
     return this.http.post(config.server + '/contact/add', JSON.stringify({
