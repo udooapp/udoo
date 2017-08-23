@@ -31,17 +31,17 @@ describe('RequestPage', function () {
   });
 
   it('Login and create Request with empty input', () => {
-      let date: Date = new Date();
-      page.navigateTo(ROUTES.REQUEST);
-      page.waitingForAngular();
-      page.setText('TestRequest' + date.toDateString(), 'title-input');
-      page.setSelectOption('category-select', 2);
-      page.setText('UdooTestRequestDescription' + date.toDateString(), 'description-area');
-      page.setText('Location', 'location-input');
-      page.setText('12-12-1992', 'date-input');
-      page.setText('22:12', 'time-input');
-      page.setText('12-12-1993', 'expirydate-input');
-      page.setButtonClick('save-button');
-      expect(page.getElementText('error-message')).toEqual('Incorrect or empty value');
+    let date: Date = new Date();
+    page.navigateTo(ROUTES.REQUEST);
+    page.waitingForAngular();
+    page.setText('TestRequest' + date.toDateString(), 'title-input');
+    page.setSelectOption('category-select', 2);
+    page.setText('UdooTestRequestDescription' + date.toDateString(), 'description-area');
+    page.setText('Location', 'location-input');
+    page.setText('12-12-1992', 'date-input');
+    page.setText('22:12', 'time-input');
+    page.setText(date.getDay() + '-' + date.getMonth() + '-' + date.getFullYear(), 'expirydate-input');
+    page.setButtonClick('save-button');
+    expect(page.getElementText('error-message')).toEqual('Incorrect or empty value');
   });
 });
