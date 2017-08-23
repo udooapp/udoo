@@ -41,7 +41,7 @@ export class MapService {
   public getCategories(): Observable<Object[]> {
     return this.http.get(config.server + '/categories')
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError)
+      .catch(HandlerService.handleErrorText)
   }
 
 }

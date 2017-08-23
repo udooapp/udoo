@@ -55,7 +55,7 @@ export class OfferService extends HeaderService {
       search: param
     }))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public deleteUserOffer(id: number, deleted: number): Observable<string> {
@@ -70,17 +70,17 @@ export class OfferService extends HeaderService {
   public getUserOffer(oid: number): Observable<any> {
     return this.http.get(config.server + '/offer/user/' + oid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public getOfferData(oid: number): Observable<any> {
     return this.http.get(config.server + '/offer/data/' + oid)
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
   public getOfferDialogData(oid: number): Observable<any> {
     return this.http.get(config.server + '/offer/data/dialog/' + oid)
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 }

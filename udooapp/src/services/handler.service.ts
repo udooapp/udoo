@@ -2,15 +2,18 @@ import {Observable} from "rxjs/Observable";
 import {Response} from '@angular/http';
 
 export class HandlerService {
-  public static AUTHORIZATION:string = 'Authorization';
+  public static AUTHORIZATION: string = 'Authorization';
 
   public static extractText(res: Response) {
     return res.text();
   }
+  public static extractData(res: Response) {
+    return JSON.parse(res.text()) || {};
+  }
 
   public static handleText(error: Response | any) {
-    let errMsg : string ='';
-    if(error  instanceof  Response){
+    let errMsg: string = '';
+    if (error instanceof Response) {
       switch (error.status) {
         case 0:
           errMsg = 'No internet connection';
@@ -36,7 +39,7 @@ export class HandlerService {
           errMsg = 'Service Unavailable';
           break;
         default:
-          if(error.status >= 500 && error.status < 600){
+          if (error.status >= 500 && error.status < 600) {
             errMsg = 'Server error';
           } else {
             errMsg = 'Something\'s wrong here...\tTry again later';
@@ -49,9 +52,6 @@ export class HandlerService {
     return Observable.throw(errMsg);
   }
 
-  public static extractData(res: Response) {
-    return JSON.parse(res.text()) || {};
-  }
   public static handleErrorText(error: Response | any) {
     let errMsg: string;
     if (error instanceof Response) {
@@ -75,7 +75,7 @@ export class HandlerService {
           errMsg = 'Service Unavailable! Please, try again later';
           break;
         default:
-          if(error.status >= 500 && error.status < 600){
+          if (error.status >= 500 && error.status < 600) {
             errMsg = 'Server error';
           } else {
             errMsg = error.text();
@@ -88,41 +88,40 @@ export class HandlerService {
     return Observable.throw(errMsg);
   }
   public static handleError(error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
-    let errMsg: string;
+    let errMsg: any = {status: 0, error: '', msg: ''};
     if (error instanceof Response) {
+      errMsg.status = error.status;
+      errMsg.msg = error.text();
       switch (error.status) {
         case 0:
-          errMsg = 'No internet connection';
+          errMsg.error = 'No internet connection';
           break;
         case 408:
-          errMsg = 'Time out';
+          errMsg.error = 'Time out! Please, try again later';
           break;
         case 404:
-          errMsg = 'Not found';
-          break;
-        case 401:
-          errMsg = 'Incorrect data or data';
+          errMsg.error = error.text() + '!';
           break;
         case 498:
-          errMsg = 'Invalid token';
+          errMsg.error = 'Invalid token';
           break;
         case 500:
-          errMsg = 'Server error';
+          errMsg.error = 'Server error';
           break;
         case 503:
-          errMsg = 'Service Unavailable';
+          errMsg.error = 'Service Unavailable! Please, try again later';
           break;
         default:
-          if(error.status >= 500 && error.status < 600){
-            errMsg = 'Server error';
+          if (error.status >= 500 && error.status < 600) {
+            errMsg.error = 'Server error';
           } else {
-            errMsg = 'Something\'s wrong here...\tTry again later';
+            errMsg.error = error.text();
           }
       }
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      errMsg.error = error.message ? error.message : error.toString();
     }
     console.log('Returned error message: ' + errMsg);
     return Observable.throw(errMsg);
-  }}
+  }
+}

@@ -50,7 +50,7 @@ public class RequestServiceGenerator {
             request.setUid(138);
             request.setCategory(rand.nextInt(13) + 1);
             request.setDescription(generateText(rand.nextInt(500) + 10));
-            request.setTitle(generateText(rand.nextInt(5) + 2));
+            request.setTitle("Request" + generateText(rand.nextInt(5) + 2));
             request.setExpirydate(date);
             request.setJobdate("2017-09-09");
             request.setLocation("{\"coordinate\":{\"lat\":" + (48.227747 + rand.nextFloat() * 2 - 1) + ",\"lng\":" + (16.387340999999992 + rand.nextFloat() * 2 - 1) + "},\"address\":\"Taborstraße 102-108, 1020 Wien, Austria\"}");

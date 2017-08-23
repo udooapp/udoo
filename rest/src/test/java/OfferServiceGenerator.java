@@ -51,7 +51,7 @@ public class OfferServiceGenerator {
             offer.setAvailability("0-24");
             offer.setCategory(rand.nextInt(13) + 1);
             offer.setDescription(generateText(rand.nextInt(500) + 10));
-            offer.setTitle(generateText(rand.nextInt(5) + 2));
+            offer.setTitle("Offer" + generateText(rand.nextInt(5) + 2));
             offer.setExpirydate(date);
             offer.setLocation("{\"coordinate\":{\"lat\":" + (48.227747 + rand.nextFloat() * 2 - 1) + ",\"lng\":" + (16.387340999999992 + rand.nextFloat() * 2 - 1) + "},\"address\":\"Taborstraße 102-108, 1020 Wien, Austria\"}");
             if (offerRepository.save(offer) == null) {

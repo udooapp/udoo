@@ -68,7 +68,7 @@
   <div class="bid-panel" *ngIf="type && bids.length > 0">
     <h2>User bids</h2>
     <div *ngFor="let item of bids" class="bid-container">
-      <img [src]="item.picture"/>
+      <img [src]="getPicture(item.picture)"/>
       <div class="bid-content">
         <div class="bid-name">{{item.name}}</div>
         <div>Price: {{item.price}} &#8364;</div>

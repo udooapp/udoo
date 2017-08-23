@@ -51,7 +51,7 @@ export class RequestService extends HeaderService {
       search: param
     }))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public deleteUserRequest(id: number, deleted: number): Observable<string> {

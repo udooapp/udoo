@@ -67,7 +67,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   //BidDialog
   public showBid: boolean = false;
-  bid: any = {price: 0, description: '', sid: 0, type: false};
+  private bid: any = {price: 0, description: '', sid: 0, type: false};
 
   //ScrollUp button
   public scrollUpVisibility: boolean = false;
@@ -261,6 +261,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
               }
               if (t.margin < t.width + t.width / 2) {
                 t.page = 1;
+                t.tokenService.setPageState(1);
                 t.menuController.disableMenuSwipe$.emit(MenuController.MENU_DISABLE);
               }
               if (t.page == 2 && t.pageMargin > 0) {
@@ -736,7 +737,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         this.dialog.sendMessage("Your offer was sent!");
       },
       error => {
-        this.dialog.notifyError(error);
+        this.dialog.sendError(error.msg);
       });
   }
 

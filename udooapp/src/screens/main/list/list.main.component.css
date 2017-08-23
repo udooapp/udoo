@@ -134,7 +134,9 @@
 .main-list-service:hover {
   background-color: #FFFFFF;
 }
-
+.loader{
+  margin-bottom: 50px;
+}
 .main-list-service-picture {
   overflow: hidden;
   position: absolute;

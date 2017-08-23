@@ -38,6 +38,6 @@ export class CommentService extends HeaderService{
       search: param
     }))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 }

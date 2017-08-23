@@ -341,4 +341,10 @@ export class OfferComponent implements OnInit, IServiceForm {
         return 'Transferred invalidated'
     }
   }
+  public getPicture(picture: string){
+    if(picture == null || picture.length == 0){
+      return './assets/profile_picture.png'
+    }
+    return picture;
+  }
 }

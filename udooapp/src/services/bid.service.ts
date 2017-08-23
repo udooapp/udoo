@@ -26,7 +26,7 @@ export class BidService extends HeaderService {
     } else {
       return this.http.post(config.server + '/bid/save', pid, new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
         .map(HandlerService.extractText)
-        .catch(HandlerService.handleText);
+        .catch(HandlerService.handleError);
     }
   }
 
@@ -38,7 +38,7 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken())
     }))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public sendPaymentReminder(pid: number): Observable<any[]> {
@@ -48,7 +48,7 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
 
@@ -60,7 +60,7 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public cancelBid(bid: number): Observable<string> {
@@ -70,7 +70,7 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public sendPayment(bid: number): Observable<string> {
@@ -80,7 +80,7 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public confirmBid(bid: number): Observable<string> {
@@ -90,6 +90,6 @@ export class BidService extends HeaderService {
       headers: this.getTokenHeaders(this.tokenService.getToken()), search: param
     }))
       .map(HandlerService.extractText)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 }

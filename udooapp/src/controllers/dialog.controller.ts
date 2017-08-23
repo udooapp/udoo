@@ -30,6 +30,13 @@ export class DialogController {
     }
   }
 
+  public sendError(errorMessage: string) {
+    this.errorMessage$.emit(errorMessage);
+    if (errorMessage === 'Invalid token') {
+      this.invalidToken$.emit(true);
+    }
+  }
+
   public sendQuestion(message: string) {
     this.questionMessage$.emit(message);
   }

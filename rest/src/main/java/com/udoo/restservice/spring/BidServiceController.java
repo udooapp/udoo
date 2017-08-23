@@ -60,24 +60,28 @@ public class BidServiceController implements IBidServiceController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveBid(ServletRequest req, @RequestBody Bid bid) {
         long uid = Long.parseLong(req.getAttribute(USERID).toString());
-        bid.setUid(uid);
-        bid = bidRepository.save(bid);
-        if (bid != null) {
-            Notification notification = new Notification();
-            notification.setChecked(false);
-
-            if (bid.isType()) {
-                notification.setUid(offerRepository.findByOid((int) bid.getSid()).getUid());
-            } else {
-                notification.setUid(offerRepository.findByOid((int) bid.getSid()).getUid());
-            }
-            notification.setType(bid.isType() ? 1 : 2);
-            notification.setId((int) bid.getUid());
-            notificationRepository.save(notification);
-            return new ResponseEntity<>("Saved", HttpStatus.OK);
+        int ownerUid = -1;
+        if (bid.isType()) {
+            ownerUid = offerRepository.findByOid((int) bid.getSid()).getUid();
         } else {
-            return new ResponseEntity<>("Something wrong", HttpStatus.BAD_REQUEST);
+            ownerUid = requestRepository.findByRid((int) bid.getSid()).getUid();
         }
+        if(ownerUid != uid) {
+            bid.setUid(uid);
+            bid = bidRepository.save(bid);
+            if (bid != null) {
+                Notification notification = new Notification();
+                notification.setChecked(false);
+                notification.setUid(ownerUid);
+                notification.setType(bid.isType() ? 1 : 2);
+                notification.setId((int) bid.getUid());
+                notificationRepository.save(notification);
+                return new ResponseEntity<>("Saved", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Something wrong", HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+        }
+        return new ResponseEntity<>("You are the service owner!", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @Override

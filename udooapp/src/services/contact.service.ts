@@ -37,7 +37,7 @@ export class ContactService extends HeaderService {
     param.append('last', last.toString());
     return this.http.get(config.server + '/contact/contacts', new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken()), search: param}))
       .map(HandlerService.extractData)
-      .catch(HandlerService.handleError);
+      .catch(HandlerService.handleErrorText);
   }
 
   public removeContact(uid: number): Observable<string> {
