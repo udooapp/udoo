@@ -12,7 +12,7 @@ export const ROUTES = {
   REQUEST_LIST : '/requestlist',
   OFFER_LIST : '/offerlist',
   MAIN : '/',
-  CONTACT : '/contact',
+  CONTACTS : '/contact',
   DETAIL : '/detail/',
   REMINDER : '/reminder',
   VERIFICATION : '/verification',

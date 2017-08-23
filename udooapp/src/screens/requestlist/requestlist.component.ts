@@ -41,6 +41,9 @@ export class RequestListComponent extends ConversionMethods implements OnInit, I
           result => {
             this.message = result;
             this.data.splice(this.index, 1)
+            if(this.data.length == MainComponent.PAGE_SIZE - 1){
+              this.userScrollDown();
+            }
           },
           error => this.error = <any>error
         );

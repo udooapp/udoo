@@ -2,7 +2,7 @@
   <h3 class="input-label" i18n>Choose your service location</h3>
   <label class="error-message">{{error}}</label>
   <div class="button-container">
-    <input type="button" value="Choose" class="input-button button-dark" (click)="saveLocation()">
+    <input type="button" value="Choose" class="input-button button-dark" id="location-location-save-button" (click)="saveLocation()">
   </div>
   <div class="search-box-container" >
     <input class="search-box" id="search-input" placeholder="Choose your location" [value]="position.address">

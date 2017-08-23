@@ -92,7 +92,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     if (picture != null && picture.length > 0 && picture != 'null') {
       return picture;
     }
-    return '';
+    return './assets/profile_picture.png';
   }
 
   public pictureText(count: number): string {
@@ -155,23 +155,23 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   public getServiceModificationText(item: any) {
     switch (item.type) {
       case this.UPDATED_TITLE_OR_NAME:
-        return 'updated title ';
+        return ' title ';
       case this.UPDATED_PHONE_NUMBER:
-        return 'updated title ';
+        return ' title ';
       case this.UPDATED_EMAIL_ADDRESS:
-        return 'updated address ';
+        return ' address ';
       case this.UPDATED_DESCRIPTION:
-        return 'updated description ';
+        return ' description ';
       case this.UPDATED_EXPIRATION_DATE:
-        return 'updated expiration date ';
+        return ' expiration date ';
       case this.UPDATED_LOCATION:
-        return 'updated location ';
+        return ' location ';
       case this.UPDATED_CATEGORY:
-        return 'updated category ';
+        return ' category ';
       case this.UPDATED_AVAILABILITY:
-        return 'updated availability ';
+        return ' availability ';
       case this.UPDATED_JOB_DATE:
-        return 'updated job date ';
+        return ' job date ';
     }
   }
 
@@ -185,12 +185,12 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     }
   }
   public isContainData(element: any){
-    return element.before && element.before.length > 0 && element.after && element.after.length > 0
+    return ((element.type == 0 && element.before && element.before.length > 0) || (element.type > 0 && element.before && element.before.length > 0 && element.after && element.after.length > 0))
   }
   public isContainValidData(type: number, content: any[]){
     if(type > 0) {
       for (let item of content) {
-        if (item.before && item.before.length > 0 && item.after && item.after.length > 0) {
+        if ((item.type == 0 && item.before && item.before.length > 0) || (item.type > 0 && item.before && item.before.length > 0 && item.after && item.after.length > 0)) {
           return true;
         }
       }

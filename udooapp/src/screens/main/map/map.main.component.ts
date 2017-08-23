@@ -35,7 +35,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
 
   @Input()
   set service(data: any) {
-    if (data.requestsWindow) {
+    if (data !instanceof Boolean) {
       this.requestsWindow = data.requestsWindow;
       this.offersWindow = data.offersWindow;
       if (data.mapInit) {

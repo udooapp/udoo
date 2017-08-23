@@ -71,7 +71,7 @@ export class ConversationComponent implements OnInit {
 
   public getPictureUrl(url: string) {
     if (url == null || url.length == 0 || url === 'null') {
-      return '';
+      return './assets/profile_picture.png';
     }
     return url;
   }

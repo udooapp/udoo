@@ -33,7 +33,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
       if (value != null && value.user.picture) {
         this.userPicture = value.user.picture;
       } else {
-        this.userPicture = '';
+        this.userPicture = './assets/profile_picture.png';
       }
     });
     notifier.notify(this.PAGE_NAME);
@@ -51,6 +51,9 @@ export class ChatComponent implements OnInit, AfterViewChecked{
         this.partnerId = +params['id'];
         this.chatService.getMessagesData(this.partnerId).subscribe(value => {
           this.partnerPicture = value.picture;
+          if(!this.partnerPicture){
+            this.partnerPicture = './assets/profile_picture.png';
+          }
           if(value.messages) {
             this.data = value.messages;
           }

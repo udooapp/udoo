@@ -52,14 +52,17 @@ public class ContactServiceController implements IContactServiceController {
                     User currentUser = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
                     if (currentUser != null && currentUser.getUid() > 0) {
                         if (currentUser.getUid() != user.getUid()) {
-                            contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
-                            return new ResponseEntity<>("Success", HttpStatus.OK);
+                            if(contactRepository.getAllByUidAndCid(currentUser.getUid(), user.getUid()) == null) {
+                                contactRepository.save(new Contact(currentUser.getUid(), user.getUid()));
+                                return new ResponseEntity<>("Success", HttpStatus.OK);
+                            } else {
+                                return new ResponseEntity<>("Already is your contact", HttpStatus.OK);
+                            }
                         } else {
                             return new ResponseEntity<>("It's you are!", HttpStatus.OK);
                         }
                     }
                 }
-                return new ResponseEntity<>("Something wrong", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (IOException e) {
             System.out.println(e.toString());

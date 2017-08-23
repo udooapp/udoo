@@ -459,6 +459,7 @@ dialog {
 
 .service-dialog-user-data {
   padding: 10px;
+  width: calc(90% - 125px);
   display: flex;
   display: -webkit-flex;
   flex-direction: column;

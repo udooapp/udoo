@@ -115,6 +115,7 @@ public class RequestServiceController implements IRequestServiceController {
                         histElement.setAction(WallServiceController.NEW);
                         histElement.setBeforeState(requestNew.getCategory() + "");
                         histElement.setHid(hist.getHid());
+                        histElement.setAfterState("");
                         historyElementRepository.save(histElement);
                     }
                     for (RequestPictures pic : picturesSaved) {

@@ -68,6 +68,9 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
         if (data.services.length > 0) {
           this.scrolledDown = false;
           this.services = data.services;
+        } else {
+          this.services = [];
+          this.scrolledDown = false;
         }
       }
     });
@@ -91,7 +94,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     if (this.services.length >= 0 && index < this.services.length && this.services[index].picture.length > 0) {
       return this.services[index].picture;
     }
-    return '';
+    return './assets/profile_picture.png';
   }
 
   public ngAfterViewChecked(): void {

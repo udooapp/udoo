@@ -39,7 +39,10 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
         this.offerService.deleteUserOffer(this.id, -1).subscribe(
           result => {
             this.message = result;
-            this.data.splice(this.index, 1)
+            this.data.splice(this.index, 1);
+            if(this.data.length == MainComponent.PAGE_SIZE - 1){
+              this.userScrollDown();
+            }
           },
           error => this.error = <any>error
         );

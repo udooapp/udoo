@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="chat-user-message-box-container">
-    <textarea [(ngModel)]="message" class="chat-user-message-box" autofocus></textarea>
-    <button class="input-button button-dark" (click)="onClickSend()">Send</button>
+    <textarea [(ngModel)]="message" class="chat-user-message-box" id="chat-textarea" autofocus></textarea>
+    <button class="input-button button-dark" id="chat-send-button" (click)="onClickSend()">Send</button>
   </div>
 </div>

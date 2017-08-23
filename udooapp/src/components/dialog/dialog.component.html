@@ -3,7 +3,7 @@
     <div class="dialog-close-background" *ngIf="closable.length > 0" (click)="onClickClose()">
       <div class="dialog-close"></div>
     </div>
-    <div class="dialog-error-message">{{error ||message||question||closable}}</div>
+    <div class="dialog-error-message" [id]="message ? 'dialog-message' : 'other-message'">{{error ||message||question||closable}}</div>
     <div class="dialog-button-container">
       <div *ngIf="question.length > 0" class="dialog-error-button button-light double" (click)="onClickCancel()">No</div>
       <div class="dialog-error-button button-dark simple" (click)="onClickDialogButton()">{{question.length > 0 ? "Yes" :

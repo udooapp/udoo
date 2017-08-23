@@ -125,13 +125,14 @@ public class OfferServiceController implements IOfferServiceController {
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
-    private void deleteHistoryElements(int id){
+    private void deleteHistoryElements(int id) {
         List<History> histories = historyRepository.findAllByTidAndType(id, 1);
-        for(History hist : histories){
+        for (History hist : histories) {
             historyElementRepository.deleteByHid(hist.getHid());
             historyRepository.deleteByHid(hist.getHid());
         }
     }
+
     @Override
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserOffer(@PathVariable("id") int id) {
@@ -191,6 +192,7 @@ public class OfferServiceController implements IOfferServiceController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
     @Override
     @RequestMapping(value = "/data/dialog/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getOfferDialogData(@PathVariable("id") int id) {
@@ -268,7 +270,7 @@ public class OfferServiceController implements IOfferServiceController {
                     List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
 
                     if (offerSaved.getOid() != -1) {
-                        if(!this.saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getHid())){
+                        if (!this.saveChanges(offerNew, offerSaved, picturesNew, picturesSaved, hist.getHid())) {
                             historyRepository.deleteByHid(hist.getHid());
                         }
                     } else {
@@ -276,6 +278,7 @@ public class OfferServiceController implements IOfferServiceController {
                         histElement.setAction(WallServiceController.NEW);
                         histElement.setHid(hist.getHid());
                         histElement.setBeforeState(offerNew.getCategory() + "");
+                        histElement.setAfterState("");
                         historyElementRepository.save(histElement);
                     }
                     for (OfferPictures pic : picturesSaved) {
@@ -302,8 +305,8 @@ public class OfferServiceController implements IOfferServiceController {
                     List<PicturesOffer> picturesNew = new ArrayList<>(offerNew.getPicturesOffer());
 
                     if (offerCurrent != null && offerCurrent.getUid() > 0) {
-                        if(!saveChanges(offerNew, offerCurrent, picturesNew, picturesSaved, hist.getHid())){
-                          historyRepository.deleteByHid(hist.getHid());
+                        if (!saveChanges(offerNew, offerCurrent, picturesNew, picturesSaved, hist.getHid())) {
+                            historyRepository.deleteByHid(hist.getHid());
                         }
                     }
 
@@ -400,8 +403,8 @@ public class OfferServiceController implements IOfferServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_EXPIRATION_DATE);
             histElement.setHid(hid);
-            histElement.setBeforeState(offerSaved.getExpirydate().getTime() +"");
-            histElement.setAfterState(offerNew.getExpirydate().getTime() +"");
+            histElement.setBeforeState(offerSaved.getExpirydate().getTime() + "");
+            histElement.setAfterState(offerNew.getExpirydate().getTime() + "");
             historyElementRepository.save(histElement);
             update = true;
         }

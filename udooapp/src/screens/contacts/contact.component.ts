@@ -36,7 +36,10 @@ export class ContactsComponent implements OnInit {
         this.contactService.removeContact(this.id).subscribe(
           result => {
             this.message = result;
-            this.data.splice(this.index, 1)
+            this.data.splice(this.index, 1);
+            if(this.data.length == MainComponent.PAGE_SIZE - 1){
+              this.userScrollDown();
+            }
           },
           error => this.error = <any>error
         );

@@ -1,4 +1,4 @@
-<div class="menu-container-background" *ngIf="visibleMenu == 1" (click)="onClickPlaceHolder()"></div>
+<div class="menu-container-background"  [style.opacity]="visibleMenu == 1 ? 0.4 : 0" [style.visibility]="visibleMenu == 1 ? 'visible' : 'hidden'"  (click)="onClickPlaceHolder()"></div>
 <div *ngIf="!disableSwipe" id="swipe-area"
      [ngClass]="{'swipe-area-right' : visibleMenu == 1, 'swipe-area-left' : visibleMenu == 0 || visibleMenu == -1}"></div>
 <div class="menu-container"
@@ -33,7 +33,7 @@
     <div *ngIf="notifications.offer > 0" class="menu-button-notification-counter">{{notifications.offer}}</div>
     My service
     offer</a>
-  <a routerLink="/contact" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+  <a routerLink="/contact" id="contact-menu-button" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
     src="./assets/contacts.png" i18n>Contacts</a>
   <a routerLink="/chat" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img

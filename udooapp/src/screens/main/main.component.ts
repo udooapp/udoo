@@ -362,7 +362,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       result => {
         this.listData = {services: [], offerSize: 0, requestSize: 0, more: true};
         if (result.elementsRequest) {
-
           this.mapData.requestsWindow = result.requestLite;
           this.listData.services = result.elementsRequest;
           this.listData.requestSize = result.elementsRequest.length;
@@ -540,7 +539,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         oldTimestamp = performance.now();
 
       let step = function(newTimestamp) {
-        scrollCount += Math.PI / (500 / (newTimestamp - oldTimestamp));
+        scrollCount += Math.PI / (1000 / (newTimestamp - oldTimestamp));
         if (scrollCount >= Math.PI) e.scrollTop = 0;
         if (e.scrollTop === 0) return;
         e.scrollTop = Math.round(cosParameter + cosParameter * Math.cos(scrollCount));
@@ -734,7 +733,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   onBidClickSend() {
     this.bidService.savePid(this.bid).subscribe(
       data => {
-        this.dialog.sendMessage("Bid sent!");
+        this.dialog.sendMessage("Your offer was sent!");
       },
       error => {
         this.dialog.notifyError(error);

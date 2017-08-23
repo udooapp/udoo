@@ -154,7 +154,7 @@ export class BidComponent implements OnInit {
 
   public onClickBid(index: number) {
     if (index >= 0 && index < this.data.length) {
-      this.router.navigate([ROUTES.DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 0 : 1) + '/' + 1]);
+      this.router.navigate([ROUTES.DETAIL + (this.data[index].sid) + '/' + (this.data[index].type ? 1 : 0) + '/' + 1]);
     }
   }
 

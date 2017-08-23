@@ -1,10 +1,10 @@
 <div class="data-container">
   <div class="conversation-container">
-    <div class="conversation" *ngFor="let item of data" (click)="onClickConversation(item)">
+    <div class="conversation" *ngFor="let item of data; let i = index" (click)="onClickConversation(item)">
       <div class="conversation-picture"><img class="conversation-image" [src]="getPictureUrl(item.picture)"></div>
       <div class="conversation-content" [ngClass]="{'conversation-content-bold' : item.newMessage}">
         <div class="conversation-name">{{item.name}}</div>
-        <div class="conversation-last-message"> {{item.message}}</div>
+        <div class="conversation-last-message" [id]="'conversation-last-message' + i"> {{item.message}}</div>
         <div class="conversation-last-date"> {{item.date}}</div>
       </div>
     </div>

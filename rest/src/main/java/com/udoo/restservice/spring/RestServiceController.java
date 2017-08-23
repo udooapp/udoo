@@ -157,6 +157,7 @@ public class RestServiceController implements IRestServiceController {
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setAction(WallServiceController.NEW);
                         historyElement.setHid(usrHistory.getHid());
+                        historyElement.setAfterState("");
                         historyElementRepository.save(historyElement);
                         return new ResponseEntity<>("Registration complete", HttpStatus.OK);
                     } else {
