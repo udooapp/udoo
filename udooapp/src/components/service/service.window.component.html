@@ -55,12 +55,12 @@
       </div>
     </div>
     <div *ngIf="!loading" class="service-dialog-service-button-container" [style.margin-left.px]="movedCoordX"  [style.animation-name]="animation">
-      <div class="service-dialog-service-button">
+      <div class="service-dialog-service-button" id="service-dialog-bookmark-button" (click)="onClickBookmark()">
         <div>
           <img class="service-dialog-user-profile-action"
-               src="./assets/bookmark.png"><span class="service-dialog-user-icon">Bookmark</span></div>
+               [src]="!addedToBookmark ? './assets/bookmark.png' : './assets/bookmark_yellow.png'"><span class="service-dialog-user-icon">Bookmark</span></div>
       </div>
-      <div class="service-dialog-service-button" id="service-dialog-send-offer-button"(click)="onClickSendOffer()">
+      <div class="service-dialog-service-button" id="service-dialog-send-offer-button" (click)="onClickSendOffer()">
         <div><img class="service-dialog-user-profile-action"
                   src="./assets/offer.png"><span class="service-dialog-user-icon">Send Offer</span></div>
       </div>

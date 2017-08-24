@@ -42,6 +42,7 @@
         <url-pattern>/bid/*</url-pattern>
         <url-pattern>/wall/user</url-pattern>
         <url-pattern>/message/*</url-pattern>
+        <url-pattern>/bookmark/*</url-pattern>
     </filter-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

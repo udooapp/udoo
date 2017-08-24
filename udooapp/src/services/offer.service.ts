@@ -79,7 +79,10 @@ export class OfferService extends HeaderService {
       .catch(HandlerService.handleErrorText);
   }
   public getOfferDialogData(oid: number): Observable<any> {
-    return this.http.get(config.server + '/offer/data/dialog/' + oid)
+    let param = new URLSearchParams();
+    param.append('oid', oid.toString());
+    let login = this.tokenService.getToken().length > 0;
+    return this.http.get(config.server + '/offer'+ (login ? '/user' : '') + '/data/dialog', new RequestOptions({search: param, headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleErrorText);
   }

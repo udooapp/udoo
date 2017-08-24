@@ -11,6 +11,7 @@ public class RequestResponse {
     private Request request;
     private User user;
     private List<CommentResponse> comments;
+    private boolean bookmark = false;
 
     public Request getRequest() {
         return request;
@@ -28,6 +29,14 @@ public class RequestResponse {
         if(user!= null) {
             this.user = user.toUserLite();
         }
+    }
+
+    public boolean isBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(boolean bookmark) {
+        this.bookmark = bookmark;
     }
 
     public List<CommentResponse> getComments() {

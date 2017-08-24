@@ -68,11 +68,11 @@ export class UserController {
 
   public refreshUser() {
     if (this.tokenService.getToken()) {
-      if (this.lastUpdate == -1 || (new Date().getMilliseconds() - this.lastUpdate) / 1000 > 2) {
+      if (this.lastUpdate == -1 || (new Date().getTime() - this.lastUpdate) / 1000 > 2) {
         this.userService.getUserData().subscribe(
           data => {
             this.data = data;
-            this.lastUpdate = new Date().getMilliseconds();
+            this.lastUpdate = new Date().getTime();
             //   window.document =this.user.language;
             document['locale'] = data.user.language;
             getTranslationProviders().then(() => {

@@ -20,6 +20,7 @@ import {ActivationComponent} from "../screens/activation/activation.component";
 import {BidComponent} from "../screens/bids/bids.component";
 import {ConversationComponent} from "../screens/conversations/conversations.component";
 import {ChatComponent} from "../screens/chat/chat.component";
+import {BookmarkComponent} from "../screens/bookmarks/bookmark.component";
 
 const routes: Routes = [
   {path: 'registration', component: RegistrationComponent},
@@ -48,6 +49,7 @@ const routes: Routes = [
   {path: 'activation', component: ActivationComponent, canActivate: [AuthGuard]},
   {path: 'chat', component: ConversationComponent, canActivate: [AuthGuard]},
   {path: 'chat/:id', component: ChatComponent, canActivate: [AuthGuard]},
+  {path: 'bookmark', component: BookmarkComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ];
 

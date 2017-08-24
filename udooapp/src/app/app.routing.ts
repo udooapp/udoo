@@ -19,5 +19,6 @@ export const ROUTES = {
   CREATE : '/create',
   SETTINGS : '/settings',
   CONVERSATIONS : '/chat',
-  CHAT : '/chat/'
+  CHAT : '/chat/',
+  BOOKMARKS: '/bookmark'
 };

@@ -9,6 +9,7 @@ public class OfferResponse {
     private Offer offer;
     private User user;
     private List<CommentResponse> comments;
+    private boolean bookmark = false;
 
     public Offer getOffer() {
         return offer;
@@ -26,6 +27,14 @@ public class OfferResponse {
         if(user != null) {
             this.user = user.toUserLite();
         }
+    }
+
+    public boolean isBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(boolean bookmark) {
+        this.bookmark = bookmark;
     }
 
     public List<CommentResponse> getComments() {

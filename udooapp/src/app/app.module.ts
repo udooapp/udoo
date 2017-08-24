@@ -50,6 +50,7 @@ import {MenuController} from "../controllers/menu.controller";
 import {UserController} from "../controllers/user.controller";
 import {ConversationComponent} from "../screens/conversations/conversations.component";
 import {ChatComponent} from "../screens/chat/chat.component";
+import {BookmarkComponent} from "../screens/bookmarks/bookmark.component";
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import {ChatComponent} from "../screens/chat/chat.component";
     MainWallComponent,
     ToolbarSearchComponent,
     ConversationComponent,
-    ChatComponent
+    ChatComponent,
+    BookmarkComponent
   ],
   imports: [
     BrowserModule,

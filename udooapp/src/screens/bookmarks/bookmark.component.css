@@ -1,0 +1,160 @@
+@media (min-width: 961px) {
+  .bookmark-picture {
+    width: 152px;
+    height: 95px;
+  }
+
+  .bookmark-image {
+    width: auto;
+    height: 95px;
+  }
+
+  .data-container {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+  }
+
+  .bookmark-container {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  .bookmark-content-text {
+    font-size: 12pt;
+    margin-left: -5px;
+  }
+
+  .bookmark-content-text img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .bookmark-content-text span {
+    top: -7px;
+  }
+}
+
+@media (max-width: 960px) {
+  .bookmark-picture {
+    width: 128px;
+    height: 80px;
+  }
+
+  .bookmark-image {
+    width: auto;
+    height: 80px;
+  }
+
+  .bookmark-container {
+    width: 100%;
+  }
+  .bookmark-content-text {
+    font-size: 10pt;
+    margin-left: -5px;
+  }
+
+  .bookmark-content-text img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .bookmark-content-text span {
+    top: -5px;
+  }
+}
+
+@media (max-width: 641px) {
+  .bookmark-picture {
+    width: 104px;
+    height: 65px;
+  }
+
+  .bookmark-image {
+    width: auto;
+    height: 65px;
+  }
+
+  .bookmark-container {
+    width: 100%;
+  }
+  .bookmark-content-text {
+    font-size: 9pt;
+    margin-left: -3px;
+  }
+
+  .bookmark-content-text img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .bookmark-content-text span {
+    top: -5px;
+  }
+}
+
+.bookmark-container {
+  margin-bottom: 50px;
+}
+
+.data-container {
+  padding: 0;
+}
+
+.bookmark {
+  min-height: 100px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background-color: #F7F7F7;
+  border-top: 2px solid #FFFFFF;
+}
+
+.bookmark:hover {
+  background-color: #FCFCFC;
+}
+.bookmark-title {
+  color: #2E2F2F;
+  font-weight: lighter;
+}
+.bookmark-picture {
+  position: absolute;
+  height: 80px;
+  width: 80px;
+  margin: 10px 10px 10px 10px;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+}
+
+.bookmark-image {
+  margin: auto;
+  display: block;
+  background-color: #FAFAFA;
+  object-fit: cover;
+}
+
+.bookmark-content {
+  padding: 10px 10px 10px 10px;
+  color: dimgrey;
+  margin-right: 90px;
+  width: calc(100% - 110px);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bookmark-not-found {
+  margin-top: 100px;
+  color: #ACACAC;
+  width: 100%;
+  font-size: 16pt;
+  font-weight: 700;
+  text-align: center;
+}
+
+.bookmark-content-text {
+  color: #4A4A4A;
+}
+
+.bookmark-content-text span {
+  position: relative;
+}

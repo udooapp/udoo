@@ -9,6 +9,7 @@ import com.udoo.dal.entities.offer.Offer;
 import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.IBidRepository;
+import com.udoo.dal.repositories.IContactRepository;
 import com.udoo.dal.repositories.INotificationRepository;
 import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.dal.repositories.offer.IOfferRepository;

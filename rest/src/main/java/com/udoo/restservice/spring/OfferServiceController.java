@@ -66,6 +66,9 @@ public class OfferServiceController implements IOfferServiceController {
     @Resource
     private IHistoryElementRepository historyElementRepository;
 
+    @Resource
+    private IBookmarkRepository bookmarkRepository;
+
     @Autowired
     private IPaymentService paymentService;
 
@@ -112,6 +115,8 @@ public class OfferServiceController implements IOfferServiceController {
             if (offerRepository.findByOid(id).getUid() == uid) {
                 int success = offerRepository.deleteByOid(id);
                 offerPictureRepository.deleteAllByOid(id);
+                bookmarkRepository.deleteBySidAndType(delete, true);
+
                 this.deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Offer deleted", HttpStatus.OK);
@@ -194,13 +199,30 @@ public class OfferServiceController implements IOfferServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/data/dialog/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getOfferDialogData(@PathVariable("id") int id) {
+    @RequestMapping(value = "/data/dialog", method = RequestMethod.GET)
+    public ResponseEntity<?> getOfferDialogData(@RequestParam("id") int id) {
         Offer offer = offerRepository.findByOid(id);
         if (offer == null) {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
         } else {
             OfferResponse response = new OfferResponse();
+
+            offer.setBids(-1);
+            response.setOffer(offer);
+            response.setUser(userRepository.findByUid(offer.getUid()));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+    @Override
+    @RequestMapping(value = "/user/data/dialog", method = RequestMethod.GET)
+    public ResponseEntity<?> getOfferDialogData(ServletRequest servletRequest, @RequestParam("oid") int oid) {
+        int uid = Integer.parseInt(servletRequest.getAttribute(USERID).toString());
+        Offer offer = offerRepository.findByOid(oid);
+        if (offer == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            OfferResponse response = new OfferResponse();
+            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, oid, true) != null);
             offer.setBids(-1);
             response.setOffer(offer);
             response.setUser(userRepository.findByUid(offer.getUid()));

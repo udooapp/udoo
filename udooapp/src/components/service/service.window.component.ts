@@ -8,12 +8,13 @@ import {DialogController} from "../../controllers/dialog.controller";
 import {GalleryComponent} from "../gallery/gallery.component";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ContactService} from "../../services/contact.service";
+import {BookmarkService} from "../../services/bookmark.service";
 
 @Component({
   selector: 'service-dialog',
   templateUrl: './service.window.component.html',
   styleUrls: ['./service.window.component.css'],
-  providers: [ContactService]
+  providers: [ContactService, BookmarkService]
 })
 
 export class ServiceDialogComponent implements AfterViewChecked {
@@ -27,17 +28,21 @@ export class ServiceDialogComponent implements AfterViewChecked {
   movedCoordX = 0;
   maxHeight: number = 300;
   scrollTop: number = 0;
+
   private startCoordX = 0;
   private scrollDirection = 0;
   private coordStartY: number = 0;
   private coordY: number = 0;
   private slided: boolean = false;
-  animation: string = '';
-  imageClose: number = 0;
-  pictureOpen: number = -1;
-  added: boolean = false;
-  contactAdded: boolean = false;
-  showBid: boolean = false;
+
+  public animation: string = '';
+  public imageClose: number = 0;
+  public pictureOpen: number = -1;
+  public added: boolean = false;
+  public contactAdded: boolean = false;
+  public showBid: boolean = false;
+  public addedToBookmark: boolean = false;
+
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
   @Output() open: EventEmitter<any> = new EventEmitter();
@@ -116,7 +121,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
             let touch = e.touches[0];
             if (t.scrollDirection == 0 || t.scrollDirection == 1) {
 
-              el.scrollTop = el.scrollTop -(touch.pageY - t.coordStartY);
+              el.scrollTop = el.scrollTop - (touch.pageY - t.coordStartY);
               t.coordStartY = touch.pageY;
             }
             if (t.scrollDirection == 0 || t.scrollDirection == -1) {
@@ -138,7 +143,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   }
 
-  constructor(private controller: ServiceDialogController, private dialog: DialogController, private notifier: NotifierController, private contactService: ContactService) {
+  constructor(private bookmakrService: BookmarkService, private controller: ServiceDialogController, private dialog: DialogController, private notifier: NotifierController, private contactService: ContactService) {
     notifier.pageChanged$.subscribe(action => {
       if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
@@ -146,14 +151,14 @@ export class ServiceDialogComponent implements AfterViewChecked {
       }
     });
     let t = this;
-    this.maxHeight = document.getElementById('content-container').clientHeight - 95;;
+    this.maxHeight = document.getElementById('content-container').clientHeight - 95;
     window.addEventListener("orientationchange", function () {
       t.maxHeight = document.getElementById('content-container').clientHeight - 95;
       t.containerScroll();
     });
     window.addEventListener("resize", function () {
       t.containerScroll();
-      t.maxHeight = document.getElementById('content-container').clientHeight - 95;;
+      t.maxHeight = document.getElementById('content-container').clientHeight - 95;
     });
     controller.setData$.subscribe(value => {
       this.scrollTop = 0;
@@ -165,6 +170,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
         this.loading = false;
         this.service = value.service;
         this.user = value.user;
+        this.addedToBookmark = value.bookmark;
         this.movedCoordX = 0;
         this.image = this.getPictureUrl(this.user.picture);
         let star = this.user.stars;
@@ -201,7 +207,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   keypress(e: KeyboardEvent) {
-    if(!this.disableKeyboard) {
+    if (!this.disableKeyboard) {
       if (this.pictureOpen == -1) {
         switch (e.keyCode) {
           case 27:
@@ -279,9 +285,23 @@ export class ServiceDialogComponent implements AfterViewChecked {
       return '';
     }
   }
-  onClickSendOffer(){
+
+  onClickSendOffer() {
     this.sendOffer.emit(this.service);
   }
+
+  onClickBookmark() {
+    let type: boolean = !this.service.rid;
+    this.bookmakrService.save(type ? this.service.oid : this.service.rid, type).subscribe(
+      () => {
+        this.addedToBookmark = true;
+      },
+      error =>{
+        this.dialog.sendError(error);
+      }
+    );
+  }
+
   onClickOpen() {
     this.open.emit(this.service);
   }

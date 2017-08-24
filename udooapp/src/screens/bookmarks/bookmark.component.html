@@ -1,0 +1,15 @@
+<div class="data-container">
+  <div class="bookmark-container">
+    <div class="bookmark" *ngFor="let item of data; let i = index" (click)="onClickBookmark(item)">
+      <div class="bookmark-content">
+        <div class="bookmark-title">{{item.title}}</div>
+        <div class="bookmark-content-text"><img
+          src="./assets/location.png"><span>{{item.location}}</span></div>
+        <div class="bookmark-content-text"><img src="./assets/contact.png"><span>by {{item.name}}</span></div>
+      </div>
+      <div class="bookmark-picture"><img class="bookmark-image" [src]="getPictureUrl(item.picture)"></div>
+    </div>
+    <div *ngIf="loading" class="loader"></div>
+  </div>
+  <div *ngIf="data.length == 0 && !loading" class="bookmark-not-found">Not found bookmark</div>
+</div>

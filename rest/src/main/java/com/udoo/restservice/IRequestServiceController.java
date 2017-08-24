@@ -24,6 +24,8 @@ public interface IRequestServiceController {
 
     ResponseEntity<?> getRequestDialogData(int id);
 
+    ResponseEntity<?> getRequestDialogData(ServletRequest servletRequest, int id);
+
     ResponseEntity<?> createRequest(ServletRequest req, String src);
 
     ResponseEntity<?> uploadImage(ServletRequest req, PicturesRequest image);

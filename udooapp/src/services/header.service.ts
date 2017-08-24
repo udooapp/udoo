@@ -18,10 +18,12 @@ export class HeaderService {
   }
 
   public getTokenHeaders(token: string): Headers{
-    if (!this.headers.has(HandlerService.AUTHORIZATION)) {
-      this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + token);
-    } else {
-      this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + token);
+    if(token != null && token.length > 0) {
+      if (!this.headers.has(HandlerService.AUTHORIZATION)) {
+        this.headers.append(HandlerService.AUTHORIZATION, 'Bearer ' + token);
+      } else {
+        this.headers.set(HandlerService.AUTHORIZATION, 'Bearer ' + token);
+      }
     }
     return this.headers;
   }

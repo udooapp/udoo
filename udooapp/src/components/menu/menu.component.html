@@ -41,6 +41,10 @@
     src="./assets/chat.png" i18n>
     <div *ngIf="notifications.chat > 0" class="menu-button-notification-counter">{{notifications.chat}}</div>
     Chat</a>
+  <a routerLink="/bookmark" routerLinkActive="active" id="bookmarks-menu-button" class="menu-link" (click)="clickMenuButton()"><img
+    class="menu-link-image"
+    src="./assets/bookmark_menu.png" i18n>
+    Bookmarks</a>
   <div class="menu-placeholder">&nbsp;</div>
   <a routerLink="/settings" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"

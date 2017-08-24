@@ -4,6 +4,7 @@
     padding-left: 10%;
     padding-right: 10%;
   }
+
   .main-list-service-picture {
     width: 152px;
     height: 95px;
@@ -134,9 +135,11 @@
 .main-list-service:hover {
   background-color: #FFFFFF;
 }
-.loader{
+
+.loader {
   margin-bottom: 50px;
 }
+
 .main-list-service-picture {
   overflow: hidden;
   position: absolute;
@@ -164,16 +167,17 @@
 
 .main-list-service-content-text span {
   position: relative;
-
 }
-.main-list-service-container{
+
+.main-list-service-container {
   display: block;
   width: 100%;
   position: relative;
   z-index: 2;
   transition: margin-left 250ms;
 }
-.main-list-service-button-container{
+
+.main-list-service-button-container {
   z-index: 1;
   position: absolute;
   width: 85%;
@@ -186,7 +190,8 @@
   transition: margin-left 250ms;
   -webkit-flex-direction: row;
 }
-.main-list-service-button{
+
+.main-list-service-button {
   width: 33.3%;
   cursor: pointer;
   height: 100%;
@@ -195,15 +200,19 @@
   font-size: 14pt;
   padding-top: 45px;
 }
+
 .main-list-service-button:hover {
   opacity: 0.9;
 }
-.main-list-service-button-detail{
+
+.main-list-service-button-detail {
   background-color: #378281;
 }
-.main-list-service-button-bookmarks{
+
+.main-list-service-button-bookmarks {
   background-color: #5F9B9A;
 }
-.main-list-service-button-send-offer{
+
+.main-list-service-button-send-offer {
   background-color: #87B4B3;
 }

@@ -66,6 +66,9 @@ public class RequestServiceController implements IRequestServiceController {
     @Resource
     private IHistoryElementRepository historyElementRepository;
 
+    @Resource
+    private IBookmarkRepository bookmarkRepository;
+
     @Autowired
     private IPaymentService paymentService;
 
@@ -207,6 +210,7 @@ public class RequestServiceController implements IRequestServiceController {
             if (requestRepository.findByRid(id).getUid() == uid) {
                 int success = requestRepository.deleteByRid(id);
                 requestPictureRepository.deleteAllByRid(id);
+                bookmarkRepository.deleteBySidAndType(delete, false);
                 deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Request deleted", HttpStatus.OK);
@@ -311,8 +315,23 @@ public class RequestServiceController implements IRequestServiceController {
     }
 
     @Override
-    @RequestMapping(value = "/data/dialog/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getRequestDialogData(@PathVariable("id") int rid) {
+    @RequestMapping(value = "/user/data/dialog", method = RequestMethod.GET)
+    public ResponseEntity<?> getRequestDialogData(ServletRequest servletRequest, @RequestParam("rid") int rid) {
+        Request request = requestRepository.findByRid(rid);
+        int uid = Integer.parseInt(servletRequest.getAttribute(USERID).toString());
+        if (request == null) {
+            return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
+        } else {
+            RequestResponse response = new RequestResponse();
+            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, rid, true) != null);
+            response.setRequest(request);
+            response.setUser(userRepository.findByUid(request.getUid()));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+    @Override
+    @RequestMapping(value = "/data/dialog", method = RequestMethod.GET)
+    public ResponseEntity<?> getRequestDialogData(@RequestParam("id") int rid) {
         Request request = requestRepository.findByRid(rid);
         if (request == null) {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);

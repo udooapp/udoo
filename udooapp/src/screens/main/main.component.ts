@@ -579,8 +579,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.offerService.getOfferDialogData(id).subscribe(
         value => {
           this.blur = true;
-          let data: any = {service: value.offer, user: value.user};
-          this.serviceDialogController.setData$.emit(data);
+          this.serviceDialogController.setData$.emit({service: value.offer, user: value.user, bookmark: value.bookmark});
         },
         error => {
           this.blur = false;
@@ -592,8 +591,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.requestService.getRequestDialogData(id).subscribe(
         value => {
           this.blur = true;
-          let data: any = {service: value.request, user: value.user};
-          this.serviceDialogController.setData$.emit(data);
+          this.serviceDialogController.setData$.emit({service: value.request, user: value.user, bookmark: value.bookmark});
         },
         error => {
           this.blur = false;
