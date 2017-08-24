@@ -64,6 +64,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   //ServiceDialog
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
   public blur: boolean = false;
+  public disableServiceDialogKeyboardScrolling: boolean = false;
 
   //BidDialog
   public showBid: boolean = false;
@@ -716,9 +717,11 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   //Bid Dialog
   onBidClickClose() {
     this.showBid = false;
+    this.disableServiceDialogKeyboardScrolling = false;
   }
 
   onClickServiceDialogSendBid(event) {
+    this.disableServiceDialogKeyboardScrolling = true;
     this.onBidClickSendOffer(event.oid, event.oid ? event.oid : event.rid)
   }
 
@@ -732,6 +735,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   onBidClickSend() {
+    this.disableServiceDialogKeyboardScrolling = false;
     this.bidService.savePid(this.bid).subscribe(
       data => {
         this.dialog.sendMessage("Your offer was sent!");

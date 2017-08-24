@@ -1,6 +1,6 @@
 <div class="main-list-container">
   <div class="main-list-service" *ngFor="let item of services; let i = index" routerLinkActive="active" id="main-list-service">
-    <div [id]="'main-list-service-button-container' + i" class="main-list-service-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" (click)="onClickOpen(item)">
+    <div [id]="'main-list-service-container' + i" class="main-list-service-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" (click)="onClickOpen(item)">
       <div class="main-list-service-content">
         <div class="main-list-service-title">{{item.title}}</div>
         <div class="main-list-service-content-text"><img

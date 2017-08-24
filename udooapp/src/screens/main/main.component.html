@@ -15,7 +15,7 @@
      [style.height.px]="pageContainerHeight + pagerMargin">
   <service-dialog style="margin-top: -10px" (next)="onClickNext($event)" (previous)="onClickPrevious($event)"
                   (open)="onClickOpen($event)" (close)="onClickClose()" (scroll)="notifyScrollTo($event)"
-                  (sendOffer)="onClickServiceDialogSendBid($event)"></service-dialog>
+                  (sendOffer)="onClickServiceDialogSendBid($event)" [disableKeyboard]="disableServiceDialogKeyboardScrolling"></service-dialog>
   <bid-dialog [show]="showBid" (close)="onBidClickClose()" (send)="onBidClickSend()"
               (description)="onBidKeyDescription($event)"
               (price)="onBidKeyPrice($event)"></bid-dialog>

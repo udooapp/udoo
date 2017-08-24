@@ -33,10 +33,10 @@
     <div *ngIf="notifications.offer > 0" class="menu-button-notification-counter">{{notifications.offer}}</div>
     My service
     offer</a>
-  <a routerLink="/contact" id="contact-menu-button" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+  <a routerLink="/contact" id="contacts-menu-button" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
     src="./assets/contacts.png" i18n>Contacts</a>
-  <a routerLink="/chat" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
+  <a routerLink="/chat" routerLinkActive="active" id="chat-menu-button" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
     src="./assets/chat.png" i18n>
     <div *ngIf="notifications.chat > 0" class="menu-button-notification-counter">{{notifications.chat}}</div>
@@ -45,7 +45,7 @@
   <a routerLink="/settings" routerLinkActive="active" class="menu-link" (click)="clickMenuButton()"><img
     class="menu-link-image"
     src="./assets/settings.png" i18n>Settings</a>
-  <a routerLink="/profile" routerLinkActive="active" class="menu-link"
+  <a routerLink="/profile" routerLinkActive="active" class="menu-link" id="profile-menu-button"
      (click)="clickMenuButton()"><img class="menu-link-image" src="./assets/profile.png" i18n>Profile</a>
   <a class="menu-link" id="logout-button" *ngIf="login" (click)="logOut()"><img class="menu-link-image"
                                                                                 src="./assets/logout.png" i18n>Log

@@ -1,12 +1,12 @@
-<div class="pid-dialog-background" *ngIf="visible">
-  <div class="pid-dialog-window " id="dialog-window">
-    <div class="pid-dialog-close-background" (click)="onClickClose()">
-      <div class="pid-dialog-close"></div>
+<div class="bid-dialog-background" *ngIf="visible">
+  <div class="bid-dialog-window " id="dialog-window">
+    <div class="bid-dialog-close-background" (click)="onClickClose()">
+      <div class="bid-dialog-close"></div>
     </div>
-    <div class="pid-content-container input-container">
-      <text-input [placeholder]="'Price'" [validators]="validators"  [checkValidate]="checkPrice" (onValidationStateChange)="validPrice = $event" (onKey)="onKeyPrice($event)"></text-input>
-      <text-area [placeholder]="'Description'" (onKey)="onKeyDescription($event)"></text-area>
-      <button class="input-button button-dark" (click)="onClickSend()">Send bid</button>
+    <div class="bid-content-container input-container">
+      <text-input [placeholder]="'Price'" [id]="'bid-dialog-price'" [validators]="validators"  [checkValidate]="checkPrice" (onValidationStateChange)="validPrice = $event" (onKey)="onKeyPrice($event)"></text-input>
+      <text-area [placeholder]="'Description'" [id]="'bid-dialog-description'" (onKey)="onKeyDescription($event)"></text-area>
+      <button class="input-button button-dark" id="bid-dialog-send-offer" (click)="onClickSend()">Send bid</button>
     </div>
   </div>
 </div>

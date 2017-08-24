@@ -21,7 +21,8 @@ export class UserController {
   public userDataPipe$: EventEmitter<any>;
   public logoutDataPipe$: EventEmitter<any>;
   public checkLogin: boolean = false;
-
+  private lastUpdate: number = -1;
+  private data: any;
 
   constructor(private dialog: DialogController, private notifier: NotifierController, private userService: UserService, private tokenService: TokenService, private router: Router) {
     this.userDataPipe$ = new EventEmitter();
@@ -67,40 +68,47 @@ export class UserController {
 
   public refreshUser() {
     if (this.tokenService.getToken()) {
-      this.userService.getUserData().subscribe(
-        data => {
-          //   window.document =this.user.language;
-          document['locale'] = data.user.language;
-          getTranslationProviders().then(() => {
-          }).catch(() => {
+      if (this.lastUpdate == -1 || (new Date().getMilliseconds() - this.lastUpdate) / 1000 > 10) {
+        this.userService.getUserData().subscribe(
+          data => {
+            this.data = data;
+            this.lastUpdate = new Date().getMilliseconds();
+            //   window.document =this.user.language;
+            document['locale'] = data.user.language;
+            getTranslationProviders().then(() => {
+            }).catch(() => {
+            });
+
+            let activated = data.user.active >= 15;
+            if (!activated && this.checkLogin) {
+              this.router.navigate([ROUTES.CREATE]);
+            }
+
+            this.userDataPipe$.emit(data);
+            if (data.systemNotification) {
+              this.notifier.systemNotification$.emit(data.systemNotification);
+            } else {
+              this.notifier.systemNotification$.emit([]);
+            }
+            this.userNotification$.emit(data.notifications.length);
+            if (data.notifications != null && data.notifications.length > 0) {
+
+            }
+            if (data.reminders != null && data.reminders.length > 0) {
+              this.notifier.sendReminderNotification(this.router, ROUTES.REQUEST_LIST, data.reminders);
+            }
+          },
+          error => {
+            this.dialog.notifyError(error);
+            this.userDataPipe$.emit(null);
           });
-
-          let activated = data.user.active >= 15;
-          if (!activated && this.checkLogin) {
-            this.router.navigate([ROUTES.CREATE]);
-          }
-
-          this.userDataPipe$.emit(data);
-          if (data.systemNotification) {
-            this.notifier.systemNotification$.emit(data.systemNotification);
-          } else {
-            this.notifier.systemNotification$.emit([]);
-          }
-          this.userNotification$.emit(data.notifications.length);
-          if (data.notifications != null && data.notifications.length > 0) {
-
-          }
-          if (data.reminders != null && data.reminders.length > 0) {
-            this.notifier.sendReminderNotification(this.router, ROUTES.REQUEST_LIST, data.reminders);
-          }
-        },
-        error => {
-          this.dialog.notifyError(error);
-          this.userDataPipe$.emit(null);
-        });
+      } else {
+        this.userDataPipe$.emit(this.data);
+      }
     } else {
       this.userDataPipe$.emit(null);
     }
+
   }
 
   public sendUserModification(verify: number) {

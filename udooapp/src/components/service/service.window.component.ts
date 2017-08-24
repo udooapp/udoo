@@ -44,6 +44,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() scroll: EventEmitter<number> = new EventEmitter();
   @Output() sendOffer: EventEmitter<any> = new EventEmitter();
+  @Input() disableKeyboard: boolean = false;
 
   ngAfterViewChecked(): void {
 
@@ -200,29 +201,31 @@ export class ServiceDialogComponent implements AfterViewChecked {
 
   @HostListener('document:keydown', ['$event'])
   keypress(e: KeyboardEvent) {
-    if (this.pictureOpen == -1) {
-      switch (e.keyCode) {
-        case 27:
-          this.onClickClose();
-          break;
-        case 37:
-          this.onClickPrevious();
-          break;
-        case 39:
-          this.onClickNext();
-          break;
-        case 40:
-          let el = document.getElementById('service-container');
-          if (el != null) {
-            el.scrollTop = el.scrollTop + 10;
-          }
-          break;
-        case 38:
-          let ele = document.getElementById('service-container');
-          if (ele != null) {
-            ele.scrollTop = ele.scrollTop - 10;
-          }
-          break;
+    if(!this.disableKeyboard) {
+      if (this.pictureOpen == -1) {
+        switch (e.keyCode) {
+          case 27:
+            this.onClickClose();
+            break;
+          case 37:
+            this.onClickPrevious();
+            break;
+          case 39:
+            this.onClickNext();
+            break;
+          case 40:
+            let el = document.getElementById('service-container');
+            if (el != null) {
+              el.scrollTop = el.scrollTop + 10;
+            }
+            break;
+          case 38:
+            let ele = document.getElementById('service-container');
+            if (ele != null) {
+              ele.scrollTop = ele.scrollTop - 10;
+            }
+            break;
+        }
       }
     }
   }
