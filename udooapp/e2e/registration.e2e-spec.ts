@@ -11,6 +11,7 @@ describe('RegistrationPage', function() {
   it('User Registration with valid data', () => {
     let date: Date = new Date();
     page.navigateTo(ROUTES.REGISTRATION);
+    page.waitingForAngular();
     page.setChecked('personal');
     page.setText('test' + date.toDateString(), 'name-input');
     page.setText('test' + date.getFullYear()+ "_" + date.getMonth() + "_" + date.getDay() + "_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getMilliseconds() + '@udoo.com', 'email-input');

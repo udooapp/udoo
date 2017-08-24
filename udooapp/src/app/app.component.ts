@@ -116,8 +116,10 @@ export class AppComponent {
 
   public onScroll() {
     let e: HTMLElement = document.getElementById("content-container");
-    if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
-      this.notifier.userScrolledToTheBottom$.emit(true);
+    if(e != null) {
+      if (e.scrollHeight - e.scrollTop <= document.body.offsetHeight) {
+        this.notifier.userScrolledToTheBottom$.emit(true);
+      }
     }
   }
 

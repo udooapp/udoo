@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, OnInit} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
 
@@ -19,12 +19,13 @@ declare let FB: any;
 declare let gapi: any;
 
 declare let window;
+
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   providers: [UserService]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewChecked {
   message: String;
   user: any = {email: '', password: ''};
   error: string;
@@ -34,6 +35,8 @@ export class LoginComponent implements OnInit {
   valid = [false, false];
   private accessToken: any;
   googleapi: any;
+  private socialButtonsInit: boolean = false;
+
   constructor(private http: Http, private router: Router, private userService: UserService, private dialog: DialogController, private tokenService: TokenService) {
   }
 
@@ -42,9 +45,20 @@ export class LoginComponent implements OnInit {
     if (this.tokenService.getToken()) {
       this.router.navigate([ROUTES.MAIN]);
     }
-    this.facebookInit(document, 'script', 'facebook-jssdk');
-    this.initGoogle();
 
+  }
+
+  ngAfterViewChecked(): void {
+    if(!this.socialButtonsInit) {
+      let el = document.getElementById('gLoginBtn');
+      if (el) {
+        this.socialButtonsInit = true;
+        this.facebookInit(document, 'script', 'facebook-jssdk');
+        this.initGoogle(el);
+      } else {
+        console.log('Element not found');
+      }
+    }
   }
 
   private checkValidation(): boolean {
@@ -87,8 +101,8 @@ export class LoginComponent implements OnInit {
     }, {scope: 'public_profile, email'});
   }
 
-  initGoogle() {
-    if (config.client.endsWith('4200')) {
+  initGoogle(el: any) {
+    if (!config.mobile) {
       let t = this;
       gapi.load('auth2', function () {
         // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -99,7 +113,7 @@ export class LoginComponent implements OnInit {
           scope: 'email profile'
         });
 
-        gapi.auth2.getAuthInstance().attachClickHandler(document.getElementById('gLoginBtn'), {},
+        gapi.auth2.getAuthInstance().attachClickHandler(el, {},
           function (googleUser) {
             let profile = googleUser.getBasicProfile();
             t.userService.loginFacebook({
@@ -124,6 +138,7 @@ export class LoginComponent implements OnInit {
           }, function (error) {
             alert(JSON.stringify(error, undefined, 2));
           });
+
       });
     } else {
       let t = this;
@@ -132,9 +147,9 @@ export class LoginComponent implements OnInit {
           let deferred = {resolve: undefined, reject: undefined};
           //Build the OAuth consent page URL
           let authUrl = 'https://accounts.google.com/o/oauth2/auth?' + 'client_id=' + options.client_id +
-              '&redirect_uri=' +  options.redirect_uri +
-              '&response_type=code' +
-              '&scope=' +  options.scope;
+            '&redirect_uri=' + options.redirect_uri +
+            '&response_type=code' +
+            '&scope=' + options.scope;
 
           //Open the OAuth consent page in the InAppBrowser
           let authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
@@ -168,13 +183,13 @@ export class LoginComponent implements OnInit {
                 grant_type: 'authorization_code'
               }).subscribe(data => {
                   deferred.resolve = data;
-                  },
-              error => {
+                },
+                error => {
                   deferred.reject = error.toJson();
                 });
             } else if (error) {
               //The user denied access to the app
-              deferred.reject ={
+              deferred.reject = {
                 error: error[1]
               };
             }
@@ -187,7 +202,7 @@ export class LoginComponent implements OnInit {
   };
 
   callGoogle() {
-    if (!config.client.endsWith('4200')) {
+    if (config.mobile) {
       //  alert('starting');
       this.googleapi.authorize({
         client_id: '372921211759-urde0s3b4l5f0hhq5oi6k6j0cf6vao9k',

@@ -68,7 +68,7 @@ export class UserController {
 
   public refreshUser() {
     if (this.tokenService.getToken()) {
-      if (this.lastUpdate == -1 || (new Date().getMilliseconds() - this.lastUpdate) / 1000 > 10) {
+      if (this.lastUpdate == -1 || (new Date().getMilliseconds() - this.lastUpdate) / 1000 > 2) {
         this.userService.getUserData().subscribe(
           data => {
             this.data = data;

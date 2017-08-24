@@ -4,27 +4,35 @@ import {ROUTES} from "../src/app/app.routing";
 describe('ContactAndChatPage', function () {
   let page: InputPage;
   let message = 'Ut condimentum egestas tellus in elementum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin feugiat sed risus eget accumsan.';
+
   beforeEach(() => {
     page = new InputPage();
   });
 
   it('Login and add the fist service owner to the contacts', () => {
     page.navigateTo(ROUTES.LOGIN);
-    page.setText('udooTest@udoo.com', 'email-input');
-    page.setText('password', 'password-input');
-    page.setButtonClick('login-button');
-    page.isPresent('tab-pager').then(() => {
-      page.setButtonClick('main-list-service-button-container0');
+    page.waitingForAngular();
+    page.isPresent('email-input').then(() => {
+      page.setText('udooTest@udoo.com', 'email-input');
+      page.setText('password', 'password-input');
+      page.setButtonClick('login-button');
       page.waitingForAngular();
-      page.setButtonClick('service-dialog-add-to-contact');
-      page.getElementText('dialog-message').then(() => {
-        expect(true);
-      }).catch(error => expect(false));
+      page.isPresent('tab-pager').then(() => {
+        page.setButtonClick('main-list-service-container0');
+        page.waitingForAngular();
+        page.setButtonClick('service-dialog-add-to-contact');
+        page.getElementText('dialog-message').then(() => {
+          expect(true);
+        }).catch(error => expect(false));
+      });
     });
   });
 
-  it('Send a message to the first contact and after Log Out', () => {
-    page.navigateTo(ROUTES.CONTACTS);
+  it('Send a message to the first contact', () => {
+    page.navigateTo(ROUTES.MAIN);
+    page.setButtonClick('menu-button');
+    page.setButtonClick('contacts-menu-button');
+    page.waitingForAngular();
     page.waitingForAngular();
     page.setButtonClick('contact0');
     page.waitingForAngular();
@@ -36,7 +44,10 @@ describe('ContactAndChatPage', function () {
   });
 
   it('Check the sent message and after Log Out', () => {
-    page.navigateTo(ROUTES.CONVERSATIONS);
+    page.navigateTo(ROUTES.MAIN);
+    page.setButtonClick('menu-button');
+    page.setButtonClick('chat-menu-button');
+    page.waitingForAngular();
     page.waitingForAngular();
     page.getElementText('conversation-last-message0').then(message => {
       if (message.substr(0, 47) === message.substr(0, 47)) {

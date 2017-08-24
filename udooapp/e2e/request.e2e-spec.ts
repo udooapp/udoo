@@ -8,8 +8,10 @@ describe('RequestPage', function () {
     page = new InputPage();
   });
 
+
   it('Login and create Request with valid data', () => {
     page.navigateTo(ROUTES.LOGIN);
+    page.waitingForAngular();
     page.setText('udooTest@udoo.com', 'email-input');
     page.setText('password', 'password-input');
     page.setButtonClick('login-button');
@@ -30,7 +32,7 @@ describe('RequestPage', function () {
     }).catch(error => expect(false));
   });
 
-  it('Login and create Request with empty input', () => {
+  it('Create Request with empty input', () => {
     let date: Date = new Date();
     page.navigateTo(ROUTES.REQUEST);
     page.waitingForAngular();

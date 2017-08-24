@@ -1,15 +1,18 @@
 import {InputPage} from './input.po';
 import {ROUTES} from "../src/app/app.routing";
 
-fdescribe('OfferPage', function () {
+describe('OfferPage', function () {
   let page: InputPage;
 
   beforeEach(() => {
     page = new InputPage();
   });
 
-  fit('Login and create Offer with valid data', () => {
-    page.navigateTo(ROUTES.LOGIN);
+  it('Login and create Offer with valid data', () => {
+    page.navigateTo(ROUTES.MAIN);
+    page.setButtonClick('menu-button');
+    page.setButtonClick('login-menu-button');
+    page.waitingForAngular();
     page.setText('udooTest@udoo.com', 'email-input');
     page.setText('password', 'password-input');
     page.setButtonClick('login-button');
@@ -37,7 +40,7 @@ fdescribe('OfferPage', function () {
     }).catch(error => expect(false));
   });
 
-  it('Login and create Offer with empty input', () => {
+  it('Create Offer with empty input', () => {
     let date: Date = new Date();
     page.navigateTo(ROUTES.OFFER);
     page.waitingForAngular();
