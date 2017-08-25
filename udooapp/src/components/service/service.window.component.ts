@@ -294,7 +294,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
     let type: boolean = !this.service.rid;
     this.bookmakrService.save(type ? this.service.oid : this.service.rid, type).subscribe(
       () => {
-        this.addedToBookmark = true;
+        this.addedToBookmark = !this.addedToBookmark;
       },
       error =>{
         this.dialog.sendError(error);

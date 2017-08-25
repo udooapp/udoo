@@ -293,3 +293,10 @@ textarea:focus, input:focus, select:focus {
     box-shadow: 0 2.5em 0 0;
   }
 }
+.element-blur {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}

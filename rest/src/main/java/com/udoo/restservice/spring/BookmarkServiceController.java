@@ -52,15 +52,17 @@ public class BookmarkServiceController implements IBookmarkServiceController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseEntity<?> save(ServletRequest request, @RequestBody BookmarkRequest bookmarkRequest) {
         int uid = Integer.parseInt(request.getAttribute(USERID).toString());
-        if (bookmarkRepository.findByUidAndSidAndType(uid, bookmarkRequest.getSid(), bookmarkRequest.isType()) == null) {
-            Bookmark bookmark = new Bookmark();
+        Bookmark bookmark = bookmarkRepository.findByUidAndSidAndType(uid, bookmarkRequest.getSid(), bookmarkRequest.isType());
+        if (bookmark == null) {
+            bookmark = new Bookmark();
             bookmark.setUid(uid);
             bookmark.setSid(bookmarkRequest.getSid());
             bookmark.setType(bookmarkRequest.isType());
             bookmarkRepository.save(bookmark);
             return new ResponseEntity<>("Bookmark added", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("You can add just only once this service to the bookmark", HttpStatus.UNPROCESSABLE_ENTITY);
+            this.bookmarkRepository.deleteByUidAndSidAndType(bookmark.getUid(), bookmark.getSid(), bookmark.isType());
+            return new ResponseEntity<>("Removed", HttpStatus.OK);
         }
     }
 

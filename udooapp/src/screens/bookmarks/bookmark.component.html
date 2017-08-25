@@ -1,5 +1,9 @@
 <div class="data-container">
-  <div class="bookmark-container">
+  <service-dialog (next)="onClickNext($event)" (previous)="onClickPrevious($event)" (open)="onClickOpen($event)"
+                  (close)="onClickClose()" (sendOffer)="onClickServiceDialogSendBid($event)"></service-dialog>
+  <bid-dialog [show]="showBid" (close)="onBidClickClose()" (send)="onBidClickSend()"
+              (description)="onBidKeyDescription($event)"></bid-dialog>
+  <div class="bookmark-container" [ngClass]="{'element-blur': blur}">
     <div class="bookmark" *ngFor="let item of data; let i = index" (click)="onClickBookmark(item)">
       <div class="bookmark-content">
         <div class="bookmark-title">{{item.title}}</div>

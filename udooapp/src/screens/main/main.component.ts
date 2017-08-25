@@ -729,7 +729,6 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     this.bid.sid = id;
     this.bid.price = '';
     this.bid.description = '';
-
   }
 
   onBidClickSend() {
