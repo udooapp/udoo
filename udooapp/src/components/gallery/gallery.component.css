@@ -15,14 +15,14 @@
 
 .image-item {
   overflow: hidden;
-  width: 140px;
-  height: 140px;
+  width: 66px;
+  height: 66px;
   position: relative;
-  margin: 5px 10px;
+  margin: 5px 7px;
   display: block;
   align-items: center;
   background-color: #EAEAEA;
-  border-radius: 26px;
+  border-radius: 10px;
 }
 
 .new-image:hover {
@@ -50,13 +50,14 @@
 
 .image-trash {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
   right: 0;
-  margin: 10px;
-  padding: 5px;
+  margin: 3px;
+  padding: 2px;
   z-index: 3;
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .image-trash:hover {
@@ -235,7 +236,6 @@
 
 /*SMALL PICTURES*/
 
-
 .gallery-dialog-images {
   width: 100%;
   height: auto;
@@ -255,14 +255,15 @@
   position: relative;
   margin: 5px 6px;
 }
-@media (max-width: 641px) and (orientation: portrait) {
 
+@media (max-width: 641px) and (orientation: portrait) {
 
   .gallery-dialog-picture-container {
     max-width: 85px;
     height: 48px;
   }
 }
+
 @media (max-width: 641px) and (orientation: landscape) {
   .gallery-dialog-picture-container {
     max-width: 95px;
@@ -276,12 +277,14 @@
     height: 56px;
   }
 }
+
 @media (max-width: 960px)  and (orientation: portrait) {
   .gallery-dialog-picture-container {
     max-width: 100px;
     height: 56px;
   }
 }
+
 @media (min-width: 961px) {
   .gallery-dialog-picture-container {
     max-width: 120px;
@@ -295,7 +298,8 @@
   height: 100%;
   object-fit: cover;
 }
-.gallery-image-hover{
+
+.gallery-image-hover {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -303,6 +307,66 @@
   top: 0;
   left: 0;
 }
+
 .gallery-image-hover:hover {
   background-color: rgba(79, 79, 79, 0.4);
+}
+
+.gallery-button-container {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  justify-content: space-around;
+}
+
+.gallery-input-file img {
+  width: 30px;
+  height: 30px;
+}
+.gallery-input-file span{
+  top: -9px;
+  font-weight: 700;
+  position: relative;
+}
+.gallery-button-left-radius{
+  border-radius: 10px 0 0 10px;
+}
+.gallery-button-right-radius{
+  border-radius: 0 10px 10px 0;
+}
+.gallery-input-file {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #EEF0EC;
+  width: 49%;
+  position: relative;
+  font-size: 10pt;
+  cursor: pointer;
+  height: 40px;
+  padding: 2px;
+  color: #378281;
+  text-align: center;
+  overflow: hidden;
+  float: right;
+  border: none;
+}
+
+.gallery-input-file:hover {
+  opacity: 0.8;
+}
+
+.gallery-input-file input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  height: 25px;
+  width: 100%;
+  opacity: 0.0;
+  filter: alpha(opacity=0);
+  -o-transform: translate(250px, -50px) scale(1);
+  -moz-transform: translate(-300px, 0) scale(4);
+  cursor: pointer;
 }

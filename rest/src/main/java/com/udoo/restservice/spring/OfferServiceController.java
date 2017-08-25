@@ -389,6 +389,7 @@ public class OfferServiceController implements IOfferServiceController {
                 HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
                 histElement.setBeforeState(pic.getPoid() + "");
+                histElement.setAfterState("");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
                 update = true;

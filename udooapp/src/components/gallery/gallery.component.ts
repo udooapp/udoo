@@ -12,23 +12,24 @@ export class GalleryComponent implements AfterViewChecked {
 
   public static IMAGE: string = "GALLERY_IMAGE";
 
-  message: string = '';
-  animation: string = '';
-  animationLeft: string = '';
-  animationRight: string = '';
-  private animations: string[] = ['back', 'left', 'right', ''];
-  leftMargin: number = -1000;
-  rightMargin: number = 1000;
-  gallery: boolean = false;
+  public message: string = '';
+  public animation: string = '';
+  public animationLeft: string = '';
+  public animationRight: string = '';
+  public leftMargin: number = -1000;
+  public rightMargin: number = 1000;
+  public gallery: boolean = false;
+  public index: number = 0;
+  public margin: number = 0;
+  public imageWidth: number = 66;
   private direction: number = 0;
-  index: number = 0;
-  margin: number = 0;
   private width: number = 0;
   private slided: boolean = false;
   private found: boolean = false;
   private startCoordX: number = 0;
   private clicked: boolean = false;
   private imageElements: any[] = [];
+  private animations: string[] = ['back', 'left', 'right', ''];
   @Input() smallPictures: boolean = false;
   @Input() images: any[] = [];
   @Input() editable: boolean = false;
@@ -44,7 +45,12 @@ export class GalleryComponent implements AfterViewChecked {
     t.rightMargin = window.innerWidth;
     t.width = window.innerWidth;
     window.addEventListener("orientationchange", function () {
-
+      let imageContainer = document.getElementById("scrollable-gallery-container");
+      if (imageContainer != null) {
+        t.imageWidth = imageContainer.clientWidth / 4 - 15;
+      } else {
+        t.imageWidth = 66;
+      }
       let el = document.getElementById("gallery");
       if (el != null) {
         t.width = el.clientWidth / 2;
@@ -53,6 +59,12 @@ export class GalleryComponent implements AfterViewChecked {
     window.addEventListener("resize", function () {
       t.leftMargin = 1000;
       t.rightMargin = 1000;
+      let imageContainer = document.getElementById("scrollable-gallery-container");
+      if (imageContainer != null) {
+        t.imageWidth = imageContainer.clientWidth / 4 - 15;
+      } else {
+        t.imageWidth = 66;
+      }
       let el = document.getElementById("gallery");
       if (el != null) {
         t.width = el.clientWidth / 2;
@@ -63,10 +75,19 @@ export class GalleryComponent implements AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
+    if(this.imageWidth == 66) {
+      let imageContainer = document.getElementById("scrollable-gallery-container");
+      if (imageContainer != null) {
+        this.imageWidth = imageContainer.clientWidth / 4 - 15;
+      } else {
+        this.imageWidth = 66;
+      }
+    }
     let el = document.getElementById("gallery-image-center");
     if (el != null && !this.found) {
       this.found = true;
       let t = this;
+
       el.addEventListener('animationend', function (e) {
         e.preventDefault();
         t.startCoordX = 0;
