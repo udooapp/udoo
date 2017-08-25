@@ -8,8 +8,6 @@ import com.udoo.dal.entities.comment.CommentResponse;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.offer.*;
-import com.udoo.dal.entities.request.PicturesRequest;
-import com.udoo.dal.entities.request.RequestPictures;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.history.IHistoryElementRepository;
@@ -258,7 +256,7 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadImage(ServletRequest req, PicturesOffer image) {
+    public ResponseEntity<?> uploadImage(ServletRequest req,@RequestBody PicturesOffer image) {
         if (image != null) {
             OfferPictures pic = offerPictureRepository.save(new OfferPictures(image.getSrc(), image.getPoid()));
             if (pic != null) {

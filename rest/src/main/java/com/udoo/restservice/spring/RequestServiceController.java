@@ -74,7 +74,7 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Override
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadImage(ServletRequest req, PicturesRequest image) {
+    public ResponseEntity<?> uploadImage(ServletRequest req, @RequestBody PicturesRequest image) {
         if (image != null) {
             RequestPictures pic = requestPictureRepository.save(new RequestPictures(image.getSrc(), image.getPrid()));
             if (pic != null) {
