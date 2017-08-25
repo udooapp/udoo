@@ -40,6 +40,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   imageLoading: number[] = [];
   imageError: number[] = [];
   private reload: boolean = false;
+  private backgroundBlur: boolean = false;
 
   constructor(private userController: UserController, private offerService: OfferService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
@@ -58,6 +59,7 @@ export class OfferComponent implements OnInit, IServiceForm {
         }
       } else if (action == GalleryComponent.IMAGE) {
         ++this.modification[2];
+        this.backgroundBlur = false;
       }
     });
     dialog.errorResponse$.subscribe(() => {
@@ -136,6 +138,10 @@ export class OfferComponent implements OnInit, IServiceForm {
           );
         }
       });
+  }
+
+  isBlur(): boolean {
+    return this.backgroundBlur;
   }
 
   public onClickSave() {
@@ -276,6 +282,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   }
 
   onClickImage(index: number) {
+    this.backgroundBlur = true;
     this.notifier.notify(GalleryComponent.IMAGE);
   }
 

@@ -466,47 +466,47 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     return this.scriptLoadingPromise;
   }
 
-  loadMoreElementMap() {
+  loadMoreElementList() {
     if (this.page == 0) {
+      this.mapService.getMoreAvailableServices(this.category, this.searchString, this.listData.offerSize, this.listData.requestSize).subscribe(
+        result => {
+          let more = 0;
+          if (this.listData.requestSize > -1 && result.requests) {
+            let rlength: number = result.requests.length;
+            for (let i = 0; i < rlength; ++i) {
+              this.listData.services.push(result.requests[i]);
+            }
+            if (rlength >= MainComponent.PAGE_SIZE) {
+              this.listData.requestSize += rlength;
+            } else {
+              this.listData.requestSize = -1;
+              ++more;
+            }
+          } else {
+            ++more;
+          }
+          if (this.listData.offerSize > -1 && result.offers) {
+            let olength: number = result.offers.length;
+            for (let i = 0; i < olength; ++i) {
+              this.listData.services.push(result.offers[i]);
+            }
+            if (olength >= MainComponent.PAGE_SIZE) {
+              this.listData.offerSize += olength;
+            } else {
+              this.listData.offerSize = -1;
+              ++more;
+            }
+          } else {
+            ++more;
+          }
+          this.listData.more = more < 2;
+          this.listController.setData$.emit(this.listData);
+        },
+        error => {
+          this.dialog.notifyError(error);
+        }
+      );
     }
-    this.mapService.getMoreAvailableServices(this.category, this.searchString, this.listData.offerSize, this.listData.requestSize).subscribe(
-      result => {
-        let more = 0;
-        if (this.listData.requestSize > -1 && result.requests) {
-          let rlength: number = result.requests.length;
-          for (let i = 0; i < rlength; ++i) {
-            this.listData.services.push(result.requests[i]);
-          }
-          if (rlength >= MainComponent.PAGE_SIZE) {
-            this.listData.requestSize += rlength;
-          } else {
-            this.listData.requestSize = -1;
-            ++more;
-          }
-        } else {
-          ++more;
-        }
-        if (this.listData.offerSize > -1 && result.offers) {
-          let olength: number = result.offers.length;
-          for (let i = 0; i < olength; ++i) {
-            this.listData.services.push(result.offers[i]);
-          }
-          if (olength >= MainComponent.PAGE_SIZE) {
-            this.listData.offerSize += olength;
-          } else {
-            this.listData.offerSize = -1;
-            ++more;
-          }
-        } else {
-          ++more;
-        }
-        this.listData.more = more < 2;
-        this.listController.setData$.emit(this.listData);
-      },
-      error => {
-        this.dialog.notifyError(error);
-      }
-    );
   }
 
   getData(page: number): any {
@@ -540,7 +540,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         scrollCount = 0,
         oldTimestamp = performance.now();
 
-      let step = function(newTimestamp) {
+      let step = function (newTimestamp) {
         scrollCount += Math.PI / (1000 / (newTimestamp - oldTimestamp));
         if (scrollCount >= Math.PI) e.scrollTop = 0;
         if (e.scrollTop === 0) return;
@@ -579,7 +579,11 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.offerService.getOfferDialogData(id).subscribe(
         value => {
           this.blur = true;
-          this.serviceDialogController.setData$.emit({service: value.offer, user: value.user, bookmark: value.bookmark});
+          this.serviceDialogController.setData$.emit({
+            service: value.offer,
+            user: value.user,
+            bookmark: value.bookmark
+          });
         },
         error => {
           this.blur = false;
@@ -591,7 +595,11 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.requestService.getRequestDialogData(id).subscribe(
         value => {
           this.blur = true;
-          this.serviceDialogController.setData$.emit({service: value.request, user: value.user, bookmark: value.bookmark});
+          this.serviceDialogController.setData$.emit({
+            service: value.request,
+            user: value.user,
+            bookmark: value.bookmark
+          });
         },
         error => {
           this.blur = false;

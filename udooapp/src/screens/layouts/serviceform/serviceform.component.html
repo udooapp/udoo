@@ -1,84 +1,93 @@
 <location *ngIf="load" (onSaved)="locationSelected($event)"></location>
 <div class="input-container">
-  <h1 i18n>{{getTitle()}}</h1>
+  <h1 [ngClass]="{'element-blur': isBlur()}" i18n>{{getTitle()}}</h1>
   <form #userForm="ngForm" novalidate>
-    <span class="input-label" i18n>Title</span><br>
-    <text-input [id]="'title-input'" [type]="'text'" [placeholder]="'Title'" [value]="data.title"
-                (onKey)="data.title=$event" [validators]="[emptyValidator]"
-                (onValidationStateChange)="fieldValidate(0, $event)" [checkValidate]="refresh"></text-input>
-    <span class="input-label" i18n>Category</span><br>
-    <select-input [id]="'category-select'" [options]="category" [selected]="data.category"
-                  (onChange)="onSelectChange($event)"
-                  (onValidationStateChange)="fieldValidate(1, $event)" [checkValidate]="refresh"></select-input>
-    <span class="input-label" i18n>Description</span><br>
-    <text-area [id]="'description-area'" [row]="4" [validators]="[emptyValidator]"
-               (onValidationStateChange)="fieldValidate(2, $event)" [column]="50"
-               [placeholder]="'Description'" (onKey)="data.description=$event" [value]="data.description"
-               [checkValidate]="refresh"></text-area>
-    <span class="input-label" i18n>Service picture</span><br>
+    <div [ngClass]="{'element-blur': isBlur()}">
+      <span class="input-label" i18n>Title</span><br>
+      <text-input [id]="'title-input'" [type]="'text'" [placeholder]="'Title'" [value]="data.title"
+                  (onKey)="data.title=$event" [validators]="[emptyValidator]"
+                  (onValidationStateChange)="fieldValidate(0, $event)" [checkValidate]="refresh"></text-input>
+      <span class="input-label" i18n>Category</span><br>
+      <select-input [id]="'category-select'" [options]="category" [selected]="data.category"
+                    (onChange)="onSelectChange($event)"
+                    (onValidationStateChange)="fieldValidate(1, $event)" [checkValidate]="refresh"></select-input>
+      <span class="input-label" i18n>Description</span><br>
+      <text-area [id]="'description-area'" [row]="4" [validators]="[emptyValidator]"
+                 (onValidationStateChange)="fieldValidate(2, $event)" [column]="50"
+                 [placeholder]="'Description'" (onKey)="data.description=$event" [value]="data.description"
+                 [checkValidate]="refresh"></text-area>
+      <span class="input-label" i18n>Service picture</span><br>
+    </div>
     <gallery
       [images]="getPictures()"
       [editable]="true" (onClickImage)="onClickImage($event)" (onClickNewImage)="onClickNewImage($event)"
       (onClickRemove)="onClickRemove($event)"
       [close]="modification[2]"
       [loading]="imageLoading" [error]="imageError"></gallery>
-
-    <span class="input-label" i18n>Location</span><br>
-    <text-input [id]="'location-input'" [type]="'text'" [placeholder]="'Choose service location'"
-                [value]="location"
-                (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]"
-                (onValidationStateChange)="fieldValidate(3, $event)" [checkValidate]="refresh"></text-input>
-    <div *ngIf="showElements()" class="checkbox-container">
-      <span class="input-label checkbox-label" i18n>Use current location: </span>
-      <checkbox (change)="data.realTime = $event" [value]="data.realTime"></checkbox>
-    </div>
-    <br>
-    <span class="input-label" i18n>{{showElements() ? 'Availability' : 'Job date'}}</span>
-    <text-input *ngIf="showElements()" [id]="'availability-input'" [type]="'text'"
-                [placeholder]="'Availability'" [value]="data.availability" (onKey)="data.availability=$event"
-                [validators]="[emptyValidator]" (onValidationStateChange)="fieldValidate(4, $event)"
-                [checkValidate]="refresh"></text-input>
-    <div *ngIf="!showElements()">
-      <text-input [id]="'date-input'" [type]="'date'"
-                  [placeholder]="'Date'" [value]="data.jobdate" (onKey)="data.jobdate=$event"
-                  [validators]="[emptyValidator, dateValidator]" (onValidationStateChange)="fieldValidate(4, $event)"
+    <div [ngClass]="{'element-blur': isBlur()}">
+      <span class="input-label" i18n>Location</span><br>
+      <text-input [id]="'location-input'" [type]="'text'" [placeholder]="'Choose service location'"
+                  [value]="location"
+                  (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]"
+                  (onValidationStateChange)="fieldValidate(3, $event)" [checkValidate]="refresh"></text-input>
+      <div *ngIf="showElements()" class="checkbox-container">
+        <span class="input-label checkbox-label" i18n>Use current location: </span>
+        <checkbox (change)="data.realTime = $event" [value]="data.realTime"></checkbox>
+      </div>
+      <br>
+      <span class="input-label" i18n>{{showElements() ? 'Availability' : 'Job date'}}</span>
+      <text-input *ngIf="showElements()" [id]="'availability-input'" [type]="'text'"
+                  [placeholder]="'Availability'" [value]="data.availability" (onKey)="data.availability=$event"
+                  [validators]="[emptyValidator]" (onValidationStateChange)="fieldValidate(4, $event)"
                   [checkValidate]="refresh"></text-input>
-      <text-input [id]="'time-input'" [type]="'time'" [validators]="[emptyValidator, timeValidator]"
-                  (onValidationStateChange)="fieldValidate(5, $event)" [checkValidate]="refresh"></text-input>
-      <text-input [id]="'number-input'" [type]="'number'" [validators]="[emptyValidator, numberValidator]"
-                  (onValidationStateChange)="fieldValidate(6, $event)"
-                  [placeholder]="'Period'" [checkValidate]="refresh"></text-input>
-    </div>
-    <span class="input-label" i18n>Expiry date</span><br>
-    <text-input [id]="'expirydate-input'" [type]="'date'" [value]="getDate()"
-                (onKey)="data.expirydate=$event" [validators]="[emptyValidator, dateValidator]"
-                (onValidationStateChange)="fieldValidate(!showElements() ? 7 : 5, $event)"
-                [checkValidate]="refresh"></text-input>
+      <div *ngIf="!showElements()">
+        <text-input [id]="'date-input'" [type]="'date'"
+                    [placeholder]="'Date'" [value]="data.jobdate" (onKey)="data.jobdate=$event"
+                    [validators]="[emptyValidator, dateValidator]" (onValidationStateChange)="fieldValidate(4, $event)"
+                    [checkValidate]="refresh"></text-input>
+        <text-input [id]="'time-input'" [type]="'time'" [validators]="[emptyValidator, timeValidator]"
+                    (onValidationStateChange)="fieldValidate(5, $event)" [checkValidate]="refresh"></text-input>
+        <text-input [id]="'number-input'" [type]="'number'" [validators]="[emptyValidator, numberValidator]"
+                    (onValidationStateChange)="fieldValidate(6, $event)"
+                    [placeholder]="'Period'" [checkValidate]="refresh"></text-input>
+      </div>
+      <span class="input-label" i18n>Expiry date</span><br>
+      <text-input [id]="'expirydate-input'" [type]="'date'" [value]="getDate()"
+                  (onKey)="data.expirydate=$event" [validators]="[emptyValidator, dateValidator]"
+                  (onValidationStateChange)="fieldValidate(!showElements() ? 7 : 5, $event)"
+                  [checkValidate]="refresh"></text-input>
 
-    <input id="save-button" type="button" [value]="(isUpdate() ? 'Update' : 'Save')" class="input-button button-dark"
-           (click)="onClickSave()"/>
-    <input *ngIf="isUpdate()" type="button" value="Delete" class="input-button button-dark"
-           (click)="onClickDeleteService()"/>
+      <input id="save-button" type="button" [value]="(isUpdate() ? 'Update' : 'Save')" class="input-button button-dark"
+             (click)="onClickSave()"/>
+      <input *ngIf="isUpdate()" type="button" value="Delete" class="input-button button-dark"
+             (click)="onClickDeleteService()"/>
+    </div>
   </form>
-  <div id="ok-message" class="ok-message response-message">{{message}}</div>
-  <div id="error-message" class="error-message response-message">{{error}}</div>
-  <div class="bid-panel" *ngIf="type && bids.length > 0">
-    <h2>User bids</h2>
-    <div *ngFor="let item of bids" class="bid-container">
-      <img [src]="getPicture(item.picture)"/>
-      <div class="bid-content">
-        <div class="bid-name">{{item.name}}</div>
-        <div>Price: {{item.price}} &#8364;</div>
-        <div>{{item.description}}</div>
-        <div *ngIf="item.accepted > 0"><b>Payment state: </b> <span [style.color]="item.paymentState == -1 ? 'red' : ''">{{getPaymentState(item.paymentState)}}</span></div>
-        <b *ngIf="item.accepted == 1" [style.color]="'#4A9594'" >Accepted</b>
-        <b *ngIf="item.accepted == 0" [style.color]="'red'">Declined</b>
-        <div class="bid-button-container" *ngIf="item.accepted == -1">
-          <button class="bid-input-button  input-button button-light" (click)="onClickBid(item, false)">Decline</button>
-          <button class="bid-input-button  input-button button-dark" (click)="onClickBid(item, true)">Accept</button>
-        </div>
-        <div class="bid-button-container" *ngIf="item.accepted > 0 && item.paymentState != 1">
-          <button class="bid-input-button  input-button button-dark" (click)="onClickPaymentReminder(item)">Payment reminder</button>
+  <div [ngClass]="{'element-blur': isBlur()}">
+    <div id="ok-message" class="ok-message response-message">{{message}}</div>
+    <div id="error-message" class="error-message response-message">{{error}}</div>
+    <div class="bid-panel" *ngIf="type && bids.length > 0">
+      <h2>User bids</h2>
+      <div *ngFor="let item of bids" class="bid-container">
+        <img [src]="getPicture(item.picture)"/>
+        <div class="bid-content">
+          <div class="bid-name">{{item.name}}</div>
+          <div>Price: {{item.price}} &#8364;</div>
+          <div>{{item.description}}</div>
+          <div *ngIf="item.accepted > 0"><b>Payment state: </b> <span
+            [style.color]="item.paymentState == -1 ? 'red' : ''">{{getPaymentState(item.paymentState)}}</span></div>
+          <b *ngIf="item.accepted == 1" [style.color]="'#4A9594'">Accepted</b>
+          <b *ngIf="item.accepted == 0" [style.color]="'red'">Declined</b>
+          <div class="bid-button-container" *ngIf="item.accepted == -1">
+            <button class="bid-input-button  input-button button-light" (click)="onClickBid(item, false)">Decline
+            </button>
+            <button class="bid-input-button  input-button button-dark" (click)="onClickBid(item, true)">Accept</button>
+          </div>
+          <div class="bid-button-container" *ngIf="item.accepted > 0 && item.paymentState != 1">
+            <button class="bid-input-button  input-button button-dark" (click)="onClickPaymentReminder(item)">Payment
+              reminder
+            </button>
+          </div>
         </div>
       </div>
     </div>

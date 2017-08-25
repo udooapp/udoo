@@ -379,6 +379,7 @@ public class RequestServiceController implements IRequestServiceController {
                 HistoryElement histElement = new HistoryElement();
                 histElement.setAction(WallServiceController.UPDATED_PICTURE);
                 histElement.setBeforeState(pic.getPrid() + "");
+                histElement.setAfterState("");
                 histElement.setHid(hid);
                 historyElementRepository.save(histElement);
             }

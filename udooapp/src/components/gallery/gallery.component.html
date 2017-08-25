@@ -1,4 +1,4 @@
-<div *ngIf="!smallPictures" id="scrollable-gallery-container" class="scrollable-gallery-container">
+<div *ngIf="!smallPictures" id="scrollable-gallery-container" class="scrollable-gallery-container" [ngClass]="{'element-blur': gallery}">
   <div class="image-item" [style.width.px]="imageWidth" [style.height.px]="imageWidth"
        *ngFor="let img of images; let i = index">
     <div [ngClass]="{'gallery-image-loader' : isLoading(i), 'gallery-image-error' : isError(i)}"></div>
@@ -19,7 +19,7 @@
     </button>
   </div>
 </div>
-<div *ngIf="smallPictures" class="gallery-dialog-images">
+<div *ngIf="smallPictures" class="gallery-dialog-images" [ngClass]="{'element-blur': gallery}">
   <div class="gallery-dialog-picture-container"
        *ngFor="let img of images; let i = index">
     <img class="gallery-dialog-picture" [src]="getPictureUrl(img.src, i)" (click)="onClickPicture(i)">

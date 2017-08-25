@@ -56,7 +56,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
         this.scrolledDown = true;
-        this.searchListener.loadMoreElementMap();
+        this.searchListener.loadMoreElementList();
       }
     });
     listController.setData$.subscribe(data => {

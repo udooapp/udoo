@@ -1,26 +1,29 @@
 <div class="service-dialog-background" id="service-dialog-container" *ngIf="visible">
-  <div class="service-dialog-direction service-dialog-direction-left" (click)="onClickPrevious()">
-    <div class="service-dialog-direction-container">
-      <div class="service-dialog-previous"></div>
+  <div [ngClass]="{'element-blur': backgroundBlur}">
+    <div class="service-dialog-direction service-dialog-direction-left" (click)="onClickPrevious()">
+      <div class="service-dialog-direction-container">
+        <div class="service-dialog-previous"></div>
+      </div>
     </div>
-  </div>
-  <div class="service-dialog-direction service-dialog-direction-right" (click)="onClickNext()">
-    <div class="service-dialog-direction-container">
-      <div class="service-dialog-next"></div>
+    <div class="service-dialog-direction service-dialog-direction-right" (click)="onClickNext()">
+      <div class="service-dialog-direction-container">
+        <div class="service-dialog-next"></div>
+      </div>
     </div>
   </div>
   <div class="service-dialog-window" id="dialog-window">
 
     <div class="container">
       <div class="loader">Loading...</div>
-      <div id="service-container" (scroll)="containerScroll()" [style.height.px]="maxHeight - 50 + scrollTop" [style.margin-left.px]="movedCoordX"
+      <div id="service-container" (scroll)="containerScroll()" [style.height.px]="maxHeight - 50 + scrollTop"
+           [style.margin-left.px]="movedCoordX"
            [style.animation-name]="animation">
-        <div class="service-dialog-close-background" id="service-dialog-close-button" (click)="onClickClose()">
+        <div class="service-dialog-close-background" [ngClass]="{'element-blur': backgroundBlur}" id="service-dialog-close-button" (click)="onClickClose()">
           <div class="service-dialog-close"></div>
         </div>
         <div class="loader" *ngIf="loading">Loading...</div>
         <div class="service-dialog-content" *ngIf="!loading">
-          <div class="service-dialog-user-container">
+          <div class="service-dialog-user-container" [ngClass]="{'element-blur': backgroundBlur}">
             <div class="service-dialog-user-profile-picture">
               <img class="service-dialog-user-picture" [src]="image">
             </div>
@@ -33,32 +36,39 @@
               <div class="service-dialog-user-action">
                 <img class="service-dialog-user-profile-action" src="./assets/call.png">
                 <img class="service-dialog-user-profile-action" src="./assets/message2.png">
-                <img id="service-dialog-add-to-contact" class="service-dialog-user-profile-action" src="./assets/add-to-contacts.png" (click)="onClickAddToContact()">
+                <img id="service-dialog-add-to-contact" class="service-dialog-user-profile-action"
+                     src="./assets/add-to-contacts.png" (click)="onClickAddToContact()">
               </div>
             </div>
           </div>
           <div class="service-dialog-service-data">
-            <div class="service-dialog-title">{{service.title}}</div>
-            <div class="service-dialog-location"><img
-              class="service-dialog-user-profile-action service-dialog-user-profile-location"
-              src="./assets/location.png"> <span class="service-dialog-user-icon-text">{{getLocation()}}</span>
+            <div [ngClass]="{'element-blur': backgroundBlur}">
+              <div class="service-dialog-title">{{service.title}}</div>
+              <div class="service-dialog-location"><img
+                class="service-dialog-user-profile-action service-dialog-user-profile-location"
+                src="./assets/location.png"> <span class="service-dialog-user-icon-text">{{getLocation()}}</span>
+              </div>
             </div>
-            <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
+            <gallery class="detail-gallery" [editable]="false" [images]="getPictures()"
+                     (onClickImage)="imageOpen($event)"
                      [close]="isClose()" [smallPictures]="true"></gallery>
-
-            <div class="service-dialog-description">{{service.description}}<span id="service-dialog-more-button"
-                                                                                 class="service-dialog-more"
-                                                                                 (click)="onClickOpen()"> More...</span>
+            <div [ngClass]="{'element-blur': backgroundBlur}">
+              <div class="service-dialog-description">{{service.description}}<span id="service-dialog-more-button"
+                                                                                   class="service-dialog-more"
+                                                                                   (click)="onClickOpen()"> More...</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="!loading" class="service-dialog-service-button-container" [style.margin-left.px]="movedCoordX"  [style.animation-name]="animation">
+    <div [ngClass]="{'element-blur': backgroundBlur}" *ngIf="!loading" class="service-dialog-service-button-container"
+         [style.margin-left.px]="movedCoordX" [style.animation-name]="animation">
       <div class="service-dialog-service-button" id="service-dialog-bookmark-button" (click)="onClickBookmark()">
         <div>
           <img class="service-dialog-user-profile-action"
-               [src]="!addedToBookmark ? './assets/bookmark.png' : './assets/bookmark_yellow.png'"><span class="service-dialog-user-icon">Bookmark</span></div>
+               [src]="!addedToBookmark ? './assets/bookmark.png' : './assets/bookmark_yellow.png'"><span
+          class="service-dialog-user-icon">Bookmark</span></div>
       </div>
       <div class="service-dialog-service-button" id="service-dialog-send-offer-button" (click)="onClickSendOffer()">
         <div><img class="service-dialog-user-profile-action"

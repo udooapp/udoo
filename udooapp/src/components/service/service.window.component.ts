@@ -42,6 +42,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   public contactAdded: boolean = false;
   public showBid: boolean = false;
   public addedToBookmark: boolean = false;
+  public backgroundBlur: boolean = false;
 
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() previous: EventEmitter<any> = new EventEmitter();
@@ -147,6 +148,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
     notifier.pageChanged$.subscribe(action => {
       if (action == GalleryComponent.IMAGE) {
         ++this.imageClose;
+        this.backgroundBlur = false;
         this.pictureOpen = -1;
       }
     });
@@ -263,6 +265,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   }
 
   imageOpen(event) {
+    this.backgroundBlur = true;
     this.pictureOpen = event;
     this.notifier.notify(GalleryComponent.IMAGE)
   }

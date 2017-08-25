@@ -33,7 +33,7 @@
                [style.margin-left.px]="pageMargin + 3 * width" [style.animation-name]="pageAnim2"
                [searchListener]="searchListener"></main-wall>
   </div>
-  <div class="main-scroll-up-button" [style.opacity]="scrollUpVisibility ? 1 : 0"
+  <div class="main-scroll-up-button" [ngClass]="{'element-blur': blur}" [style.opacity]="scrollUpVisibility ? 1 : 0"
        [style.width.px]="scrollUpVisibility ? 40 : 0" (click)="onClickScrollUp()">
     <div class="main-scroll-up-arrow"></div>
   </div>

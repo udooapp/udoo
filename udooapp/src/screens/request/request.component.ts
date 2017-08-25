@@ -40,7 +40,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   numberValidator: IValidator = new NumberValidator();
   valid: boolean[] = [false, false, false, false, false, false, false];
   private reload: boolean = false;
-
+  private backgroundBlur: boolean = false;
   //Gallery
 
   modification: number[] = [-1, 0, -1];
@@ -65,6 +65,7 @@ export class RequestComponent implements OnInit, IServiceForm {
         }
       } else if (action == GalleryComponent.IMAGE) {
         ++this.modification[2];
+        this.backgroundBlur = false;
       }
     });
     dialog.errorResponse$.subscribe(() => {
@@ -108,6 +109,10 @@ export class RequestComponent implements OnInit, IServiceForm {
         //this.notifier.notify(RequestComponent.NAME);
       }
     });
+  }
+
+  isBlur(): boolean {
+    return this.backgroundBlur;
   }
 
   ngOnInit() {
@@ -282,6 +287,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   }
 
   onClickImage(index: number) {
+    this.backgroundBlur = true;
     this.notifier.notify(GalleryComponent.IMAGE);
   }
 
@@ -347,8 +353,9 @@ export class RequestComponent implements OnInit, IServiceForm {
         return 'Transferred invalidated'
     }
   }
-  public getPicture(picture: string){
-    if(picture == null || picture.length == 0){
+
+  public getPicture(picture: string) {
+    if (picture == null || picture.length == 0) {
       return './assets/profile_picture.png'
     }
     return picture;

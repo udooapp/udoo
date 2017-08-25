@@ -1,6 +1,6 @@
 export interface MainSearchListener{
   onClickService(id: number, type: boolean, location: string);
-  loadMoreElementMap();
+  loadMoreElementList();
   onBidClickSendOffer(type: boolean, id: number);
   getData(page: number)
 }
