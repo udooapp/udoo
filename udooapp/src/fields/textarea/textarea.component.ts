@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import formatErrorMsg = jasmine.formatErrorMsg;
 import {IValidator} from "../../validator/validator.interface";
 
 

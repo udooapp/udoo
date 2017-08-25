@@ -78,7 +78,7 @@ export class ConversationComponent implements OnInit {
   public onClickConversation(item: any){
     if(item != null){
       if(item.newMessage){
-        this.userController.refreshUser();
+        this.userController.forceRefreshUser();
       }
       this.router.navigate([ROUTES.CHAT + item.uid]);
     }

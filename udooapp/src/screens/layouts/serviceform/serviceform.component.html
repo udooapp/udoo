@@ -30,10 +30,7 @@
                 (onValidationStateChange)="fieldValidate(3, $event)" [checkValidate]="refresh"></text-input>
     <div *ngIf="showElements()" class="checkbox-container">
       <span class="input-label checkbox-label" i18n>Use current location: </span>
-      <div class="checkbox-background">
-        <input type="checkbox" id="checkbox" title="" [(ngModel)]="data.realTime" required name="current-location">
-        <label for="checkbox"></label>
-      </div>
+      <checkbox (change)="data.realTime = $event" [value]="data.realTime"></checkbox>
     </div>
     <br>
     <span class="input-label" i18n>{{showElements() ? 'Availability' : 'Job date'}}</span>

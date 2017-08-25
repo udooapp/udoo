@@ -51,6 +51,7 @@ import {UserController} from "../controllers/user.controller";
 import {ConversationComponent} from "../screens/conversations/conversations.component";
 import {ChatComponent} from "../screens/chat/chat.component";
 import {BookmarkComponent} from "../screens/bookmarks/bookmark.component";
+import {CheckboxComponent} from "../fields/check-box/checkbox.component";
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import {BookmarkComponent} from "../screens/bookmarks/bookmark.component";
     TextInputSelectComponent,
     SelectInputComponent,
     FileInputComponent,
+    CheckboxComponent,
     ServiceDetailComponent,
     ReminderComponent,
     VerificationComponent,

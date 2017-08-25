@@ -66,49 +66,60 @@ export class UserController {
     );
   }
 
+  public forceRefreshUser() {
+    if (this.tokenService.getToken()) {
+      this.getData();
+    } else {
+      this.userDataPipe$.emit(null);
+    }
+  }
+
+  private getData() {
+    this.userService.getUserData().subscribe(
+      data => {
+        this.data = data;
+        this.lastUpdate = new Date().getTime();
+        //   window.document =this.user.language;
+        document['locale'] = data.user.language;
+        getTranslationProviders().then(() => {
+        }).catch(() => {
+        });
+
+        let activated = data.user.active >= 15;
+        if (!activated && this.checkLogin) {
+          this.router.navigate([ROUTES.CREATE]);
+        }
+
+        this.userDataPipe$.emit(data);
+        if (data.systemNotification) {
+          this.notifier.systemNotification$.emit(data.systemNotification);
+        } else {
+          this.notifier.systemNotification$.emit([]);
+        }
+        this.userNotification$.emit(data.notifications.length);
+        if (data.notifications != null && data.notifications.length > 0) {
+
+        }
+        if (data.reminders != null && data.reminders.length > 0) {
+          this.notifier.sendReminderNotification(this.router, ROUTES.REQUEST_LIST, data.reminders);
+        }
+      },
+      error => {
+        this.dialog.notifyError(error);
+        this.userDataPipe$.emit(null);
+      });
+  }
+
   public refreshUser() {
     if (this.tokenService.getToken()) {
       if (this.lastUpdate == -1 || (new Date().getTime() - this.lastUpdate) / 1000 > 2) {
-        this.userService.getUserData().subscribe(
-          data => {
-            this.data = data;
-            this.lastUpdate = new Date().getTime();
-            //   window.document =this.user.language;
-            document['locale'] = data.user.language;
-            getTranslationProviders().then(() => {
-            }).catch(() => {
-            });
-
-            let activated = data.user.active >= 15;
-            if (!activated && this.checkLogin) {
-              this.router.navigate([ROUTES.CREATE]);
-            }
-
-            this.userDataPipe$.emit(data);
-            if (data.systemNotification) {
-              this.notifier.systemNotification$.emit(data.systemNotification);
-            } else {
-              this.notifier.systemNotification$.emit([]);
-            }
-            this.userNotification$.emit(data.notifications.length);
-            if (data.notifications != null && data.notifications.length > 0) {
-
-            }
-            if (data.reminders != null && data.reminders.length > 0) {
-              this.notifier.sendReminderNotification(this.router, ROUTES.REQUEST_LIST, data.reminders);
-            }
-          },
-          error => {
-            this.dialog.notifyError(error);
-            this.userDataPipe$.emit(null);
-          });
+        this.getData();
       } else {
         this.userDataPipe$.emit(this.data);
       }
     } else {
       this.userDataPipe$.emit(null);
     }
-
   }
 
   public sendUserModification(verify: number) {
