@@ -96,7 +96,7 @@ public class RequestServiceController implements IRequestServiceController {
             History hist = new History();
             hist.setDate(new Date());
             hist.setType(2);
-            if (requestNew != null  && (requestNew.getUid() == user.getUid() || requestNew.getUid() == -1)) {
+            if (requestNew != null && (requestNew.getUid() == user.getUid() || requestNew.getUid() == -1)) {
                 int delete = save.getDelete();
                 requestNew.setUid(uid);
                 if (delete <= -1) {
@@ -110,7 +110,7 @@ public class RequestServiceController implements IRequestServiceController {
                     List<RequestPictures> picturesSaved = requestPictureRepository.findAllByRid(requestNew.getRid());
                     List<PicturesRequest> picturesNew = new ArrayList<>(requestNew.getPicturesRequest());
                     if (requestSaved.getRid() != null && requestSaved.getRid() != -1) {
-                        if(!this.saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getHid())){
+                        if (!this.saveChanges(requestNew, requestSaved, picturesNew, picturesSaved, hist.getHid())) {
                             historyRepository.deleteByHid(hist.getHid());
                         }
                     } else {
@@ -121,15 +121,7 @@ public class RequestServiceController implements IRequestServiceController {
                         histElement.setAfterState("");
                         historyElementRepository.save(histElement);
                     }
-                    for (RequestPictures pic : picturesSaved) {
-                        int i = 0;
-                        while (i < picturesNew.size() && picturesNew.get(i).getPrid() != pic.getPrid()) {
-                            ++i;
-                        }
-                        if (i >= picturesNew.size()) {
-                            requestPictureRepository.deleteByPrid(pic.getPrid());
-                        }
-                    }
+                    comparePictureList(picturesSaved, picturesNew, requestNew.getRid());
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     int d = requestNew.getRid();
@@ -142,28 +134,12 @@ public class RequestServiceController implements IRequestServiceController {
                     hist = historyRepository.save(hist);
                     List<RequestPictures> picturesSaved = requestPictureRepository.findAllByRid(requestNew.getRid());
                     List<PicturesRequest> picturesNew = new ArrayList<>(requestNew.getPicturesRequest());
-                    if (requestCurrent!= null) {
-                        if(!saveChanges(requestNew, requestCurrent, picturesNew, picturesSaved, hist.getHid())){
+                    if (requestCurrent != null) {
+                        if (!saveChanges(requestNew, requestCurrent, picturesNew, picturesSaved, hist.getHid())) {
                             historyRepository.deleteByHid(hist.getHid());
                         }
                     }
-                    for (RequestPictures pic : picturesSaved) {
-                        int i = 0;
-                        while (i < picturesNew.size() && picturesNew.get(i).getPrid() != pic.getPrid()) {
-                            ++i;
-                        }
-                        if (i >= picturesNew.size()) {
-                            requestPictureRepository.deleteByPrid(pic.getPrid());
-                        } else {
-                            picturesNew.remove(i);
-                        }
-                    }
-
-                    for (PicturesRequest pic : picturesNew) {
-                        RequestPictures pic2 = new RequestPictures(pic.getSrc(), requestNew.getRid());
-                        pic2.setPrid(pic.getPrid());
-                        requestPictureRepository.save(pic2);
-                    }
+                    comparePictureList(picturesSaved, picturesNew, requestNew.getRid());
 
                     if (requestSaved != null && requestSaved.getUid() == user.getUid()) {
                         requestRepository.deleteByRid(d);
@@ -190,6 +166,26 @@ public class RequestServiceController implements IRequestServiceController {
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private void comparePictureList(List<RequestPictures> picturesSaved, List<PicturesRequest> picturesNew, int rid) {
+        for (RequestPictures pic : picturesSaved) {
+            int i = 0;
+            while (i < picturesNew.size() && picturesNew.get(i).getPrid() != pic.getPrid()) {
+                ++i;
+            }
+            if (i >= picturesNew.size()) {
+                requestPictureRepository.deleteByPrid(pic.getPrid());
+            } else {
+                picturesNew.remove(i);
+            }
+        }
+
+        for (PicturesRequest pic : picturesNew) {
+            RequestPictures pic2 = new RequestPictures(pic.getSrc(), rid);
+            pic2.setPrid(pic.getPrid());
+            requestPictureRepository.save(pic2);
         }
     }
 
@@ -223,13 +219,15 @@ public class RequestServiceController implements IRequestServiceController {
         }
         return new ResponseEntity<>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
-    private void deleteHistoryElements(int id){
+
+    private void deleteHistoryElements(int id) {
         List<History> histories = historyRepository.findAllByTidAndType(id, 1);
-        for(History hist : histories){
+        for (History hist : histories) {
             historyElementRepository.deleteByHid(hist.getHid());
             historyRepository.deleteByHid(hist.getHid());
         }
     }
+
     @Override
     @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRequest(ServletRequest req, @RequestBody String image) {
@@ -329,6 +327,7 @@ public class RequestServiceController implements IRequestServiceController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
     @Override
     @RequestMapping(value = "/data/dialog", method = RequestMethod.GET)
     public ResponseEntity<?> getRequestDialogData(@RequestParam("id") int rid) {
@@ -367,6 +366,7 @@ public class RequestServiceController implements IRequestServiceController {
         request.setBids(bids);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
+
     private boolean saveChanges(Request requestNew, Request requestSaved, List<PicturesRequest> picturesNew, List<RequestPictures> picturesSaved, int hid) {
         boolean update = false;
         for (PicturesRequest pic : picturesNew) {
@@ -434,8 +434,8 @@ public class RequestServiceController implements IRequestServiceController {
             HistoryElement histElement = new HistoryElement();
             histElement.setAction(WallServiceController.UPDATED_CATEGORY);
             histElement.setHid(hid);
-            histElement.setBeforeState(requestSaved.getCategory()+"");
-            histElement.setAfterState(requestNew.getCategory()+"");
+            histElement.setBeforeState(requestSaved.getCategory() + "");
+            histElement.setAfterState(requestNew.getCategory() + "");
             historyElementRepository.save(histElement);
         }
         return update;

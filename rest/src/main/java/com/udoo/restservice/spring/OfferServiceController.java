@@ -8,6 +8,8 @@ import com.udoo.dal.entities.comment.CommentResponse;
 import com.udoo.dal.entities.history.History;
 import com.udoo.dal.entities.history.HistoryElement;
 import com.udoo.dal.entities.offer.*;
+import com.udoo.dal.entities.request.PicturesRequest;
+import com.udoo.dal.entities.request.RequestPictures;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.history.IHistoryElementRepository;
@@ -213,6 +215,7 @@ public class OfferServiceController implements IOfferServiceController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
     @Override
     @RequestMapping(value = "/user/data/dialog", method = RequestMethod.GET)
     public ResponseEntity<?> getOfferDialogData(ServletRequest servletRequest, @RequestParam("oid") int oid) {
@@ -303,15 +306,7 @@ public class OfferServiceController implements IOfferServiceController {
                         histElement.setAfterState("");
                         historyElementRepository.save(histElement);
                     }
-                    for (OfferPictures pic : picturesSaved) {
-                        int i = 0;
-                        while (i < picturesNew.size() && picturesNew.get(i).getPoid() != pic.getPoid()) {
-                            ++i;
-                        }
-                        if (i >= picturesNew.size()) {
-                            offerPictureRepository.deleteByPoid(pic.getPoid());
-                        }
-                    }
+                    comparePictureList(picturesSaved, picturesNew, offerNew.getOid());
                     return new ResponseEntity<>("Saved", HttpStatus.OK);
                 } else {
                     int d = offerNew.getOid();
@@ -332,23 +327,7 @@ public class OfferServiceController implements IOfferServiceController {
                         }
                     }
 
-                    for (OfferPictures pic : picturesSaved) {
-                        int i = 0;
-                        while (i < picturesNew.size() && picturesNew.get(i).getPoid() != pic.getPoid()) {
-                            ++i;
-                        }
-                        if (i >= picturesNew.size()) {
-                            offerPictureRepository.deleteByPoid(pic.getPoid());
-                        } else {
-                            picturesNew.remove(i);
-                        }
-                    }
-
-                    for (PicturesOffer pic : picturesNew) {
-                        OfferPictures pic2 = new OfferPictures(pic.getSrc(), offerNew.getOid());
-                        pic2.setPoid(pic.getPoid());
-                        offerPictureRepository.save(pic2);
-                    }
+                    comparePictureList(picturesSaved, picturesNew, offerNew.getOid());
                     if (offerSaved != null && offerSaved.getUid() == user.getUid()) {
                         offerRepository.deleteByOid(d);
                         return new ResponseEntity<>("Saved", HttpStatus.OK);
@@ -375,6 +354,26 @@ public class OfferServiceController implements IOfferServiceController {
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private void comparePictureList(List<OfferPictures> picturesSaved, List<PicturesOffer> picturesNew, int oid) {
+        for (OfferPictures pic : picturesSaved) {
+            int i = 0;
+            while (i < picturesNew.size() && picturesNew.get(i).getPoid() != pic.getPoid()) {
+                ++i;
+            }
+            if (i >= picturesNew.size()) {
+                offerPictureRepository.deleteByPoid(pic.getPoid());
+            } else {
+                picturesNew.remove(i);
+            }
+        }
+
+        for (PicturesOffer pic : picturesNew) {
+            OfferPictures pic2 = new OfferPictures(pic.getSrc(), oid);
+            pic2.setPoid(pic.getPoid());
+            offerPictureRepository.save(pic2);
         }
     }
 
