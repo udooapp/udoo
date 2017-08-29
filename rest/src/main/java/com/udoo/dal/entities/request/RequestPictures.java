@@ -5,7 +5,7 @@ import javax.persistence.*;
 /**
  */
 @Entity
-@Table(name = "PicturesRequest")
+@Table(name = "picturesrequest")
 public class RequestPictures {
 
     @Id
@@ -14,10 +14,9 @@ public class RequestPictures {
 
     private int rid;
 
-    private String src;
+    private String src = "";
 
     public RequestPictures() {
-        src = "";
     }
 
     public RequestPictures(String src, int oid) {
