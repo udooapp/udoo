@@ -1,5 +1,5 @@
 --
---Categories table
+-- Categories table
 --
 CREATE TABLE `categories` (
   `CID` int(11) NOT NULL,
@@ -27,123 +27,88 @@ INSERT INTO `categories` (`CID`, `name`) VALUES
 
 
 --
---Users table
+-- Users table
 --
 
 CREATE TABLE `users` (
-  `uid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `password` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(15) NOT NULL,
-  `picture` varchar(400) DEFAULT NULL,
+  `picture` LONGTEXT DEFAULT NULL,
   `type` int(11) NOT NULL,
   `stars` float DEFAULT NULL,
-  `birthdate` date DEFAULT NULL
+  `language` VARCHAR(5) NOT NULL,
+  `birthdate` date DEFAULT NULL,
+  `location` VARCHAR(200),
+  `active` INT(2) NOT NULL,
+   `facebookid` BIGINT(11) NOT NULL,
+   `googleid` VARCHAR(32) NOT NULL,
+  PRIMARY KEY(`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`uid`);
-  
-ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-  
-ALTER TABLE `users` CHANGE `picture` `picture` LONGTEXT CHARACTER SET utf8 COLLATE utf8_german2_ci NULL DEFAULT NULL;
-
-ALTER TABLE `users` ADD `language` VARCHAR(5) NOT NULL;
-
-ALTER TABLE `users` ADD `active` INT NOT NULL AFTER `language`; 
-
-ALTER TABLE `users` ADD `facebookid` BIGINT(11) NOT NULL AFTER `active`;
-ALTER TABLE `users` ADD `googleid` VARCHAR(32) NOT NULL AFTER `facebookid`;
-
 --
---Offer table
+-- Offer table
 --
   
  CREATE TABLE `offer` (
-  `sid` int(11) NOT NULL,
+  `oid` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text,
   `location` text NOT NULL,
   `expirydate` date DEFAULT NULL,
-  `category` int(11) NOT NULL
+  `category` int(11) NOT NULL,
+  `realtime` BOOLEAN NOT NULL,
+  PRIMARY KEY (`oid`),
+  CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-ALTER TABLE `offer`
-  ADD PRIMARY KEY (`sid`),
-  ADD KEY `uid` (`uid`);
   
-ALTER TABLE `offer`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;  
-
- 
-ALTER TABLE `offer` ADD `realtime` BOOLEAN NOT NULL AFTER `category`;
- 
 --
---Request table
+-- Request table
 -- 
   
   
 CREATE TABLE `request` (
-  `rid` int(11) NOT NULL,
+  `rid` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text,
   `location` text NOT NULL,
   `jobdate` varchar(100) NOT NULL,
   `expirydate` date DEFAULT NULL,
-  `category` int(11) NOT NULL
+  `category` int(11) NOT NULL,
+  PRIMARY KEY(`rid`),
+  CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-ALTER TABLE `request`
-  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-  
-ALTER TABLE `request`
-  ADD PRIMARY KEY (`rid`),
-  ADD KEY `uid` (`uid`);
 
 --
---PicturesOffer table
+-- PicturesOffer table
 --  
   
 CREATE TABLE `picturesoffer` (
-  `poid` int(11) NOT NULL,
-  `sid` int(11) NOT NULL,
-  `scr` varchar(400) DEFAULT NULL
+  `poid` int(11) NOT NULL AUTO_INCREMENT,
+  `oid` int(11) NOT NULL,
+  `src` LONGTEXT DEFAULT NULL,
+   PRIMARY KEY(`poid`),
+   CONSTRAINT FOREIGN KEY (`oid`) REFERENCES `offer` (`oid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-ALTER TABLE `picturesoffer`
-  ADD PRIMARY KEY (`poid`),
-  ADD KEY `sid` (`sid`);
-  
-ALTER TABLE `picturesoffer`
-  MODIFY `poid` int(11) NOT NULL AUTO_INCREMENT;
-
- ALTER TABLE `picturesoffer` CHANGE `scr` `scr` LONGTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
- 
- ALTER TABLE `picturesoffer` CHANGE `scr` `src` LONGTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 --
---PictureRequest table
+-- PictureRequest table
 --
   
 CREATE TABLE `picturesrequest` (
-  `prid` int(11) NOT NULL,
+  `prid` int(11) NOT NULL AUTO_INCREMENT,
   `rid` int(11) NOT NULL,
-  `scr` varchar(400) DEFAULT NULL
+  `src` LONGTEXT DEFAULT NULL,
+  PRIMARY KEY(`prid`),
+  CONSTRAINT FOREIGN KEY (`rid`) REFERENCES `request` (`rid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-ALTER TABLE `picturesrequest`
-  ADD PRIMARY KEY (`prid`),
-  ADD KEY `rid` (`rid`);
-  
-ALTER TABLE `picturesrequest`
-  MODIFY `prid` int(11) NOT NULL AUTO_INCREMENT;
-  
-ALTER TABLE `picturesrequest` CHANGE `scr` `scr` LONGTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
-
-ALTER TABLE `picturesrequest` CHANGE `scr` `src` LONGTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 --
 -- Contacts TABLE
 --
@@ -158,7 +123,7 @@ CREATE TABLE contacts(
 
 
 --
---Verification table
+-- Verification table
 --
 
 CREATE TABLE Verification(
@@ -166,14 +131,14 @@ CREATE TABLE Verification(
     UID INT NOT NULL,
     Token VARCHAR(500) NOT NULL,
     expirydate DATE NOT NULL,
+	`type` BOOLEAN NOT NULL,
     PRIMARY KEY (VID),
     CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
-ALTER TABLE `verification` ADD `type` BOOLEAN NOT NULL AFTER `expirydate`;
 
 --
---Token Table
+-- Token Table
 --
 
 CREATE TABLE tokens(
@@ -186,7 +151,7 @@ CREATE TABLE tokens(
 );
 
 --
---Comments Table 
+-- Comments Table 
 --
 
 CREATE TABLE Comments(
@@ -204,7 +169,7 @@ CREATE TABLE Comments(
 
 
 --
---Bids Table
+-- Bids Table
 --
 
 CREATE TABLE BIDS(
@@ -222,7 +187,7 @@ CREATE TABLE BIDS(
 );
 
 --
---Payments Table
+-- Payments Table
 --
 
 CREATE TABLE Payments(
@@ -241,7 +206,7 @@ CREATE TABLE Payments(
 
 
 --
---Notification Table
+-- Notification Table
 --
 
 CREATE TABLE Notifications(
@@ -252,10 +217,10 @@ CREATE TABLE Notifications(
   checked BOOLEAN,
   PRIMARY KEY (nid),
   CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid)
-)
+);
 
 --
---Messager Tables
+-- Messager Tables
 --
 
 CREATE TABLE Conversations(
@@ -285,7 +250,7 @@ CREATE TABLE Messages(
 );
 
 --
---Record History tables
+-- Record History tables
 --
 
 
@@ -311,7 +276,7 @@ Create Table HistoryElements(
 
 
 --
---Bookmarks Table
+-- Bookmarks Table
 --
 
 CREATE TABLE BOOKMARKS(
@@ -325,7 +290,7 @@ CREATE TABLE BOOKMARKS(
 );
 
 --
---Availability Table
+-- Availability Table
 --
 
 CREATE TABLE Availability(
@@ -338,7 +303,7 @@ CREATE TABLE Availability(
 );
 
 --
---Reminder Tables
+-- Reminder Tables
 --
 CREATE TABLE reminders(
 	rid INT NOT NULL AUTO_INCREMENT,
