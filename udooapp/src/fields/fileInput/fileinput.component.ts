@@ -6,7 +6,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   templateUrl: './fileinput.component.html',
   styleUrls: ['./fileinput.component.css']
 })
-export class FileInputComponent {
+export class FileInputFieldComponent {
 
   @Input() text = 'Browse';
   @Input() dark = true;

@@ -36,10 +36,9 @@
       </div>
       <br>
       <span class="input-label" i18n>{{showElements() ? 'Availability' : 'Job date'}}</span>
-      <text-input *ngIf="showElements()" [id]="'availability-input'" [type]="'text'"
-                  [placeholder]="'Availability'" [value]="data.availability" (onKey)="data.availability=$event"
-                  [validators]="[emptyValidator]" (onValidationStateChange)="fieldValidate(4, $event)"
-                  [checkValidate]="refresh"></text-input>
+
+      <availability *ngIf="showElements()" [value]="data.availabilities" (availability)="data.availabilities = $event"
+                    (validation)="fieldValidate(4, $event)" [editable]="true" [checkValidate]="refresh"></availability>
       <div *ngIf="!showElements()">
         <text-input [id]="'date-input'" [type]="'date'"
                     [placeholder]="'Date'" [value]="data.jobdate" (onKey)="data.jobdate=$event"

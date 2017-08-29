@@ -6,7 +6,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   templateUrl: './selectinput.component.html',
   styleUrls: ['./selectinput.component.css', '../inputfield.css']
 })
-export class SelectInputComponent {
+export class SelectInputFieldComponent {
   error = false;
   ok = false;
   show = false;

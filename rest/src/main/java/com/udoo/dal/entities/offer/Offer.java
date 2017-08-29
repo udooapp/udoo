@@ -1,7 +1,10 @@
 package com.udoo.dal.entities.offer;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.udoo.dal.entities.availability.Availability;
+import com.udoo.dal.entities.availability.AvailabilityResponse;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -28,7 +31,6 @@ public class Offer {
 
     private String location = "";
 
-    private String availability = "";
 
     private Date expirydate = new Date();
 
@@ -37,10 +39,20 @@ public class Offer {
     @Transient
     private int bids;
 
+
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "offer")
     private List<PicturesOffer> picturesOffer = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "offer" )
+    private List<Availability> availability = new ArrayList<>();
+
+    @Transient
+    private List<List<AvailabilityResponse>> availabilities = new ArrayList<>();
 
     public Integer getOid() {
         return oid;
@@ -82,14 +94,6 @@ public class Offer {
         this.location = location;
     }
 
-    public String getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(String availability) {
-        this.availability = availability;
-    }
-
     public Date getExpirydate() {
         return expirydate;
     }
@@ -128,6 +132,22 @@ public class Offer {
 
     public void setBids(int bids) {
         this.bids = bids;
+    }
+
+    public List<Availability> getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(List<Availability> availability) {
+        this.availability = availability;
+    }
+
+    public List<List<AvailabilityResponse>> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<List<AvailabilityResponse>> availabilities) {
+        this.availabilities = availabilities;
     }
 
     @Override

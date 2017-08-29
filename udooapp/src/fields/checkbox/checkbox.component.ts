@@ -6,7 +6,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   templateUrl: './checkbox.component.html',
   styleUrls: ['./checkbox.component.css']
 })
-export class CheckboxComponent {
+export class CheckboxFieldComponent {
   public checkboxValue: Boolean = false;
   private valueChange: boolean = false;
   @Output() change = new EventEmitter<Boolean>();

@@ -7,7 +7,7 @@ import {IValidator} from "../../validator/validator.interface";
   templateUrl: './textinput.component.html',
   styleUrls: ['./textinput.component.css', '../inputfield.css']
 })
-export class TextInputComponent {
+export class TextInputFieldComponent {
   error = false;
   ok = false;
   show = false;

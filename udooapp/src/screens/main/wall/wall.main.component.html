@@ -40,10 +40,16 @@
               in
               <div class="main-wall-service-content-changes">{{item.content[0].before}}</div>
             </div>
-            <div *ngIf="item.content[0].type != 0 " class="min-wall-service-content-text">
+            <div *ngIf="item.content[0].type != 0 && item.content[0].type != 7 " class="min-wall-service-content-text">
               {{'updated' + getServiceModificationText(item.content[0]) + ' in '}}
               <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName }}</span>
               from<a class="main-wall-service-content-changes">&nbsp;{{getContent(item.content[0].before)}}</a>
+              &nbsp;to&nbsp;
+              <a class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</a>
+            </div>
+            <div *ngIf="item.content[0].type == 7 " class="min-wall-service-content-text">
+              {{'updated ' + item.content[0].before + getServiceModificationText(item.content[0]) + ' in '}}
+              <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName }}</span>
               &nbsp;to&nbsp;
               <a class="main-wall-service-content-changes">{{getContent(item.content[0].after)}}&nbsp;</a>
             </div>
@@ -65,11 +71,13 @@
                class="main-wall-service-content">
             updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
             <div *ngFor="let element of item.content">
-              <div
-                *ngIf="element.type != 3 && isContainData(element)"
-                class="min-wall-service-content-text">
+              <div *ngIf="element.type != 3 && element.type != 7 && isContainData(element)" class="min-wall-service-content-text">
                 {{'updated' + getServiceModificationText(element)}}
                 <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;
+                <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>
+              </div>
+              <div *ngIf="element.type == 7 && isContainData(element)" class="min-wall-service-content-text">
+                {{'updated ' +element.before + getServiceModificationText(element)}}&nbsp;to&nbsp;
                 <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>
               </div>
             </div>

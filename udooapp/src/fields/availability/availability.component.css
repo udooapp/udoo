@@ -1,0 +1,207 @@
+.availability-container {
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 5px 0;
+  padding: 5px;
+  display: -webkit-flex;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  background-color: #f6f6f6;
+  flex-direction: column;
+  justify-content: space-between;
+  -webkit-flex-wrap: wrap;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: space-between;
+}
+
+.availability-day-container {
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+.availability-table-container {
+  display: -webkit-flex;
+  display: flex;
+  border-radius: 5px;
+  margin: 10px 0;
+  height: auto;
+  width: 100%;
+  flex-wrap: wrap;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  justify-content: flex-start;
+  border: 2px solid #F7F7F7;
+}
+
+.availability-row-container {
+  color:#4d4d4d;
+  display: -webkit-flex;
+  display: flex;
+  height: auto;
+  flex-wrap: wrap;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+}
+
+.availability-day-times {
+  width: calc(100% - 90px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 50px;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+.availability-row-container{
+  width: calc(100% - 2px);
+  text-align: center;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+}
+.availability-row-container div{
+  margin: 3px 1px;
+}
+
+.availability-day-name {
+  width: 90px;
+  padding: 5px 0;
+  font-size: 12pt;
+  color: #378281;
+  text-align: center;
+}
+.availability-column-name {
+  background-color: #F7F7F7;
+  width: 100%;
+}
+
+.availability-add-button {
+  margin: 6px 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+}
+
+.availability-remove-button {
+  margin: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 7px;
+}
+
+.availability-button {
+  text-align: center;
+  color: #378281;
+  height: 16px;
+  background-color: #F7F7F7;
+  font-size: 14pt;
+  font-weight: 600;
+  border-radius: 100%;
+  border: 2px solid #378281;
+  transition: background-color 250ms;
+  cursor: pointer;
+}
+
+.availability-select {
+  padding: 0 2px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+  color: #378281;
+  font-size: 12pt;
+  width: 45px;
+  height: 20px;
+  margin: 5px;
+}
+
+.availability-bottom-border {
+  width: 100%;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.availability-bottom-border-ok {
+  border-bottom: 2px solid #378281;
+}
+
+.availability-bottom-border-error {
+  border-bottom: 2px solid #DD4B39;
+}
+
+.availability-select-divider {
+  margin: 1px 5px 0 0;
+  font-size: 16pt;
+  font-weight: 500;
+}
+
+.availability-select:focus {
+  outline: none;
+}
+
+.availability-select-container {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  margin: 0 5px;
+  border: 1px solid #4A9594;
+  border-radius: 5px;
+  padding: 0 2px;
+  height: 30px;
+  width: auto;
+  color: #378281;
+  font-weight: 700;
+}
+
+.availability-select-container-error {
+  border: 2px solid #DD4B39;
+  color: #DD4B39;
+}
+
+.availability-button:hover {
+  background-color: #DADADA;
+}
+@media (max-width: 640px) and (orientation: portrait) {
+  .availability-column-name{
+    font-size: 11pt;
+  }
+
+}
+@media (max-width: 640px) and (orientation: portrait) {
+  .availability-column-container{
+    width: calc(100% / 4);
+  }
+}
+@media (max-width: 640px) and (orientation: landscape) {
+  .availability-column-container{
+    width: calc(100% / 5);
+  }
+}
+@media (min-width: 641px) and (max-width: 960px) and (orientation: portrait) {
+  .availability-column-container{
+    width: calc(100% / 6);
+  }
+  .availability-column-name{
+    font-size: 11pt;
+  }
+}
+@media (min-width: 641px) and (max-width: 960px) and (orientation: landscape) {
+  .availability-column-container{
+    width: calc(100% / 7);
+  }
+  .availability-column-name{
+    font-size: 11pt;
+  }
+}
+@media (min-width: 961px) {
+  .availability-column-container{
+    width: calc(100% / 7);
+  }
+}
+

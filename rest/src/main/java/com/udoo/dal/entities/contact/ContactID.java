@@ -25,4 +25,22 @@ public class ContactID implements Serializable{
     public void setCid(int cid) {
         this.cid = cid;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ContactID contactID = (ContactID) o;
+
+        if (uid != contactID.uid) return false;
+        return cid == contactID.cid;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uid;
+        result = 31 * result + cid;
+        return result;
+    }
 }

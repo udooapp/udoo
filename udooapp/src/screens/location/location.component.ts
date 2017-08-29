@@ -10,7 +10,7 @@ declare let google: any;
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.css']
 })
-export class LocationComponent implements OnInit {
+export class LocationWindowComponent implements OnInit {
   private static NAME: string = 'dialog';
   position = {lat: 0, lng: 0, address: ''};
   error: string;
@@ -19,11 +19,11 @@ export class LocationComponent implements OnInit {
 
   constructor(private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
-      if (action == LocationComponent.NAME) {
+      if (action == LocationWindowComponent.NAME) {
         this.onSaved.emit('');
       }
     });
-    notifier.notify(LocationComponent.NAME);
+    notifier.notify(LocationWindowComponent.NAME);
     dialog.errorResponse$.subscribe(tryAgain => {
       this.ngOnInit();
     });

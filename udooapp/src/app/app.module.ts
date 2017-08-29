@@ -14,13 +14,13 @@ import {OfferComponent} from "../screens/offer/offer.component";
 import {RequestComponent} from "../screens/request/request.component";
 import {RequestListComponent} from "../screens/requestlist/requestlist.component";
 import {OfferListComponent} from "../screens/offerlist/offerlist.component";
-import {LocationComponent} from "../screens/location/location.component";
-import {TextInputComponent} from "../fields/textinput/textinput.component";
+import {LocationWindowComponent} from "../screens/location/location.component";
+import {TextInputFieldComponent} from "../fields/textinput/textinput.component";
 import {AuthGuard} from "../guard/auth.guard";
 import {TokenService} from "../services/token.service";
-import {TextAreaComponent} from "../fields/textarea/textarea.component";
-import {SelectInputComponent} from "../fields/selectinput/selectinput.component";
-import {FileInputComponent} from "../fields/fileInput/fileinput.component";
+import {TextAreaFieldComponent} from "../fields/textarea/textarea.component";
+import {SelectInputFieldComponent} from "../fields/selectinput/selectinput.component";
+import {FileInputFieldComponent} from "../fields/fileInput/fileinput.component";
 import {ServiceDetailComponent} from "../screens/servicedetail/servicedetail.component";
 import {ContactsComponent} from "../screens/contacts/contact.component";
 import {NotifierController} from "../controllers/notify.controller";
@@ -31,7 +31,7 @@ import {MenuComponent} from "../components/menu/menu.component";
 import {SettingsComponent} from "../screens/settings/settings.component";
 import {ActivationComponent} from "../screens/activation/activation.component";
 import {UserService} from "../services/user.service";
-import {TextInputSelectComponent} from "../fields/textinputselect/textinputselect.component";
+import {TextInputSelectFieldComponent} from "../fields/textinputselect/textinputselect.component";
 import {DialogController} from "../controllers/dialog.controller";
 import {DialogWindowComponent} from "../components/dialog/dialog.component";
 import {GalleryComponent} from "../components/gallery/gallery.component";
@@ -51,7 +51,8 @@ import {UserController} from "../controllers/user.controller";
 import {ConversationComponent} from "../screens/conversations/conversations.component";
 import {ChatComponent} from "../screens/chat/chat.component";
 import {BookmarkComponent} from "../screens/bookmarks/bookmark.component";
-import {CheckboxComponent} from "../fields/check-box/checkbox.component";
+import {CheckboxFieldComponent} from "../fields/checkbox/checkbox.component";
+import {AvailabilityFieldComponent} from "../fields/availability/availability.component";
 
 @NgModule({
   declarations: [
@@ -66,13 +67,14 @@ import {CheckboxComponent} from "../fields/check-box/checkbox.component";
     RequestListComponent,
     OfferListComponent,
     ContactsComponent,
-    LocationComponent,
-    TextInputComponent,
-    TextAreaComponent,
-    TextInputSelectComponent,
-    SelectInputComponent,
-    FileInputComponent,
-    CheckboxComponent,
+    LocationWindowComponent,
+    TextInputFieldComponent,
+    TextAreaFieldComponent,
+    TextInputSelectFieldComponent,
+    SelectInputFieldComponent,
+    FileInputFieldComponent,
+    CheckboxFieldComponent,
+    AvailabilityFieldComponent,
     ServiceDetailComponent,
     ReminderComponent,
     VerificationComponent,

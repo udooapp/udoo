@@ -6,7 +6,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   templateUrl: './textinputselect.component.html',
   styleUrls: ['./textinputselect.component.css']
 })
-export class TextInputSelectComponent {
+export class TextInputSelectFieldComponent {
 
   text: String = '';
   @Input() data: any[];

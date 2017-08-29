@@ -29,7 +29,7 @@ export class OfferComponent implements OnInit, IServiceForm {
   location: string = '';
   load: boolean = false;
   bids: any[] = [];
-  data = new Offer(null, '', '', -1, -1, '', '', 0, false, []);
+  data = new Offer(null, '', '', -1, -1, '',[], 0, false, []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
@@ -149,7 +149,7 @@ export class OfferComponent implements OnInit, IServiceForm {
       if (this.checkValidation()) {
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
           () => {
-            this.data = new Offer(null, '', '', -1, -1, '', '', 0, false, []);
+            this.data = new Offer(null, '', '', -1, -1, '', [], 0, false, []);
             this.modification[0] = -1;
             this.modification[1] = 0;
             this.modification[2] = -1;
