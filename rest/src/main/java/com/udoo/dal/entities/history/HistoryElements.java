@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 
 @Entity
-@Table(name="HistoryElements")
+@Table(name="historyelements")
 public class HistoryElements {
 
     @Id
@@ -15,12 +15,13 @@ public class HistoryElements {
     private int action;
 
     private String beforeState;
+
     private String afterState;
 
     @JsonBackReference
     @ManyToOne(optional = false, fetch=FetchType.LAZY)
     @JoinColumn(name = "hid")
-    private History History;
+    private History history;
 
     public int getHEID() {
         return HEID;
@@ -55,10 +56,10 @@ public class HistoryElements {
     }
 
     public com.udoo.dal.entities.history.History getHistory() {
-        return History;
+        return history;
     }
 
     public void setHistory(com.udoo.dal.entities.history.History history) {
-        History = history;
+        history = history;
     }
 }

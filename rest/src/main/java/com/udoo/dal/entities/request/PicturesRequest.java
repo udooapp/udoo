@@ -8,7 +8,7 @@ import javax.persistence.*;
 /**
  */
 @Entity
-@Table(name = "PicturesRequest")
+@Table(name = "picturesrequest")
 public class PicturesRequest {
 
     @Id

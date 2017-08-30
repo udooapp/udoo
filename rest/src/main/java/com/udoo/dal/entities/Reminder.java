@@ -9,7 +9,7 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "Reminders")
+@Table(name = "reminders")
 public class Reminder {
     @Id
     private int rid;

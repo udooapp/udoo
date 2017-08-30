@@ -4,7 +4,7 @@ package com.udoo.dal.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Notifications")
+@Table(name = "notifications")
 public class Notification {
 
     @Id

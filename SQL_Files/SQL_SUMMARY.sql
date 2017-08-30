@@ -2,18 +2,18 @@
 -- Categories table
 --
 CREATE TABLE `categories` (
-  `CID` int(11) NOT NULL,
+  `cid` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`CID`),
+  ADD PRIMARY KEY (`cid`),
   ADD UNIQUE KEY `name` (`name`);
   
  ALTER TABLE `categories`
-  MODIFY `CID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
   
-INSERT INTO `categories` (`CID`, `name`) VALUES
+INSERT INTO `categories` (`cid`, `name`) VALUES
 (1, 'Service 1'),
 (2, 'Service 2'),
 (3, 'Service 3'),
@@ -46,7 +46,7 @@ CREATE TABLE `users` (
    `facebookid` BIGINT(11) NOT NULL,
    `googleid` VARCHAR(32) NOT NULL,
   PRIMARY KEY(`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
 --
 -- Offer table
@@ -63,7 +63,7 @@ CREATE TABLE `users` (
   `realtime` BOOLEAN NOT NULL,
   PRIMARY KEY (`oid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
   
 --
@@ -82,7 +82,7 @@ CREATE TABLE `request` (
   `category` int(11) NOT NULL,
   PRIMARY KEY(`rid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `picturesoffer` (
   `src` LONGTEXT DEFAULT NULL,
    PRIMARY KEY(`poid`),
    CONSTRAINT FOREIGN KEY (`oid`) REFERENCES `offer` (`oid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
 --
 -- PictureRequest table
@@ -107,7 +107,7 @@ CREATE TABLE `picturesrequest` (
   `src` LONGTEXT DEFAULT NULL,
   PRIMARY KEY(`prid`),
   CONSTRAINT FOREIGN KEY (`rid`) REFERENCES `request` (`rid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+)
 
 --
 -- Contacts TABLE
@@ -115,7 +115,7 @@ CREATE TABLE `picturesrequest` (
 
 CREATE TABLE contacts(
 	uid INT NOT NUll,
-    cid INT NOT NULL,
+  cid INT NOT NULL,
 	PRIMARY KEY (uid, cid),
 	CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid),
 	CONSTRAINT FOREIGN KEY (cid) REFERENCES users (uid)
@@ -126,14 +126,14 @@ CREATE TABLE contacts(
 -- Verification table
 --
 
-CREATE TABLE Verification(
-	VID INT NOT NUll AUTO_INCREMENT,
-    UID INT NOT NULL,
-    Token VARCHAR(500) NOT NULL,
-    expirydate DATE NOT NULL,
+CREATE TABLE verification(
+	vid INT NOT NUll AUTO_INCREMENT,
+  uid INT NOT NULL,
+  token VARCHAR(500) NOT NULL,
+  expirydate DATE NOT NULL,
 	`type` BOOLEAN NOT NULL,
-    PRIMARY KEY (VID),
-    CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
+  PRIMARY KEY (VID),
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 
@@ -154,7 +154,7 @@ CREATE TABLE tokens(
 -- Comments Table 
 --
 
-CREATE TABLE Comments(
+CREATE TABLE comments(
   cid INT AUTO_INCREMENT,
   uid INT NOT NULL,
   sid INT NOT NULL,
@@ -162,9 +162,7 @@ CREATE TABLE Comments(
   creatingdate DATETIME NOT NULL,
   comment text NOT NULL,
   PRIMARY KEY(cid),
-  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 
@@ -172,7 +170,7 @@ CREATE TABLE Comments(
 -- Bids Table
 --
 
-CREATE TABLE BIDS(
+CREATE TABLE bids(
   bid INT AUTO_INCREMENT,
   uid INT NOT NULL,
   sid INT NOT NULL,
@@ -181,16 +179,14 @@ CREATE TABLE BIDS(
   accepted BOOLEAN,
   description text,
   PRIMARY KEY(bid),
-  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 --
 -- Payments Table
 --
 
-CREATE TABLE Payments(
+CREATE TABLE payments(
 	pid int AUTO_INCREMENT,
   date DATETIME not null,
   uid int not null,
@@ -199,9 +195,7 @@ CREATE TABLE Payments(
   state int not null,
   price DOUBLE not null,
   PRIMARY KEY(pid),
-  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 
@@ -209,44 +203,44 @@ CREATE TABLE Payments(
 -- Notification Table
 --
 
-CREATE TABLE Notifications(
+CREATE TABLE notifications(
   nid INT NOT NULL AUTO_INCREMENT,
   uid INT NOT NULL,
   type INT NOT NULL,
   id INT NOT NULL,
   checked BOOLEAN,
   PRIMARY KEY (nid),
-  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid)
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 --
 -- Messager Tables
 --
 
-CREATE TABLE Conversations(
+CREATE TABLE conversations(
 	cid INT AUTO_INCREMENT,
 	lastDate DATETIME,
 	lastMessage TEXT,
 	PRIMARY KEY (cid)
 );
-CREATE TABLE UserConversations(
+CREATE TABLE userconversations(
 	ucid INT AUTO_INCREMENT,
 	cid INT NOT NULL,
 	uid INT NOT NULL,
 	fromId int NOT NULL,
 	checked BOOLEAN NOT NULL,
 	PRIMARY KEY (ucid),
-	CONSTRAINT FOREIGN KEY (cid) REFERENCES Conversations (cid),
+	CONSTRAINT FOREIGN KEY (cid) REFERENCES conversations (cid),
 	CONSTRAINT FOREIGN KEY (fromId) REFERENCES users (uid),
 	CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
-CREATE TABLE Messages(
+CREATE TABLE messages(
   mid INT AUTO_INCREMENT,
   message TEXT NOT NULL,
   ucid int not null,
   date DATETIME NOT NULL,
   PRIMARY KEY(mid),
-  CONSTRAINT FOREIGN KEY (ucid) REFERENCES UserConversations (ucid)
+  CONSTRAINT FOREIGN KEY (ucid) REFERENCES userconversations (ucid)
 );
 
 --
@@ -254,24 +248,23 @@ CREATE TABLE Messages(
 --
 
 
-Create TABLE History(
-	HID int AUTO_INCREMENT,
+Create TABLE history(
+	hid int AUTO_INCREMENT,
 	date DATETIME not null,
 	tid int not null,
   type int not null,
-  PRIMARY KEY (HID),
-	CONSTRAINT FOREIGN KEY (tid) REFERENCES users (uid),
-  CONSTRAINT FOREIGN KEY (tid) REFERENCES Offer (oid),
-  CONSTRAINT FOREIGN KEY (tid) REFERENCES Request (tid)
+  PRIMARY KEY (hid),
+	CONSTRAINT FOREIGN KEY (tid) REFERENCES users (uid)
 );
-Create Table HistoryElements(
+
+Create Table historyelements(
  heid int AUTO_INCREMENT,
  action int,
  beforeState text,
  afterState text,
  hid int not null,
  Primary Key(heid),
- Constraint foreign key (hid) REFERENCES History(hid)
+ Constraint foreign key (hid) REFERENCES history(hid)
 );
 
 
@@ -279,27 +272,25 @@ Create Table HistoryElements(
 -- Bookmarks Table
 --
 
-CREATE TABLE BOOKMARKS(
+CREATE TABLE bookmarks(
   uid INT NOT NULL,
   sid INT NOT NULL,
   type BOOLEAN NOT NULL,
   PRIMARY KEY(uid, sid, type),
-  CONSTRAINT FOREIGN KEY (uid) REFERENCES Users (uid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Offer (oid),
-  CONSTRAINT FOREIGN KEY (sid) REFERENCES Request (rid)
+  CONSTRAINT FOREIGN KEY (uid) REFERENCES users (uid)
 );
 
 --
 -- Availability Table
 --
 
-CREATE TABLE Availability(
+CREATE TABLE availability(
 	oid INT NOT NULL,
 	day INT NOT NULL,
 	`from` INT NOT NULL,
 	`to` INT NOT NULL,
 	PRIMARY KEY (oid, day, `from`, `to`),
-  CONSTRAINT FOREIGN KEY (oid) REFERENCES Offer (oid)
+  CONSTRAINT FOREIGN KEY (oid) REFERENCES offer (oid)
 );
 
 --

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="History")
+@Table(name="history")
 public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class History {
 
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "History",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "history", cascade = CascadeType.PERSIST)
     private List<HistoryElements> historyElements;
 
     public int getTid() {

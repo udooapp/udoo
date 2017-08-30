@@ -4,8 +4,8 @@ package com.udoo.dal.entities.bid;
  */
 public class BidResult {
 
-    String title;
-    String message;
+    private String title;
+    private String message;
 
     public String getTitle() {
         return title;

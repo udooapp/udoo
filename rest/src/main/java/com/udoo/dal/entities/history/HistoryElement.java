@@ -4,7 +4,7 @@ package com.udoo.dal.entities.history;
 import javax.persistence.*;
 
 @Entity
-@Table(name="HistoryElements")
+@Table(name="historyelements")
 public class HistoryElement {
 
     @Id

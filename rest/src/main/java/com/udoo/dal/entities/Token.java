@@ -1,20 +1,16 @@
 package com.udoo.dal.entities;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
  *
  */
 @Entity
-@Table(name = "Tokens")
+@Table(name = "tokens")
 public class Token {
 
     //   @Autowired

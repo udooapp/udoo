@@ -9,7 +9,7 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "Verification")
+@Table(name = "verification")
 public class Verification {
     @Id
     private int vid;

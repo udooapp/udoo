@@ -6,12 +6,13 @@ import javax.persistence.*;
  *
  */
 @Entity
-@Table(name = "Contacts")
+@Table(name = "contacts")
 @IdClass(ContactID.class)
 public class Contact {
 
     @Id
     private int uid;
+
     @Id
     private int cid;
 

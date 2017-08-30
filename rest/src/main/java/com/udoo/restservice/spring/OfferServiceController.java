@@ -378,7 +378,7 @@ public class OfferServiceController implements IOfferServiceController {
         }
         for (Availability availability : availabilities) {
             List<AvailabilityResponse> responses = availabilityResponse.get(availability.getDay());
-            int i = 0;
+            int i;
             for (i = 0; i < responses.size(); ++i) {
                 if (responses.get(i).getFrom() > availability.getFrom()) {
                     --i;
@@ -410,7 +410,6 @@ public class OfferServiceController implements IOfferServiceController {
         }
     }
     private void compareAvailabilityLists(List<Availability> availabilitiesSaved, List<List<AvailabilityResponse>> availabilitiesNew, int oid) {
-        List<Availability> availabilities = new ArrayList<>();
         for(int i = 0; i < 7; ++i){
             for(AvailabilityResponse availabilityResponse : availabilitiesNew.get(i)){
                 int j;
