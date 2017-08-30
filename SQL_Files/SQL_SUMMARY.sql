@@ -4,7 +4,7 @@
 CREATE TABLE `categories` (
   `cid` int(11) NOT NULL,
   `name` varchar(60) DEFAULT NULL
-)
+);
 
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`cid`),
@@ -46,7 +46,7 @@ CREATE TABLE `users` (
    `facebookid` BIGINT(11) NOT NULL,
    `googleid` VARCHAR(32) NOT NULL,
   PRIMARY KEY(`uid`)
-)
+);
 
 --
 -- Offer table
@@ -63,8 +63,7 @@ CREATE TABLE `users` (
   `realtime` BOOLEAN NOT NULL,
   PRIMARY KEY (`oid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
-)
-
+);
   
 --
 -- Request table
@@ -82,7 +81,7 @@ CREATE TABLE `request` (
   `category` int(11) NOT NULL,
   PRIMARY KEY(`rid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
-)
+);
 
 
 --
@@ -95,7 +94,7 @@ CREATE TABLE `picturesoffer` (
   `src` LONGTEXT DEFAULT NULL,
    PRIMARY KEY(`poid`),
    CONSTRAINT FOREIGN KEY (`oid`) REFERENCES `offer` (`oid`)
-)
+);
 
 --
 -- PictureRequest table
@@ -107,7 +106,7 @@ CREATE TABLE `picturesrequest` (
   `src` LONGTEXT DEFAULT NULL,
   PRIMARY KEY(`prid`),
   CONSTRAINT FOREIGN KEY (`rid`) REFERENCES `request` (`rid`)
-)
+);
 
 --
 -- Contacts TABLE

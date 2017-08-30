@@ -14,6 +14,7 @@ import com.udoo.dal.repositories.history.IHistoryElementRepository;
 import com.udoo.dal.repositories.history.IHistoryRepository;
 import com.udoo.dal.repositories.request.IRequestPictureRepository;
 import com.udoo.dal.repositories.request.IRequestRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRequestServiceController;
 import com.udoo.restservice.payment.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;

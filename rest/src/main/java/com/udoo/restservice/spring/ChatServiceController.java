@@ -3,10 +3,10 @@ package com.udoo.restservice.spring;
 
 import com.udoo.dal.entities.message.*;
 import com.udoo.dal.entities.user.User;
-import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.message.IConversationRepository;
 import com.udoo.dal.repositories.message.IMessageRepository;
 import com.udoo.dal.repositories.message.IUserConversationRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IChatServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

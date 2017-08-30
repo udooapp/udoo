@@ -5,6 +5,7 @@ import com.udoo.dal.entities.Reminder;
 import com.udoo.dal.entities.user.User;
 import com.udoo.dal.entities.Verification;
 import com.udoo.dal.repositories.*;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IEmailServiceController;
 import com.udoo.restservice.email.EmailService;
 

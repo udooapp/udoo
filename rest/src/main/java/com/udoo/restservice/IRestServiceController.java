@@ -5,6 +5,7 @@ import com.udoo.dal.entities.category.Category;
 import com.udoo.dal.entities.LoginData;
 import com.udoo.dal.entities.Social;
 import com.udoo.dal.entities.user.User;
+import com.udoo.dal.entities.user.UserRegistration;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,9 @@ import java.util.List;
  */
 public interface IRestServiceController {
 
-    ResponseEntity<String> saveUser(User user);
+    ResponseEntity<String> saveUser(UserRegistration user);
 
-    ResponseEntity<String> saveFacebookUser(User user);
+    ResponseEntity<String> saveFacebookUser(UserRegistration user);
 
     ResponseEntity<?> loginUser(LoginData data);
 

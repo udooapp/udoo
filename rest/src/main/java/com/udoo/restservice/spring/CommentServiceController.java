@@ -10,6 +10,7 @@ import com.udoo.dal.entities.request.Request;
 import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.offer.IOfferRepository;
 import com.udoo.dal.repositories.request.IRequestRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.ICommentServiceController;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

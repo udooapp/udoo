@@ -1,5 +1,7 @@
 package com.udoo.dal.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -16,6 +18,7 @@ public class User {
 
     private String email = "";
 
+    @JsonIgnore
     private String password = "";
 
     private String phone = "";
@@ -37,6 +40,23 @@ public class User {
     private long facebookid = 0;
 
     private String googleid = "";
+
+    public User(){
+    }
+
+    public User(UserRegistration userRegistration){
+        this.uid = userRegistration.getUid();
+        this.name = userRegistration.getName();
+        this.email = userRegistration.getEmail();
+        this.phone = userRegistration.getPhone();
+        this.picture = userRegistration.getPicture();
+        this.password = userRegistration.getPassword();
+        this.type = userRegistration.getType();
+        this.birthdate = userRegistration.getBirthdate();
+        this.language = "en";
+        this.facebookid = userRegistration.getFacebookid();
+        this.googleid = userRegistration.getGoogleid();
+    }
 
     public int getUid() {
         return uid;

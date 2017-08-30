@@ -11,11 +11,13 @@ import com.udoo.dal.entities.offer.OfferMap;
 import com.udoo.dal.entities.request.RequestLite;
 import com.udoo.dal.entities.request.RequestMap;
 import com.udoo.dal.entities.user.User;
+import com.udoo.dal.entities.user.UserRegistration;
 import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.history.IHistoryElementRepository;
 import com.udoo.dal.repositories.history.IHistoryRepository;
 import com.udoo.dal.repositories.offer.IOfferLiteRepository;
 import com.udoo.dal.repositories.request.IRequestLiteRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IRestServiceController;
 
 import com.udoo.restservice.email.EmailService;
@@ -70,6 +72,7 @@ public class RestServiceController implements IRestServiceController {
     @Resource
     private IUserRepository userRepository;
 
+
     @Resource
     private ICategoryRepository categoryRepository;
 
@@ -95,20 +98,15 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "social/registration", method = RequestMethod.POST)
-    public ResponseEntity<String> saveFacebookUser(User user) {
-        if (user != null) {
-            if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
-                user.setBirthdate(null);
+    public ResponseEntity<String> saveFacebookUser(UserRegistration userRegistration) {
+        if (userRegistration != null) {
+            if (userRegistration.getBirthdate().isEmpty() || userRegistration.getBirthdate().equals("null")) {
+                userRegistration.setBirthdate(null);
             }
-            if (userRepository.findByEmail(user.getEmail()).size() > 0) {
+            if (userRepository.findByEmail(userRegistration.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
-                if (user.getLocation() == null) {
-                    user.setLocation("");
-                }
-                if (user.getLanguage() == null) {
-                    user.setLanguage("en");
-                }
+                User user = new User(userRegistration);
                 user.setUid(-1);
                 user = userRepository.save(user);
                 if (!smsService.sendVerificationMessage(user).isEmpty()) {
@@ -126,20 +124,15 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ResponseEntity<String> saveUser(@RequestBody User user) {
-        if (user != null) {
-            if (user.getBirthdate().isEmpty() || user.getBirthdate().equals("null")) {
-                user.setBirthdate(null);
+    public ResponseEntity<String> saveUser(@RequestBody UserRegistration userRegistration) {
+        if (userRegistration != null) {
+            if (userRegistration.getBirthdate().isEmpty() || userRegistration.getBirthdate().equals("null")) {
+                userRegistration.setBirthdate(null);
             }
-            if (userRepository.findByEmail(user.getEmail()).size() > 0) {
+            if (userRepository.findByEmail(userRegistration.getEmail()).size() > 0) {
                 return new ResponseEntity<>("The email address is exist!", HttpStatus.UNAUTHORIZED);
             } else {
-                if (user.getLocation() == null) {
-                    user.setLocation("");
-                }
-                if (user.getLanguage() == null) {
-                    user.setLanguage("en");
-                }
+                User user = new User(userRegistration);
                 user.setStars(0);
                 user.setUid(-1);
                 user = userRepository.save(user);

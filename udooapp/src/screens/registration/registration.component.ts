@@ -27,7 +27,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
   error: string;
   refresh = false;
   registration = true;
-  user = new User(null, '', '', '', '', '', 0, 0, '', 'en', 0, 0);
+  user: any = {uid: -1, name: '', email: '', phone: '', password: '', picture: '', type: 0, birthday: '', facebookid: 0, googleid: ''};
   passwordVerification: string;
   loaderVisible = false;
   first = false;

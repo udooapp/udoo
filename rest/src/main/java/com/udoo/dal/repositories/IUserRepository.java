@@ -19,6 +19,7 @@ public interface IUserRepository extends Repository<User, Integer> {
     User getByEmail(String email);
 
     User getByFacebookid(long id);
+
     User getByGoogleid(String id);
 
     List<User> findByName(String name);

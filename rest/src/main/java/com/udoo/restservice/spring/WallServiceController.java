@@ -13,6 +13,7 @@ import com.udoo.dal.repositories.offer.IOfferPictureRepository;
 import com.udoo.dal.repositories.offer.IOfferRepository;
 import com.udoo.dal.repositories.request.IRequestPictureRepository;
 import com.udoo.dal.repositories.request.IRequestRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IWallServiceController;
 import com.udoo.restservice.security.AuthenticationFilter;
 import org.json.JSONException;

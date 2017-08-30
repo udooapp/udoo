@@ -15,6 +15,7 @@ import com.udoo.dal.repositories.*;
 import com.udoo.dal.repositories.history.IHistoryElementRepository;
 import com.udoo.dal.repositories.history.IHistoryRepository;
 import com.udoo.dal.repositories.message.IUserConversationRepository;
+import com.udoo.dal.repositories.IUserRepository;
 import com.udoo.restservice.IUserServiceController;
 import com.udoo.restservice.email.EmailService;
 import com.udoo.restservice.security.AuthenticationFilter;
