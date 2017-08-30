@@ -52,9 +52,9 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   private el2: any;
   private startTouchX: number = 0;
   private moveTouchX: number = 0;
-  private pageAnim0: string = '';
-  private pageAnim1: string = '';
-  private pageAnim2: string = '';
+  public pageAnim0: string = '';
+  public pageAnim1: string = '';
+  public pageAnim2: string = '';
   public tabAnimation = '';
 
   public pagerMargin: number = 0;
