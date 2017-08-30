@@ -187,7 +187,9 @@ export class BookmarkComponent implements OnInit {
     this.bid.description = '';
 
   }
-
+  onBidClickClose() {
+    this.showBid = false;
+  }
   onBidClickSend() {
     this.bidService.savePid(this.bid).subscribe(
       data => {
