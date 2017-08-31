@@ -76,7 +76,7 @@ export class UserService extends HeaderService{
       .catch(HandlerService.handleText);
   }
 
-  public registrateFacebookUser(user: User): Observable<String> {
+  public registrateSocialUser(user: User): Observable<String> {
     return this.http.post(config.server + '/social/registration', JSON.stringify(user), new RequestOptions({headers: this.getHeader()}))
       .map((response: Response) => {
         let token = response.text();

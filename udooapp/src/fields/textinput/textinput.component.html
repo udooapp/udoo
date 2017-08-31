@@ -1,10 +1,10 @@
 <div class="input-text-container">
 
-  <input *ngIf="!difficult" [type]="inputType" [placeholder]="placeholder" [value]="valueText"
+  <input *ngIf="!difficult" [readonly]="readonly" [type]="inputType" [placeholder]="placeholder" [value]="valueText"
          class="input-area" (keyup)="onKeyInput($event)" (change)="onKeyInput($event)"
          (focusout)="focusChange()" [id]="id" (click)="onClickInputBox()" [disabled]="disabled">
   <div *ngIf="difficult" class="input-difficult">
-    <input [type]="inputType" [placeholder]="placeholder" [value]="valueText"
+    <input [type]="inputType" [readonly]="readonly" [placeholder]="placeholder" [value]="valueText"
            class="input-area" (keyup)="onKeyInput($event)" (change)="onKeyInput($event)"
            [ngClass]="{'input-date' : (ok || (error && errorMessage.length >= 19)), 'input-error-date': (error && errorMessage.length < 19)}"
            (focusout)="focusChange()" [id]="id" (click)="onClickInputBox()" [disabled]="disabled">

@@ -14,8 +14,8 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
 
     @Override
     public List<BidResult> getBids(long id) {
-        String sql = "Select u.name as name, b.price as price, b.description as description, o.title as title From Users u, Offer o, Bids b Where o.uid = " + id + " and o.oid = b.sid and b.accepted = -1 and b.type = 1 and b.uid = u.uid";
-        String sql2 = "Select u.name as name, b.price as price, b.description as description, r.title as title From Users u, Request r, Bids b Where r.uid = " + id + " and r.rid = b.sid and b.accepted = -1 and b.type = 0 and b.uid = u.uid";
+        String sql = "Select u.name as name, b.price as price, b.description as description, o.title as title From users u, offer o, bids b Where o.uid = " + id + " and o.oid = b.sid and b.accepted = -1 and b.type = 1 and b.uid = u.uid";
+        String sql2 = "Select u.name as name, b.price as price, b.description as description, r.title as title From users u, request r, bids b Where r.uid = " + id + " and r.rid = b.sid and b.accepted = -1 and b.type = 0 and b.uid = u.uid";
 
         List<BidResult> list = mapping(getJdbcTemplate().queryForList(sql));
         list.addAll(mapping(getJdbcTemplate().queryForList(sql2)));

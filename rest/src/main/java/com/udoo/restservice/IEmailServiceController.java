@@ -2,6 +2,7 @@ package com.udoo.restservice;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletRequest;
 
@@ -26,4 +27,5 @@ public interface IEmailServiceController {
 
     ResponseEntity<String> checkUserVerification(ServletRequest request);
 
+    ModelAndView activateEmail(String token);
 }

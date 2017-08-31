@@ -147,11 +147,10 @@ export class RegistrationComponent implements OnInit, IFormInput {
     if (this.checkValidation()) {
       if (this.user.password === this.passwordVerification) {
         if (this.facebookRegistration) {
-          this.userService.registrateFacebookUser(this.user)
+          this.userService.registrateSocialUser(this.user)
             .subscribe(
               () => {
                 this.notifier.pageChanged$.emit(' ');
-                this.dialog.sendMessage('Registration completed!');
                 this.router.navigate([ROUTES.MAIN]);
               },
               error => {
@@ -162,6 +161,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
           this.userService.registrateUser(this.user)
             .subscribe(
               ()=> {
+                this.dialog.sendMessage('Registration complete!\nThank you for taking time to register.');
                 this.notifier.pageChanged$.emit(' ');
                 this.router.navigate([ROUTES.LOGIN]);
               },

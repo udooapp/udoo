@@ -109,7 +109,7 @@ public class WallServiceController implements IWallServiceController {
                         User usr = userRepository.findByUid(hist.getId());
                         hist.setUserName(usr.getName());
                         hist.setPicture(usr.getPicture());
-                        hist.setContent(getUserActionType(obj.getHistoryElements()));
+                        hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
                         history.add(hist);
                         break;
                     case 1:
@@ -154,7 +154,7 @@ public class WallServiceController implements IWallServiceController {
         }
     }
 
-    private List<WallContent> getUserActionType(List<HistoryElements> list) {
+    private List<WallContent> getUserActionType(List<HistoryElements> list, User user) {
         List<WallContent> content = new ArrayList<>();
         for (HistoryElements element : list) {
             int action = element.getAction();
@@ -162,7 +162,7 @@ public class WallServiceController implements IWallServiceController {
             wallContent.setType(action);
             switch (action) {
                 case UPDATED_PICTURE:
-                    wallContent.setBefore(element.getBeforeState());
+                    wallContent.setBefore(user.getPicture());
                     break;
                 case UPDATED_TITLE_OR_NAME:
                     wallContent.setBefore(element.getBeforeState());

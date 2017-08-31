@@ -26,7 +26,7 @@
       [loading]="imageLoading" [error]="imageError"></gallery>
     <div [ngClass]="{'element-blur': isBlur()}">
       <span class="input-label" i18n>Location</span><br>
-      <text-input [id]="'location-input'" [type]="'text'" [placeholder]="'Choose service location'"
+      <text-input [id]="'location-input'" [type]="'text'" [readonly]="true" [placeholder]="'Choose service location'"
                   [value]="location"
                   (onClickInput)="onClickSelectLocation()" [validators]="[emptyValidator]"
                   (onValidationStateChange)="fieldValidate(3, $event)" [checkValidate]="refresh"></text-input>

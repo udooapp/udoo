@@ -1,108 +1,149 @@
-dialog{
+dialog {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
 }
+
 @media (min-width: 2000px) {
-  .dialog-window{
+  .dialog-window {
     margin-left: 35%;
     width: 20%;
   }
-  .dialog-window-height{
+
+  .dialog-window-height {
     height: 30%;
   }
 }
+
 @media (min-width: 961px) {
-  .dialog-window{
+  .dialog-window {
     margin-left: 35%;
     width: 20%;
   }
-  .dialog-window-height{
+
+  .dialog-window-height {
     height: 40%;
   }
 }
 
 @media (max-width: 960px) {
-  .dialog-window{
+  .dialog-window {
     width: 40%;
     margin-left: 25%;
   }
-  .dialog-window-height{
+
+  .dialog-window-height {
     height: 55%;
   }
 }
 
 @media (max-width: 641px) {
-  .dialog-window{
+  .dialog-window {
     width: 70%;
     margin-left: 10%;
   }
-  .dialog-window-height{
-    height: 75%;
+
+  .dialog-window-height {
+    height: calc(100% - 200px);
   }
 }
-.dialog-button-container{
+
+.dialog-button-container {
   display: -webkit-flex;
   display: flex;
-  width: 100%;
+  position: relative;
+  margin-top: 5%;
+  width: 90%;
+  padding: 0 5%;
+  left: 0;
   -webkit-flex-direction: row;
   flex-direction: row;
+  justify-content: center;
 }
-.dialog-background{
+
+.dialog-window-single-button {
+  justify-content: center;
+}
+
+.dialog-window-double-button {
+  justify-content: space-around;
+}
+
+.dialog-background {
   position: absolute;
-  top:0;
+  top: 0;
   width: 100%;
   height: 100%;
   z-index: 15;
-  background-color: rgba(41,41,41,0.5);
+  background-color: rgba(41, 41, 41, 0.1);
 }
 
-.dialog-window{
+.dialog-window {
   background-color: #FAFAFA;
   position: relative;
-  border-radius: 5px;
-  padding: 2% 3%;
-  min-height: 150px;
+  border-radius: 2px;
+  padding: 5% 5%;
   overflow: hidden;
   max-height: 75%;
-  margin-top: 120px;
+  margin-top: 100px;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.25);
   text-align: center;
 }
-.dialog-window-height{
+
+.dialog-window-height {
   text-align: left;
 }
-.dialog-error-message{
+
+.dialog-window-text {
   color: #2B6665;
-  margin-top: 5%;
   height: auto;
-  margin-bottom: 5%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90% - 60px);
+  word-wrap: break-word;
+  font-size: 16pt;
+}
+
+.dialog-window-text-closable {
+  margin: 30px 0;
+}
+
+.dialog-window-message {
+  color: #2B6665;
+  margin: 5% 0;
+  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
   max-height: calc(100% - 120px);
   word-wrap: break-word;
-  font-size: 16pt;
 }
-.dialog-error-button{
-  cursor: pointer;
+
+.dialog-window-question-button {
+  padding: 7px 3px;
+  width: 35%;
+  font-size: 14pt;
+}
+
+.dialog-window-simple-button {
   padding: 10px 5px;
+  width: 40%;
+  font-size: 14pt;
+}
+
+.dialog-error-button {
+  cursor: pointer;
+  text-align: center;
   border-radius: 5px;
-  width: 50%;
-  margin-top: 30px;
-  margin-bottom: 10px;
+
 }
-.double{
-  margin-left: 3%;
-}
-.simple{
-  margin-left: 23%;
-}
-.error-button:hover{
+
+.error-button:hover {
   opacity: 0.8;
 }
-.service-dialog-close-background {
+
+.dialog-close-background {
   float: right;
   right: 10px;
   top: 10px;
@@ -117,6 +158,7 @@ dialog{
 .dialog-close-background:hover {
   background-color: #E5E5E5;
 }
+
 .dialog-close {
   background: #378281;
   height: 25px;

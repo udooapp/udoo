@@ -1,6 +1,7 @@
 <div class="input-container">
   <h1 *ngIf="error.length == 0" i18h>{{'Congratulation'}}</h1>
-    <div class="response-message error-message">{{error}}</div>
-    <div class="response-message ok-message">{{message}}</div>
+  <div class="response-message error-message">{{error}}</div>
+  <div class="response-message ok-message">{{message}}</div>
+  <button *ngIf="message.length > 0" routerLink="/login" routerLinkActive="active" class="input-button button-dark">Login</button>
 </div>
 

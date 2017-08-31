@@ -1,0 +1,8 @@
+.input-container{
+  margin-top: 5%;
+}
+
+.input-button{
+  width: 50px;
+  margin: 5px calc(50% - 24px);
+}

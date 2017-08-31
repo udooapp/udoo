@@ -204,6 +204,7 @@ public class RestServiceController implements IRestServiceController {
         return new ResponseEntity<Object>("Invalid parameter", HttpStatus.BAD_REQUEST);
     }
 
+
     @Override
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> loginUser(@RequestBody LoginData user) {

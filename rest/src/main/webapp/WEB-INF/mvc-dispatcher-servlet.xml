@@ -22,6 +22,8 @@
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
 
+    <mvc:resources mapping="/images/**" location="WEB-INF/resources/images/" />
+
     <mvc:annotation-driven />
 
 </beans>

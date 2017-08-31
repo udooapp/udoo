@@ -51,7 +51,7 @@ public class EmailServiceImp implements EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
             message.setSubject("Email verification");
-            message.setText("Dear " + user.getName() + "\n Please click on the link to the email verification: \n" + env.getProperty("udoo.url") + "verification/" + verification.getToken());
+            message.setText("Dear " + user.getName() + "\n Please click on the link to the email verification: \n" + env.getProperty("udoo.url") + "/mail/" + verification.getToken());
             emailSender.send(message);
         } catch (MailException exception) {
             exception.printStackTrace();
@@ -74,7 +74,7 @@ public class EmailServiceImp implements EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
             message.setSubject("Password reminder!");
-            message.setText("Dear " + user.getName() + "\nClick here:\n" + env.getProperty("udoo.url") + reminder.getToken());
+            message.setText("Dear " + user.getName() + "\nClick here:\n" + env.getProperty("udoo.url") + "/email/"  + reminder.getToken());
             emailSender.send(message);
         } catch (MailException exception) {
             exception.printStackTrace();

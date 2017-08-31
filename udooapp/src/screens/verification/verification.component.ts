@@ -11,7 +11,7 @@ import {ROUTES} from "../../app/app.routing";
 
 @Component({
   templateUrl: './verification.component.html',
-  styleUrls: ['../password/password.component.css'],
+  styleUrls: ['./verification.component.css'],
   providers: [EmailService]
 })
 export class VerificationComponent implements OnInit {
@@ -35,7 +35,7 @@ export class VerificationComponent implements OnInit {
         if (token != null && token.length > 0) {
           this.reminderService.checkVerification(token).subscribe(
             () =>{
-              this.message="Your account is active!";
+              this.message="Your account has been activated!";
               this.userController.refreshUser();
             },
             error => {

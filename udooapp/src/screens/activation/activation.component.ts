@@ -17,16 +17,20 @@ import {ROUTES} from "../../app/app.routing";
 })
 export class ActivationComponent implements OnInit {
   private static NAME: string = 'Activation';
-  message: String;
-  errorMessage: string = '';
-  okMessage: string = '';
-  verificationCode: string = '';
-  emptyValidator: IValidator;
-  empty: boolean = true;
-  validate: boolean = false;
-  type: boolean[] = [false, false];
-  activation: number = 0;
 
+  private activation: number = 0;
+  private verificationCode: string = '';
+  private empty: boolean = true;
+
+  public message: String;
+  public errorMessage: string = '';
+  public okMessage: string = '';
+  public emptyValidator: IValidator;
+  public validate: boolean = false;
+  public type: boolean[] = [false, false];
+  public loaded: boolean = false;
+  public phone: string = '';
+  public email: string = '';
   constructor(private userController: UserController, private dialog: DialogController, private notifier: NotifierController, private router: Router, private emailService: EmailService) {
     this.emptyValidator = new EmptyValidator();
   }
@@ -86,11 +90,14 @@ export class ActivationComponent implements OnInit {
     this.userController.userDataPipe$.subscribe(data => {
       if (this.activation == 0) {
         this.activation = data.user.active;
+        this.phone = data.user.phone;
+        this.email = data.user.email;
         if (this.activation >= 15) {
           this.router.navigate([ROUTES.MAIN]);
         } else {
           this.type[0] = ((this.activation >> 1) & 1) != 0;
           this.type[1] = ((this.activation >> 3) & 1) != 0;
+          this.loaded = true;
         }
       }
     });

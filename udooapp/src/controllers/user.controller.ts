@@ -77,6 +77,9 @@ export class UserController {
   private getData() {
     this.userService.getUserData().subscribe(
       data => {
+        if(this.data != null){
+          this.userDataPipe$.emit(this.data);
+        }
         this.data = data;
         this.lastUpdate = new Date().getTime();
         //   window.document =this.user.language;

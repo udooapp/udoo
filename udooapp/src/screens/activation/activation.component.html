@@ -1,14 +1,24 @@
 <div class="input-container">
   <h1>Activation</h1>
-  <div class="activation-container">
-    <span class="input-label" i18h>Email:   </span> <span class="activation-status" [ngClass]="{'activation-active': type[0], 'activation-pending': !type[0]}">{{type[0] ? 'Active' : 'Pending'}}</span>
-    <button *ngIf="!type[0]" class="input-button button-dark send-button" (click)="onClickSend(0)">Send new Email</button>
+  <div class="loader" *ngIf="!loaded">Loading...</div>
+  <div class="activation-container" *ngIf="loaded">
+    <div>
+      <span class="input-label" i18h>Email:   </span>
+      <span class="activation-status" [ngClass]="{'activation-active': type[0], 'activation-pending': !type[0]}">{{type[0] ? 'Active' : 'Pending'}}</span>
+    </div>
+    <div class="input-data-info" i18h>{{email}}</div>
+    <button *ngIf="!type[0]" class="input-button button-dark send-button" (click)="onClickSend(0)">Send</button>
   </div>
-  <div class="activation-container">
-    <span class="input-label" i18h>Phone:</span> <span class="activation-status" [ngClass]="{'activation-active': type[1], 'activation-pending': !type[1]}">{{type[1] ? 'Active' : 'Pending'}}</span>
-    <button  *ngIf="!type[1]" class="input-button button-dark send-button" (click)="onClickSend(1)">Send new SMS</button>
+  <div class="activation-container" *ngIf="loaded">
+    <div>
+      <span class="input-label" i18h>Phone:</span>
+      <span class="activation-status" [ngClass]="{'activation-active': type[1], 'activation-pending': !type[1]}">{{type[1] ? 'Active' : 'Pending'}}</span>
+    </div>
+    <div class="input-data-info" i18h>{{phone}}</div>
+    <button *ngIf="!type[1]" class="input-button button-dark send-button" (click)="onClickSend(1)">Send</button>
     <div *ngIf="!type[1]" class="verification-input">
-      <text-input [placeholder]="'Verification Code'" [validators]="[emptyValidator]" [checkValidate]="validate" (onValidationStateChange)="onChangeValidate($event)" (onKey)="onKey($event)"></text-input>
+      <text-input [placeholder]="'Verification Code'" [validators]="[emptyValidator]" [checkValidate]="validate"
+                  (onValidationStateChange)="onChangeValidate($event)" (onKey)="onKey($event)"></text-input>
       <button class="activate-button input-button button-dark" (click)="onClickActivate()">Activate</button>
     </div>
     <div class="response-message error-message">{{errorMessage}}</div>

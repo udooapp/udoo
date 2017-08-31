@@ -8,25 +8,36 @@ import {IValidator} from "../../validator/validator.interface";
   styleUrls: ['./textinput.component.css', '../inputfield.css']
 })
 export class TextInputFieldComponent {
-  error = false;
-  ok = false;
-  show = false;
-  notChange = false;
-  refresh : boolean = false;
-  errorMessage = '';
-  valueText = '';
-  inputText = '';
-  inputType: string;
-  difficult: boolean = false;
-  @Input() disableValidation = false;
-  @Input() id: string = '';
-  @Input() disabled = false;
-  @Input() placeholder: string;
-  @Input() validators: IValidator[];
-  @Output() onKey = new EventEmitter<String>();
-  @Output() onKeyEvent = new EventEmitter<any>();
-  @Output() onClickInput = new EventEmitter<boolean>();
-  @Output() onValidationStateChange = new EventEmitter<boolean>();
+  public error = false;
+  public ok = false;
+  public show = false;
+  public notChange = false;
+  public refresh : boolean = false;
+  public errorMessage = '';
+  public valueText = '';
+  public inputText = '';
+  public inputType: string;
+  public difficult: boolean = false;
+  @Input()
+  public readonly : boolean = false;
+  @Input()
+  public disableValidation = false;
+  @Input()
+  public id: string = '';
+  @Input()
+  public disabled = false;
+  @Input()
+  public placeholder: string;
+  @Input()
+  public validators: IValidator[];
+  @Output()
+  public onKey = new EventEmitter<String>();
+  @Output()
+  public onKeyEvent = new EventEmitter<any>();
+  @Output()
+  public onClickInput = new EventEmitter<boolean>();
+  @Output()
+  public onValidationStateChange = new EventEmitter<boolean>();
 
 
   constructor() {

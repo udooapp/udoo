@@ -126,7 +126,7 @@ public class UserServiceController implements IUserServiceController {
                     boolean update = false;
                     if (userUpdated.getPicture() != null && !userUpdated.getPicture().equals(userSaved.getPicture())) {
                         HistoryElement historyElement = new HistoryElement();
-                        historyElement.setBeforeState(userUpdated.getPicture());
+                        historyElement.setBeforeState("");
                         historyElement.setAction(WallServiceController.UPDATED_PICTURE);
                         historyElement.setHid(history.getHid());
                         historyElement.setAfterState("");

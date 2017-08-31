@@ -238,7 +238,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           let touch = e.touches[0];
           t.startTouchX = touch.pageX;
           let touchZone = t.width * 0.15;
-          t.swipeEnabled = !t.blur && ((t.page == 2) || (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone));
+          t.swipeEnabled = !t.blur && (t.startTouchX < touchZone || t.startTouchX > 3 * t.width - touchZone);
           if (t.page == 1 && t.swipeEnabled) {
             t.mapController.enableSwipe$.emit(false);
           }

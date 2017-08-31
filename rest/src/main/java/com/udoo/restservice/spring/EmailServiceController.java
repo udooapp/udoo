@@ -10,6 +10,7 @@ import com.udoo.restservice.IEmailServiceController;
 import com.udoo.restservice.email.EmailService;
 
 import com.udoo.restservice.sms.SmsService;
+import javafx.util.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
@@ -46,6 +48,16 @@ public class EmailServiceController implements IEmailServiceController {
 
     @Resource
     private IReminderRepository reminderRepository;
+
+    @Override
+    @RequestMapping(value = "/{token}", method = RequestMethod.GET)
+    public ModelAndView activateEmail(@PathVariable("token") String token) {
+        Pair<String, HttpStatus> response = checkEmailToken(token);
+        ModelAndView model = new ModelAndView("validation");
+        model.addObject("response", response);
+        return model;
+
+    }
 
     @Override
     @RequestMapping(value = "/reminder/valid", method = RequestMethod.POST)
@@ -146,23 +158,28 @@ public class EmailServiceController implements IEmailServiceController {
     @RequestMapping(value = "/verification/valid", method = RequestMethod.POST)
     public ResponseEntity<String> checkEmailVerification(@RequestBody String token) {
         if (token != null && token.startsWith("{\"token\":\"")) {
-            Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token.substring(10, token.length() - 2));
-            if (verification != null) {
-                User user = userRepository.findByUid(verification.getUid());
-                int active = user.getActive();
-                active |= 0b10;
-                user.setActive(active);
-                userRepository.save(user);
-                verificationRepository.deleteByToken(verification.getToken());
-                if (0 > new Date().compareTo(verification.getExpiryDate())) {
-                    return new ResponseEntity<>("Your email is active!", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
-                }
-            }
-            return new ResponseEntity<>("Invalid token", HttpStatus.NOT_FOUND);
+            Pair<String, HttpStatus> response = checkEmailToken(token.substring(10, token.length() - 2));
+            return new ResponseEntity<>(response.getKey(), response.getValue());
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+    }
+
+    private Pair<String, HttpStatus> checkEmailToken(String token){
+        Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token);
+        if (verification != null) {
+            User user = userRepository.findByUid(verification.getUid());
+            int active = user.getActive();
+            active |= 0b10;
+            user.setActive(active);
+            userRepository.save(user);
+            verificationRepository.deleteByToken(verification.getToken());
+            if (0 > new Date().compareTo(verification.getExpiryDate())) {
+                return new Pair<>("Your email has been activated!", HttpStatus.OK);
+            } else {
+                return new Pair<>("Token expired!", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new Pair<>("Invalid token", HttpStatus.NOT_FOUND);
     }
 
     @Override

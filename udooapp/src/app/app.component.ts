@@ -24,10 +24,14 @@ export class AppComponent {
   public notificationCounter: number = 0;
   public systemNotification: any[] = [];
   public contentContainerHeight: number = 0;
+  public blur: boolean = false;
 
   constructor(private userController: UserController, private dialog: DialogController, private notifier: NotifierController, private tokenService: TokenService, private searchController: SearchController) {
     tokenService.clearSearchData();
     document['locale'] = 'en';
+    this.dialog.componentBlur$.subscribe(value=>{
+      this.blur = value;
+    });
     notifier.pageChanged$.subscribe(action => {
       if (action === ' ') {
         this.menuButton = true;

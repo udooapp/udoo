@@ -9,6 +9,7 @@ export class DialogController {
   public errorResponse$: EventEmitter<boolean>;
   public closableResponse$: EventEmitter<any>;
   public invalidToken$: EventEmitter<boolean>;
+  public componentBlur$: EventEmitter<boolean>;
 
   constructor() {
     this.errorMessage$ = new EventEmitter();
@@ -19,6 +20,7 @@ export class DialogController {
     this.closableMessage$ = new EventEmitter();
     this.closableResponse$ = new EventEmitter();
     this.invalidToken$ = new EventEmitter();
+    this.componentBlur$ = new EventEmitter();
   }
 
   public notifyError(errorMessage: string) {

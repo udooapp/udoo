@@ -38,7 +38,7 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
     @Override
     public List<SearchElement> getAllCategories(String text) {
         String sqlO1 = "SELECT distinct c.cid as cid, c.name as name, o.title as text FROM offer o, categories c WHERE c.cid = o.category AND  LOWER(o.title) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND o.expirydate > CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM verification v Where v.type = 0) Group By c.cid, c.name, o.title";
-        String sqlO2 = "SELECT distinct c.cid as cid, c.name as name, o.description as text FROM offer o, categories c WHERE c.cid = o.category AND LOWER(o.description) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND o.expirydate > CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM Verification v Where v.type = 0) Group By c.cid, c.name, o.description";
+        String sqlO2 = "SELECT distinct c.cid as cid, c.name as name, o.description as text FROM offer o, categories c WHERE c.cid = o.category AND LOWER(o.description) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND o.expirydate > CURRENT_DATE AND o.uid NOT IN (SELECT v.uid FROM verification v Where v.type = 0) Group By c.cid, c.name, o.description";
         String sqlR1 = "SELECT distinct c.cid as cid, c.name as name, r.title as text FROM request r, categories c WHERE c.cid = r.category AND  LOWER(r.title) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM verification v Where v.type = 0) Group By c.cid, c.name, r.title";
         String sqlR2 = "SELECT distinct c.cid as cid, c.name as name, r.description as text FROM request r, categories c WHERE c.cid = r.category AND LOWER(r.description) LIKE CONCAT('%',LOWER('" + text + "'),'%') AND r.expirydate > CURRENT_DATE AND r.uid NOT IN (SELECT v.uid FROM verification v Where v.type = 0) Group By c.cid, c.name, r.description";
         Map<Integer, ResultElement> result = new HashMap<>();
@@ -53,8 +53,8 @@ public class CategoryResultDao extends JdbcDaoSupport implements ICategoryResult
     @Override
     public String getWordMatch(String text) {
         if (!text.isEmpty()) {
-            String sql1 = "SELECT r.title as title FROM Request r WHERE LOWER(r.title) LIKE CONCAT('%', LOWER('" + text + "'), '%')";
-            String sql2 = "SELECT o.title as title FROM Offer o WHERE LOWER(o.title) LIKE CONCAT('%', LOWER('" + text + "'), '%')";
+            String sql1 = "SELECT r.title as title FROM request r WHERE LOWER(r.title) LIKE CONCAT('%', LOWER('" + text + "'), '%')";
+            String sql2 = "SELECT o.title as title FROM offer o WHERE LOWER(o.title) LIKE CONCAT('%', LOWER('" + text + "'), '%')";
             return getResult(mappingTitle(getJdbcTemplate().queryForList(sql1), text), mappingTitle(getJdbcTemplate().queryForList(sql2), text));
         } else {
             return "";
