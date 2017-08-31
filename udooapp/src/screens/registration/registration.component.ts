@@ -151,6 +151,7 @@ export class RegistrationComponent implements OnInit, IFormInput {
             .subscribe(
               () => {
                 this.notifier.pageChanged$.emit(' ');
+                this.dialog.sendMessage('Registration completed!');
                 this.router.navigate([ROUTES.MAIN]);
               },
               error => {
