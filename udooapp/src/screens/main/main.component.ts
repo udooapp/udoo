@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {MapService} from "../../services/map.service";
 import {TokenService} from "../../services/token.service";
 import {ConversionMethods} from "../layouts/conversion.methods";
@@ -73,7 +73,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   //ScrollUp button
   public scrollUpVisibility: boolean = false;
 
-  constructor(private bidService: BidService, private offerService: OfferService, private requestService: RequestService, private serviceDialogController: ServiceDialogController, private router: Router, private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
+  constructor(private changeDetector: ChangeDetectorRef, private bidService: BidService, private offerService: OfferService, private requestService: RequestService, private serviceDialogController: ServiceDialogController, private router: Router, private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
     super();
     searchController.onClickSearchButton$.subscribe(() => {
       this.searchVisibility = true;
@@ -158,11 +158,12 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     let contentContainer = document.getElementById('app-system-notification-container');
     if (contentContainer) {
       contentContainer.addEventListener('DOMSubtreeModified', function () {
-        if (contentContainer) {
-          t.pageContainerHeight = window.innerHeight - contentContainer.offsetHeight - 110;
-        } else {
-          t.pageContainerHeight = window.innerHeight - 110;
-        }
+          if (contentContainer) {
+            t.pageContainerHeight = window.innerHeight - contentContainer.offsetHeight - 110;
+          } else {
+            t.pageContainerHeight = window.innerHeight - 110;
+          }
+          t.changeDetector.detectChanges();
       });
     }
   }

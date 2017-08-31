@@ -7,11 +7,12 @@ import {MapMainController} from "./map.main.controller";
 import {mapconfig} from "../../../environments/map.config";
 
 import '../../../javascript/markerCluster/markerclusterer.js'
+import {config} from "../../../environments/url.config";
 
 declare let google: any;
 declare let MarkerClusterer;
-// let SockJS = require('sockjs-client');
-// let Stomp = require('stompjs');
+let SockJS = require('sockjs-client');
+let Stomp = require('stompjs');
 
 @Component({
   selector: 'main-map',
@@ -110,28 +111,29 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
     this.loadServiceMarkers(this.offersWindow, true);
   }
 
-  // connect() {
-  //   let socket = new SockJS(config.server + '/socket');
-  //   this.stompClient = Stomp.over(socket);
-  //   this.stompClient.connect({}, function (frame) {
-  //     this.setConnected(true);
-  //     console.log('Connected: ' + frame);
-  //     this.stompClient.subscribe('/coordinate/message', function (greeting) {
-  //       console.log(greeting);
-  //     });
-  //   });
-  // }
+  connect() {
+    let socket = new SockJS(config.server + '/chat');
+    this.stompClient = Stomp.over(socket);
+    let t = this;
+    this.stompClient.connect({}, function (frame) {
+      //t.setConnected(true);
+      console.log('Connected: ' + frame);
+      t.stompClient.subscribe('/coordinate/message', function (greeting) {
+        console.log(greeting);
+      });
+    });
+  }
 
-  // disconnect() {
-  //   if (this.stompClient != null) {
-  //     this.stompClient.disconnect();
-  //   }
-  //   console.log("Disconnected");
-  // }
-  //
-  // sendName() {
-  //   this.stompClient.send("/rest/hello", {}, 'Hello');
-  // }
+  disconnect() {
+    if (this.stompClient != null) {
+      this.stompClient.disconnect();
+    }
+    console.log("Disconnected");
+  }
+
+  sendName() {
+    this.stompClient.send("/rest/hello", {}, 'Hello');
+  }
 
   ngOnInit(): void {
     if (this.searchListener != null) {
@@ -145,6 +147,7 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
         this.loaded = true;
       }
     }
+  //  this.connect();
   }
 
   private deleteMarkers() {
