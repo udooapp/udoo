@@ -1,5 +1,5 @@
 <bid-dialog [show]="showBid" (close)="onClickClose()" (send)="onClickSend()" (description)="onKeyDescription($event)" (price)="onKeyPrice($event)"></bid-dialog>
-<div class="input-container" *ngIf="loaded">
+<div class="input-container" [ngClass]="{'element-blur': blur}" *ngIf="loaded">
   <div class="contact-container">
     <div class="contact-profile-picture">
       <img class="contact-picture-image" [src]="image">
@@ -29,7 +29,7 @@
   <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
            [close]="isClose()"></gallery>
 </div>
-<div class="comments" *ngIf="loaded && type" onC>
+<div class="comments" *ngIf="loaded && type" [ngClass]="{'element-blur': blur}">
   <div class="comment-container" *ngFor="let item of comments">
     <img [src]="item.picture"/>
     <div class="comment-content">
@@ -45,4 +45,4 @@
     <button class="input-button input-send button-dark" (click)="sendComment()">Send</button>
   </div>
 </div>
-<div *ngIf="!loaded && error.length > 0" class="response-message error-message">{{error}}</div>
+<div *ngIf="!loaded && error.length > 0" class="response-message error-message" [ngClass]="{'element-blur': blur}">{{error}}</div>

@@ -16,5 +16,8 @@
         (view all)
       </div>
     </div>
+    <div *ngIf="categoryOffer.length == 0 && searchOffer.length == 0 && searchText.length > 0" class="toolbar-search-placeholder">
+      No results
+    </div>
   </div>
 </div>

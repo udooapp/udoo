@@ -65,11 +65,11 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   private elementCoordinates: any = {lat: 0, lng: 0, dist: 0};
   public blur: boolean = false;
   public disableServiceDialogKeyboardScrolling: boolean = false;
+  private serviceDialogIsOpen: boolean = false;
 
   //BidDialog
   public showBid: boolean = false;
   private bid: any = {price: 0, description: '', sid: 0, type: false};
-
   //ScrollUp button
   public scrollUpVisibility: boolean = false;
 
@@ -118,7 +118,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       }
     });
 
-    window.addEventListener("orientationchange", function () {
+    window.addEventListener("orientationchange", () => {
       let el = document.getElementById("tab-pager");
       if (el != null) {
         t.width = el.clientWidth / 3;
@@ -136,7 +136,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       }
     });
 
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
       let el = document.getElementById("tab-pager");
       if (el != null) {
         t.width = el.clientWidth / 3;
@@ -157,13 +157,14 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     this.pageContainerHeight = document.getElementById('content-container').offsetHeight - 45;
     let contentContainer = document.getElementById('app-system-notification-container');
     if (contentContainer) {
-      contentContainer.addEventListener('DOMSubtreeModified', function () {
+      contentContainer.addEventListener('DOMSubtreeModified', () => {
           if (contentContainer) {
             t.pageContainerHeight = window.innerHeight - contentContainer.offsetHeight - 110;
+            t.changeDetector.detectChanges();
           } else {
-            t.pageContainerHeight = window.innerHeight - 110;
+           // t.pageContainerHeight = window.innerHeight - 110;
           }
-          t.changeDetector.detectChanges();
+
       });
     }
   }
@@ -176,7 +177,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       if (this.el2 != null) {
         this.width = this.el2.clientWidth / 3;
       }
-      this.el2.addEventListener('transitionend', function (e) {
+      this.el2.addEventListener('transitionend', e => {
         e.preventDefault();
         if (t.pagerMargin != 0 && t.pagerMargin != 50) {
           if (t.pagerMargin > 25) {
@@ -190,7 +191,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     if (this.el == null) {
       let el3 = document.getElementById("main-tab-selected");
       if (el3 != null) {
-        el3.addEventListener('animationend', function (e) {
+        el3.addEventListener('animationend', e => {
           e.preventDefault();
           t.tabAnimation = '';
           t.margin = t.width * t.page;
@@ -211,7 +212,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       }
       this.el = document.getElementById('page-container');
       if (this.el) {
-        this.el.addEventListener('animationend', function (e) {
+        this.el.addEventListener('animationend', e => {
           e.preventDefault();
           t.tabAnimation = '';
           t.margin = t.width * t.page;
@@ -231,7 +232,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           t.pageAnim2 = '';
           t.searchController.onChangeSearchButtonVisibility$.emit(t.page != 2);
         }, false);
-        this.el.addEventListener('touchstart', function (e) {
+        this.el.addEventListener('touchstart', e => {
           if (t.pageMargin % (3 * t.width) != 0) {
             t.swipeTouchEnd();
           }
@@ -243,7 +244,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
             t.mapController.enableSwipe$.emit(false);
           }
         });
-        this.el.addEventListener('touchmove', function (e) {
+        this.el.addEventListener('touchmove', e => {
           if (t.swipeEnabled) {
             let touch = e.touches[0];
             t.moveTouchX = t.startTouchX;
@@ -284,7 +285,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
             }
           }
         });
-        this.el.addEventListener('touchend', function (e) {
+        this.el.addEventListener('touchend', () => {
           t.swipeTouchEnd();
         });
       }
@@ -548,7 +549,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         e.scrollTop = Math.round(cosParameter + cosParameter * Math.cos(scrollCount));
         oldTimestamp = newTimestamp;
         window.requestAnimationFrame(step);
-      }
+      };
 
       window.requestAnimationFrame(step);
     }
@@ -570,6 +571,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.elementCoordinates.lng = coordinate.lng;
       this.elementCoordinates.dist = 0;
     }
+    this.serviceDialogIsOpen = true;
     this.loadDialog(type, id);
   }
 
@@ -579,33 +581,43 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     if (type) {
       this.offerService.getOfferDialogData(id).subscribe(
         value => {
-          this.blur = true;
-          this.serviceDialogController.setData$.emit({
-            service: value.offer,
-            user: value.user,
-            bookmark: value.bookmark
-          });
+          if(this.serviceDialogIsOpen) {
+            this.blur = true;
+            this.serviceDialogController.setData$.emit({
+              service: value.offer,
+              user: value.user,
+              bookmark: value.bookmark
+            });
+          }
         },
         error => {
-          this.blur = false;
-          this.serviceDialogController.setData$.emit(null);
-          this.dialog.notifyError(error)
+
+          if(this.serviceDialogIsOpen) {
+            this.blur = false;
+            this.serviceDialogController.setData$.emit(null);
+            this.dialog.notifyError(error)
+          }
         }
       );
     } else {
       this.requestService.getRequestDialogData(id).subscribe(
         value => {
-          this.blur = true;
-          this.serviceDialogController.setData$.emit({
-            service: value.request,
-            user: value.user,
-            bookmark: value.bookmark
-          });
+
+          if(this.serviceDialogIsOpen) {
+            this.blur = true;
+            this.serviceDialogController.setData$.emit({
+              service: value.request,
+              user: value.user,
+              bookmark: value.bookmark
+            });
+          }
         },
         error => {
-          this.blur = false;
-          this.serviceDialogController.setData$.emit(null);
-          this.dialog.notifyError(error)
+          if(this.serviceDialogIsOpen) {
+            this.blur = false;
+            this.serviceDialogController.setData$.emit(null);
+            this.dialog.notifyError(error)
+          }
         }
       );
     }
@@ -649,6 +661,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   }
 
   public onClickClose() {
+    this.serviceDialogIsOpen = false;
     this.blur = false;
   }
 

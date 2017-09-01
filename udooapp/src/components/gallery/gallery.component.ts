@@ -44,7 +44,7 @@ export class GalleryComponent implements AfterViewChecked {
     t.leftMargin = -window.innerWidth;
     t.rightMargin = window.innerWidth;
     t.width = window.innerWidth;
-    window.addEventListener("orientationchange", function () {
+    window.addEventListener("orientationchange", () => {
       let imageContainer = document.getElementById("scrollable-gallery-container");
       if (imageContainer != null) {
         t.imageWidth = imageContainer.clientWidth / 4 - 15;
@@ -56,7 +56,7 @@ export class GalleryComponent implements AfterViewChecked {
         t.width = el.clientWidth / 2;
       }
     });
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
       t.leftMargin = 1000;
       t.rightMargin = 1000;
       let imageContainer = document.getElementById("scrollable-gallery-container");
@@ -75,7 +75,7 @@ export class GalleryComponent implements AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if(this.imageWidth == 66) {
+    if (this.imageWidth == 66) {
       let imageContainer = document.getElementById("scrollable-gallery-container");
       if (imageContainer != null) {
         this.imageWidth = imageContainer.clientWidth / 4 - 15;
@@ -87,8 +87,19 @@ export class GalleryComponent implements AfterViewChecked {
     if (el != null && !this.found) {
       this.found = true;
       let t = this;
-
-      el.addEventListener('animationend', function (e) {
+      let leftArrow = document.getElementById("gallery-left-arrow");
+      if (leftArrow) {
+        leftArrow.addEventListener('touchend', () => {
+          t.onClickPrevious();
+        })
+      }
+      let rightArrow = document.getElementById("gallery-right-arrow");
+      if (rightArrow) {
+        rightArrow.addEventListener('touchend', () => {
+          t.onClickNext();
+        })
+      }
+      el.addEventListener('animationend', e => {
         e.preventDefault();
         t.startCoordX = 0;
         t.margin = 0;
@@ -102,7 +113,7 @@ export class GalleryComponent implements AfterViewChecked {
           t.rightMargin = t.width * 2;
         }
       }, false);
-      el.addEventListener('touchstart', function (e) {
+      el.addEventListener('touchstart', e => {
         e.preventDefault();
         t.animation = '';
         t.animationLeft = '';
@@ -113,7 +124,7 @@ export class GalleryComponent implements AfterViewChecked {
         t.leftMargin = -t.width * 2;
         t.rightMargin = t.width * 2;
       }, false);
-      el.addEventListener('touchend', function (e) {
+      el.addEventListener('touchend',  e =>{
         e.preventDefault();
         if (t.width * 2 / 3 > Math.abs(t.margin)) {
           t.animation = t.animations[0];
@@ -138,7 +149,7 @@ export class GalleryComponent implements AfterViewChecked {
           }
         }
       }, false);
-      el.addEventListener('touchmove', function (e) {
+      el.addEventListener('touchmove',  e =>{
         e.preventDefault();
         let touch = e.touches[0];
         if (t.images.length > 1 && ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1))) {
@@ -183,16 +194,16 @@ export class GalleryComponent implements AfterViewChecked {
       if (el != null) {
         this.imageElements.push(el);
         let coord = 0;
-        el.addEventListener('touchstart', function (e) {
+        el.addEventListener('touchstart',  e => {
           e.preventDefault();
           coord = 0;
           t.clicked = false;
         });
-        el.addEventListener('touchmove', function (e) {
+        el.addEventListener('touchmove', e => {
           e.preventDefault();
           ++coord;
         });
-        el.addEventListener('touchend', function (e) {
+        el.addEventListener('touchend', e => {
           e.preventDefault();
           if (!t.clicked && coord < 5) {
             t.clicked = true;

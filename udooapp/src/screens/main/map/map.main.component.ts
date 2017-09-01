@@ -124,16 +124,16 @@ export class MainMapComponent extends ConversionMethods implements OnInit {
   //   });
   // }
 
-  disconnect() {
-    if (this.stompClient != null) {
-      this.stompClient.disconnect();
-    }
-    console.log("Disconnected");
-  }
-
-  sendName() {
-    this.stompClient.send("/rest/hello", {}, 'Hello');
-  }
+  // disconnect() {
+  //   if (this.stompClient != null) {
+  //     this.stompClient.disconnect();
+  //   }
+  //   console.log("Disconnected");
+  // }
+  //
+  // sendName() {
+  //   this.stompClient.send("/rest/hello", {}, 'Hello');
+  // }
 
   ngOnInit(): void {
     if (this.searchListener != null) {

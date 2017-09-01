@@ -67,8 +67,7 @@ public class EmailServiceController implements IEmailServiceController {
             if (reminder != null) {
                 if (0 > new Date().compareTo(reminder.getExpiryDate())) {
                     return new ResponseEntity<>("Valid!", HttpStatus.OK);
-                } else
-                    {
+                } else {
                     reminderRepository.deleteByRid(reminder.getRid());
                     return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
                 }
@@ -85,7 +84,7 @@ public class EmailServiceController implements IEmailServiceController {
         if (email != null && email.startsWith("{\"email\":\"")) {
             User user = userRepository.getByEmail(email.substring(10, email.length() - 2));
             if (user != null) {
-                if(emailService.sendEmailPasswordReminder(user)) {
+                if (emailService.sendEmailPasswordReminder(user)) {
                     return new ResponseEntity<>("Email sent!", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Please, try again later!", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -104,7 +103,7 @@ public class EmailServiceController implements IEmailServiceController {
         if (user != null) {
             if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), false) != null) {
 
-                if(emailService.sendEmailVerification(user)) {
+                if (emailService.sendEmailVerification(user)) {
                     int activate = user.getActive();
                     activate |= 0b1;
                     activate &= ~0b10;
@@ -126,14 +125,13 @@ public class EmailServiceController implements IEmailServiceController {
     public ResponseEntity<String> sendSmsVerification(ServletRequest request) {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
-            if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), false) != null) {
+            if (verificationRepository.getTopByUidAndTypeOrderByExpiryDateDesc(user.getUid(), true) != null) {
                 int activate = user.getActive();
-                activate = (activate |(1 << 2));
-                activate = (activate |(1 << 3));
+                activate = (activate | (1 << 2));
+                activate = (activate | (1 << 3));
                 user.setActive(activate);
                 userRepository.save(user);
-                smsService.sendVerificationMessage(user);
-                return new ResponseEntity<>("SMS sent!\nCheck your phone! " +  smsService.sendVerificationMessage(user), HttpStatus.OK);
+                return new ResponseEntity<>("SMS sent!\nCheck your phone! " + smsService.sendVerificationMessage(user), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Your phone is activated!", HttpStatus.OK);
             }
@@ -165,7 +163,7 @@ public class EmailServiceController implements IEmailServiceController {
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
 
-    private Pair<String, HttpStatus> checkEmailToken(String token){
+    private Pair<String, HttpStatus> checkEmailToken(String token) {
         Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token);
         if (verification != null) {
             User user = userRepository.findByUid(verification.getUid());
@@ -189,13 +187,13 @@ public class EmailServiceController implements IEmailServiceController {
         if (token != null && token.startsWith("{\"key\":\"")) {
             Verification verification = verificationRepository.getTopByTokenOrderByExpiryDateDesc(token.substring(8, token.length() - 2));
             if (verification != null) {
-                User user = userRepository.findByUid(verification.getUid());
-                int active = user.getActive();
-                active |= 0b1000;
-                user.setActive(active);
-                userRepository.save(user);
-                verificationRepository.deleteByToken(verification.getToken());
                 if (0 > new Date().compareTo(verification.getExpiryDate())) {
+                    User user = userRepository.findByUid(verification.getUid());
+                    int active = user.getActive();
+                    active |= 0b1000;
+                    user.setActive(active);
+                    userRepository.save(user);
+                    verificationRepository.deleteByToken(verification.getToken());
                     return new ResponseEntity<>("Your phone number is active!", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
@@ -205,6 +203,7 @@ public class EmailServiceController implements IEmailServiceController {
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
+
     @Override
     @RequestMapping(value = "/reminder/password", method = RequestMethod.POST)
     public ResponseEntity<String> changePassword(@RequestBody String data) {

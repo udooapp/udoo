@@ -39,6 +39,7 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     super();
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
+        console.log(this.scrolledDown + ' ' + this.noMoreElement);
         this.scrolledDown = true;
         this.loadMoreElement();
       }

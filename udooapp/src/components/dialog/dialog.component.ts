@@ -18,7 +18,6 @@ export class DialogWindowComponent{
   constructor(private messages: DialogController) {
 
     messages.simpleMessage$.subscribe(action => {
-      console.log(action);
       this.message = action;
       this.question = '';
       this.closable = '';
@@ -31,7 +30,7 @@ export class DialogWindowComponent{
       this.index = action.index;
       this.message = '';
       this.question = '';
-      this.error = ''
+      this.error = '';
       this.messages.componentBlur$.emit(true);
     });
     messages.questionMessage$.subscribe(action => {

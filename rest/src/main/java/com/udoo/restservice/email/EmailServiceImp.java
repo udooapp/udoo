@@ -46,12 +46,13 @@ public class EmailServiceImp implements EmailService {
                     new Verification(user.getUid(),
                             Jwts.builder().setSubject(user.getEmail()).signWith(SignatureAlgorithm.HS256, MacProvider.generateKey()).compact(),
                             cal.getTime(), false);
+
             verificationRepository.deleteByUid(user.getUid(), false);
             verificationRepository.save(verification);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
             message.setSubject("Email verification");
-            message.setText("Dear " + user.getName() + "\n Please click on the link to the email verification: \n" + env.getProperty("udoo.url") + "/mail/" + verification.getToken());
+            message.setText("Dear " + user.getName() + "\n Please click on the link to the email verification: \n" + env.getProperty("udoo.url") + "/rest/mail/" + verification.getToken());
             emailSender.send(message);
         } catch (MailException exception) {
             exception.printStackTrace();

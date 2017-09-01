@@ -39,10 +39,20 @@ dialog {
   }
 }
 
-@media (max-width: 641px) {
+@media (max-width: 641px) and (orientation: portrait){
   .dialog-window {
     width: 70%;
     margin-left: 10%;
+  }
+
+  .dialog-window-height {
+    height: calc(100% - 200px);
+  }
+}
+@media (max-width: 641px) and (orientation: landscape){
+  .dialog-window {
+    width: 50%;
+    margin-left: 20%;
   }
 
   .dialog-window-height {
@@ -54,7 +64,8 @@ dialog {
   display: -webkit-flex;
   display: flex;
   position: relative;
-  margin-top: 5%;
+  margin-top: 25px;
+  margin-bottom: 5px;
   width: 90%;
   padding: 0 5%;
   left: 0;
@@ -121,14 +132,15 @@ dialog {
 }
 
 .dialog-window-question-button {
-  padding: 7px 3px;
-  width: 35%;
+  padding: 7px 5px;
+  min-width: 25%;
   font-size: 14pt;
 }
 
 .dialog-window-simple-button {
   padding: 10px 5px;
-  width: 40%;
+  min-width: 35%;
+  width: auto;
   font-size: 14pt;
 }
 

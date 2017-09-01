@@ -98,3 +98,13 @@
 .toolbar-search-type-result-container-part {
   height: calc(100% - 60px);
 }
+
+.toolbar-search-placeholder{
+  color: #ACACAC;
+  font-weight: 500;
+  text-align: center;
+  top: 45%;
+  font-size: 16pt;
+  width: 100%;
+  position: absolute;
+}

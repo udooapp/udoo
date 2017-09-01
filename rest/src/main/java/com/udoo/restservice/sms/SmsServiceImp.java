@@ -29,12 +29,14 @@ public class SmsServiceImp implements SmsService {
 
     @Override
     public String sendVerificationMessage(User user) {
+        verificationRepository.deleteByUid(user.getUid(), true);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         String token = Jwts.builder().setSubject(env.getProperty("token.key")).signWith(SignatureAlgorithm.HS256,
                 MacProvider.generateKey()).compact();
         Verification verification = new Verification(user.getUid(), token.substring(token.length() - 6)
-                , cal.getTime(), false);
+                , cal.getTime(), true);
+
         if (verificationRepository.save(verification) != null) {
             return smsProvider.sendMessage(user.getPhone(), "Hi"+ user.getName() + ", \n User Phone verification token is: " + verification.getToken()) ? verification.getToken() : "";
 

@@ -40,5 +40,5 @@ public interface IRestServiceController {
 
     ResponseEntity<?> getMoreService(int category, String searchText, int oCount, int rCount);
 
-    ResponseEntity<?> getResults(String searchText) throws JSONException;
+    ResponseEntity<?> getResults(String searchText);
 }

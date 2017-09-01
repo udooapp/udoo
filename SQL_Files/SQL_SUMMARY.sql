@@ -252,8 +252,7 @@ Create TABLE history(
 	date DATETIME not null,
 	tid int not null,
   type int not null,
-  PRIMARY KEY (hid),
-	CONSTRAINT FOREIGN KEY (tid) REFERENCES users (uid)
+  PRIMARY KEY (hid)
 );
 
 Create Table historyelements(

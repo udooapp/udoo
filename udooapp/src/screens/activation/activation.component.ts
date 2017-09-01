@@ -95,8 +95,12 @@ export class ActivationComponent implements OnInit {
         if (this.activation >= 15) {
           this.router.navigate([ROUTES.MAIN]);
         } else {
-          this.type[0] = ((this.activation >> 1) & 1) != 0;
-          this.type[1] = ((this.activation >> 3) & 1) != 0;
+          if(!this.type[0]) {
+            this.type[0] = ((this.activation >> 1) & 1) != 0;
+          }
+          if(!this.type[1]) {
+            this.type[1] = ((this.activation >> 3) & 1) != 0;
+          }
           this.loaded = true;
         }
       }

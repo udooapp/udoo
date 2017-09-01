@@ -22,7 +22,7 @@
 @media (min-width: 2000px) {
   .gallery-container{
     width: 70%;
-    margin: 1% 15% 2% 15%;
+    margin: 1% 20% 2% 20%;
   }
   .input-container {
     width: 40%;
@@ -34,12 +34,12 @@
 @media (min-width: 961px) {
   .gallery-container{
     width: 92%;
-    margin: 2% 4%;
+    margin: 2% 10%;
   }
   .input-container {
     width: auto;
     margin: 0 auto;
-    padding: 2% 10% 2% 10%;
+    padding: 2% 10%;
     -webkit-flex-direction: row;
     flex-direction: row;
 
@@ -79,12 +79,12 @@
 @media (max-width: 960px) {
   .gallery-container{
     width: 90%;
-    margin: 2% 5% 2% 5%;
+    margin: 2% 5%;
   }
   .input-container {
     width: auto;
     margin: 0 auto;
-    padding: 2% 5% 2% 5%;
+    padding: 2% 5%;
     -webkit-flex-direction: row;
     flex-direction: row;
   }

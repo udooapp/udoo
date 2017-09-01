@@ -75,13 +75,13 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
       }
     });
     let t = this;
-    window.addEventListener("orientationchange", function () {
+    window.addEventListener("orientationchange", () => {
       let el = document.getElementById('main-list-service');
       if(el != null){
         t.swipeWidth = el.clientWidth * 0.85
       }
     });
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
       let el = document.getElementById('main-list-service');
       if(el != null){
         t.swipeWidth = el.clientWidth * 0.85
@@ -113,7 +113,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
     let el = document.getElementById('main-list-service-button-container' + i);
     if (el != null) {
       let t = this;
-      el.addEventListener('touchstart', function (e) {
+      el.addEventListener('touchstart', e => {
         if (t.selectedService != i) {
           t.serviceMargin = 0;
         }
@@ -121,7 +121,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
         let touch = e.touches[0];
         t.selectedServiceStartX = touch.pageX;
       });
-      el.addEventListener('touchmove', function (e) {
+      el.addEventListener('touchmove', e => {
         let touch = e.touches[0];
         t.serviceMargin -= touch.pageX - t.selectedServiceStartX;
         t.selectedServiceStartX = touch.pageX;
@@ -132,7 +132,7 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
           t.serviceMargin = t.swipeWidth;
         }
       });
-      el.addEventListener('touchend', function (e) {
+      el.addEventListener('touchend', e => {
         if(t.serviceMargin > t.swipeWidth / 2){
           t.serviceMargin = t.swipeWidth;
         } else if(t.serviceMargin <= t.swipeWidth / 2){

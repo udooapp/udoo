@@ -124,7 +124,6 @@ public class OfferServiceController implements IOfferServiceController {
                 offerPictureRepository.deleteAllByOid(id);
                 availabilityRepository.deleteByOid(id);
                 bookmarkRepository.deleteBySidAndType(delete, true);
-
                 this.deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Offer deleted", HttpStatus.OK);

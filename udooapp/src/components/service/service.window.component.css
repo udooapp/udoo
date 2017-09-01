@@ -64,6 +64,7 @@ dialog {
   .service-dialog-direction {
     margin-top: 250px;
   }
+
   .service-dialog-direction-left {
     left: -10px;
   }
@@ -71,6 +72,7 @@ dialog {
   .service-dialog-direction-right {
     right: -10px;
   }
+
   .service-dialog-user-picture {
     width: 140px;
     height: 140px;
@@ -83,6 +85,7 @@ dialog {
     width: 85%;
     margin-left: 7.5%;
   }
+
   .service-dialog-direction-left {
     left: -10px;
   }
@@ -236,21 +239,23 @@ dialog {
   height: auto;
 }
 
-.service-dialog-previous {
-  background: #F7F7F7;
-  height: 25px;
-  width: 4px;
-  float: left;
-  margin: -6px 18px;
-  transform: rotate(45deg);
-}
-.service-dialog-direction-container{
+.service-dialog-direction-container {
   position: relative;
   height: 25px;
   width: auto;
   margin-top: 12px;
   overflow: hidden;
 }
+
+.service-dialog-previous {
+  background: #F7F7F7;
+  height: 25px;
+  width: 4px;
+  float: left;
+  margin: -7px 18px;
+  transform: rotate(45deg);
+}
+
 .service-dialog-previous:after {
   background: #F7F7F7;
   content: "";
@@ -259,11 +264,12 @@ dialog {
   top: 21px;
   width: 25px;
 }
+
 .service-dialog-next {
   background: #F7F7F7;
   height: 25px;
   width: 4px;
-  margin: 6px 18px;
+  margin: 7px 18px;
   transform: rotate(225deg);
 }
 
@@ -275,6 +281,7 @@ dialog {
   top: 21px;
   width: 25px;
 }
+
 .service-dialog-direction:hover {
   background-color: #F7F7F7;
 }
@@ -286,7 +293,8 @@ dialog {
 .service-dialog-direction-left:hover .service-dialog-previous:after {
   background: #378281;
 }
-.service-dialog-direction-right:hover .service-dialog-next{
+
+.service-dialog-direction-right:hover .service-dialog-next {
   background: #378281;
 }
 

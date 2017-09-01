@@ -4,7 +4,10 @@ import com.udoo.dal.entities.Verification;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 /**
@@ -17,13 +20,15 @@ public interface IVerificationRepository extends Repository<Verification, Intege
 
     Verification save(Verification reminder);
 
-    @Modifying
-    @Transactional
-    @Query("delete from Verification v where v.uid= ?1 and v.type = ?2")
-    int deleteByUid(int uid, boolean type);
+    List<Verification> findAllByUid(int uid);
 
     @Modifying
     @Transactional
-    @Query("delete from Verification v where v.token= ?1")
+    @Query("DELETE FROM Verification v WHERE v.uid= :uid AND v.type = :type")
+    int deleteByUid(@Param("uid") int uid, @Param("type") boolean type);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Verification v WHERE v.token= ?1")
     int deleteByToken(String token);
 }

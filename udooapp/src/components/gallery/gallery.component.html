@@ -1,4 +1,5 @@
-<div *ngIf="!smallPictures" id="scrollable-gallery-container" class="scrollable-gallery-container" [ngClass]="{'element-blur': gallery}">
+<div *ngIf="!smallPictures" id="scrollable-gallery-container" class="scrollable-gallery-container"
+     [ngClass]="{'element-blur': gallery}">
   <div class="image-item" [style.width.px]="imageWidth" [style.height.px]="imageWidth"
        *ngFor="let img of images; let i = index">
     <div [ngClass]="{'gallery-image-loader' : isLoading(i), 'gallery-image-error' : isError(i)}"></div>
@@ -33,11 +34,12 @@
        class="gallery-image" [src]="images[index].src">
   <img *ngIf="index < images.length - 1" id="gallery-image-right" [style.margin-left.px]="rightMargin"
        [style.animation-name]="animationRight" class="gallery-image" [src]="images[index + 1].src">
-  <div *ngIf="index > 0" class="gallery-left-arrow-container gallery-arrow-container" (click)="onClickPrevious()">
+  <div [style.display]="index > 0 ? 'block' : 'none'" class="gallery-left-arrow-container gallery-arrow-container"
+       id="gallery-left-arrow" (click)="onClickPrevious()">
     <div class="gallery-left-arrow"></div>
   </div>
-  <div *ngIf="index < images.length - 1" class="gallery-arrow-container gallery-right-arrow-container"
-       (click)="onClickNext()">
+  <div [style.display]="index < images.length - 1 ? 'block' : 'none'" id="gallery-right-arrow"
+       class="gallery-arrow-container gallery-right-arrow-container" (click)="onClickNext()">
     <div class="gallery-right-arrow"></div>
   </div>
 </div>

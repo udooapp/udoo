@@ -42,8 +42,10 @@ export class ToolbarSearchComponent {
         this.searchOffer = value.searchOffer ? value.searchOffer : '';
         this.categoryOffer = value.categoryOffer ? value.categoryOffer : [];
       }
-      if(this.searchOffer.length == 0){
+      if(this.searchOffer.length == 0 && this.categoryOffer.length > 0){
         this.searchOffer = this.searchText;
+      } else if(this.searchOffer.length == 0 && this.categoryOffer.length == 0){
+        this.searchOffer = '';
       }
     });
   }

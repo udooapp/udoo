@@ -23,25 +23,26 @@ import {ROUTES} from "../../app/app.routing";
 })
 export class ServiceDetailComponent implements OnInit {
   private static NAME: string = 'ServiceDetail';
-  message: string = '';
-  user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0, 0);
-  bid: any = {price: 0, description: '', sid: 0, type: false};
-  commentMessage = '';
-  showBid = false;
-  error: string = '';
-  type: boolean = false;
-  data: any;
-  loaded: boolean = false;
-  stars: number[] = [0, 0, 0, 0, 0];
-  image: string;
-  added: boolean = false;
-  pictures: any[] = [];
-  open: number = -1;
-  imageClose: number = 0;
-  comments: any[];
-  clearArea: boolean = false;
-  hasMore: boolean = true;
-  page: number = 0;
+  public blur: boolean = false;
+  public message: string = '';
+  public user = new User(null, '', '', '', '', '', 0, -1, '', 'en', 0, 0);
+  public bid: any = {price: 0, description: '', sid: 0, type: false};
+  public commentMessage = '';
+  public showBid = false;
+  public error: string = '';
+  public type: boolean = false;
+  public data: any;
+  public loaded: boolean = false;
+  public stars: number[] = [0, 0, 0, 0, 0];
+  public image: string;
+  public added: boolean = false;
+  public pictures: any[] = [];
+  public comments: any[];
+  private open: number = -1;
+  private imageClose: number = 0;
+  private clearArea: boolean = false;
+  private hasMore: boolean = true;
+  private page: number = 0;
 
   constructor(private zone: NgZone, private bidService: BidService, private offerService: OfferService, private commentService: CommentService, private requestService: RequestService, private router: Router, private notifier: NotifierController, private route: ActivatedRoute, private  contactService: ContactService, private dialog: DialogController) {
     this.image = this.getPictureUrl('');
@@ -56,6 +57,7 @@ export class ServiceDetailComponent implements OnInit {
             break;
         }
       } else if (action == GalleryComponent.IMAGE) {
+        this.blur = false;
         ++this.imageClose;
         this.open = -1;
       }
@@ -188,6 +190,7 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   public imageOpen(event) {
+    this.blur = true;
     this.open = event;
     this.notifier.notify(GalleryComponent.IMAGE);
   }
@@ -239,6 +242,7 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   public onClickClose() {
+    this.blur = false;
     this.showBid = false;
   }
 
@@ -254,6 +258,7 @@ export class ServiceDetailComponent implements OnInit {
 
   public onClickBid(): void {
     this.showBid = true;
+    this.blur = true;
   }
 
   onKeyPrice(event) {

@@ -27,7 +27,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -62,7 +61,6 @@ public class RestServiceController implements IRestServiceController {
     @Autowired
     private Environment env;
 
-
     @Autowired
     private EmailService emailService;
 
@@ -71,7 +69,6 @@ public class RestServiceController implements IRestServiceController {
 
     @Resource
     private IUserRepository userRepository;
-
 
     @Resource
     private ICategoryRepository categoryRepository;

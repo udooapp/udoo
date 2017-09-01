@@ -85,7 +85,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
           t.movedCoordX = 0;
           t.animation = t.animations[3];
         }, false);
-        el.addEventListener('touchstart', function (e) {
+        el.addEventListener('touchstart', e => {
           e.preventDefault();
           if (t.pictureOpen == -1) {
             t.animation = t.animations[3];
@@ -96,7 +96,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
             t.scrollDirection = 0;
           }
         }, false);
-        el.addEventListener('touchend', function (e) {
+        el.addEventListener('touchend', e => {
           e.preventDefault();
           if (t.movedCoordX != 0) {
             if (width / 2 > Math.abs(t.movedCoordX)) {
@@ -116,7 +116,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
             }
           }
         }, false);
-        el.addEventListener('touchmove', function (e) {
+        el.addEventListener('touchmove', e => {
           e.preventDefault();
           if (t.pictureOpen == -1) {
             let touch = e.touches[0];
@@ -154,11 +154,11 @@ export class ServiceDialogComponent implements AfterViewChecked {
     });
     let t = this;
     this.maxHeight = document.getElementById('content-container').clientHeight - 95;
-    window.addEventListener("orientationchange", function () {
+    window.addEventListener("orientationchange", () => {
       t.maxHeight = document.getElementById('content-container').clientHeight - 95;
       t.containerScroll();
     });
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
       t.containerScroll();
       t.maxHeight = document.getElementById('content-container').clientHeight - 95;
     });

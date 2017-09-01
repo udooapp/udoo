@@ -122,7 +122,6 @@
 }
 
 .gallery-arrow-container {
-  margin-right: 15px;
   position: absolute;
   cursor: pointer;
   width: 45px;
@@ -185,7 +184,6 @@
   border-radius: 100%;
   animation: spin 1s linear infinite;
 }
-
 
 .gallery-image-error {
   position: absolute;
