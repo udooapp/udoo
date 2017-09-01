@@ -10,10 +10,10 @@ import com.udoo.restservice.IEmailServiceController;
 import com.udoo.restservice.email.EmailService;
 
 import com.udoo.restservice.sms.SmsService;
-import javafx.util.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -160,7 +160,7 @@ public class EmailServiceController implements IEmailServiceController {
     public ResponseEntity<String> checkEmailVerification(@RequestBody String token) {
         if (token != null && token.startsWith("{\"token\":\"")) {
             Pair<String, HttpStatus> response = checkEmailToken(token.substring(10, token.length() - 2));
-            return new ResponseEntity<>(response.getKey(), response.getValue());
+            return new ResponseEntity<>(response.getFirst(), response.getSecond());
         }
         return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
     }
@@ -175,12 +175,12 @@ public class EmailServiceController implements IEmailServiceController {
             userRepository.save(user);
             verificationRepository.deleteByToken(verification.getToken());
             if (0 > new Date().compareTo(verification.getExpiryDate())) {
-                return new Pair<>("Your email has been activated!", HttpStatus.OK);
+                return Pair.of("Your email has been activated!", HttpStatus.OK);
             } else {
-                return new Pair<>("Token expired!", HttpStatus.BAD_REQUEST);
+                return Pair.of("Token expired!", HttpStatus.BAD_REQUEST);
             }
         }
-        return new Pair<>("Invalid token", HttpStatus.NOT_FOUND);
+        return Pair.of("Invalid token", HttpStatus.NOT_FOUND);
     }
 
     @Override

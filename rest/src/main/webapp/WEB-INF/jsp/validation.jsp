@@ -23,6 +23,6 @@
 </style>
 <body>
     <img src="<c:url value="/images/logo.png" />"/>
-    <h1>${response.key}</h1>
+    <h1>${response.first}</h1>
 </body>
 </html>

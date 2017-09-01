@@ -216,7 +216,7 @@ public class RestServiceController implements IRestServiceController {
                 return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
             }
         }
-        return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
 
     private Token saveToken(int userID) {
@@ -409,7 +409,7 @@ public class RestServiceController implements IRestServiceController {
 
     @Override
     @RequestMapping(value = "/result", method = RequestMethod.GET)
-    public ResponseEntity<?> getResults(@RequestParam("search") String searchText) throws JSONException {
+    public ResponseEntity<?> getResults(@RequestParam("search") String searchText) {
         return new ResponseEntity<Object>(new com.udoo.dal.entities.search.SearchResult(categoryResultRepository.getWordMatch(searchText), categoryResultRepository.getAllCategories(searchText)), HttpStatus.OK);
     }
 }
