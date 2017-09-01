@@ -50,7 +50,7 @@ public class EmailServiceController implements IEmailServiceController {
     private IReminderRepository reminderRepository;
 
     @Override
-    @RequestMapping(value = "/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{token:.*}", method = RequestMethod.GET)
     public ModelAndView activateEmail(@PathVariable("token") String token) {
         Pair<String, HttpStatus> response = checkEmailToken(token);
         ModelAndView model = new ModelAndView("validation");
@@ -67,7 +67,8 @@ public class EmailServiceController implements IEmailServiceController {
             if (reminder != null) {
                 if (0 > new Date().compareTo(reminder.getExpiryDate())) {
                     return new ResponseEntity<>("Valid!", HttpStatus.OK);
-                } else {
+                } else
+                    {
                     reminderRepository.deleteByRid(reminder.getRid());
                     return new ResponseEntity<>("Token expired!", HttpStatus.BAD_REQUEST);
                 }
