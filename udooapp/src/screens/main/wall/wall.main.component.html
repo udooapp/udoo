@@ -6,13 +6,15 @@
              [src]="getPicture(item.picture)">
       </div>
       <div class="main-wall-box-content">
-
+        <div class="main-wall-service-title-container"
+          [ngClass]="{'main-wall-service-title-container-partial': isUserUpdate(item), 'main-wall-service-title-container-full': !isUserUpdate(item)}">
+          <span class="main-wall-service-user">{{item.userName}}</span>
+          <span class="main-wall-service-date">{{item.date}}</span>
+        </div>
         <!--UserModification-->
-        <div class="main-wall-user-info" *ngIf="isUserUpdate(item)">
-          <div class="main-wall-service-user main-wall-service-user-width">{{item.userName}}</div>
-          <div class="main-wall-service-date">{{item.date}}</div>
+        <div *ngIf="isUserUpdate(item)">
           <div class="main-wall-user-buttons">
-            <img class="main-wall-user-profile-action" src="./assets/call.png">
+            <a [href]="'tel:' + item.phoneNumber" target="_self" (click)="onClickCall(item.phoneNumber)"><img class="main-wall-user-profile-action" src="./assets/call.png"></a>
             <img class="main-wall-user-profile-action" src="./assets/message2.png" (click)="onClickMessage(item.id)">
           </div>
           <div *ngFor="let content of item.content" class="main-wall-user-content">{{getUserModification(content)}}
@@ -28,10 +30,9 @@
         </div>
 
         <!--Service Modification-->
-        <div *ngIf="!isUserUpdate(item)">
-          <div class="main-wall-service-user">{{item.userName}}</div>
-          <div class="main-wall-service-date">{{item.date}}</div>
 
+
+        <div *ngIf="!isUserUpdate(item)">
           <!--1 modification-->
           <div
             *ngIf="item.content.length == 1 && item.content[0].type != 3 && isContainData(item.content[0])"
@@ -71,7 +72,8 @@
                class="main-wall-service-content">
             updated <span (click)="onClickServiceName(item.type, item.id)"> {{item.serviceName}}</span>
             <div *ngFor="let element of item.content">
-              <div *ngIf="element.type != 3 && element.type != 7 && isContainData(element)" class="min-wall-service-content-text">
+              <div *ngIf="element.type != 3 && element.type != 7 && isContainData(element)"
+                   class="min-wall-service-content-text">
                 {{'updated' + getServiceModificationText(element)}}
                 <a class="main-wall-service-content-changes">&nbsp; {{ getContent(element.before) }} </a>&nbsp;to&nbsp;
                 <a class="main-wall-service-content-changes"> {{ getContent(element.after) }}&nbsp; </a>

@@ -39,7 +39,6 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
     super();
     notifier.userScrolledToTheBottom$.subscribe(() => {
       if (!this.scrolledDown && !this.noMoreElement) {
-        console.log(this.scrolledDown + ' ' + this.noMoreElement);
         this.scrolledDown = true;
         this.loadMoreElement();
       }
@@ -181,15 +180,17 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
   }
 
   public onClickServiceName(type: number, id: number) {
-    if(this.searchListener != null) {
+    if (this.searchListener != null) {
       this.searchListener.onClickService(id, type == 1, null);
     }
   }
-  public isContainData(element: any){
+
+  public isContainData(element: any) {
     return ((element.type == 0 && element.before && element.before.length > 0) || (element.type > 0 && element.before && element.before.length > 0 && element.after && element.after.length > 0))
   }
-  public isContainValidData(type: number, content: any[]){
-    if(type > 0) {
+
+  public isContainValidData(type: number, content: any[]) {
+    if (type > 0) {
       for (let item of content) {
         if ((item.type == 0 && item.before && item.before.length > 0) || (item.type > 0 && item.before && item.before.length > 0 && item.after && item.after.length > 0)) {
           return true;
@@ -200,7 +201,12 @@ export class MainWallComponent extends ConversionMethods implements OnInit {
       return true;
     }
   }
-  public onClickMessage(uid: number){
+
+  public onClickMessage(uid: number) {
     this.router.navigate([ROUTES.CHAT + uid]);
+  }
+
+  public onClickCall(phone: string) {
+    window.open("tel:" + phone, "_self");
   }
 }

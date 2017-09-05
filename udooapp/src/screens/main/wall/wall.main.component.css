@@ -71,13 +71,19 @@
   color: #4A4A4A;
   font-weight: 700;
 }
+.main-wall-service-title-container{
 
-.main-wall-service-user-width {
+}
+.main-wall-service-title-container-partial {
   width: calc(100% - 75px);
+}
+.main-wall-service-title-container-full {
+  width: 100%;
 }
 
 .main-wall-user-content {
-  padding-bottom: 5px;
+  padding: 5px 0;
+
 }
 
 .main-wall-user-content span {
@@ -101,7 +107,7 @@
 }
 
 .main-wall-service {
-  min-height: 150px;
+  min-height: 100px;
   width: 100%;
   height: auto;
   overflow: hidden;
@@ -136,7 +142,7 @@
 
 .main-wall-service-date {
   color: #9C9C9C;
-  padding: 5px 0;
+  padding: 5px 5px;
   font-size: 11pt;
 }
 

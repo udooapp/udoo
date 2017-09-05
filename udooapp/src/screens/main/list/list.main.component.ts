@@ -6,13 +6,15 @@ import {OfferService} from "../../../services/offer.service";
 import {RequestService} from "../../../services/request.service";
 import {MainSearchListener} from "../main.search.listener";
 import {ListMainController} from "./list.main.controller";
+import {BookmarkService} from "../../../services/bookmark.service";
+import {DialogController} from "../../../controllers/dialog.controller";
 
 
 @Component({
   selector: 'main-list',
   templateUrl: './list.main.component.html',
   styleUrls: ['./list.main.component.css'],
-  providers: [MapService, OfferService, RequestService]
+  providers: [MapService, OfferService, RequestService, BookmarkService]
 })
 export class MainListComponent extends ConversionMethods implements OnInit, AfterViewChecked {
 
@@ -44,13 +46,15 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
   ngOnInit(): void {
     if (this.searchListener != null) {
       let data = this.searchListener.getData(1);
-      this.scrolledDown = false;
       this.services = data.services;
+      if(this.services.length > 0) {
+        this.scrolledDown = false;
+      }
       this.loaded = true;
     }
   }
 
-  constructor(private notifier: NotifierController, private listController: ListMainController) {
+  constructor(private notifier: NotifierController, private listController: ListMainController, private bookmarkService: BookmarkService, private dialog: DialogController) {
     super();
     this.swipeWidth = window.innerWidth * 0.85;
     notifier.userScrolledToTheBottom$.subscribe(() => {
@@ -143,7 +147,16 @@ export class MainListComponent extends ConversionMethods implements OnInit, Afte
       this.attachedSwipes.push(el);
     }
   }
-
+  public onClickBookmark(element:any){
+    this.bookmarkService.save(element.id, element.type).subscribe(
+      (message) => {
+        this.dialog.sendMessage(message);
+      },
+      error => {
+        this.dialog.sendError(error);
+      }
+    );
+  }
   public onClickOpen(element: any) {
     this.searchListener.onClickService(element.id, element.type, element.location);
   }

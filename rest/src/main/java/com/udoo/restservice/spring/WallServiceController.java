@@ -40,6 +40,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/wall")
 public class WallServiceController implements IWallServiceController {
+
     public static final int NEW = 0;
     public static final int UPDATED_DESCRIPTION = 2;
     public static final int UPDATED_PICTURE = 3;
@@ -52,6 +53,7 @@ public class WallServiceController implements IWallServiceController {
     public static final int UPDATED_PHONE_NUMBER = 10;
     public static final int UPDATED_EMAIL_ADDRESS = 11;
     public static final int PAGE_SIZE = 15;
+
     @Resource
     private IHistoryRepository historyRepository;
 
@@ -76,7 +78,7 @@ public class WallServiceController implements IWallServiceController {
     @Override
     @RequestMapping(value = "/public", method = RequestMethod.GET)
     public ResponseEntity<?> getOfflineWall(@RequestParam("last") int lastId) {
-        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE);
+        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE + 10);
         if (lastId == 0) {
             lastId = Integer.MAX_VALUE;
         }
@@ -86,7 +88,7 @@ public class WallServiceController implements IWallServiceController {
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<?> getUserWall(ServletRequest request, @RequestParam("last") int lastId) {
-        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE);
+        Pageable page = new PageRequest(0, WallServiceController.PAGE_SIZE + 10);
         int uid = Integer.parseInt(request.getAttribute(AuthenticationFilter.USERID).toString());
         if (lastId == 0) {
             lastId = Integer.MAX_VALUE;
@@ -111,6 +113,7 @@ public class WallServiceController implements IWallServiceController {
                         hist.setUserName(usr.getName());
                         hist.setPicture(usr.getPicture());
                         hist.setContent(getUserActionType(obj.getHistoryElements(), usr));
+                        hist.setPhoneNumber(usr.getPhone());
                         history.add(hist);
                         break;
                     case 1:
@@ -136,6 +139,9 @@ public class WallServiceController implements IWallServiceController {
                         }
                         break;
                 }
+            }
+            if(history.size() == 15){
+                break;
             }
         }
         return history;
@@ -207,8 +213,8 @@ public class WallServiceController implements IWallServiceController {
                     }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || !element.getBeforeState().isEmpty() ? 0 : Long.parseLong(element.getBeforeState()))));
-                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || !element.getAfterState().isEmpty() ? 0 : Long.parseLong(element.getAfterState()))));
+                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || element.getBeforeState().isEmpty() ? 0 : Long.parseLong(element.getBeforeState()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || element.getAfterState().isEmpty() ? 0 : Long.parseLong(element.getAfterState()))));
                     content.add(wallContent);
                     break;
                 case UPDATED_LOCATION:
@@ -274,8 +280,8 @@ public class WallServiceController implements IWallServiceController {
                     }
                     break;
                 case UPDATED_EXPIRATION_DATE:
-                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || !element.getBeforeState().isEmpty() ? 0 : Long.parseLong(element.getBeforeState()))));
-                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || !element.getAfterState().isEmpty() ? 0 : Long.parseLong(element.getAfterState()))));
+                    wallContent.setBefore(format.format(new Date(element.getBeforeState() == null || element.getBeforeState().isEmpty() ? 0 : Long.parseLong(element.getBeforeState()))));
+                    wallContent.setAfter(format.format(new Date(element.getAfterState() == null || element.getAfterState().isEmpty() ? 0 : Long.parseLong(element.getAfterState()))));
                     content.add(wallContent);
                     break;
                 case UPDATED_LOCATION:

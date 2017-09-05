@@ -13,6 +13,7 @@ public class ResponseHistory {
     private String date;
     private String picture;
     private String serviceName;
+    private String phoneNumber;
     private List<WallContent> content;
 
     public int getId() {
@@ -78,5 +79,13 @@ public class ResponseHistory {
 
     public void setHid(int hid) {
         this.hid = hid;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
