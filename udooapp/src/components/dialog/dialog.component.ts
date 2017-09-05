@@ -67,13 +67,19 @@ export class DialogWindowComponent{
   onClickClose(){
     this.messages.componentBlur$.emit(false);
      if(this.closable.length > 0) {
+       this.question = '';
+       this.error = '';
        this.closable = '';
+       this.message = '';
        this.messages.sendClosableResponse(this.index, false);
      }
   }
   onClickCancel() {
     this.messages.componentBlur$.emit(false);
     this.question = '';
+    this.message = '';
+    this.closable = '';
+    this.error = '';
     this.messages.sendQuestionResponse(false);
   }
 }

@@ -12,15 +12,14 @@
     </div>
   </div>
   <div class="service-dialog-window" id="dialog-window">
-
     <div class="container">
       <div class="loader">Loading...</div>
       <div id="service-container" (scroll)="containerScroll()" [style.height.px]="maxHeight - 50 + scrollTop"
            [style.margin-left.px]="movedCoordX"
            [style.animation-name]="animation">
-        <div class="service-dialog-close-background" [ngClass]="{'element-blur': backgroundBlur}" id="service-dialog-close-button" (click)="onClickClose()">
+        <button class="service-dialog-close-background" [ngClass]="{'element-blur': backgroundBlur}" id="service-dialog-close-button" (click)="onClickClose()">
           <div class="service-dialog-close"></div>
-        </div>
+        </button>
         <div class="loader" *ngIf="loading">Loading...</div>
         <div class="service-dialog-content" *ngIf="!loading">
           <div class="service-dialog-user-container" [ngClass]="{'element-blur': backgroundBlur}">
@@ -34,10 +33,16 @@
                      [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
               </div>
               <div class="service-dialog-user-action">
-                <img class="service-dialog-user-profile-action" src="./assets/call.png">
-                <img class="service-dialog-user-profile-action" src="./assets/message2.png">
-                <img id="service-dialog-add-to-contact" class="service-dialog-user-profile-action"
-                     src="./assets/add-to-contacts.png" (click)="onClickAddToContact()">
+                <div id="service-dialog-call">
+                  <a [href]="'tel:' + user.phone" target="_blank"><img class="service-dialog-icon service-dialog-user-profile-action" src="./assets/call.png"></a>
+                </div>
+                <div id="service-dialog-send-message" (click)="onClickMessageButton()">
+                  <img class="service-dialog-icon service-dialog-user-profile-action" src="./assets/message2.png">
+                </div>
+                <div id="service-dialog-add-to-contact" (click)="onClickAddToContact()">
+                  <img class="service-dialog-icon service-dialog-user-profile-action"
+                     src="./assets/add-to-contacts.png">
+                </div>
               </div>
             </div>
           </div>
@@ -45,13 +50,13 @@
             <div [ngClass]="{'element-blur': backgroundBlur}">
               <div class="service-dialog-title">{{service.title}}</div>
               <div class="service-dialog-location"><img
-                class="service-dialog-user-profile-action service-dialog-user-profile-location"
+                class="service-dialog-icon service-dialog-user-profile-location"
                 src="./assets/location.png"> <span class="service-dialog-user-icon-text">{{getLocation()}}</span>
               </div>
             </div>
             <gallery class="detail-gallery" [editable]="false" [images]="getPictures()"
                      (onClickImage)="imageOpen($event)"
-                     [close]="isClose()" [smallPictures]="true"></gallery>
+                     [close]="isClose()" [smallPictures]="true" (onClickCloseImage)="onClickCloseFullscreenGallery()"></gallery>
             <div [ngClass]="{'element-blur': backgroundBlur}">
               <div class="service-dialog-description">{{service.description}}<span id="service-dialog-more-button"
                                                                                    class="service-dialog-more"
@@ -66,12 +71,12 @@
          [style.margin-left.px]="movedCoordX" [style.animation-name]="animation">
       <div class="service-dialog-service-button" id="service-dialog-bookmark-button" (click)="onClickBookmark()">
         <div>
-          <img class="service-dialog-user-profile-action"
+          <img class="service-dialog-icon"
                [src]="!addedToBookmark ? './assets/bookmark.png' : './assets/bookmark_yellow.png'"><span
           class="service-dialog-user-icon">Bookmark</span></div>
       </div>
       <div class="service-dialog-service-button" id="service-dialog-send-offer-button" (click)="onClickSendOffer()">
-        <div><img class="service-dialog-user-profile-action"
+        <div><img class="service-dialog-icon"
                   src="./assets/offer.png"><span class="service-dialog-user-icon">Send Offer</span></div>
       </div>
     </div>

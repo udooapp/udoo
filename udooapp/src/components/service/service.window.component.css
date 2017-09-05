@@ -11,28 +11,6 @@ dialog {
     margin-left: 15%;
     width: 70%;
   }
-
-  .service-dialog-user-picture {
-    width: 250px;
-    height: 250px;
-    margin: -90px 0 0 -90px;
-  }
-}
-
-@media (min-width: 961px) and (max-width: 1269px) {
-  .service-dialog-user-picture {
-    width: 140px;
-    height: 140px;
-    margin: -35px 0 0 -35px;
-  }
-}
-
-@media (min-width: 1270px) {
-  .service-dialog-user-picture {
-    width: 320%;
-    min-height: 120%;
-    margin: -100% 0 0 -100%;
-  }
 }
 
 @media (min-width: 961px) {
@@ -72,12 +50,6 @@ dialog {
   .service-dialog-direction-right {
     right: -10px;
   }
-
-  .service-dialog-user-picture {
-    width: 140px;
-    height: 140px;
-    margin: -30px 0 0 -30px;
-  }
 }
 
 @media (max-width: 960px) and (orientation: landscape) {
@@ -96,12 +68,6 @@ dialog {
 
   .service-dialog-direction {
     margin-top: 160px;
-  }
-
-  .service-dialog-user-picture {
-    width: 170px;
-    height: 170px;
-    margin: -50px 0 0 -50px;
   }
 
   #service-container {
@@ -131,11 +97,6 @@ dialog {
     margin-top: 120px;
   }
 
-  .service-dialog-user-picture {
-    width: 130px;
-    height: 130px;
-    margin: -30px 0 0 -30px;
-  }
 }
 
 @media (max-width: 641px) and (orientation: portrait) {
@@ -144,11 +105,6 @@ dialog {
     margin-top: 230px;
   }
 
-  .service-dialog-user-picture {
-    width: 130px;
-    height: 130px;
-    margin: -30px 0 0 -30px;
-  }
 }
 
 .service-dialog-background {
@@ -188,8 +144,8 @@ dialog {
   position: relative;
   width: 4px;
   float: right;
-  margin-top: 5px;
-  margin-right: 16px;
+  margin-top: 0;
+  margin-right: 10px;
   border-radius: 1px;
   transform: rotate(45deg);
 }
@@ -215,6 +171,8 @@ dialog {
   height: 36px;
   border-radius: 30px;
   cursor: pointer;
+  border: none;
+  background-color: transparent;
 }
 
 .service-dialog-close-background:hover {
@@ -438,11 +396,18 @@ dialog {
   height: 20px;
   margin: 2px;
 }
-
-.service-dialog-user-profile-action {
+.service-dialog-icon{
   width: 30px;
   height: 30px;
   margin: 2px;
+
+}
+.service-dialog-user-profile-action {
+  border-radius: 100%;
+  cursor: pointer;
+}
+.service-dialog-user-profile-action:hover{
+  background-color: #EAEAEA;
 }
 
 .service-dialog-user-profile-location {
@@ -476,14 +441,16 @@ dialog {
 
 .service-dialog-user-profile-picture {
   margin: 5px;
-  width: 70px;
-  height: 70px;
+  width: 100px;
+  height: 100px;
   border-radius: 100%;
   background-color: #FAFAFA;
-  padding: 5%;
   overflow: hidden;
 }
 
 .service-dialog-user-picture {
+  height: 100%;
+  min-width: 100%;
+  width: auto;
   object-fit: cover;
 }

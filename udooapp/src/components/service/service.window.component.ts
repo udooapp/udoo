@@ -9,6 +9,7 @@ import {GalleryComponent} from "../gallery/gallery.component";
 import {NotifierController} from "../../controllers/notify.controller";
 import {ContactService} from "../../services/contact.service";
 import {BookmarkService} from "../../services/bookmark.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'service-dialog',
@@ -29,6 +30,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   maxHeight: number = 300;
   scrollTop: number = 0;
 
+  private isScroll: boolean = false;
   private startCoordX = 0;
   private scrollDirection = 0;
   private coordStartY: number = 0;
@@ -50,9 +52,11 @@ export class ServiceDialogComponent implements AfterViewChecked {
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() scroll: EventEmitter<number> = new EventEmitter();
   @Output() sendOffer: EventEmitter<any> = new EventEmitter();
+  @Output() onClickMessage: EventEmitter<number> = new EventEmitter();
+  @Output() onClickPhone: EventEmitter<number> = new EventEmitter();
   @Input() disableKeyboard: boolean = false;
 
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
 
     if (!this.added) {
       this.added = true;
@@ -76,7 +80,31 @@ export class ServiceDialogComponent implements AfterViewChecked {
         let buttonContact = document.getElementById('service-dialog-add-to-contact');
         if (buttonContact != null) {
           buttonContact.addEventListener('touchend', function (event) {
-            t.onClickAddToContact();
+            if(!t.isScroll) {
+              t.onClickAddToContact();
+            } else {
+              t.isScroll = false;
+            }
+          })
+        }
+        let buttonMessage = document.getElementById('service-dialog-send-message');
+        if (buttonMessage != null) {
+          buttonMessage.addEventListener('touchend', function (event) {
+            if(!t.isScroll) {
+              t.onClickMessageButton();
+            } else {
+              t.isScroll = false;
+            }
+          })
+        }
+        let buttonCall = document.getElementById('service-dialog-call');
+        if (buttonCall != null) {
+          buttonCall.addEventListener('touchend', function (event) {
+            if(!t.isScroll) {
+              window.open('tel:' + t.user.phone, "_self");
+            } else {
+              t.isScroll = false;
+            }
           })
         }
         el.scrollTop = 0;
@@ -94,10 +122,12 @@ export class ServiceDialogComponent implements AfterViewChecked {
             t.coordY = touch.pageY;
             t.coordStartY = t.coordY;
             t.scrollDirection = 0;
+            t.isScroll = false;
           }
         }, false);
         el.addEventListener('touchend', e => {
           e.preventDefault();
+          t.scrollDirection = 0;
           if (t.movedCoordX != 0) {
             if (width / 2 > Math.abs(t.movedCoordX)) {
               t.animation = t.animations[0];
@@ -119,22 +149,23 @@ export class ServiceDialogComponent implements AfterViewChecked {
         el.addEventListener('touchmove', e => {
           e.preventDefault();
           if (t.pictureOpen == -1) {
+            t.isScroll = true;
             let touch = e.touches[0];
-            if (t.scrollDirection == 0 || t.scrollDirection == 1) {
-
-              el.scrollTop = el.scrollTop - (touch.pageY - t.coordStartY);
-              t.coordStartY = touch.pageY;
-            }
-            if (t.scrollDirection == 0 || t.scrollDirection == -1) {
-              t.movedCoordX = touch.pageX - t.startCoordX;
-            } else {
-              t.movedCoordX = 0;
-            }
             if (t.scrollDirection == 0) {
-              if (Math.abs(touch.pageY - t.coordY) >= 10) {
+              if (Math.abs(touch.pageY - t.coordY) >= 15) {
                 t.scrollDirection = 1;
-              } else if (Math.abs(t.movedCoordX) >= 10) {
+              } else if (Math.abs(touch.pageX - t.startCoordX) >= 15) {
                 t.scrollDirection = -1;
+              }
+            } else {
+              if (t.scrollDirection == 1) {
+                el.scrollTop = el.scrollTop - (touch.pageY - t.coordStartY);
+                t.coordStartY = touch.pageY;
+              }
+              if (t.scrollDirection == -1) {
+                t.movedCoordX = touch.pageX - t.startCoordX;
+              } else {
+                t.movedCoordX = 0;
               }
             }
           }
@@ -164,6 +195,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
     });
     controller.setData$.subscribe(value => {
       this.scrollTop = 0;
+      this.contactAdded = false;
       if (value == null) {
         this.loading = false;
       } else {
@@ -239,7 +271,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   }
 
   @Input()
-  set data(value: any) {
+  public set data(value: any) {
     if (value != null) {
       this.loading = false;
       this.service = value;
@@ -249,9 +281,13 @@ export class ServiceDialogComponent implements AfterViewChecked {
       this.loading = false;
     }
   }
+  @Input()
+  public set closeDialog(value){
+    this.onClickClose();
+  }
 
   @Input()
-  set load(value: boolean) {
+  public set load(value: boolean) {
     if (value) {
       this.visible = true;
       this.loading = true;
@@ -259,18 +295,29 @@ export class ServiceDialogComponent implements AfterViewChecked {
       this.loading = false;
     }
   }
+  public onClickMessageButton(){
+    this.onClickMessage.emit(this.user.uid);
+  }
 
-  getPictures(): any[] {
+  public getPictures(): any[] {
+
     return this.service.picturesOffer ? this.service.picturesOffer : this.service.picturesRequest;
   }
 
-  imageOpen(event) {
+  public imageOpen(event) {
     this.backgroundBlur = true;
     this.pictureOpen = event;
     this.notifier.notify(GalleryComponent.IMAGE)
   }
 
-  isClose() {
+  public onClickCloseFullscreenGallery() {
+    this.notifier.pageChanged$.emit(' ');
+    ++this.imageClose;
+    this.backgroundBlur = false;
+    this.pictureOpen = -1;
+  }
+
+  public isClose() {
     return this.imageClose;
   }
 
@@ -281,7 +328,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
     return this.user.picture;
   }
 
-  getLocation(): string {
+  public getLocation(): string {
     if (this.service.location != null && this.service.location != '' && JSON.parse(this.service.location).address) {
       return JSON.parse(this.service.location).address
     } else {
@@ -289,37 +336,37 @@ export class ServiceDialogComponent implements AfterViewChecked {
     }
   }
 
-  onClickSendOffer() {
+  public onClickSendOffer() {
     this.sendOffer.emit(this.service);
   }
 
-  onClickBookmark() {
+  public onClickBookmark() {
     let type: boolean = !this.service.rid;
     this.bookmakrService.save(type ? this.service.oid : this.service.rid, type).subscribe(
       () => {
         this.addedToBookmark = !this.addedToBookmark;
       },
-      error =>{
+      error => {
         this.dialog.sendError(error);
       }
     );
   }
 
-  onClickOpen() {
+  public onClickOpen() {
     this.open.emit(this.service);
   }
 
-  onClickNext() {
+  public onClickNext() {
     this.animation = this.animations[1];
     this.next.emit(this.service);
   }
 
-  onClickPrevious() {
+  public onClickPrevious() {
     this.animation = this.animations[2];
     this.previous.emit(this.service);
   }
 
-  onClickClose() {
+  public onClickClose() {
     if (this.visible) {
       this.visible = false;
       this.close.emit(true);
@@ -328,7 +375,7 @@ export class ServiceDialogComponent implements AfterViewChecked {
   }
 
 
-  containerScroll() {
+  public containerScroll() {
     let e: HTMLElement = document.getElementById("service-container");
     if (e != null) {
       this.scrollTop = e.scrollTop;
