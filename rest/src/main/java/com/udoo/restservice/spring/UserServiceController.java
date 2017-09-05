@@ -94,7 +94,6 @@ public class UserServiceController implements IUserServiceController {
                     if (userUpdated.getLocation() == null) {
                         userUpdated.setLocation("");
                     }
-
                     String responseMessage = "Profile updated";
                     if (!userUpdated.getEmail().equals(userSaved.getEmail())) {
                         responseMessage = "Check your email address";
@@ -113,7 +112,7 @@ public class UserServiceController implements IUserServiceController {
                         int activated = userSaved.getActive();
                         verificationRepository.deleteByUid(userUpdated.getUid(), false);
                         smsService.sendVerificationMessage(userUpdated);
-                        activated = (activated |(1 << 2));
+                        activated = (activated | (1 << 2));
                         activated = (activated & ~(1 << 3));
                         userUpdated.setActive(activated);
                     }
@@ -143,6 +142,7 @@ public class UserServiceController implements IUserServiceController {
                         update = true;
                     }
                     if (!userUpdated.getPhone().equals(userSaved.getPhone())) {
+                        userUpdated.setPhone('+' + userUpdated.getPhone().replaceAll("[^\\d]", ""));
                         HistoryElement historyElement = new HistoryElement();
                         historyElement.setBeforeState(userUpdated.getPhone());
                         historyElement.setAction(WallServiceController.UPDATED_PHONE_NUMBER);
