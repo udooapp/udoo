@@ -1,17 +1,16 @@
 <div class="data-container">
-  <h1 i18n>{{getTitle()}}</h1>
   <div class="bids-container">
-    <div class="bid" *ngFor="let item of data;  let i = index" >
-      <div class="bid-picture"><img class="bid-image" [src]="getPictureUrl(item.image)"></div>
-      <div class="bid-content" (click)="onClickBid(i)">
-        <div class="bid-title"><b i18n></b>{{item.title}}</div>
-        <div class="bid-name">{{item.name}}</div>
-        <div class="bid-text"><b i18n>Message: </b>{{item.description}}</div>
+    <div class="service-container-box" *ngFor="let item of data;  let i = index" >
+      <div class="service-container-box-content">
+        <div class="service-container-box-title" (click)="onClickBid(i)">{{item.title}}</div>
+        <div class="bid-name">by {{item.name}}</div>
+        <div class="bid-text" (click)="onClickDescription(item.description)"><b i18n>Message: </b>{{getDescription(item.description)}}</div>
         <div class="bid-text"><b i18n>Status: </b><span [style.color]="getColor(item.status)">{{getStatus(item.status, item.paymentState)}}</span></div>
         <div class="bid-text"><b i18n>Price: </b>{{item.price}} &#8364;</div>
         <div class="bid-text" *ngIf="item.date != null"><b i18n>Last update: </b>{{convertNumberToDateTime(item.date)}}</div>
         <div *ngIf="item.paymentState == 2 && item.state > 0" [style.color]="'red'">The provider sent a reminder! Please pay his/her work!</div>
       </div>
+      <div class="service-container-box-picture"><img class="service-container-box-image" [src]="getPictureUrl(item.image)"></div>
       <button *ngIf="item.status == 1" class="input-button button-dark" (click)="confirmBid(i)">Confirm</button>
       <button *ngIf="item.status == -1" class="input-button button-light" (click)="cancelBid(i)">Cancel</button>
       <button *ngIf="item.status == 2 && item.paymentState > -1 && item.paymentState < 4" class="input-button button-dark" (click)="onClickSendMoney(i)">Send money</button>

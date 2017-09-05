@@ -6,30 +6,12 @@
   margin: 2%;
 }
 
-.input-button {
-  margin-left: 10%;
-  margin-bottom: 2%;
-}
-
 @media(min-width: 961px) {
-  .input-button {
-    width: 20%;
-  }
 
   .data-container {
     margin-left: 10%;
     margin-right: 10%;
     width: 80%;
-  }
-
-  .bid-content{
-    margin-left: 170px;
-  }
-  .bid-container {
-    width: 74%;
-    padding-left: 13%;
-    padding-right: 13%;
-    margin-bottom: 50px;
   }
   .input-button{
     margin-left: 180px;
@@ -38,112 +20,39 @@
 
 @media(max-width: 960px) {
   .input-button {
-    width: 78%;
     height: 40px;
-  }
-
-  .bid-container {
-    width: 80%;
-    padding-left: 10%;
-    padding-right: 10%;
-    margin-bottom: 50px;
-  }
-  .bid-content{
-    margin-left: 170px;
-  }
-  .input-button{
     margin-left: 180px;
   }
 }
 
 @media(max-width: 641px) {
   .input-button {
-    width: 87%;
-    margin-left: 6%;
+    margin-left: 0;
     margin-bottom: 10px;
   }
 
-  .bid-container {
-    width: 90%;
-    padding-left: 5%;
-    padding-right: 5%;
-    margin-bottom: 50px;
-  }
-  .bid-picture{
-    visibility: hidden;
-    display: none;
-  }
-  .bid-content{
-    margin-left: 0;
-  }
-  .input-button{
-    margin-left: 10px;
-  }
 }
 
 h1 {
   text-align: center;
   color: #378281;
+  font-weight: 500;
+  margin-top: 0;
 }
 
 .data-container {
-  padding: 5%;
+  padding: 0 0 30px 0;
 }
 
-.bid {
-  cursor: pointer;
-  min-height: 160px;
-  overflow: hidden;
-  position: relative;
-  border-top: 2px solid #378281;
-}
-
-.bid:hover {
-  background-color: #FAFAFA;
-}
-.bid-all-content{
-
-}
-.bid-picture {
-  height: 130px;
-  width: 130px;
-  position: absolute;
-  margin: 10px 0 10px 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 2px;
-  overflow: hidden;
-  float: left;
-}
-
-.bid-image {
-  height: 134px;
-  width: 134px;
-  margin-left: -2px;
-  margin-top: -2px;
-  background-color: #FAFAFA;
-  object-fit: cover;
-}
 .loader{
   margin-top: 15%;
-}
-.bid-content {
-  padding: 10px 10px 10px 10px;
-  color: dimgrey;
-  margin-right: 50px;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.bid-title {
-  color: #378281;
-  font-weight: lighter;
-  font-size: 18pt;
 }
 
 .bid-name {
   word-wrap: break-word;
-  font-size: 14pt;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  font-size: 11pt;
+  padding: 5px 0;
+  color: #4A4A4A;
 }
 .date-expired{
   color: #FF0000;
@@ -166,8 +75,24 @@ h1 {
 .bid-button-container img:hover{
   opacity: 0.8;
 }
-.input-button{
-  min-width: 150px;
+.input-button {
+  width: auto;
+  height: 30px;
+  min-width: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
   max-width: 200px;
   margin-top: 10px;
+}
+.service-container-box-picture{
+  top: 20px;
+  right: 20px;
+}
+.bid-text{
+  font-size: 11pt;
+  color: #3A3A3A
+}
+.bid-text b{
+  color:#378281;
+  font-weight: 500;
 }

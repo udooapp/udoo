@@ -103,10 +103,6 @@ export class BidComponent implements OnInit {
     return url;
   }
 
-  public getTitle(): string {
-    return "Accepted Offers";
-  }
-
   public getStatus(status: number, paymentStatus: number) {
     if(paymentStatus == 4){
       return 'Paid'
@@ -172,6 +168,16 @@ export class BidComponent implements OnInit {
     let date: Date = new Date(millis);
     let t: string[] = date.toDateString().split(" ");
     return date.getFullYear() + ' ' + t[1] + ' ' + t[2] + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  }
+
+  public onClickDescription(description: string){
+    this.dialog.sendMessage(description);
+  }
+  public getDescription(description: string): string{
+    if(description != null){
+        return description.length < 30?  description : description.substr(0, 27) + '...';
+    }
+    return '';
   }
 }
 

@@ -5,24 +5,6 @@
     padding-right: 10%;
   }
 
-  .main-list-service-picture {
-    width: 152px;
-    height: 95px;
-  }
-
-  .main-list-service-image {
-    width: auto;
-    height: 95px;
-  }
-
-  .main-list-service-content {
-    width: calc(100% - 157px);
-  }
-
-  .main-list-service-title {
-    font-size: 16pt;
-  }
-
   .main-list-service-content-text {
     font-size: 12pt;
     margin-left: -5px;
@@ -43,24 +25,6 @@
     width: 100%;
   }
 
-  .main-list-service-picture {
-    width: 128px;
-    height: 80px;
-  }
-
-  .main-list-service-image {
-    width: auto;
-    height: 80px;
-  }
-
-  .main-list-service-content {
-    width: calc(100% - 133px);
-  }
-
-  .main-list-service-title {
-    font-size: 14pt;
-  }
-
   .main-list-service-content-text {
     font-size: 10pt;
     margin-left: -5px;
@@ -79,24 +43,6 @@
 @media (max-width: 641px) {
   .main-list-container {
     width: 100%;
-  }
-
-  .main-list-service-picture {
-    width: 104px;
-    height: 65px;
-  }
-
-  .main-list-service-image {
-    width: auto;
-    height: 65px;
-  }
-
-  .main-list-service-content {
-    width: calc(100% - 109px);
-  }
-
-  .main-list-service-title {
-    font-size: 12pt;
   }
 
   .main-list-service-content-text {
@@ -123,42 +69,9 @@
 }
 
 /*Service*/
-.main-list-service {
-  overflow: hidden;
-  padding: 20px;
-  cursor: pointer;
-  position: relative;
-  background-color: #F7F7F7;
-  border-top: 2px solid #FFFFFF;
-}
-
-.main-list-service:hover {
-  background-color: #FFFFFF;
-}
 
 .loader {
   margin-bottom: 50px;
-}
-
-.main-list-service-picture {
-  overflow: hidden;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.main-list-service-image {
-  margin: auto;
-  display: block;
-}
-
-.main-list-service-content {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.main-list-service-title {
-  color: #2E2F2F;
-  font-weight: lighter;
 }
 
 .main-list-service-content-text {
@@ -197,7 +110,7 @@
   height: 100%;
   text-align: center;
   color: #FFFFFF;
-  font-size: 14pt;
+  font-size: 12pt;
   padding-top: 45px;
 }
 

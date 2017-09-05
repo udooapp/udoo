@@ -1,17 +1,17 @@
 <div class="main-list-container">
-  <div class="main-list-service" *ngFor="let item of services; let i = index" routerLinkActive="active" id="main-list-service">
-    <div [id]="'main-list-service-container' + i" class="main-list-service-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" (click)="onClickOpen(item)">
-      <div class="main-list-service-content">
-        <div class="main-list-service-title">{{item.title}}</div>
+  <div class="service-container-box" *ngFor="let item of services; let i = index" routerLinkActive="active" id="main-list-service">
+    <div [id]="'main-list-service-button-container' + i" class="main-list-service-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" (click)="onClickOpen(item)">
+      <div class="service-container-box-content">
+        <div class="service-container-box-title">{{item.title}}</div>
         <div class="main-list-service-content-text"><img
           src="./assets/location.png"><span>{{getAddress(item.location)}}</span></div>
         <div class="main-list-service-content-text"><img src="./assets/contact.png"><span>by {{item.user}}</span></div>
       </div>
-      <div class="main-list-service-picture"><img class="main-list-service-image" [src]="getPicture(i)"></div>
+      <div class="service-container-box-picture"><img class="service-container-box-image" [src]="getPicture(i)"></div>
     </div>
     <div class="main-list-service-button-container" [style.margin-left.px]="selectedService == i ? -serviceMargin : 0" >
       <div class="main-list-service-button main-list-service-button-detail" (click)="onClickOpen(item)">Detail</div>
-      <div class="main-list-service-button main-list-service-button-bookmarks">Bookmarks</div>
+      <div class="main-list-service-button main-list-service-button-bookmarks" (click)="onClickBookmark(item)">Bookmarks</div>
       <div class="main-list-service-button main-list-service-button-send-offer" (click)="onClickSendOffer(item)">Send Offer</div>
     </div>
   </div>

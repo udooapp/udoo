@@ -25,6 +25,17 @@ body {
 }
 
 @media (min-width: 961px) {
+  .service-container-box-image {
+    width: auto;
+    height: 95px;
+  }
+  .service-container-box-picture {
+    width: 152px;
+    height: 95px;
+  }
+  .service-container-box-title {
+    font-size: 16pt;
+  }
   .loading-container {
     background: url("./assets/logo.png") no-repeat center;
     background-size: 100% auto;
@@ -32,7 +43,9 @@ body {
     margin-left: 30%;
     margin-right: 30%;
   }
-
+  .service-container-box-content {
+    width: calc(100% - 157px);
+  }
   .input-container {
     width: 450px;
     margin: 0 auto;
@@ -45,6 +58,19 @@ body {
 }
 
 @media (max-width: 960px) {
+
+  .service-container-box-image {
+    width: auto;
+    height: 80px;
+  }
+
+  .service-container-box-picture {
+    width: 128px;
+    height: 80px;
+  }
+  .service-container-box-title {
+    font-size: 14pt;
+  }
   .loading-container {
     background: url("./assets/logo.png") no-repeat center;
     background-size: 100% auto;
@@ -52,7 +78,9 @@ body {
     margin-left: 30%;
     margin-right: 30%;
   }
-
+  .service-container-box-content {
+    width: calc(100% - 133px);
+  }
   .input-container {
     padding: 1% 20% 5% 20%;
   }
@@ -63,6 +91,17 @@ body {
 }
 
 @media (max-width: 641px) {
+  .service-container-box-image {
+    width: auto;
+    height: 65px;
+  }
+  .service-container-box-picture {
+    width: 104px;
+    height: 65px;
+  }
+  .service-container-box-title {
+    font-size: 12pt;
+  }
   .loading-container {
     background: url("./assets/logo.png") no-repeat center;
     background-size: 100% auto;
@@ -77,6 +116,9 @@ body {
 
   .loading-container img {
     margin-top: 55%;
+  }
+  .service-container-box-content {
+    width: calc(100% - 109px);
   }
 }
 
@@ -299,4 +341,35 @@ textarea:focus, input:focus, select:focus {
   -o-filter: blur(5px);
   -ms-filter: blur(5px);
   filter: blur(5px);
+}
+
+.service-container-box{
+  overflow: hidden;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  background-color: #F7F7F7;
+  border-top: 2px solid #FFFFFF;
+}
+
+.service-container-box:hover {
+  background-color: #FFFFFF;
+}
+.service-container-box-content {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.service-container-box-title {
+  color: #2E2F2F;
+  font-weight: lighter;
+}
+.service-container-box-picture {
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.service-container-box-image {
+  margin: auto;
+  display: block;
 }
