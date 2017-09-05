@@ -18,7 +18,7 @@ export class OfferListComponent extends ConversionMethods implements OnInit {
   error: string;
   message: string = '';
   categories = [];
-  delete: boolean = false;
+  private delete: boolean = false;
   index: number = 0;
   id: number = 0;
   loading: boolean = false;

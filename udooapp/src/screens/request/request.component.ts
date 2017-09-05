@@ -43,7 +43,7 @@ export class RequestComponent implements OnInit, IServiceForm {
   private backgroundBlur: boolean = false;
   //Gallery
 
-  modification: number[] = [-1, 0, -1];
+  modification: number[] = [-2, 0, -1];
   imageError: number[] = [];
   imageLoading: number[] = [];
 
@@ -51,8 +51,8 @@ export class RequestComponent implements OnInit, IServiceForm {
     this.notifier.notify(RequestComponent.NAME);
     notifier.pageChanged$.subscribe(action => {
       if (action == RequestComponent.NAME) {
-        if (this.modification[0] <= 0) {
-          this.modification[0] = -1;
+        if (this.modification[0] <= -2) {
+          this.modification[0] = -2;
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([ROUTES.REQUEST_LIST]);
@@ -78,7 +78,7 @@ export class RequestComponent implements OnInit, IServiceForm {
 
           this.requestService.deleteUserRequest(this.data.rid, this.modification[0]).subscribe(
             () => {
-              this.modification[0] = -1;
+              this.modification[0] = -2;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
@@ -90,11 +90,11 @@ export class RequestComponent implements OnInit, IServiceForm {
             }
           );
           this.modification[1] = 0;
-        } else if (this.modification[0] > -1) {
+        } else if (this.modification[0] > -2) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.requestService.deleteUserRequest(this.data.rid, -1).subscribe(
             () => {
-              this.modification[0] = -1;
+              this.modification[0] = -2;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
@@ -152,10 +152,12 @@ export class RequestComponent implements OnInit, IServiceForm {
   public onClickSave() {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
-
+        for(let i: number = 0; i < this.data.picturesRequest.length; ++i){
+          this.data.picturesRequest[i].src = '';
+        }
         this.requestService.saveRequest(this.data, this.modification[0]).subscribe(
           () => {
-            this.modification[0] = -1;
+            this.modification[0] = -2;
             this.modification[1] = 0;
             this.modification[2] = -1;
             this.data = new Request(null, '', '', -1, -1, '', '', 0, []);
@@ -176,6 +178,11 @@ export class RequestComponent implements OnInit, IServiceForm {
     } else {
       this.dialog.sendMessage("Please, wait until the end of the image uploading!")
     }
+  }
+
+  public onClickCloseFullscreenGallery() {
+    this.backgroundBlur = false;
+    this.notifier.pageChanged$.emit(' ');
   }
 
   private checkValidation(): boolean {
@@ -238,11 +245,47 @@ export class RequestComponent implements OnInit, IServiceForm {
     return this.type;
   }
 
+  onClickNewCameraImage(event: string) {
+    let first: boolean = false;
+    if (this.modification[0] <= 0) {
+      first = true;
+      this.modification[0] = this.data.rid == null ? -1 : this.data.rid;
+      this.data.rid = null;
+    }
+    let data = this.data;
+    let pos: number = data.picturesRequest.push({src: event}) - 1;
+    let pos2: number = this.imageLoading.push(pos) - 1;
+    if (first) {
+      this.requestService.createRequest(event).subscribe(
+        message => {
+          data.rid = JSON.parse(message).delete;
+          data.picturesRequest[data.picturesRequest.length - 1] = {src: event, prid: JSON.parse(message).id};
+          this.imageLoading.splice(pos2, 1);
+        },
+        () => {
+          this.imageLoading.splice(pos2, 1);
+          this.imageError.push(pos)
+        }
+      );
+    } else {
+      this.requestService.uploadPicture(data.rid, event).subscribe(
+        message => {
+          data.picturesRequest[data.picturesRequest.length - 1] = {src: event, prid: message};
+          this.imageLoading.splice(pos2, 1);
+        },
+        () => {
+          this.imageLoading.splice(pos2, 1);
+          this.imageError.push(pos)
+        }
+      );
+    }
+  }
+
   onClickNewImage(event) {
     let first: boolean = false;
     if (this.modification[0] <= 0) {
       first = true;
-      this.modification[0] = this.data.rid;
+      this.modification[0] = this.data.rid == null ? -1 : this.data.rid;
       this.data.rid = null;
     }
     let input = event.target;
@@ -250,13 +293,13 @@ export class RequestComponent implements OnInit, IServiceForm {
     let imageLoading = this.imageLoading;
     let imageError = this.imageError;
     let reader = new FileReader();
-    let offerService = this.requestService;
+    let requestService = this.requestService;
     reader.onload = function () {
       let dataURL = reader.result;
       let pos: number = data.picturesRequest.push({src: dataURL}) - 1;
       let pos2: number = imageLoading.push(pos) - 1;
       if (first) {
-        offerService.createRequest(dataURL).subscribe(
+        requestService.createRequest(dataURL).subscribe(
           message => {
 
             data.rid = JSON.parse(message).delete;
@@ -269,7 +312,7 @@ export class RequestComponent implements OnInit, IServiceForm {
           }
         );
       } else {
-        offerService.uploadPicture(data.rid, dataURL).subscribe(
+        requestService.uploadPicture(data.rid, dataURL).subscribe(
           message => {
             data.picturesRequest[data.picturesRequest.length - 1] = {src: dataURL, prid: message};
             imageLoading.splice(pos2, 1);
@@ -346,11 +389,13 @@ export class RequestComponent implements OnInit, IServiceForm {
       case 0:
         return 'Payment is checked';
       case 1:
-        return 'Money is transferred';
+        return 'Money is confirmed';
       case 2:
         return 'Reminder sent';
       case 3:
-        return 'Transferred invalidated'
+        return 'Transferred invalidated';
+      case 4:
+        return 'Money is transferred';
     }
   }
 

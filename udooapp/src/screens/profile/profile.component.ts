@@ -127,6 +127,11 @@ export class ProfileComponent implements OnInit, IFormInput {
       this.valid[index] = value;
     }
   }
+
+  public onClickTake(event) {
+    this.user.picture = event;
+  }
+
   private checkValidation(): boolean {
     for (let i = 0; i < this.valid.length; ++i) {
       if (!this.valid[i]) {

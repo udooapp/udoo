@@ -21,7 +21,7 @@
     <gallery
       [images]="getPictures()"
       [editable]="true" (onClickImage)="onClickImage($event)" (onClickNewImage)="onClickNewImage($event)"
-      (onClickRemove)="onClickRemove($event)"
+      (onClickRemove)="onClickRemove($event)" (onClickCloseImage)="onClickCloseFullscreenGallery()" (onClickNewCameraImage)="onClickNewCameraImage($event)"
       [close]="modification[2]"
       [loading]="imageLoading" [error]="imageError"></gallery>
     <div [ngClass]="{'element-blur': isBlur()}">
@@ -73,16 +73,19 @@
           <div class="bid-name">{{item.name}}</div>
           <div>Price: {{item.price}} &#8364;</div>
           <div>{{item.description}}</div>
-          <div *ngIf="item.accepted > 0"><b>Payment state: </b> <span
-            [style.color]="item.paymentState == -1 ? 'red' : ''">{{getPaymentState(item.paymentState)}}</span></div>
+          <div *ngIf="item.accepted > 0">
+            <b>Payment state: </b>
+            <span [style.color]="item.paymentState == -1 ? 'red' : ''">{{getPaymentState(item.paymentState)}}</span>
+          </div>
           <b *ngIf="item.accepted == 1" [style.color]="'#4A9594'">Accepted</b>
+          <b *ngIf="item.accepted == 2 && item.paymentState == 4" [style.color]="'#4A9594'">Completed</b>
           <b *ngIf="item.accepted == 0" [style.color]="'red'">Declined</b>
           <div class="bid-button-container" *ngIf="item.accepted == -1">
             <button class="bid-input-button  input-button button-light" (click)="onClickBid(item, false)">Decline
             </button>
             <button class="bid-input-button  input-button button-dark" (click)="onClickBid(item, true)">Accept</button>
           </div>
-          <div class="bid-button-container" *ngIf="item.accepted > 0 && item.paymentState != 1">
+          <div class="bid-button-container" *ngIf="item.accepted > 0 && item.paymentState != 1 && item.paymentState != 4">
             <button class="bid-input-button  input-button button-dark" (click)="onClickPaymentReminder(item)">Payment
               reminder
             </button>

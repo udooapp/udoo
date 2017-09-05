@@ -8,4 +8,6 @@ export interface IServiceForm extends IFormInterface{
   onClickBid(bid, state);
   isUpdate(): boolean;
   isBlur(): boolean;
+  onClickCloseFullscreenGallery();
+  onClickNewCameraImage(event);
 }

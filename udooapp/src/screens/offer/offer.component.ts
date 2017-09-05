@@ -29,14 +29,15 @@ export class OfferComponent implements OnInit, IServiceForm {
   location: string = '';
   load: boolean = false;
   bids: any[] = [];
-  data = new Offer(null, '', '', -1, -1, '',[], 0, false, []);
+  data = new Offer(null, '', '', -1, -1, '', [], 0, false, []);
   type: boolean = false;
   emptyValidator: IValidator = new EmptyValidator();
   dateValidator: IValidator = new DateValidator();
   valid: boolean[] = [false, false, false, false, false, false];
 
+
   //Gallery
-  modification: number[] = [-1, 0, -1];
+  modification: number[] = [-2, 0, -1];
   imageLoading: number[] = [];
   imageError: number[] = [];
   private reload: boolean = false;
@@ -45,8 +46,8 @@ export class OfferComponent implements OnInit, IServiceForm {
   constructor(private userController: UserController, private offerService: OfferService, private bidService: BidService, private router: Router, private route: ActivatedRoute, private mapService: MapService, private notifier: NotifierController, private dialog: DialogController) {
     notifier.pageChanged$.subscribe(action => {
       if (action === OfferComponent.NAME) {
-        if (this.modification[0] <= 0) {
-          this.modification[0] = -1;
+        if (this.modification[0] <= -2) {
+          this.modification[0] = -2;
           this.modification[1] = 0;
           this.modification[2] = -1;
           router.navigate([ROUTES.OFFER_LIST]);
@@ -67,11 +68,11 @@ export class OfferComponent implements OnInit, IServiceForm {
     });
     this.dialog.questionResponse$.subscribe(response => {
       if (response) { //Clicked --> Yes
-        if (this.modification[1] === 1) {     //onClickNewImage
+        if (this.modification[1] <= 1) {     //onClickNewImage
 
           this.offerService.deleteUserOffer(this.data.oid, this.modification[0]).subscribe(
             () => {
-              this.modification[0] = -1;
+              this.modification[0] = -2;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
@@ -83,11 +84,11 @@ export class OfferComponent implements OnInit, IServiceForm {
             }
           );
           this.modification[1] = 0;
-        } else if (this.modification[0] > -1) {
+        } else if (this.modification[0] > -2) {
           //if the user inserted a new picture and navigate back without saving/updating
           this.offerService.deleteUserOffer(this.data.oid, -1).subscribe(
             () => {
-              this.modification[0] = -1;
+              this.modification[0] = -2;
               this.modification[1] = 0;
               this.modification[2] = -1;
               this.notifier.back();
@@ -102,9 +103,14 @@ export class OfferComponent implements OnInit, IServiceForm {
     });
   }
 
+  public onClickCloseFullscreenGallery() {
+    this.backgroundBlur = false;
+    this.notifier.pageChanged$.emit(' ');
+  }
+
   ngOnInit() {
     this.notifier.notify(OfferComponent.NAME);
-    this.modification[0] = -1;
+    this.modification[0] = -2;
     this.modification[1] = 0;
 
     let id: number = -1;
@@ -147,10 +153,13 @@ export class OfferComponent implements OnInit, IServiceForm {
   public onClickSave() {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
+        for(let i: number = 0; i < this.data.picturesOffer.length; ++i){
+          this.data.picturesOffer[i].src = '';
+        }
         this.offerService.saveOffer(this.data, this.modification[0]).subscribe(
           () => {
             this.data = new Offer(null, '', '', -1, -1, '', [], 0, false, []);
-            this.modification[0] = -1;
+            this.modification[0] = -2;
             this.modification[1] = 0;
             this.modification[2] = -1;
             this.notifier.back();
@@ -235,9 +244,9 @@ export class OfferComponent implements OnInit, IServiceForm {
 
   onClickNewImage(event) {
     let first: boolean = false;
-    if (this.modification[0] <= 0) {
+    if (this.modification[0] <= -1) {
       first = true;
-      this.modification[0] = this.data.oid;
+      this.modification[0] = this.data.oid == null ? -1 : this.data.oid;
       this.data.oid = null;
     }
     let input = event.target;
@@ -276,8 +285,47 @@ export class OfferComponent implements OnInit, IServiceForm {
         );
       }
     };
-
     reader.readAsDataURL(input.files[0]);
+  }
+
+  onClickNewCameraImage(event: string) {
+    let first: boolean = false;
+    if (this.modification[0] <= -1) {
+      first = true;
+      this.modification[0] = this.data.oid == null ? -1 : this.data.oid;
+      this.data.oid = null;
+    }
+    let data = this.data;
+    let imageLoading = this.imageLoading;
+    let imageError = this.imageError;
+    let offerService = this.offerService;
+    let pos: number = data.picturesOffer.push({src: event}) - 1;
+    let pos2: number = imageLoading.push(pos) - 1;
+    if (first) {
+      offerService.createOffer(event).subscribe(
+        message => {
+
+          data.oid = JSON.parse(message).delete;
+          data.picturesOffer[data.picturesOffer.length - 1] = {src: event, poid: JSON.parse(message).id};
+          imageLoading.splice(pos2, 1);
+        },
+        () => {
+          imageLoading.splice(pos2, 1);
+          imageError.push(pos)
+        }
+      );
+    } else {
+      offerService.uploadPicture(data.oid, event).subscribe(
+        message => {
+          data.picturesOffer[data.picturesOffer.length - 1] = {src: event, poid: message};
+          imageLoading.splice(pos2, 1);
+        },
+        () => {
+          imageLoading.splice(pos2, 1);
+          imageError.push(pos)
+        }
+      );
+    }
 
   }
 
@@ -341,15 +389,18 @@ export class OfferComponent implements OnInit, IServiceForm {
       case 0:
         return 'Payment is checked';
       case 1:
-        return 'Money is transferred';
+        return 'Money is confirmed';
       case 2:
         return 'Reminder sent';
       case 3:
-        return 'Transferred invalidated'
+        return 'Transferred invalidated';
+      case 4:
+        return 'Money is transferred';
     }
   }
-  public getPicture(picture: string){
-    if(picture == null || picture.length == 0){
+
+  public getPicture(picture: string) {
+    if (picture == null || picture.length == 0) {
       return './assets/profile_picture.png'
     }
     return picture;

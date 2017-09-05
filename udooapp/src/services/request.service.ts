@@ -77,7 +77,7 @@ export class RequestService extends HeaderService {
   public getRequestDialogData(rid: number): Observable<any> {
     let param = new URLSearchParams();
     param.append('rid', rid.toString());
-    let login = this.tokenService.getToken().length > 0;
+    let login = this.tokenService.getToken() && this.tokenService.getToken().length > 0;
     return this.http.get(config.server + '/request' + (login ? '/user' : '') + '/data/dialog',  new RequestOptions({search: param, headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleText);

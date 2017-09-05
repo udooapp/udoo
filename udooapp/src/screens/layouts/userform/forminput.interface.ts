@@ -3,4 +3,5 @@ export interface IFormInput extends IFormInterface{
   onKeyPassword(event);
   getPictureUrl();
   disableEmailInput():boolean;
+  onClickTake(event);
 }

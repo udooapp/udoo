@@ -73,6 +73,8 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
   //ScrollUp button
   public scrollUpVisibility: boolean = false;
 
+  private closeServiceDialog: number = 0;
+
   constructor(private changeDetector: ChangeDetectorRef, private bidService: BidService, private offerService: OfferService, private requestService: RequestService, private serviceDialogController: ServiceDialogController, private router: Router, private searchController: SearchController, private notifier: NotifierController, private mapService: MapService, private dialog: DialogController, private tokenService: TokenService, private mapController: MapMainController, private listController: ListMainController, private menuController: MenuController) {
     super();
     searchController.onClickSearchButton$.subscribe(() => {
@@ -158,18 +160,25 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     let contentContainer = document.getElementById('app-system-notification-container');
     if (contentContainer) {
       contentContainer.addEventListener('DOMSubtreeModified', () => {
-          if (contentContainer) {
-            t.pageContainerHeight = window.innerHeight - contentContainer.offsetHeight - 110;
+        if (contentContainer) {
+          let newHeight = window.innerHeight - contentContainer.offsetHeight - 110;
+          if(newHeight != t.pageContainerHeight) {
+            t.pageContainerHeight = newHeight;
             t.changeDetector.detectChanges();
-          } else {
-           // t.pageContainerHeight = window.innerHeight - 110;
           }
+        } else {
+          // t.pageContainerHeight = window.innerHeight - 110;
+        }
 
       });
     }
   }
 
-  ngAfterViewChecked(): void {
+  public isCloseDialog(): number {
+    return this.closeServiceDialog;
+  }
+
+  public ngAfterViewChecked(): void {
     let t = this;
 
     if (this.el2 == null) {
@@ -398,6 +407,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
 
   public onClickPage(pageIndex: number) {
     if (pageIndex >= 0 && pageIndex < 3 && this.page != pageIndex) {
+      ++this.closeServiceDialog;
       this.tokenService.setPageState(pageIndex);
       if (this.pageMargin < 0) {
         ++this.pageMargin;
@@ -581,7 +591,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     if (type) {
       this.offerService.getOfferDialogData(id).subscribe(
         value => {
-          if(this.serviceDialogIsOpen) {
+          if (this.serviceDialogIsOpen) {
             this.blur = true;
             this.serviceDialogController.setData$.emit({
               service: value.offer,
@@ -592,7 +602,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
         },
         error => {
 
-          if(this.serviceDialogIsOpen) {
+          if (this.serviceDialogIsOpen) {
             this.blur = false;
             this.serviceDialogController.setData$.emit(null);
             this.dialog.notifyError(error)
@@ -603,7 +613,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
       this.requestService.getRequestDialogData(id).subscribe(
         value => {
 
-          if(this.serviceDialogIsOpen) {
+          if (this.serviceDialogIsOpen) {
             this.blur = true;
             this.serviceDialogController.setData$.emit({
               service: value.request,
@@ -613,7 +623,7 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
           }
         },
         error => {
-          if(this.serviceDialogIsOpen) {
+          if (this.serviceDialogIsOpen) {
             this.blur = false;
             this.serviceDialogController.setData$.emit(null);
             this.dialog.notifyError(error)
@@ -637,6 +647,10 @@ export class MainComponent extends ConversionMethods implements OnInit, OnDestro
     } else {
       this.serviceDialogController.setData$.emit(null);
     }
+  }
+
+  public onClickMessage(uid: number) {
+    this.router.navigate([ROUTES.CHAT + uid]);
   }
 
   public onClickPrevious(value: any) {

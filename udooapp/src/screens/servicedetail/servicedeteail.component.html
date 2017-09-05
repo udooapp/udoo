@@ -27,7 +27,7 @@
 </div>
 <div class="gallery-container">
   <gallery class="detail-gallery" [editable]="false" [images]="getPictures()" (onClickImage)="imageOpen($event)"
-           [close]="isClose()"></gallery>
+           [close]="isClose()" (onClickCloseImage)="onClickCloseFullscreenGallery()"></gallery>
 </div>
 <div class="comments" *ngIf="loaded && type" [ngClass]="{'element-blur': blur}">
   <div class="comment-container" *ngFor="let item of comments">

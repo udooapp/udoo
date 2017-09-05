@@ -6,7 +6,7 @@
   <div class="service-container">
     <div class="service" *ngFor="let item of data;  let i = index">
       <img class="service-button-container" src="./assets/trash.png"
-           (click)="onClickDelete(offer ? item.sid : item.rid, i)">
+           (click)="onClickDelete(offer ? item.oid : item.rid, i)">
       <div *ngIf="item.bids > 0" class="service-button-container service-message">{{item.bids}}</div>
       <div class="service-all-content"
            [routerLink]="getServiceRouteText(i)"

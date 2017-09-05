@@ -60,8 +60,8 @@ export class OfferService extends HeaderService {
 
   public deleteUserOffer(id: number, deleted: number): Observable<string> {
     return this.http.post(config.server + '/offer/user/delete', JSON.stringify({
-      id: id,
-      delete: deleted
+      delete: deleted,
+      id: id
     }), new RequestOptions({headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractText)
       .catch(HandlerService.handleText);
@@ -80,8 +80,8 @@ export class OfferService extends HeaderService {
   }
   public getOfferDialogData(oid: number): Observable<any> {
     let param = new URLSearchParams();
-    param.append('oid', oid.toString());
-    let login = this.tokenService.getToken().length > 0;
+    param.append('id', oid.toString());
+    let login = this.tokenService.getToken() && this.tokenService.getToken().length > 0;
     return this.http.get(config.server + '/offer'+ (login ? '/user' : '') + '/data/dialog', new RequestOptions({search: param, headers: this.getTokenHeaders(this.tokenService.getToken())}))
       .map(HandlerService.extractData)
       .catch(HandlerService.handleErrorText);

@@ -60,7 +60,7 @@
     </div>
     <div class="picture-button-container">
       <file-input [text]="'Browse'" (value)="onClickBrowse($event)"></file-input>
-      <file-input [text]="'Take'" (value)="onClickBrowse($event)"></file-input>
+      <file-input [text]="'Take'"  [camera]="true" (valueTake)="onClickTake($event)"></file-input>
       <input type="button" class="input-file button-light" value="Clear"
              (click)="onClickCancel()"/>
     </div>

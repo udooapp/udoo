@@ -13,7 +13,10 @@ import {SafeResourceUrl} from "@angular/platform-browser";
 import {IFormInput} from "../layouts/userform/forminput.interface";
 import {DialogController} from "../../controllers/dialog.controller";
 import {ROUTES} from "../../app/app.routing";
+import {config} from "../../environments/url.config";
 
+declare let Camera: any;
+declare let navigator: any;
 
 @Component({
   templateUrl: '../layouts/userform/forminput.component.html',
@@ -65,7 +68,9 @@ export class RegistrationComponent implements OnInit, IFormInput {
         }
       });
   }
-
+  public onClickTake(event) {
+    this.user.picture = event;
+  }
   disableEmailInput(): boolean {
     return this.facebookRegistration;
   }

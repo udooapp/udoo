@@ -70,6 +70,13 @@ export class ServiceDetailComponent implements OnInit {
     });
   }
 
+  public onClickCloseFullscreenGallery(){
+    this.blur = false;
+    ++this.imageClose;
+    this.open = -1;
+    this.notifier.pageChanged$.emit(' ');
+  }
+
   private processOutsideOfAngularZone(id: number) {
     this.zone.run(() => {
       if (this.type) {
