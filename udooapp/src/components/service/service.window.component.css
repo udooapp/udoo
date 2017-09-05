@@ -396,17 +396,32 @@ dialog {
   height: 20px;
   margin: 2px;
 }
-.service-dialog-icon{
+
+.service-dialog-icon {
   width: 30px;
   height: 30px;
   margin: 2px;
 
 }
+
+#service-dialog-call a {
+  width: 36px;
+  height: 36px;
+  display: block;
+}
+
+.service-dialog-user-profile-action img {
+  padding: 2px;
+  margin: 0;
+}
+
 .service-dialog-user-profile-action {
   border-radius: 100%;
   cursor: pointer;
+  margin: 2px;
 }
-.service-dialog-user-profile-action:hover{
+
+.service-dialog-user-profile-action:hover {
   background-color: #EAEAEA;
 }
 

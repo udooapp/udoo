@@ -113,17 +113,18 @@ public class OfferServiceController implements IOfferServiceController {
         if (id > 0) {
             if (delete > 0) {
                 if (offerRepository.findByOid(delete).getUid() == uid) {
-                    offerRepository.deleteByOid(delete);
                     availabilityRepository.deleteByOid(delete);
                     offerPictureRepository.deleteAllByOid(delete);
+                    offerRepository.deleteByOid(delete);
+                    bookmarkRepository.deleteBySidAndType(delete, true);
                     this.deleteHistoryElements(delete);
                 }
             }
             if (offerRepository.findByOid(id).getUid() == uid) {
-                int success = offerRepository.deleteByOid(id);
                 offerPictureRepository.deleteAllByOid(id);
                 availabilityRepository.deleteByOid(id);
-                bookmarkRepository.deleteBySidAndType(delete, true);
+                int success = offerRepository.deleteByOid(id);
+                bookmarkRepository.deleteBySidAndType(id, true);
                 this.deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Offer deleted", HttpStatus.OK);

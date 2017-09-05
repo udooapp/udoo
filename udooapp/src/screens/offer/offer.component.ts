@@ -13,6 +13,7 @@ import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
 import {UserController} from "../../controllers/user.controller";
 import {ROUTES} from "../../app/app.routing";
+import {config} from "../../environments/url.config";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -69,40 +70,30 @@ export class OfferComponent implements OnInit, IServiceForm {
     this.dialog.questionResponse$.subscribe(response => {
       if (response) { //Clicked --> Yes
         if (this.modification[1] <= 1) {     //onClickNewImage
-
-          this.offerService.deleteUserOffer(this.data.oid, this.modification[0]).subscribe(
-            () => {
-              this.modification[0] = -2;
-              this.modification[1] = 0;
-              this.modification[2] = -1;
-              this.notifier.back();
-              this.notifier.pageChanged$.emit(' ');
-            },
-            error => {
-              this.error = error;
-              this.dialog.notifyError(error);
-            }
-          );
+          this.deleteService(this.data.oid, this.modification[0]);
           this.modification[1] = 0;
         } else if (this.modification[0] > -2) {
           //if the user inserted a new picture and navigate back without saving/updating
-          this.offerService.deleteUserOffer(this.data.oid, -1).subscribe(
-            () => {
-              this.modification[0] = -2;
-              this.modification[1] = 0;
-              this.modification[2] = -1;
-              this.notifier.back();
-              this.notifier.pageChanged$.emit(' ');
-            },
-            () => {
-              //  this.dialog.notifyError(error);
-            }
-          );
+          this.deleteService(this.data.oid, -1);
         }
       }
     });
   }
-
+  deleteService(id1: number, id2: number) {
+    this.offerService.deleteUserOffer(id1, id2).subscribe(
+      () => {
+        this.modification[0] = -2;
+        this.modification[1] = 0;
+        this.modification[2] = -1;
+        this.notifier.back();
+        this.notifier.pageChanged$.emit(' ');
+      },
+      error => {
+        this.error = error;
+        this.dialog.notifyError(error);
+      }
+    );
+  }
   public onClickCloseFullscreenGallery() {
     this.backgroundBlur = false;
     this.notifier.pageChanged$.emit(' ');
@@ -144,6 +135,14 @@ export class OfferComponent implements OnInit, IServiceForm {
           );
         }
       });
+    if (config.mobile) {
+      document.addEventListener("backbutton", () => {
+        if (this.modification[0] > -2) {
+          //if the user inserted a new picture and navigate back without saving/updating
+          this.deleteService(this.data.oid, -1);
+        }
+      }, false);
+    }
   }
 
   isBlur(): boolean {

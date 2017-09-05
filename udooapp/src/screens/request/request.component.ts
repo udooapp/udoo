@@ -16,6 +16,7 @@ import {GalleryComponent} from "../../components/gallery/gallery.component";
 import {BidService} from "../../services/bid.service";
 import {UserController} from "../../controllers/user.controller";
 import {ROUTES} from "../../app/app.routing";
+import {config} from "../../environments/url.config";
 
 @Component({
   templateUrl: '../layouts/serviceform/serviceform.component.html',
@@ -75,40 +76,32 @@ export class RequestComponent implements OnInit, IServiceForm {
     this.dialog.questionResponse$.subscribe(response => {
       if (response) { //Clicked --> Yes
         if (this.modification[1] === 1) {     //onClickmodification[1]
-
-          this.requestService.deleteUserRequest(this.data.rid, this.modification[0]).subscribe(
-            () => {
-              this.modification[0] = -2;
-              this.modification[1] = 0;
-              this.modification[2] = -1;
-              this.notifier.back();
-              this.notifier.pageChanged$.emit(' ');
-            },
-            error => {
-              this.error = error;
-              this.dialog.notifyError(error);
-            }
-          );
+          this.deleteService(this.data.rid, this.modification[0]);
           this.modification[1] = 0;
         } else if (this.modification[0] > -2) {
           //if the user inserted a new picture and navigate back without saving/updating
-          this.requestService.deleteUserRequest(this.data.rid, -1).subscribe(
-            () => {
-              this.modification[0] = -2;
-              this.modification[1] = 0;
-              this.modification[2] = -1;
-              this.notifier.back();
-              this.notifier.pageChanged$.emit(' ');
-            },
-            () => {
-              //  this.dialog.notifyError(error);
-            }
-          );
+          this.deleteService(this.data.rid, -1);
         }
       } else {  //on clikc dilaog --> NO
         //this.notifier.notify(RequestComponent.NAME);
       }
     });
+  }
+
+  deleteService(id1: number, id2: number) {
+    this.requestService.deleteUserRequest(id1, id2).subscribe(
+      () => {
+        this.modification[0] = -2;
+        this.modification[1] = 0;
+        this.modification[2] = -1;
+        this.notifier.back();
+        this.notifier.pageChanged$.emit(' ');
+      },
+      error => {
+        this.error = error;
+        this.dialog.notifyError(error);
+      }
+    );
   }
 
   isBlur(): boolean {
@@ -147,12 +140,20 @@ export class RequestComponent implements OnInit, IServiceForm {
           );
         }
       });
+    if (config.mobile) {
+      document.addEventListener("backbutton", () => {
+        if (this.modification[0] > -2) {
+          //if the user inserted a new picture and navigate back without saving/updating
+          this.deleteService(this.data.rid, -1);
+        }
+      }, false);
+    }
   }
 
   public onClickSave() {
     if (this.imageLoading.length == 0) {
       if (this.checkValidation()) {
-        for(let i: number = 0; i < this.data.picturesRequest.length; ++i){
+        for (let i: number = 0; i < this.data.picturesRequest.length; ++i) {
           this.data.picturesRequest[i].src = '';
         }
         this.requestService.saveRequest(this.data, this.modification[0]).subscribe(

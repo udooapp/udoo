@@ -202,15 +202,16 @@ public class RequestServiceController implements IRequestServiceController {
         if (id > 0) {
             if (delete > 0) {
                 if (requestRepository.findByRid(delete).getUid() == uid) {
-                    requestRepository.deleteByRid(delete);
                     requestPictureRepository.deleteAllByRid(delete);
+                    requestRepository.deleteByRid(delete);
                     deleteHistoryElements(delete);
+                    bookmarkRepository.deleteBySidAndType(delete, false);
                 }
             }
             if (requestRepository.findByRid(id).getUid() == uid) {
-                int success = requestRepository.deleteByRid(id);
                 requestPictureRepository.deleteAllByRid(id);
-                bookmarkRepository.deleteBySidAndType(delete, false);
+                int success = requestRepository.deleteByRid(id);
+                bookmarkRepository.deleteBySidAndType(id, false);
                 deleteHistoryElements(id);
                 if (success > -1) {
                     return new ResponseEntity<>("Request deleted", HttpStatus.OK);

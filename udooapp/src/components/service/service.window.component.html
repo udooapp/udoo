@@ -33,14 +33,14 @@
                      [src]="i == 0 ? './assets/star2.png' : i == 1 ? './assets/star3.png' : './assets/star1.png'">
               </div>
               <div class="service-dialog-user-action">
-                <div id="service-dialog-call">
-                  <a [href]="'tel:' + user.phone" target="_blank"><img class="service-dialog-icon service-dialog-user-profile-action" src="./assets/call.png"></a>
+                <div class="service-dialog-user-profile-action" id="service-dialog-call">
+                  <a [href]="'tel:' + user.phone" target="_blank"><img class="service-dialog-icon" src="./assets/call.png"></a>
                 </div>
-                <div id="service-dialog-send-message" (click)="onClickMessageButton()">
-                  <img class="service-dialog-icon service-dialog-user-profile-action" src="./assets/message2.png">
+                <div class="service-dialog-user-profile-action" id="service-dialog-send-message" (click)="onClickMessageButton()">
+                  <img class="service-dialog-icon" src="./assets/message2.png">
                 </div>
-                <div id="service-dialog-add-to-contact" (click)="onClickAddToContact()">
-                  <img class="service-dialog-icon service-dialog-user-profile-action"
+                <div class="service-dialog-user-profile-action" id="service-dialog-add-to-contact" (click)="onClickAddToContact()">
+                  <img class="service-dialog-icon"
                      src="./assets/add-to-contacts.png">
                 </div>
               </div>
