@@ -132,6 +132,7 @@ public class RestServiceController implements IRestServiceController {
                 User user = new User(userRegistration);
                 user.setStars(0);
                 user.setUid(-1);
+                user.setPhone('+' + user.getPhone().replaceAll("[^\\d]", ""));
                 user = userRepository.save(user);
                 if (emailService.sendEmailVerification(user)) {
                     user.setActive(0b0001);

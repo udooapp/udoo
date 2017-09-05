@@ -184,9 +184,12 @@ public class RequestServiceController implements IRequestServiceController {
         }
 
         for (PicturesRequest pic : picturesNew) {
-            RequestPictures pic2 = new RequestPictures(pic.getSrc(), rid);
-            pic2.setPrid(pic.getPrid());
-            requestPictureRepository.save(pic2);
+            RequestPictures picture = requestPictureRepository.findByPrid(pic.getPrid());
+            if(picture != null) {
+                RequestPictures pic2 = new RequestPictures(picture.getSrc(), rid);
+                pic2.setPrid(pic.getPrid());
+                requestPictureRepository.save(pic2);
+            }
         }
     }
 
@@ -322,7 +325,7 @@ public class RequestServiceController implements IRequestServiceController {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
         } else {
             RequestResponse response = new RequestResponse();
-            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, rid, true) != null);
+            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, rid, false) != null);
             response.setRequest(request);
             response.setUser(userRepository.findByUid(request.getUid()));
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -331,7 +334,7 @@ public class RequestServiceController implements IRequestServiceController {
 
     @Override
     @RequestMapping(value = "/data/dialog", method = RequestMethod.GET)
-    public ResponseEntity<?> getRequestDialogData(@RequestParam("id") int rid) {
+    public ResponseEntity<?> getRequestDialogData(@RequestParam("rid") int rid) {
         Request request = requestRepository.findByRid(rid);
         if (request == null) {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
