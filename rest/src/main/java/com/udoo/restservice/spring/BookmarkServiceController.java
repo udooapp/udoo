@@ -53,6 +53,7 @@ public class BookmarkServiceController implements IBookmarkServiceController {
     public ResponseEntity<?> save(ServletRequest request, @RequestBody BookmarkRequest bookmarkRequest) {
         int uid = Integer.parseInt(request.getAttribute(USERID).toString());
         Bookmark bookmark = bookmarkRepository.findByUidAndSidAndType(uid, bookmarkRequest.getSid(), bookmarkRequest.isType());
+        System.out.println("BOOKmARK::" + bookmarkRequest.isType() + " " + bookmarkRequest.getSid());
         if (bookmark == null) {
             bookmark = new Bookmark();
             bookmark.setUid(uid);
