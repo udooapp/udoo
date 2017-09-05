@@ -8,10 +8,9 @@
     <div class="image-hover" (click)="onClickPicture(i)" [id]="'galleryTouch' + i"></div>
   </div>
   <div class="gallery-button-container" *ngIf="editable">
-    <button class="gallery-input-file gallery-button-left-radius">
+    <button class="gallery-input-file gallery-button-left-radius" (click)="onClickTake()">
       <img src="./assets/camera.png">
       <span>Take</span>
-      <input type="file" accept="image/*" (change)="onClickNew($event)"/>
     </button>
     <button class="gallery-input-file gallery-button-right-radius">
       <img src="./assets/picture.png">
@@ -28,6 +27,7 @@
   </div>
 </div>
 <div *ngIf="gallery" id="gallery" class="fullscreen-gallery">
+  <div id="fullscreen-gallery-background" (click)="onClickClose()"></div>
   <img *ngIf="index > 0" id="gallery-image-left" [style.margin-left.px]="leftMargin"
        [style.animation-name]="animationLeft" class="gallery-image" [src]="images[index -1].src">
   <img id="gallery-image-center" [style.margin-left.px]="margin" [style.animation-name]="animation"

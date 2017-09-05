@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import {NotifierController} from "../controllers/notify.controller";
 import {TokenService} from "../services/token.service";
 import {SearchController} from "../controllers/search.controller";
 import {DialogController} from "../controllers/dialog.controller";
 import {UserController} from "../controllers/user.controller";
+import {config} from "../environments/url.config";
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,13 @@ import {UserController} from "../controllers/user.controller";
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit{
   visibleMenu: boolean = false;
   menuButton: boolean = true;
   searchButton: boolean = false;
   errorMessage: string = '';
   error: boolean = false;
+  private scriptLoadingPromise: Promise<void>;
   activated: boolean = true;
   public searchVisibility: boolean = false;
   private clickedPage: boolean = false;
@@ -47,7 +49,6 @@ export class AppComponent {
       this.notificationCounter = value;
     });
     notifier.systemNotification$.subscribe(value => {
-
       this.systemNotification = value;
       this.contentContainerHeight = window.innerHeight - 60 - (48.5 * this.systemNotification.length);
     });
@@ -66,7 +67,11 @@ export class AppComponent {
       }
     });
   }
-
+  public ngOnInit(){
+    if(config.mobile){
+      this.load().then();
+    }
+  }
   public onClickSearchButton() {
     this.searchVisibility = true;
     this.searchController.onClickSearchButton$.emit(true);
@@ -131,5 +136,35 @@ export class AppComponent {
     if (this.systemNotification != null && this.systemNotification[index].length > 0) {
       this.dialog.sendClosable({index: index, content: this.systemNotification[index]});
     }
+  }
+  private load(): Promise<void> {
+    const scriptSrc = 'cordova.js';
+    let scripts: any = document.getElementsByTagName('script');
+    for (let i = 0; i < scripts.length; ++i) {
+      if (scripts[i].src == scriptSrc) {
+        this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
+          resolve();
+        });
+        return this.scriptLoadingPromise;
+      }
+    }
+    if (this.scriptLoadingPromise) {
+      return this.scriptLoadingPromise;
+
+    }
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = scriptSrc;
+
+    this.scriptLoadingPromise = new Promise<void>((resolve: Function, reject: Function) => {
+      resolve();
+      script.onerror = (error: Event) => {
+        reject(error);
+      };
+    });
+
+    document.body.appendChild(script);
+
+    return this.scriptLoadingPromise;
   }
 }

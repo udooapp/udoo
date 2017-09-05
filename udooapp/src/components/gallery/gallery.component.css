@@ -97,9 +97,15 @@
   -webkit-justify-content: space-around;
   justify-content: space-around;
   right: 0;
+}
+#fullscreen-gallery-background{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
   background-color: rgba(41, 41, 41, 0.1);
 }
-
 .gallery-right-arrow {
   z-index: 2;
   top: 14px;
@@ -173,30 +179,30 @@
   top: 21px;
   width: 25px;
 }
+.gallery-image-error {
+  position: absolute;
+  content: 'Upload error!';
+  width: 33px;
+  height: 33px;
+  z-index: 3;
+  margin: calc(50% - 16px);
+  background-image: url("../../assets/upload_error.png");
+  background-size: 33px 33px;
+  border-radius: 100%;
+
+
+}
+
 .gallery-image-loader {
   position: absolute;
   width: 25px;
   height: 25px;
-  z-index: 10;
+  z-index: 3;
   margin: calc(50% - 20px);
   border: 8px solid #f3f3f3;
   border-top: 8px solid #378281;
   border-radius: 100%;
   animation: spin 1s linear infinite;
-}
-
-.gallery-image-error {
-  position: absolute;
-  content: 'Upload error!';
-  width: 50px;
-  z-index: 10;
-  margin-top: 34%;
-  margin-left: 32%;
-  background-image: url("../../assets/upload_error.png");
-  background-size: 50px 50px;
-  border-radius: 100%;
-  height: 50px;
-
 }
 
 .gallery-image {

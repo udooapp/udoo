@@ -1,6 +1,10 @@
-<button class="input-file" [ngClass]="{'button-dark': dark, 'button-light' : !dark}">
+<button *ngIf="!camera" class="input-file" [ngClass]="{'button-dark': dark, 'button-light' : !dark}">
   <span>{{text}}</span>
   <input type="file" (change)="onClickBrowse($event)" accept="image/*"/>
+</button>
+
+<button *ngIf="camera" class="input-file" [ngClass]="{'button-dark': dark, 'button-light' : !dark}" (click)="onClickTake()">
+  <span>{{text}}</span>
 </button>
 
 

@@ -1,6 +1,10 @@
 import {AfterViewChecked, Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 import 'rxjs/add/operator/switchMap';
+import {config} from "../../environments/url.config";
+
+declare let Camera: any;
+declare let navigator: any;
 
 @Component({
   selector: 'gallery',
@@ -38,6 +42,8 @@ export class GalleryComponent implements AfterViewChecked {
   @Output() onClickRemove: EventEmitter<number> = new EventEmitter();
   @Output() onClickImage: EventEmitter<number> = new EventEmitter();
   @Output() onClickNewImage: EventEmitter<any> = new EventEmitter();
+  @Output() onClickNewCameraImage: EventEmitter<string> = new EventEmitter();
+  @Output() onClickCloseImage: EventEmitter<any> = new EventEmitter();
 
   constructor() {
     let t = this;
@@ -85,6 +91,12 @@ export class GalleryComponent implements AfterViewChecked {
     }
     let el = document.getElementById("gallery-image-center");
     if (el != null && !this.found) {
+      let background = document.getElementById('fullscreen-gallery-background');
+      if(background != null){
+        background.addEventListener('touchend', () =>{
+          this.onClickClose();
+        })
+      }
       this.found = true;
       let t = this;
       let leftArrow = document.getElementById("gallery-left-arrow");
@@ -124,7 +136,7 @@ export class GalleryComponent implements AfterViewChecked {
         t.leftMargin = -t.width * 2;
         t.rightMargin = t.width * 2;
       }, false);
-      el.addEventListener('touchend',  e =>{
+      el.addEventListener('touchend', e => {
         e.preventDefault();
         if (t.width * 2 / 3 > Math.abs(t.margin)) {
           t.animation = t.animations[0];
@@ -149,7 +161,7 @@ export class GalleryComponent implements AfterViewChecked {
           }
         }
       }, false);
-      el.addEventListener('touchmove',  e =>{
+      el.addEventListener('touchmove', e => {
         e.preventDefault();
         let touch = e.touches[0];
         if (t.images.length > 1 && ((touch.pageX - t.startCoordX < 0 && t.index == 0) || (touch.pageX - t.startCoordX > 0 && t.index == t.images.length - 1) || (t.index > 0 && t.index < t.images.length - 1))) {
@@ -183,6 +195,24 @@ export class GalleryComponent implements AfterViewChecked {
     this.onClickRemove.emit(i)
   }
 
+  public onClickTake() {
+    if (config.mobile) {
+      let onClickNewCameraImage = this.onClickNewCameraImage;
+      navigator.camera.getPicture(
+        imageData => {
+          onClickNewCameraImage.emit("data:image/jpeg;base64," + imageData);
+        },
+        event => {
+          alert('Failed because: ' + event);
+        }, {
+          quality: 50,
+          destinationType: Camera.DestinationType.DATA_URL
+        });
+
+
+    }
+  }
+
   public onClickNew(event) {
     this.onClickNewImage.emit(event);
   }
@@ -194,7 +224,7 @@ export class GalleryComponent implements AfterViewChecked {
       if (el != null) {
         this.imageElements.push(el);
         let coord = 0;
-        el.addEventListener('touchstart',  e => {
+        el.addEventListener('touchstart', e => {
           e.preventDefault();
           coord = 0;
           t.clicked = false;
@@ -258,5 +288,10 @@ export class GalleryComponent implements AfterViewChecked {
       }
     }
     return false;
+  }
+
+  onClickClose() {
+    this.gallery = false;
+    this.onClickCloseImage.emit(true);
   }
 }
