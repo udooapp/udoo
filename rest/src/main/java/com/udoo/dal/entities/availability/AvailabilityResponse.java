@@ -1,9 +1,9 @@
 package com.udoo.dal.entities.availability;
 
 public class AvailabilityResponse {
-    private int from;
+    private int from = -1;
 
-    private int to;
+    private int to = -1;
 
     public AvailabilityResponse() {
     }

@@ -22,6 +22,7 @@
   flex-direction: row;
   -webkit-flex-direction: row;
 }
+
 .availability-table-container {
   display: -webkit-flex;
   display: flex;
@@ -37,12 +38,13 @@
 }
 
 .availability-row-container {
-  color:#4d4d4d;
+  color: #4d4d4d;
   display: -webkit-flex;
   display: flex;
   height: auto;
   flex-wrap: wrap;
   flex-direction: column;
+  font-size: 9pt;
   -webkit-flex-direction: column;
 }
 
@@ -56,13 +58,15 @@
   flex-direction: row;
   -webkit-flex-direction: row;
 }
-.availability-row-container{
+
+.availability-row-container {
   width: calc(100% - 2px);
   text-align: center;
   flex-direction: column;
   -webkit-flex-direction: column;
 }
-.availability-row-container div{
+
+.availability-row-container div {
   margin: 3px 1px;
 }
 
@@ -73,47 +77,31 @@
   color: #378281;
   text-align: center;
 }
+
 .availability-column-name {
   background-color: #F7F7F7;
   width: 100%;
 }
 
-.availability-add-button {
-  margin: 6px 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 5px;
+.availability-select-error {
+  color: #DD4B39;
+  border: 1px solid #DD4B39;
 }
 
-.availability-remove-button {
-  margin: 2px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-bottom: 7px;
-}
-
-.availability-button {
-  text-align: center;
+.availability-select-ok {
   color: #378281;
-  height: 16px;
-  background-color: #F7F7F7;
-  font-size: 14pt;
-  font-weight: 600;
-  border-radius: 100%;
-  border: 2px solid #378281;
-  transition: background-color 250ms;
-  cursor: pointer;
+  border: 1px solid #378281;
 }
 
 .availability-select {
   padding: 0 2px;
-  border: none;
+  border-radius: 2px;
   box-shadow: none;
   background: transparent;
   background-image: none;
-  color: #378281;
-  font-size: 12pt;
-  width: 45px;
+  font-size: 11pt;
+  text-align: center;
+  width: 90px;
   height: 20px;
   margin: 5px;
 }
@@ -135,6 +123,7 @@
 }
 
 .availability-select-divider {
+  color: #378281;
   margin: 1px 5px 0 0;
   font-size: 16pt;
   font-weight: 500;
@@ -144,63 +133,51 @@
   outline: none;
 }
 
-.availability-select-container {
-  display: flex;
-  display: -webkit-flex;
-  flex-direction: row;
-  -webkit-flex-direction: row;
-  margin: 0 5px;
-  border: 1px solid #4A9594;
-  border-radius: 5px;
-  padding: 0 2px;
-  height: 30px;
-  width: auto;
-  color: #378281;
-  font-weight: 700;
-}
-
-.availability-select-container-error {
-  border: 2px solid #DD4B39;
-  color: #DD4B39;
-}
-
 .availability-button:hover {
   background-color: #DADADA;
 }
+
 @media (max-width: 640px) and (orientation: portrait) {
-  .availability-column-name{
+  .availability-column-name {
     font-size: 11pt;
   }
 
 }
+
 @media (max-width: 640px) and (orientation: portrait) {
-  .availability-column-container{
+  .availability-column-container {
     width: calc(100% / 4);
   }
 }
+
 @media (max-width: 640px) and (orientation: landscape) {
-  .availability-column-container{
+  .availability-column-container {
     width: calc(100% / 5);
   }
 }
+
 @media (min-width: 641px) and (max-width: 960px) and (orientation: portrait) {
-  .availability-column-container{
+  .availability-column-container {
     width: calc(100% / 6);
   }
-  .availability-column-name{
+
+  .availability-column-name {
     font-size: 11pt;
   }
 }
+
 @media (min-width: 641px) and (max-width: 960px) and (orientation: landscape) {
-  .availability-column-container{
+  .availability-column-container {
     width: calc(100% / 7);
   }
-  .availability-column-name{
+
+  .availability-column-name {
     font-size: 11pt;
   }
 }
+
 @media (min-width: 961px) {
-  .availability-column-container{
+  .availability-column-container {
     width: calc(100% / 7);
   }
 }

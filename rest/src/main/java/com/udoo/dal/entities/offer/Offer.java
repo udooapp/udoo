@@ -52,7 +52,7 @@ public class Offer {
     private List<Availability> availability = new ArrayList<>();
 
     @Transient
-    private List<List<AvailabilityResponse>> availabilities = new ArrayList<>();
+    private List<AvailabilityResponse> availabilities = new ArrayList<>();
 
     public Integer getOid() {
         return oid;
@@ -142,11 +142,11 @@ public class Offer {
         this.availability = availability;
     }
 
-    public List<List<AvailabilityResponse>> getAvailabilities() {
+    public List<AvailabilityResponse> getAvailabilities() {
         return availabilities;
     }
 
-    public void setAvailabilities(List<List<AvailabilityResponse>> availabilities) {
+    public void setAvailabilities(List<AvailabilityResponse> availabilities) {
         this.availabilities = availabilities;
     }
 

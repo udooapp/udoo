@@ -2,27 +2,35 @@
   <div class="availability-day-container" *ngFor="let day of data; let i = index">
     <div class="availability-day-name">{{getDayName(i)}}</div>
     <div class="availability-day-times">
-      <div *ngFor="let item of day; let j = index" class="availability-select-container" [ngClass]="{'availability-select-container-error' : errorIndex[i][j]}">
-        <select class="availability-select" (change)="onChangeSelect($event, i, j, true)">
-          <option *ngFor="let hour of hours" [value]="hour" [selected]="hour == item.from">{{hour}}</option>
-        </select>
-        <div class="availability-select-divider"> - </div>
-        <select class="availability-select" (change)="onChangeSelect($event, i, j, false)">
-          <option *ngFor="let hour of hours" [value]="hour" [selected]="hour == item.to">{{hour}}</option>
-        </select>
-        <div class="availability-button availability-remove-button" (click)="onClickRemove(i, j)">-</div>
-      </div>
-      <div class="availability-add-button availability-button" (click)="onClickAddButton(i)">+</div>
+      <select class="availability-select"
+              [ngClass]="{'availability-select-ok' : !errorIndex[i],'availability-select-error' : errorIndex[i]}"
+              (change)="onChangeSelect($event, i, true)">
+        <option *ngFor="let hour of hoursIndex; let k = index" [value]="hour" [selected]="hour == day.from">
+          {{hoursName[k]}}
+        </option>
+      </select>
+      <div *ngIf="day.from != -1" class="availability-select-divider"> -</div>
+      <select *ngIf="day.from != -1" class="availability-select"
+              [ngClass]="{'availability-select-ok' : !errorIndex[i],'availability-select-error' : errorIndex[i]}"
+              (change)="onChangeSelect($event, i, false)">
+        <option *ngFor="let hour of hoursIndex; let k = index" [value]="hour" [selected]="hour == day.to">
+          {{hoursName[k]}}
+        </option>
+      </select>
     </div>
   </div>
-  <div class="availability-bottom-border" [ngClass]="{'availability-bottom-border-ok' : checkError(), 'availability-bottom-border-error': !checkError()}"></div>
+  <div class="availability-bottom-border"
+       [ngClass]="{'availability-bottom-border-ok' : checkError(), 'availability-bottom-border-error': !checkError()}"></div>
 </div>
 <div *ngIf="!editable" class="availability-table-container">
   <div class="availability-column-container" *ngFor="let day of data; let i = index">
     <div class="availability-day-name availability-column-name">{{getDayName(i)}}</div>
     <div class="availability-day-times availability-row-container">
-      <div *ngFor="let item of day">
-        {{item.from}}-{{item.to}}
+      <div *ngIf="day.from != -1">
+        {{day.from}}-{{day.to}}
+      </div>
+      <div *ngIf="day.from == -1">
+        CLOSED
       </div>
     </div>
   </div>

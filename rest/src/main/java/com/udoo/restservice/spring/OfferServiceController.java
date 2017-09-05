@@ -226,14 +226,14 @@ public class OfferServiceController implements IOfferServiceController {
 
     @Override
     @RequestMapping(value = "/user/data/dialog", method = RequestMethod.GET)
-    public ResponseEntity<?> getOfferDialogData(ServletRequest servletRequest, @RequestParam("oid") int oid) {
+    public ResponseEntity<?> getOfferDialogData(ServletRequest servletRequest, @RequestParam("id") int id) {
         int uid = Integer.parseInt(servletRequest.getAttribute(USERID).toString());
-        Offer offer = offerRepository.findByOid(oid);
+        Offer offer = offerRepository.findByOid(id);
         if (offer == null) {
             return new ResponseEntity<>("Invalid parameter", HttpStatus.NOT_FOUND);
         } else {
             OfferResponse response = new OfferResponse();
-            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, oid, true) != null);
+            response.setBookmark(bookmarkRepository.findByUidAndSidAndType(uid, id, true) != null);
             offer.setBids(-1);
             response.setOffer(offer);
             response.setUser(userRepository.findByUid(offer.getUid()));
@@ -296,7 +296,7 @@ public class OfferServiceController implements IOfferServiceController {
                     if (offerNew.getOid() != null && offerNew.getOid() > -1) {
                         offerSaved = offerRepository.findByOid(offerNew.getOid());
                     }
-                    List<List<AvailabilityResponse>> availabilityNew = offerNew.getAvailabilities();
+                    List<AvailabilityResponse> availabilityNew = offerNew.getAvailabilities();
                     offerNew = offerRepository.save(offerNew);
                     offerNew.setAvailabilities(availabilityNew);
                     hist.setTid(offerNew.getOid());
@@ -325,7 +325,7 @@ public class OfferServiceController implements IOfferServiceController {
                     offerNew.setUid(user.getUid());
                     Offer offerSaved = offerRepository.findByOid(d);
                     Offer offerCurrent = offerRepository.findByOid(delete);
-                    List<List<AvailabilityResponse>> availabilityNew = offerNew.getAvailabilities();
+                    List<AvailabilityResponse> availabilityNew = offerNew.getAvailabilities();
                     offerNew = offerRepository.save(offerNew);
                     offerNew.setAvailabilities(availabilityNew);
                     hist.setTid(offerNew.getOid());
@@ -371,21 +371,13 @@ public class OfferServiceController implements IOfferServiceController {
         }
     }
 
-    private List<List<AvailabilityResponse>> getAvailability(List<Availability> availabilities) {
-        List<List<AvailabilityResponse>> availabilityResponse = new ArrayList<>();
+    private List<AvailabilityResponse> getAvailability(List<Availability> availabilities) {
+        List<AvailabilityResponse> availabilityResponse = new ArrayList<>();
         for (int i = 0; i < 7; ++i) {
-            availabilityResponse.add(new ArrayList<AvailabilityResponse>());
+            availabilityResponse.add(new AvailabilityResponse());
         }
         for (Availability availability : availabilities) {
-            List<AvailabilityResponse> responses = availabilityResponse.get(availability.getDay());
-            int i;
-            for (i = 0; i < responses.size(); ++i) {
-                if (responses.get(i).getFrom() > availability.getFrom()) {
-                    --i;
-                    break;
-                }
-            }
-            responses.add(i < 0 ? 0 : i, new AvailabilityResponse(availability.getFrom(), availability.getTo()));
+            availabilityResponse.set(availability.getDay(), new AvailabilityResponse(availability.getFrom(), availability.getTo()));
         }
         return availabilityResponse;
     }
@@ -404,29 +396,32 @@ public class OfferServiceController implements IOfferServiceController {
         }
 
         for (PicturesOffer pic : picturesNew) {
-            OfferPictures pic2 = new OfferPictures(pic.getSrc(), oid);
-            pic2.setPoid(pic.getPoid());
-            offerPictureRepository.save(pic2);
-        }
-    }
-    private void compareAvailabilityLists(List<Availability> availabilitiesSaved, List<List<AvailabilityResponse>> availabilitiesNew, int oid) {
-        for(int i = 0; i < 7; ++i){
-            for(AvailabilityResponse availabilityResponse : availabilitiesNew.get(i)){
-                int j;
-                for(j = 0; j < availabilitiesSaved.size(); ++j){
-                    Availability availability = availabilitiesSaved.get(j);
-                    if(availability.getTo() == availabilityResponse.getTo() && availability.getFrom() == availabilityResponse.getFrom() && availability.getDay() == i){
-                        break;
-                    }
-                }
-                if(j < availabilitiesSaved.size()){
-                    availabilitiesSaved.remove(j);
-                } else {
-                    availabilityRepository.save(new Availability(oid, i, availabilityResponse.getFrom(), availabilityResponse.getTo()));
-                }
+            OfferPictures pictures = offerPictureRepository.findByPoid(pic.getPoid());
+            if(pictures != null) {
+                OfferPictures pic2 = new OfferPictures(pictures.getSrc(), oid);
+                pic2.setPoid(pic.getPoid());
+                offerPictureRepository.save(pic2);
             }
         }
-        for(Availability availability : availabilitiesSaved){
+    }
+
+    private void compareAvailabilityLists(List<Availability> availabilitiesSaved, List<AvailabilityResponse> availabilitiesNew, int oid) {
+        for (int i = 0; i < 7; ++i) {
+            int j;
+            AvailabilityResponse availabilityResponse = availabilitiesNew.get(i);
+            for (j = 0; j < availabilitiesSaved.size(); ++j) {
+                Availability availability = availabilitiesSaved.get(j);
+                if (((availability.getTo() == availabilityResponse.getTo() && availability.getFrom() == availabilityResponse.getFrom())  || (availability.getFrom() == -1 && availabilityResponse.getFrom() == -1)) && availability.getDay() == i) {
+                    break;
+                }
+            }
+            if (j < availabilitiesSaved.size()) {
+                availabilitiesSaved.remove(j);
+            } else {
+                availabilityRepository.save(new Availability(oid, i, availabilityResponse.getFrom(), availabilityResponse.getTo()));
+            }
+        }
+        for (Availability availability : availabilitiesSaved) {
             availabilityRepository.deleteByOidAndDayAndFromAndTo(oid, availability.getDay(), availability.getFrom(), availability.getTo());
         }
     }
@@ -448,23 +443,22 @@ public class OfferServiceController implements IOfferServiceController {
                 update = true;
             }
         }
-        List<List<AvailabilityResponse>> response = offerNew.getAvailabilities();
+        List<AvailabilityResponse> response = offerNew.getAvailabilities();
         List<Availability> availabilities = offerSaved.getAvailability();
         for (int i = 0; i < response.size(); ++i) {
-            for (AvailabilityResponse availabilityResponse : response.get(i)) {
-                boolean find = false;
-                for (Availability availability : availabilities) {
-                    if (availability.getDay() == i && availability.getFrom() == availabilityResponse.getFrom() && availability.getTo() == availabilityResponse.getTo()) {
-                        find = true;
-                    }
+            boolean find = false;
+            AvailabilityResponse availabilityResponse = response.get(i);
+            for (Availability availability : availabilities) {
+                if (availability.getDay() == i && ((availability.getFrom() == availabilityResponse.getFrom() && availability.getTo() == availabilityResponse.getTo()) || (availability.getFrom() == -1 && availabilityResponse.getFrom() == -1))) {
+                    find = true;
                 }
-                if (!find) {
-                    histElement.setAction(WallServiceController.UPDATED_AVAILABILITY);
-                    histElement.setBeforeState(getDay(i));
-                    histElement.setAfterState(availabilityResponse.getFrom() + " - " + availabilityResponse.getTo());
-                    historyElementRepository.save(histElement);
-                    update = true;
-                }
+            }
+            if (!find) {
+                histElement.setAction(WallServiceController.UPDATED_AVAILABILITY);
+                histElement.setBeforeState(getDay(i));
+                histElement.setAfterState(availabilityResponse.getFrom() + " - " + availabilityResponse.getTo());
+                historyElementRepository.save(histElement);
+                update = true;
             }
         }
         if (!offerNew.getTitle().equals(offerSaved.getTitle())) {
