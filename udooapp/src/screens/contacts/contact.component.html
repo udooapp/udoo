@@ -1,13 +1,12 @@
 <div class="data-container">
-  <h1 i18n>Contacts</h1>
   <div class="contact-container">
-    <div class="contact" *ngFor="let item of data;  let i = index" [id]="'contact' + i" (click)="onClickContact(item.uid)">
+    <div class="contact" *ngFor="let item of data;  let i = index" [id]="'contact' + i">
       <img class="contact-button-container" src="./assets/trash.png" (click)="onClickDelete(item.uid, i)">
-      <div class="contact-picture"><img class="contact-image" [src]="getPictureUrl(item.picture)"></div>
-      <div class="contact-content">
+      <div class="contact-picture" (click)="onClickContact(item.uid)"><img class="contact-image" [src]="getPictureUrl(item.picture)"></div>
+      <div class="contact-content" (click)="onClickContact(item.uid)">
         <div class="contact-name">{{item.name}}</div>
-        <div class="contact-email"><b i18n>Email: </b>{{item.email}}</div>
-        <div class="contact-phone"><b i18n>Phone: </b>{{item.phone}}</div>
+        <div class="contact-data"><b i18n>Email: </b>{{item.email}}</div>
+        <div class="contact-data"><b i18n>Phone: </b>{{item.phone}}</div>
       </div>
     </div>
     <div *ngIf="loading" class="loader"></div>
