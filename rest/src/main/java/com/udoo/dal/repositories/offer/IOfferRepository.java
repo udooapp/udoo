@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface IOfferRepository extends Repository<Offer, Integer> {
 
-    List<Offer> findByUid(int uid, Pageable page);
+    List<Offer> findByUidAndCompleted(int uid, boolean completed, Pageable page);
 
     Offer findByOid(int id);
 

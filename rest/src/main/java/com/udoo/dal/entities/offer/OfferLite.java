@@ -1,5 +1,7 @@
 package com.udoo.dal.entities.offer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -22,6 +24,9 @@ public class OfferLite {
     private String description = "";
 
     private boolean realTime;
+
+    @JsonIgnore
+    private boolean completed = false;
 
     private Date expirydate = new Date();
 
@@ -49,7 +54,6 @@ public class OfferLite {
         this.title = title;
     }
 
-
     public String getLocation() {
         return location;
     }
@@ -58,8 +62,6 @@ public class OfferLite {
         this.location = location;
     }
 
-
-
     public int getCategory() {
         return category;
     }
@@ -67,7 +69,6 @@ public class OfferLite {
     public void setCategory(int category) {
         this.category = category;
     }
-
 
     public boolean isRealTime() {
         return realTime;
@@ -91,6 +92,14 @@ public class OfferLite {
 
     public void setExpirydate(Date expirydate) {
         this.expirydate = expirydate;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     @Override

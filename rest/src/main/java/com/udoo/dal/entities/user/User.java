@@ -41,10 +41,10 @@ public class User {
 
     private String googleid = "";
 
-    public User(){
+    public User() {
     }
 
-    public User(UserRegistration userRegistration){
+    public User(UserRegistration userRegistration) {
         this.uid = userRegistration.getUid();
         this.name = userRegistration.getName();
         this.email = userRegistration.getEmail();
@@ -190,7 +190,8 @@ public class User {
                 ", \"active\":" + active +
                 '}';
     }
-    public User toUserLite(){
+
+    public User toUserLite() {
         User newUser = new User();
         newUser.setUid(uid);
         newUser.setName(name);

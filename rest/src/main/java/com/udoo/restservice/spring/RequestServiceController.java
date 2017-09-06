@@ -105,6 +105,7 @@ public class RequestServiceController implements IRequestServiceController {
                     if (requestNew.getRid() != null && requestNew.getRid() > 0) {
                         requestSaved = requestRepository.findByRid(requestNew.getRid());
                     }
+                    requestNew.setCompleted(!requestNew.getTitle().isEmpty());
                     requestNew = requestRepository.save(requestNew);
                     hist.setTid(requestNew.getRid());
                     hist = historyRepository.save(hist);
@@ -130,6 +131,7 @@ public class RequestServiceController implements IRequestServiceController {
                     requestNew.setUid(user.getUid());
                     Request requestSaved = requestRepository.findByRid(d);
                     Request requestCurrent = requestRepository.findByRid(delete);
+                    requestNew.setCompleted(!requestNew.getTitle().isEmpty());
                     requestRepository.save(requestNew);
                     hist.setTid(requestNew.getRid());
                     hist = historyRepository.save(hist);
@@ -152,6 +154,7 @@ public class RequestServiceController implements IRequestServiceController {
             } else {
                 if (requestNew.getUid() < 0 && save.getDelete() <= 0) {
                     requestNew.setUid(uid);
+                    requestNew.setCompleted(!requestNew.getTitle().isEmpty());
                     requestNew = requestRepository.save(requestNew);
                     hist.setTid(requestNew.getRid());
                     hist = historyRepository.save(hist);
@@ -241,6 +244,7 @@ public class RequestServiceController implements IRequestServiceController {
             if (user != null) {
                 Request request = new Request();
                 request.setUid(user.getUid());
+                request.setCompleted(false);
                 request = requestRepository.save(request);
                 RequestPictures pic = requestPictureRepository.save(new RequestPictures(image, request.getRid()));
                 if (pic != null) {
@@ -262,7 +266,7 @@ public class RequestServiceController implements IRequestServiceController {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             Pageable page = new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
-            List<Request> requests = requestRepository.findByUid(user.getUid(), page);
+            List<Request> requests = requestRepository.findByUidAndCompleted(user.getUid(), true, page);
             if (last == -1 || (requests.size() > 0 && requests.get(requests.size() - 1).getRid() != last)) {
                 for (Request req : requests) {
                     req.setBids(bidRepository.countBySidAndTypeAndAcceptedLessThan(req.getRid(), false, 0));

@@ -1,6 +1,7 @@
 package com.udoo.dal.entities.request;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -16,7 +17,7 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rid;
 
-    private Integer uid;
+    private int uid;
 
     private String title = "";
 
@@ -30,6 +31,9 @@ public class Request {
 
     private int category = -1;
 
+    @JsonIgnore
+    private boolean completed = false;
+
     @Transient
     private int bids;
 
@@ -38,11 +42,11 @@ public class Request {
     @OneToMany(mappedBy = "request",cascade = CascadeType.PERSIST)
     private List<PicturesRequest> picturesRequest;
 
-    public Integer getUid() {
+    public int getUid() {
         return uid;
     }
 
-    public void setUid(Integer uid) {
+    public void setUid(int uid) {
         this.uid = uid;
     }
 
@@ -116,5 +120,13 @@ public class Request {
 
     public void setBids(int bids) {
         this.bids = bids;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

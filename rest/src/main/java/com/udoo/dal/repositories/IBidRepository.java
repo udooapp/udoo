@@ -27,7 +27,7 @@ public interface IBidRepository extends Repository<Bid, Integer> {
 
     List<Bid> findAllBySidAndTypeAndUid(long sid, boolean type, long uid);
 
-    @Query("Select distinct b From Bid b, Offer o, Request r Where b.accepted >= 0 and ((o.oid = b.sid and o.uid = :uid and b.type = 1) or (r.rid = b.sid and r.uid = :uid and b.type = 0))")
+    @Query("Select distinct b From Bid b, Offer o, Request r Where b.accepted >= 0 and ((o.oid = b.sid and o.uid = :uid and o.completed = true and b.type = 1) or (r.rid = b.sid and r.completed = true and r.uid = :uid and b.type = 0))")
     List<Bid> findAllByProviderId(@Param("uid") int id, Pageable page);
 
     List<Bid> findAllByUidOrderByBidDesc(long uid, Pageable page);

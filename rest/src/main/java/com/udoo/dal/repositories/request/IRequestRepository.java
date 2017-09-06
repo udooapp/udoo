@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IRequestRepository extends Repository<Request, Integer> {
 
-    List<Request> findByUid(int uid, Pageable page);
+    List<Request> findByUidAndCompleted(int uid, boolean completed, Pageable page);
 
     Request findByRid(int id);
 

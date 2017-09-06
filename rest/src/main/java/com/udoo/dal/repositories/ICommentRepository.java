@@ -15,6 +15,5 @@ public interface ICommentRepository extends Repository<Comment, Integer> {
 
     Comment save(Comment comment);
 
-
     List<Comment> findAllBySidAndType(long sid, boolean type, Pageable page);
 }

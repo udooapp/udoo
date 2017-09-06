@@ -36,6 +36,9 @@ public class Offer {
 
     private boolean realTime;
 
+    @JsonIgnore
+    private boolean completed = false;
+
     @Transient
     private int bids;
 
@@ -148,6 +151,14 @@ public class Offer {
 
     public void setAvailabilities(List<AvailabilityResponse> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     @Override

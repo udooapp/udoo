@@ -61,6 +61,7 @@ CREATE TABLE `users` (
   `expirydate` date DEFAULT NULL,
   `category` int(11) NOT NULL,
   `realtime` BOOLEAN NOT NULL,
+  `completed` BOOLEAN NOT NULL,
   PRIMARY KEY (`oid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
 );
@@ -79,6 +80,7 @@ CREATE TABLE `request` (
   `jobdate` varchar(100) NOT NULL,
   `expirydate` date DEFAULT NULL,
   `category` int(11) NOT NULL,
+  `completed` BOOLEAN NOT NULL,
   PRIMARY KEY(`rid`),
   CONSTRAINT FOREIGN KEY (`uid`) REFERENCES `users` (`uid`)
 );

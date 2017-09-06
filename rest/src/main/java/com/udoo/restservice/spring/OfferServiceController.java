@@ -84,7 +84,7 @@ public class OfferServiceController implements IOfferServiceController {
         User user = userRepository.findByUid(Integer.parseInt(request.getAttribute(USERID).toString()));
         if (user != null) {
             Pageable page = new PageRequest(count / WallServiceController.PAGE_SIZE, WallServiceController.PAGE_SIZE);
-            List<Offer> offers = offerRepository.findByUid(user.getUid(), page);
+            List<Offer> offers = offerRepository.findByUidAndCompleted(user.getUid(), true, page);
             if (last == -1 || (offers.size() > 0 && offers.get(offers.size() - 1).getOid() != last)) {
                 for (Offer offer : offers) {
                     offer.setBids(bidRepository.countBySidAndTypeAndAcceptedLessThan(offer.getOid(), true, 0));
@@ -250,6 +250,7 @@ public class OfferServiceController implements IOfferServiceController {
             if (user != null) {
                 Offer offer = new Offer();
                 offer.setUid(user.getUid());
+                offer.setCompleted(false);
                 offer = offerRepository.save(offer);
                 OfferPictures pic = offerPictureRepository.save(new OfferPictures(image, offer.getOid()));
                 if (pic != null) {
@@ -298,6 +299,7 @@ public class OfferServiceController implements IOfferServiceController {
                         offerSaved = offerRepository.findByOid(offerNew.getOid());
                     }
                     List<AvailabilityResponse> availabilityNew = offerNew.getAvailabilities();
+                    offerNew.setCompleted(!offerNew.getTitle().isEmpty());
                     offerNew = offerRepository.save(offerNew);
                     offerNew.setAvailabilities(availabilityNew);
                     hist.setTid(offerNew.getOid());
@@ -327,6 +329,7 @@ public class OfferServiceController implements IOfferServiceController {
                     Offer offerSaved = offerRepository.findByOid(d);
                     Offer offerCurrent = offerRepository.findByOid(delete);
                     List<AvailabilityResponse> availabilityNew = offerNew.getAvailabilities();
+                    offerNew.setCompleted(!offerNew.getTitle().isEmpty());
                     offerNew = offerRepository.save(offerNew);
                     offerNew.setAvailabilities(availabilityNew);
                     hist.setTid(offerNew.getOid());
@@ -353,6 +356,7 @@ public class OfferServiceController implements IOfferServiceController {
             } else {
                 if (offerNew.getUid() < 0 && save.getDelete() <= 0) {
                     offerNew.setUid(uid);
+                    offerNew.setCompleted(!offerNew.getTitle().isEmpty());
                     offerNew = offerRepository.save(offerNew);
                     hist.setTid(offerNew.getOid());
                     hist.setDate(new Date());

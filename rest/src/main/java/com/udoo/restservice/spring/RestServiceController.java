@@ -312,7 +312,6 @@ public class RestServiceController implements IRestServiceController {
     public ResponseEntity<?> getAllService(@RequestParam("category") int category, @RequestParam("search") String searchText) {
         SearchResult result = new SearchResult();
         boolean empty = searchText != null && !searchText.isEmpty();
-
         List<RequestLite> requests = empty ? (category > 0 ? requestLiteRepository.findAllMatches(category, searchText) : requestLiteRepository.findAllByTitleContainingOrDescriptionContaining(searchText)) : (category > 0 ?
                 requestLiteRepository.findAllActualByCategory(category) : requestLiteRepository.findAllActual());
         result.setRequestLite(getRequestLiteList(requests));

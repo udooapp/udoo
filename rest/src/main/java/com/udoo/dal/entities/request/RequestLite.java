@@ -2,6 +2,8 @@ package com.udoo.dal.entities.request;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -22,6 +24,9 @@ public class RequestLite {
     private Date expirydate = new Date();
 
     private int category = -1;
+
+    @JsonIgnore
+    private boolean completed = false;
 
     public Integer getUid() {
         return uid;
@@ -75,6 +80,13 @@ public class RequestLite {
         this.category = category;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 
     public void setRid(Integer rid) {
         this.rid = rid;

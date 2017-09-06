@@ -14,8 +14,8 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
 
     @Override
     public List<BidResult> getBids(long id) {
-        String sql = "Select u.name as name, b.price as price, b.description as description, o.title as title From users u, offer o, bids b Where o.uid = " + id + " and o.oid = b.sid and b.accepted = -1 and b.type = 1 and b.uid = u.uid";
-        String sql2 = "Select u.name as name, b.price as price, b.description as description, r.title as title From users u, request r, bids b Where r.uid = " + id + " and r.rid = b.sid and b.accepted = -1 and b.type = 0 and b.uid = u.uid";
+        String sql = "Select u.name as name, b.price as price, b.description as description, o.title as title From users u, offer o, bids b Where o.uid = " + id + " and o.oid = b.sid and o.completed = true and b.accepted = -1 and b.type = 1 and b.uid = u.uid";
+        String sql2 = "Select u.name as name, b.price as price, b.description as description, r.title as title From users u, request r, bids b Where r.uid = " + id + " and r.rid = b.sid and r.completed = true and b.accepted = -1 and b.type = 0 and b.uid = u.uid";
 
         List<BidResult> list = mapping(getJdbcTemplate().queryForList(sql));
         list.addAll(mapping(getJdbcTemplate().queryForList(sql2)));
@@ -24,9 +24,9 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
 
     @Override
     public List<BidResult> getUserReminders(long id) {
-        String sql1 = "Select r.title as title From request r, payments p Where p.uid = " + id + " and r.rid = p.sid and p.state = 2 and p.type = 0 and p.pid = " +
+        String sql1 = "Select r.title as title From request r, payments p Where p.uid = " + id + " and r.rid = p.sid and r.completed = true and p.state = 2 and p.type = 0 and p.pid = " +
                 "(Select p2.pid From payments p2 Where p2.uid = " + id + " and p2.type = 0 and p2.sid = p.sid Order By p2.date DESC Limit 1)";
-        String sql2 = "Select o.title as title From offer o, payments p Where p.uid = " + id + " and o.oid = p.sid and p.state = 2 and p.type = 1 and p.pid = " +
+        String sql2 = "Select o.title as title From offer o, payments p Where p.uid = " + id + " and o.completed = true and o.oid = p.sid and p.state = 2 and p.type = 1 and p.pid = " +
                 "(Select p2.pid From payments p2 Where p2.uid = " + id + " and p2.type = 1 and p2.sid = p.sid Order By p2.date DESC Limit 1)";
         List<BidResult> list = mapping2(getJdbcTemplate().queryForList(sql1));
         list.addAll(mapping2(getJdbcTemplate().queryForList(sql2)));
@@ -64,7 +64,7 @@ public class BidResultDao extends JdbcDaoSupport implements IBidResult {
     @Override
     public int[] getUserBids(int uid) {
         String SQLUser = "Select count(b.sid) as count From bids b where b.accepted = 1 and b.uid = " + uid;
-        String SQLProvider = "Select count(DISTINCT b.bid) as count From bids b, offer o, request r Where b.accepted = 1 and ((o.uid = 5 and o.oid = b.sid and b.type = 1) || (r.uid = 5 and r.rid = b.sid and b.type = 0))";
+        String SQLProvider = "Select count(DISTINCT b.bid) as count From bids b, offer o, request r Where b.accepted = 1 and ((o.uid = 5 and o.completed = true and o.oid = b.sid and b.type = 1) || (r.uid = 5 and r.completed = true and r.rid = b.sid and b.type = 0))";
         List<Map<String, Object>> rows = getJdbcTemplate().queryForList(SQLUser);
         int [] counts = new int[2];
         counts[0] = Integer.parseInt(rows.get(0).get("count").toString());
